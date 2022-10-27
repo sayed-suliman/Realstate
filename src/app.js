@@ -6,6 +6,9 @@ const path = require("path")
 // route of dashboard
 const dashboardRoute = require("./routes/dashboard")
 app.use(dashboardRoute)
+// login route
+const loginRoute = require("./routes/login")
+app.use(loginRoute)
 
 // views path
 const viewsPath = path.join(__dirname,"./../templates/views")
