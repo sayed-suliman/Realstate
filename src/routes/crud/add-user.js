@@ -47,6 +47,7 @@ router.post("/register", [
             });
             console.log("if is true",errorObj)
             res.render("login", {
+                title:"Login",
                 err: errorObj,
             })
         } else {

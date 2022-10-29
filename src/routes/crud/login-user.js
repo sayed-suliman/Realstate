@@ -7,6 +7,7 @@ router.post("/login-profile", async (req, res) => {
         res.redirect("/dashboard")
     } catch (e) {
         res.render("login", {
+            title:"Login",
             invalid_crediatials: e.message
         })
     }
