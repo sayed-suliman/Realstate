@@ -32,8 +32,11 @@
                         <h2 class="fw-bold">Login</h2>
                         <!-- <p class="m-0 mb-3">Already Registered?</p> -->
                         <p class="m-0 mb-3">Login here with your Email and Password</p>
+                        {{#if invalid_crediatials}}
+                            <p class="fs-16 text-danger">Invalid Credentials</p>
+                        {{/if}}
                         <div class="px-3 mb-3">
-                            <form action="/register" method="post" id="login-form">
+                            <form action="/login-profile" method="post" id="login-form">
                                 <input type="email" class="form-control shadow-none mb-3" name="email"
                                     placeholder="Email">
                                 <input type="password" class="form-control shadow-none mb-3" name="password"
@@ -59,17 +62,17 @@
                         <div class="px-3 mb-3">
                             <form action="/register" method="post">
                                 <div class="row text-start">
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="f-n" class="form-label">First Name</label>
-                                        <input required type="text" id="f-n" class="form-control shadow-none mb-3"
+                                        <input required type="text" id="f-n" class="form-control shadow-none"
                                             name="first_name" placeholder="First Name">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="l-n" class="form-label">Last Name</label>
-                                        <input required type="text" id="l-n" class="form-control shadow-none mb-3"
+                                        <input required type="text" id="l-n" class="form-control shadow-none"
                                             name="last_name" placeholder="Last Name">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="p-i" class="form-label">Personal Id</label>
                                         <input required type="text" id="p-i" class="form-control shadow-none"
                                             name="personal_id" placeholder="Your Personal Id" aria-describedby="">
@@ -77,7 +80,7 @@
                                         <div id="pi" class="form-text text-danger">{{err.personal_id}}</div>
                                         {{/if}}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="email" class="form-label">Email</label>
                                         <input required type="email" id="email" class="form-control shadow-none"
                                             name="email" placeholder="Email">
@@ -85,37 +88,37 @@
                                         <div id="em" class="form-text text-danger">{{err.email}}</div>
                                         {{/if}}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="ph-n" class="form-label">Phone Number</label>
-                                        <input required type="number" id="ph-n" class="form-control shadow-none mb-3"
+                                        <input required type="number" id="ph-n" class="form-control shadow-none"
                                             name="phone" placeholder="Phone Number">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="city" class="form-label">City</label>
-                                        <input required type="text" id="city" class="form-control shadow-none mb-3"
+                                        <input required type="text" id="city" class="form-control shadow-none"
                                             name="city" placeholder="City">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="address" class="form-label">Address</label>
-                                        <input required type="text" id="address" class="form-control shadow-none mb-3"
+                                        <input required type="text" id="address" class="form-control shadow-none"
                                             name="address" placeholder="Address">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="state" class="form-label">State</label>
-                                        <input required type="text" id="state" class="form-control shadow-none mb-3"
+                                        <input required type="text" id="state" class="form-control shadow-none"
                                             name="state" placeholder="State">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="z-c" class="form-label">Zip Code</label>
-                                        <input required id="z-c" type="number" class="form-control shadow-none mb-3"
+                                        <input required id="z-c" type="number" class="form-control shadow-none"
                                             name="zip_code" placeholder="Zip Code">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="dob" class="form-label">Date of Birth</label>
-                                        <input required type="date" id="dob" class="form-control shadow-none mb-3"
+                                        <input required type="date" id="dob" class="form-control shadow-none"
                                             name="dob" value="pla">
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="password" class="form-label">Password</label>
                                         <input required id="password" type="password"
                                             class="form-control shadow-none mb-3 pass" name="password"
@@ -124,9 +127,9 @@
                                         <div id="pi" class="form-text text-danger">{{err.email}}</div>
                                         {{/if}} --}}
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-6 mb-3">
                                         <label for="c_password" class="form-label">Confirm Password</label>
-                                        <input required type="password" id="c_password" name="c-password"
+                                        <input required type="password" id="c_password" name="c_password"
                                             class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
                                     </div>
                                 </div>

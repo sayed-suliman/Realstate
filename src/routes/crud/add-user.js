@@ -36,9 +36,10 @@ router.post("/register", [
     try {
         const formValidations = validationResult(req)
         const data = await req.body
-        // if (data.password != data.c_password) {
-        //     throw new Error("Password not matched")
-        // }
+        console.log(data.password,data.c_password)
+        if (data.password != data.c_password) {
+            throw new Error("Password not matched")
+        }
         if (formValidations.errors.length) {
             const errorObj = {}
             formValidations.errors.forEach(element => {

@@ -18,9 +18,12 @@ app.use(dashboardRoute)
 const loginRoute = require("./routes/views/login")
 app.use(loginRoute)
 
-// login credentials
-const loginCredentials = require("./routes/crud/add-user")
-app.use(loginCredentials)
+// Add User
+const addUser = require("./routes/crud/add-user")
+app.use(addUser)
+// Login user
+const loginUser = require("./routes/crud/login-user")
+app.use(loginUser)
 
 // end routes
 

@@ -14,31 +14,31 @@
 }
 /* font sizes */
 .fs-12{
-    font-size: 12px;
+    font-size: 12px!important;
 }
 .fs-14{
-    font-size: 14px;
+    font-size: 14px!important;
 }
 .fs-16{
-    font-size: 16px;
+    font-size: 16px!important;
 }
 .fs-18{
-    font-size: 18px;
+    font-size: 18px!important;
 }
 .fs-20{
-    font-size: 20px;
+    font-size: 20px!important;
 }
 .fs-22{
-    font-size: 22px;
+    font-size: 22px!important;
 }
 .fs-24{
-    font-size: 24px;
+    font-size: 24px!important;
 }
 .fs-26{
-    font-size: 26px;
+    font-size: 26px!important;
 }
 .fs-28{
-    font-size: 28px;
+    font-size: 28px!important;
 }
 
 
@@ -153,8 +153,8 @@ hero section in all pages
     box-shadow: 0 0 6px -3px rgba(0,0,0,0.55);
     padding-bottom: 32px;
 }
-.login-page .card label::before{
-    content: "* ";
+.login-page .card label::after{
+    content: " *";
      color: red; 
 }
 .login-page .login-image-div{
@@ -219,13 +219,13 @@ dashboard
 */
 @media only screen and (max-width:1023px){
   .fs-22{
-    font-size: 18px;
+    font-size: 18px!important;
   }
   .fs-18{
-    font-size: 16px;
+    font-size: 16px!important;
   }
   .fs-16{
-    font-size: 15px;
+    font-size: 15px!important;
   }
 
 }

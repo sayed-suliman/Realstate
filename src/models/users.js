@@ -57,6 +57,21 @@ const userSchema = new mongoose.Schema({
         trim: true
     }
 })
+// find user to login
+userSchema.statics.findByCrediantials = async (email,password)=>{
+    const user = await User.findOne({email})
+    if(!user){
+        throw new Error("Invalid Credentials")
+    }
+    const isMatch = await bcrypt.compare(password,user.password)
+    if(!isMatch){
+        throw new Error("Invalid Credentials")
+    }
+    return user
+}
+
+
+
 
 // hashed password
 userSchema.pre("save", async function (next) {
