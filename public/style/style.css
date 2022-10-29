@@ -1,3 +1,6 @@
+/* poppins sanserif */
+@import url('https://fonts.googleapis.com/css2?family=Poppins&display=swap');
+
 :root{
     /* colors */
     --primary-color:#315181;
@@ -86,6 +89,7 @@
 /* primary-btn */
 .btn-primary{
     background: var(--btn-primary);
+    white-space: nowrap;
 }
 .btn-primary:hover{
     background: var(--primary-color);
@@ -102,11 +106,18 @@
 .table-primary{
     --bs-table-bg:var(--primary-blue);
 }
+table th{
+    white-space: nowrap;
+}
 
 /* for whole website */
+/* bodyy */
 body{
    background: var(--light-white);
+   font-family: 'Poppins', sans-serif;
 }
+
+
 /*  ****
 
 hero section in all pages
@@ -176,6 +187,7 @@ dashboard
 .dashboard ul.nav-tabs .nav-link{
     border-bottom: 0;
 }
+
 .dashboard .tab-content table.table{
     border-top: 2px solid var(--border-blue);
     margin-top: 1px;
@@ -185,7 +197,7 @@ dashboard
 
 
 /* 
-+++++++++++++++++++++++++++++++++++++++++++++++ red Tablets Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
++++++++++++++++++++++++++++++++++++++++++++++++ red laptop Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 */
 @media only screen and (max-width:1366px){
@@ -198,5 +210,22 @@ dashboard
     .dashboard .tab-content .table-container table{
         width: 900px;
     }
+
+}
+
+/* 
++++++++++++++++++++++++++++++++++++++++++++++++ red tablet Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+*/
+@media only screen and (max-width:1023px){
+  .fs-22{
+    font-size: 18px;
+  }
+  .fs-18{
+    font-size: 16px;
+  }
+  .fs-16{
+    font-size: 15px;
+  }
 
 }
