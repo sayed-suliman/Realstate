@@ -9,7 +9,7 @@ router.post("/register", [
             return user
         })
         if (user) {
-            return Promise.reject("Username Already exist! Please Try Another")
+            return Promise.reject("Email already in Use! Please Try Another")
         }
     }),
     check("personal_id").custom(async (value) => {

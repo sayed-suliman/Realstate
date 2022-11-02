@@ -16,10 +16,10 @@
                         <p class="fs-16 text-danger">Invalid Credentials</p>
                         {{/if}}
                         <div class="px-3 mb-3">
-                            <form action="/login-profile" method="post" id="login-form">
-                                <input type="email" class="form-control shadow-none mb-3" name="email"
+                            <form action="/login" method="post" id="login-form">
+                                <input type="email" class="form-control shadow-none mb-3" required name="email"
                                     placeholder="Email">
-                                <input type="password" class="form-control shadow-none mb-3" name="password"
+                                <input type="password" required class="form-control shadow-none mb-3" name="password"
                                     placeholder="Password">
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>

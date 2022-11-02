@@ -25,6 +25,11 @@ app.use(addUser)
 const loginUser = require("./routes/crud/login-user")
 app.use(loginUser)
 
+// dashbaord routes
+const dashbaordRoutes = require("./routes/views/dashbaord/new-dashbaord")
+app.use(dashbaordRoutes)
+
+
 // end routes
 
 // views path
