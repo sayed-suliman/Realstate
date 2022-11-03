@@ -15,7 +15,7 @@
     <section class="content">
         <div class="container-fluid">
             <h2 class="text-center display-4">Enhanced Search</h2>
-            <form action="enhanced-results.html">
+            <form action="/dashboard/search/result" method="get">
                 <div class="row">
                     <div class="col-md-10 offset-md-1">
                         <div class="row">
@@ -80,16 +80,13 @@
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
-<script src="../../plugins/jquery/jquery.min.js"></script>
-<!-- Bootstrap 4 -->
-<script src="../../plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+{{!-- jquery --}}
+{{>dashboardfooterlinks}}
+
+
 <!-- Select2 -->
-<script src="../../plugins/select2/js/select2.full.min.js"></script>
-<!-- AdminLTE App -->
-<script src="../../dist/js/adminlte.min.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="../../dist/js/demo.js"></script>
+<script src="../dashboard/plugins/select2/js/select2.full.min.js"></script>
+
 <script>
     $(function () {
       $('.select2').select2()

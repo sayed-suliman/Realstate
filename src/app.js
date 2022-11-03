@@ -45,6 +45,27 @@ app.set("views",viewsPath)
 hbs.registerPartials(partialsPath)
 app.use(express.static(publicPath))
 
+// check for if active page then return active to those page
+hbs.registerHelper("checkActive",(title)=>{
+    if(title == "Dashboard"){
+        return "active"
+    }else if(title == "Dashboard | Table"){
+        return "active"
+    }else if(title == "Dashboard | Calendar"){
+        return "active"
+    }else if(title == "Dashboard | Search"){
+        return "active"
+    }else if(title == "Dashboard | Table"){
+        return "active"
+    }else if(title == "Dashboard | Table"){
+        return "active"
+    }else if(title == "Dashboard | Table"){
+        return "active"
+    }else{
+        return ""
+    }
+})
+
 
 app.listen(port,()=>{
     console.log(`Server is running on port ${port}`)

@@ -1,0 +1,103 @@
+<!-- jQuery -->
+<script src="../dashboard/plugins/jquery/jquery.min.js"></script>
+<!-- Bootstrap -->
+<script src="../dashboard/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+<!-- AdminLTE -->
+<script src="../dashboard/dist/js/adminlte.js"></script>
+
+<!-- OPTIONAL SCRIPTS -->
+<script src="../dashboard/plugins/chart.js/Chart.min.js"></script>
+<!-- AdminLTE for demo purposes -->
+<script src="../dashboard/dist/js/demo.js"></script>
+<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+<script src="../dashboard/dist/js/pages/dashboard3.js"></script>
+<script>
+    $(document).ready(function () {
+        const url = $(location).attr('href')
+        // dashboard
+        if (url.includes("dashboard")) {
+            $("#dashboard-link").addClass("active")
+        }
+        //table
+        if (url.includes("table")) {
+            $("#dashboard-link").removeClass("active")
+            $("#table-link").addClass("active")
+        }
+        //calendar
+        if (url.includes("calendar")) {
+            $("#dashboard-link").removeClass("active")
+            $("#calendar-link").addClass("active")
+        }
+
+        // mailbox=>
+        //read
+        if (url.includes("read")) {
+            $("#dashboard-link").removeClass("active")
+            $('#mailbox-link').addClass("active")
+            $("#read-link").addClass("active")
+        }
+        //inbox
+        if (url.includes("inbox")) {
+            $("#dashboard-link").removeClass("active")
+            $('#mailbox-link').addClass("active")
+            $("#inbox-link").addClass("active")
+        }
+        //compose
+        if (url.includes("compose")) {
+            $("#dashboard-link").removeClass("active")
+            $('#mailbox-link').addClass("active")
+            $("#compose-link").addClass("active")
+        }
+
+        // pages or examples =>
+        //invoice
+        if (url.includes("invoice")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#invoice-link").addClass("active")
+        }
+        //invoice
+        if (url.includes("invoice")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#invoice-link").addClass("active")
+        }
+        //profile
+        if (url.includes("profile")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#profile-link").addClass("active")
+        }
+        //project-add
+        if (url.includes("project-add")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#project-add-link").addClass("active")
+        }
+        //project-detail
+        if (url.includes("project-detail")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#project-detail-link").addClass("active")
+        }
+        //contact
+        if (url.includes("contact")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#contact-link").addClass("active")
+        }
+        //contact-us
+        if (url.includes("contact-us")) {
+            $("#dashboard-link").removeClass("active")
+            $('#page-link').addClass("active")
+            $("#contact-us-link").addClass("active")
+            $("#contact-link").removeClass("active")
+        }
+
+        //search
+        if (url.includes("search")) {
+            $("#dashboard-link").removeClass("active")
+            $('#search-link').addClass("active")
+        }
+    })
+</script>
