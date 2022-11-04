@@ -1,5 +1,17 @@
 const express = require("express")
 const router = new express.Router()
+const {login,postLogin,signUp} = require("../controllers/auth")
+const signUpMiddleware = require("./../middlewares/authValidation")
+
+// login route
+router.get("/login",login)
+router.post('/login',postLogin)
+// sign up post 
+router.post("/register",signUpMiddleware,signUp)
+router.post("/test",(req,res)=>{
+    res.end("Hello")
+})
+
 // main-dashboard
 router.get("/dashboard",(req,res)=>{
     res.render("dashboard/new-dashboard",{title:"Dashboard"})
@@ -69,5 +81,21 @@ router.get("/dashboard/project-add",(req,res)=>{
 router.get("/dashboard/project-detail",(req,res)=>{
     res.render("dashboard/examples/project-detail",{title:"Dashboard | Project Detail"})
 })
+// old-dashboard
+router.get("/old/dashboard",(req,res)=>{
+    res.render("old-dashboard",{title:"Dashboard"})
+})
 
+
+
+
+
+router.get("*",(req,res)=>{
+    res.json({
+        Error:"404 Page not found"
+    })
+})
+
+
+// export all routes
 module.exports = router

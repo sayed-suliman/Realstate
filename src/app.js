@@ -2,35 +2,15 @@ const express = require("express")
 const app = express()
 const hbs = require("hbs")
 const path = require("path")
+// Routes
+const allroutes = require("./routes/routes")
 require("dotenv").config()
 // database connection
 require("./db/conn")
-
 // 
+
 app.use(express.json())
 app.use(express.urlencoded({extended:true})) 
-
-// Routes
-// route of dashboard
-const dashboardRoute = require("./routes/views/dashboard")
-app.use(dashboardRoute)
-// login route
-const loginRoute = require("./routes/views/login")
-app.use(loginRoute)
-
-// Add User
-const addUser = require("./routes/crud/add-user")
-app.use(addUser)
-// Login user
-const loginUser = require("./routes/crud/login-user")
-app.use(loginUser)
-
-// dashbaord routes
-const dashbaordRoutes = require("./routes/views/dashbaord/new-dashbaord")
-app.use(dashbaordRoutes)
-
-
-// end routes
 
 // views path
 const viewsPath = path.join(__dirname,"./../templates/views")
@@ -44,27 +24,7 @@ app.set("view engine","hbs")
 app.set("views",viewsPath)
 hbs.registerPartials(partialsPath)
 app.use(express.static(publicPath))
-
-// check for if active page then return active to those page
-hbs.registerHelper("checkActive",(title)=>{
-    if(title == "Dashboard"){
-        return "active"
-    }else if(title == "Dashboard | Table"){
-        return "active"
-    }else if(title == "Dashboard | Calendar"){
-        return "active"
-    }else if(title == "Dashboard | Search"){
-        return "active"
-    }else if(title == "Dashboard | Table"){
-        return "active"
-    }else if(title == "Dashboard | Table"){
-        return "active"
-    }else if(title == "Dashboard | Table"){
-        return "active"
-    }else{
-        return ""
-    }
-})
+app.use(allroutes)
 
 
 app.listen(port,()=>{

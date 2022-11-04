@@ -1,4 +1,5 @@
 {{>header}}
+
 <body>
     <main class="login-page pt-5 ">
         <div class="container">
@@ -111,6 +112,9 @@
                                         <label for="c_password" class="form-label">Confirm Password</label>
                                         <input required type="password" id="c_password" name="c_password"
                                             class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
+                                        {{#if err.password}}
+                                        <div class="form-text text-danger">{{err.password}}</div>
+                                        {{/if}}
                                     </div>
                                 </div>
                                 <button type="submit"
