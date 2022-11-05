@@ -3,6 +3,15 @@ const router = new express.Router()
 const {login,postLogin,signUp} = require("../controllers/auth")
 const signUpMiddleware = require("./../middlewares/authValidation")
 
+
+// default route
+router.get("/",(req,res)=>{
+    res.redirect("/login")
+})
+
+
+
+
 // login route
 router.get("/login",login)
 router.post('/login',postLogin)
