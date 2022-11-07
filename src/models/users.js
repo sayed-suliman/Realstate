@@ -55,16 +55,22 @@ const userSchema = new mongoose.Schema({
         type: String,
         minlength: [6, "the password should be greater than 6"],
         trim: true
+    },
+    role: {
+        type: String,
+        default: "student"
     }
+}, {
+    timestamps: true
 })
 // find user to login
-userSchema.statics.findByCrediantials = async (email,password)=>{
-    const user = await User.findOne({email})
-    if(!user){
+userSchema.statics.findByCredentials = async (email, password) => {
+    const user = await User.findOne({ email })
+    if (!user) {
         throw new Error("Invalid Credentials")
     }
-    const isMatch = await bcrypt.compare(password,user.password)
-    if(!isMatch){
+    const isMatch = await bcrypt.compare(password, user.password)
+    if (!isMatch) {
         throw new Error("Invalid Credentials")
     }
     return user

@@ -13,8 +13,8 @@
                         <h2 class="fw-bold">Login</h2>
                         <!-- <p class="m-0 mb-3">Already Registered?</p> -->
                         <p class="m-0 mb-3">Login here with your Email and Password</p>
-                        {{#if invalid_crediatials}}
-                        <p class="fs-16 text-danger">Invalid Credentials</p>
+                        {{#if error}}
+                        <p class="fs-16 text-danger">{{error}}</p>
                         {{/if}}
                         <div class="px-3 mb-3">
                             <form action="/login" method="post" id="login-form">

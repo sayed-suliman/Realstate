@@ -68,17 +68,17 @@
             $('#page-link').addClass("active")
             $("#profile-link").addClass("active")
         }
-        //project-add
-        if (url.includes("project-add")) {
+        //add-package
+        if (url.includes("add-package")) {
             $("#dashboard-link").removeClass("active")
-            $('#page-link').addClass("active")
-            $("#project-add-link").addClass("active")
+            $('#package-link').addClass("active")
+            $("#package-add-link").addClass("active")
         }
-        //project-detail
-        if (url.includes("project-detail")) {
+        //package-detail
+        if (url.includes("package-detail")) {
             $("#dashboard-link").removeClass("active")
-            $('#page-link').addClass("active")
-            $("#project-detail-link").addClass("active")
+            $('#package-link').addClass("active")
+            $("#package-detail-link").addClass("active")
         }
         //contact
         if (url.includes("contact")) {
@@ -100,4 +100,17 @@
             $('#search-link').addClass("active")
         }
     })
+    //showing alert(toast)
+    {{#if toast_success }}
+    $('.toast').toast('show')
+    setTimeout(()=>{
+    $('.toast').toast('hide')
+    },5000)
+    {{/if}}
+    {{#if toast_error }}
+    $('.toast').toast('show')
+    setTimeout(()=>{
+    $('.toast').toast('hide')
+    },5000)
+    {{/if}}
 </script>
