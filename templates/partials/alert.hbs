@@ -1,17 +1,21 @@
-<div aria-live="polite" aria-atomic="true" style="position: absolute; top: 70px; right: 1%; min-height: 200px; z-index:">
-    {{#if toast_success}}
-    <div class="toast align-items-center bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true"
-        data-autohide="false">
+{{#if toast}}
+<div aria-live="polite" aria-atomic="true"
+    style="position: absolute; top: 70px; right: 1%; min-height: 200px; z-index:1">
+    <div class="toast align-items-center {{#ifEquals toast.type "success"}} bg-success {{else}} bg-success {{/ifEquals}}
+        border-0" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
         <div class="d-flex">
             <div class="toast-body">
-                {{toast_success}}
+                {{toast.text}}
             </div>
             <button type="button" class="mx-2 close" data-dismiss="toast" aria-label="Close">
                 <span aria-hidden="true">&times;</span></button>
         </div>
     </div>
-    {{/if}}
-    {{#if toast_error}}
+</div>
+{{/if}}
+{{!-- {{#if toast_error}}
+<div aria-live="polite" aria-atomic="true"
+    style="position: absolute; top: 70px; right: 1%; min-height: 200px; z-index:1">
     <div class="toast align-items-center bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true"
         data-autohide="false">
         <div class="d-flex">
@@ -22,5 +26,5 @@
                 <span aria-hidden="true">&times;</span></button>
         </div>
     </div>
-    {{/if}}
 </div>
+{{/if}} --}}
