@@ -1,0 +1,26 @@
+<div aria-live="polite" aria-atomic="true" style="position: absolute; top: 70px; right: 1%; min-height: 200px; z-index:">
+    {{#if toast_success}}
+    <div class="toast align-items-center bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true"
+        data-autohide="false">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{toast_success}}
+            </div>
+            <button type="button" class="mx-2 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+        </div>
+    </div>
+    {{/if}}
+    {{#if toast_error}}
+    <div class="toast align-items-center bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true"
+        data-autohide="false">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{toast_error}}
+            </div>
+            <button type="button" class="mx-2 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span></button>
+        </div>
+    </div>
+    {{/if}}
+</div>
