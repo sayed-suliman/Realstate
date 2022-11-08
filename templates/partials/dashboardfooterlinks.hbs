@@ -113,16 +113,16 @@
         }
     })
     //showing alert(toast)
-    {{#if toast_success }}
+    {{#if toast }}
     $('.toast').toast('show')
     setTimeout(()=>{
-    $('.toast').toast('hide')
+    $('.toast').toast('dispose')
     },5000)
     {{/if}}
     {{#if toast_error }}
     $('.toast').toast('show')
     setTimeout(()=>{
-    $('.toast').toast('hide')
+    $('.toast').toast('dispose')
     },5000)
     {{/if}}
 </script>

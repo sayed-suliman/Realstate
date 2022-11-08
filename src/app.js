@@ -23,9 +23,9 @@ app.use(cookieParser(process.env.SECRET))
 // session Initialized
 app.use(expressSession({
     secret: process.env.SECRET,
-    resave:true,
+    resave: true,
     saveUninitialized: false,
-    maxAge:60*1000,
+    maxAge: 60 * 1000,
     store: new MongoStore({
         mongoUrl: process.env.DB_URI
     })
@@ -37,13 +37,11 @@ app.use(passport.session())
 
 // flash initialized
 app.use(flash())
-app.use((req,res,next)=>{   
-    
-    res.locals.success= req.flash('success')
+app.use((req, res, next) => {
+    res.locals.success = req.flash('success')
     res.locals.toast_success = req.flash('alert_success')
     res.locals.toast_error = req.flash('alert_error')
     res.locals.error = req.flash('error')
-    res.locals.session = req.expressSession
     next()
 })
 
@@ -59,6 +57,14 @@ app.set("view engine", "hbs")
 app.set("views", viewsPath)
 hbs.registerPartials(partialsPath)
 app.use(express.static(publicPath))
+
+hbs.registerHelper('ifEquals', function (arg1, arg2, block) {
+    if (arg1 == arg2) {
+        return block.fn(this)
+    }
+    return block.inverse(this);
+});
+
 app.use(allRoutes)
 
 

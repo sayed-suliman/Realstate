@@ -4,8 +4,9 @@ const { login, postLogin, signUp } = require("../controllers/auth")
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const package = require("../controllers/package")
 const {course,addcourse,courseDetails} = require("../controllers/courses")
+const { package, addPackage } = require("../controllers/package")
+const { decodeMsg } = require("../helper/createMsg")
 
 
 // default route
@@ -36,7 +37,13 @@ router.use('/dashboard', authenticated)
 
 // main-dashboard
 router.get("/dashboard", (req, res) => {
-    res.render("dashboard/new-dashboard", { title: "Dashboard" })
+    var msgToken = req.query.msg;
+    var option = {}
+    if (msgToken) {
+        var msg = decodeMsg(msgToken)
+        option = msg
+    }
+    res.render("dashboard/new-dashboard", { title: "Dashboard", toast: Object.keys(option).length == 0 ? undefined : option })
 })
 // table
 router.get("/dashboard/table", (req, res) => {
@@ -95,11 +102,10 @@ router.get("/dashboard/language-menu", (req, res) => {
 router.get("/dashboard/profile", (req, res) => {
     res.render("dashboard/examples/profile", { title: "Dashboard | Profile" })
 })
-// package-add
-router.get("/dashboard/add-package", (req, res) => {
-    res.render("dashboard/examples/add-package", { title: "Dashboard | Add Package" })
-})
-router.post('/add-package', package)
+// package
+router.get("/dashboard/add-package", package)
+router.post('/dashboard/add-package', addPackage)
+
 // package-detail
 router.get("/dashboard/package-detail", (req, res) => {
     res.render("dashboard/examples/package-detail", { title: "Dashboard | Package Detail" })
