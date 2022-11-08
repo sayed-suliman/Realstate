@@ -5,6 +5,7 @@ const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const package = require("../controllers/package")
+const {course,addcourse,courseDetails} = require("../controllers/courses")
 
 
 // default route
@@ -35,8 +36,7 @@ router.use('/dashboard', authenticated)
 
 // main-dashboard
 router.get("/dashboard", (req, res) => {
-    res.locals.toast_success = "asdfa"
-    res.render("dashboard/new-dashboard", { title: "Dashboard", })
+    res.render("dashboard/new-dashboard", { title: "Dashboard" })
 })
 // table
 router.get("/dashboard/table", (req, res) => {
@@ -104,6 +104,16 @@ router.post('/add-package', package)
 router.get("/dashboard/package-detail", (req, res) => {
     res.render("dashboard/examples/package-detail", { title: "Dashboard | Package Detail" })
 })
+
+// course-add
+router.post("/dashboard/add-course",addcourse)
+// add course
+// render of course add
+router.get("/dashboard/add-course",course)
+
+// course-detail
+router.get("/dashboard/course-detail", courseDetails)
+
 // old-dashboard
 router.get("/old/dashboard", (req, res) => {
     res.render("old-dashboard", { title: "Dashboard" })

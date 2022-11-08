@@ -80,6 +80,18 @@
             $('#package-link').addClass("active")
             $("#package-detail-link").addClass("active")
         }
+        //add-course
+        if (url.includes("add-course")) {
+            $("#dashboard-link").removeClass("active")
+            $('#course-link').addClass("active")
+            $("#course-add-link").addClass("active")
+        }
+         //course-detail
+        if (url.includes("course-detail")) {
+            $("#dashboard-link").removeClass("active")
+            $('#course-link').addClass("active")
+            $("#course-detail-link").addClass("active")
+        }
         //contact
         if (url.includes("contact")) {
             $("#dashboard-link").removeClass("active")
