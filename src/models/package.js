@@ -5,5 +5,7 @@ const packageSchema = new mongoose.Schema({
     description: String,
     status: String,
     price: Number
+},{
+    timestamps:true
 })
 module.exports = mongoose.model('Package', packageSchema)
