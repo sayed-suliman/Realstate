@@ -5,7 +5,7 @@ const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const {course,addcourse,courseDetails} = require("../controllers/courses")
-const { package, addPackage } = require("../controllers/package")
+const { package, addPackage, packagesDetail } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 
 
@@ -105,11 +105,8 @@ router.get("/dashboard/profile", (req, res) => {
 // package
 router.get("/dashboard/add-package", package)
 router.post('/dashboard/add-package', addPackage)
-
-// package-detail
-router.get("/dashboard/package-detail", (req, res) => {
-    res.render("dashboard/examples/package-detail", { title: "Dashboard | Package Detail" })
-})
+router.get("/dashboard/edit-package/:id", package)
+router.get("/dashboard/package-detail", packagesDetail)
 
 // course-add
 router.post("/dashboard/add-course",addcourse)
