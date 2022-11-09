@@ -58,7 +58,7 @@ router.get("/dashboard/search", (req, res) => {
     res.render("dashboard/search", { title: "Dashboard | Search" })
 })
 // search-result
-router.get("/dashboard/search/result", (req, res) => {
+router.get("/dashboard/searchResult", (req, res) => {
     res.render("dashboard/search-result", { title: "Dashboard | Search Result" })
 })
 
