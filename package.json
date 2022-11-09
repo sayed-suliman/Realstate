@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon ./src/app.js -e js,hbs,css"
+    "dev": "nodemon app.js -e js,hbs,css",
+    "start": "node app.js"
   },
   "author": "CreatechIt Team",
   "license": "ISC",
