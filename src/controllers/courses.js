@@ -49,12 +49,6 @@ const addcourse = async (req, res) => {
 const courseDetails = async (req, res) => {
     try {
         const allCourses = await CourseModel.find().populate('package')
-        // allCourses.forEach(async elm =>{
-        //     await elm.populate('package','name')
-        //     console.log(elm)
-        // })
-        // await allCourses.populate('package')
-        console.log("my all Courses",allCourses)
         res.render("dashboard/examples/course-detail", { title: "Dashboard | Course Detail", allCourses })
     } catch (e) {
         res.status(403).json({
