@@ -4,9 +4,10 @@ const { login, postLogin, signUp } = require("../controllers/auth")
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const {course,addcourse,courseDetails} = require("../controllers/courses")
+const { course, addcourse, courseDetails } = require("../controllers/courses")
 const { package, addPackage, packagesDetail } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
+const { checkout, doCheckout } = require("../controllers/checkout")
 
 
 // default route
@@ -30,6 +31,10 @@ router.get("/logout", (req, res) => {
 })
 // sign up post 
 router.post("/register", signUpMiddleware, signUp)
+
+
+router.get('/checkout', checkout)
+router.get('/checkout2', doCheckout)
 
 
 // middleware for all dashboard route
@@ -116,10 +121,10 @@ router.get("/dashboard/edit-package/:id", package)
 router.get("/dashboard/package-detail", packagesDetail)
 
 // course-add
-router.post("/dashboard/add-course",addcourse)
+router.post("/dashboard/add-course", addcourse)
 // add course
 // render of course add
-router.get("/dashboard/add-course",course)
+router.get("/dashboard/add-course", course)
 
 // course-detail
 router.get("/dashboard/course-detail", courseDetails)
