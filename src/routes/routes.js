@@ -45,6 +45,13 @@ router.get("/dashboard", (req, res) => {
     }
     res.render("dashboard/new-dashboard", { title: "Dashboard", toast: Object.keys(option).length == 0 ? undefined : option })
 })
+
+// verificaiton route
+router.get("/verification",(req,res)=>{
+    res.render('verification')
+})
+
+
 // table
 router.get("/dashboard/table", (req, res) => {
     res.render("dashboard/table", { title: "Dashboard | Table" })

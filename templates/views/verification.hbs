@@ -1,0 +1,120 @@
+{{>header}}
+
+<body>
+    <main class="login-page pt-5 ">
+        <div class="container">
+            <div class="row">
+                <!-- login -->
+                <div class="col-xxl-4 col-lg-5 text-center login">
+                    <div class="card">
+                        <div class="bg-primary w-100 login-image-div">
+                            <img src="./images/login/login-icon.png" class="img-fluid" alt="">
+                        </div>
+                        <h2 class="fw-bold">Login</h2>
+                        <!-- <p class="m-0 mb-3">Already Registered?</p> -->
+                        <p class="m-0 mb-3">Login here with your Email and Password</p>
+                        {{#if error}}
+                        <p class="fs-16 text-danger">{{error}}</p>
+                        {{/if}}
+                        <div class="px-3 mb-3">
+                            <form action="/login" method="post" id="login-form">
+                                <input type="email" class="form-control shadow-none mb-3" required name="email"
+                                    placeholder="Email">
+                                <input type="password" required class="form-control shadow-none mb-3" name="password"
+                                    placeholder="Password">
+                                <button type="submit"
+                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
+                            </form>
+                        </div>
+                        <span>
+                            <a href="#" class="link-primary">Forgot Password?</a>
+                        </span>
+                    </div>
+                </div>
+                <!-- Register -->
+                <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
+                    <div class="card pt-5 bg-primary text-white">
+                        <div class="row">
+                            <h3>Verify account</h3>
+                            <div class="my-3">
+                                <img width="200" src="/images/icons/email-verification-icon.png" class="img-fluid"
+                                    alt="">
+                            </div>
+                            <div>
+                                <p class="mx-auto w-50 fs-18">We have just send you 4 digit code via your email. Please
+                                    check your email</p>
+                            </div>
+                            {{!-- form --}}
+                            <div class="bg-white w-50 mx-auto py-5  rounded-8">
+                                <form action="#"></form>
+                                <div class="row justify-content-center mb-3 gx-1">
+                                    <div class="" style="width:40px">
+                                        <input type="number" required id="val1" name="val1" max="9" min="0"
+                                            class="form-control verify-input border-0 shadow-none p-2">
+                                    </div>
+                                    <div class="" style="width:40px">
+                                        <input type="number" required id="val2" name="val2" max="9" min="0"
+                                            class="form-control verify-input border-0 shadow-none p-2">
+                                    </div>
+                                    <div class="" style="width:40px">
+                                        <input type="number" required id="val3" name="val3" max="9" min="0"
+                                            class="form-control verify-input border-0 shadow-none p-2">
+                                    </div>
+                                    <div class="" style="width:40px">
+                                        <input type="number" required maxlength="1" id="val4" name="val4" max="9" min="0"
+                                            class="form-control verify-input border-0 shadow-none p-2">
+                                    </div>
+                                </div>
+                                <div>
+                                    <button class="btn btn-success px-3 py-2" type="submit">Verify!</button>
+                                </div>
+                                </form>
+                            </div>
+                            {{!-- endform --}}
+                            {{!-- didn't recieve --}}
+                            <p class="fs-18 mt-3">Didn't recieve code?<br><a href="/" class="resend-code">Re-Send
+                                    Code!</a></p>
+                        </div>
+                        {{!-- <div class="bg-primary w-100 login-image-div">
+                            <img src="./images/login/register-icon.png" class="img-fluid" alt="">
+                        </div>
+                        <h2 class="fw-bold">Register</h2>
+                        <!-- <p class="m-0 mb-3">New Here?</p> -->
+                        <p class="m-0 mb-3">Register here with your information</p>
+                        <div class="px-3 mb-3">
+                            <form action="/register" method="post">
+
+                                <button type="submit"
+                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
+                                    Now</button>
+                            </form>
+                        </div> --}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    {{!--for form validaitons --}}
+    <script src="./js/form-validations.js"></script>
+    {{!-- verification form --}}
+    <script>
+        $(document).ready(function () {
+            var val1 = $('#val1').val()
+            //var val2 = $('#val2').val()
+            ///var val3 = $('#val3').val()
+            //var val4 = $('#val4').val()
+            $('#val1').keyup(function () {
+               // if(val >= 0){
+                $('#val2').focus()
+             //   }
+            })
+            $('#val2').keyup(function () {
+                $('#val3').focus()
+            })
+            $('#val3').keyup(function () {
+                $('#val4').focus()
+            })
+        })
+
+    </script>
+    {{>footer}}

@@ -40,8 +40,10 @@
 .fs-28{
     font-size: 28px!important;
 }
-
-
+/* border-radius */
+.rounded-8{
+    border-radius: 8px;
+}
 
 
 
@@ -194,6 +196,26 @@ dashboard
     margin-left: 1px;
     vertical-align: middle;
 }
+
+/* **********************************
+
+verification page
+
+ ***************************************************************** */
+ .resend-code{
+    color: var(--border-blue);
+    text-decoration: none;
+    transition: all 0.2s;
+ }
+ .resend-code:hover{
+    color: var(--btn-primary);
+ }
+ .verify-input{
+    text-align: center;
+    border-radius: 0;
+    color: var(--btn-primary)!important;
+    border-bottom: 1px solid var(--btn-primary)!important;
+ }
 
 
 /* 
