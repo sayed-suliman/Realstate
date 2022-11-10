@@ -1,33 +1,41 @@
 {{>header}}
+
 <body>
     <main class="login-page pt-5 ">
         <div class="container">
             <div class="row">
-                <!-- login -->
+                <!-- Package Detail -->
                 <div class="col-xxl-4 col-lg-5 text-center login">
                     <div class="card">
                         <div class="bg-primary w-100 login-image-div">
-                            <img src="./images/login/login-icon.png" class="img-fluid" alt="">
+                            <h3 class="text-white" style="margin-top: -5px;">Order Summary</h3>
                         </div>
-                        <h2 class="fw-bold">Login</h2>
-                        <!-- <p class="m-0 mb-3">Already Registered?</p> -->
-                        <p class="m-0 mb-3">Login here with your Email and Password</p>
-                        {{#if error}}
-                        <p class="fs-16 text-danger">{{error}}</p>
-                        {{/if}}
-                        <div class="px-3 mb-3">
-                            <form action="/login" method="post" id="login-form">
-                                <input type="email" class="form-control shadow-none mb-3" required name="email"
-                                    placeholder="Email">
-                                <input type="password" required class="form-control shadow-none mb-3" name="password"
-                                    placeholder="Password">
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
-                            </form>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-start">Package</th>
+                                        <th class="text-end">{{package.name}}</th>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Package Subtotal</td>
+                                        <td class="text-end">${{package.price}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Order Discounts</td>
+                                        <td class="text-danger text-end">-$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Taxes</td>
+                                        <td class="text-end">{{package.tax}}%</td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <th scope="row" class="text-start">Estimated Total</th>
+                                        <th class="text-end">${{package.total}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <span>
-                            <a href="#" class="link-primary">Forgot Password?</a>
-                        </span>
                     </div>
                 </div>
                 <!-- Register -->
@@ -42,6 +50,7 @@
                         <div class="px-3 mb-3">
                             <form action="/register" method="post">
                                 <div class="row text-start">
+                                    <input required type="hidden" name="total" value="{{package.total}}">
                                     <div class="col-md-6 mb-3">
                                         <label for="f-n" class="form-label">First Name</label>
                                         <input required type="text" id="f-n" class="form-control shadow-none"
@@ -51,14 +60,6 @@
                                         <label for="l-n" class="form-label">Last Name</label>
                                         <input required type="text" id="l-n" class="form-control shadow-none"
                                             name="last_name" placeholder="Last Name">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="p-i" class="form-label">Personal Id</label>
-                                        <input required type="text" id="p-i" class="form-control shadow-none"
-                                            name="personal_id" placeholder="Your Personal Id" aria-describedby="">
-                                        {{#if err}}
-                                        <div id="pi" class="form-text text-danger">{{err.personal_id}}</div>
-                                        {{/if}}
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="email" class="form-label">Email</label>
@@ -92,6 +93,14 @@
                                         <label for="z-c" class="form-label">Zip Code</label>
                                         <input required id="z-c" type="number" class="form-control shadow-none"
                                             name="zip_code" placeholder="Zip Code">
+                                    </div>
+                                    <div class="col-md-6 mb-3">
+                                        <label for="p-i" class="form-label">Personal Id</label>
+                                        <input required type="text" id="p-i" class="form-control shadow-none"
+                                            name="personal_id" placeholder="Your Personal Id">
+                                        {{#if err}}
+                                        <div id="pi" class="form-text text-danger">{{err.personal_id}}</div>
+                                        {{/if}}
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="dob" class="form-label">Date of Birth</label>
