@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema({
     role: {
         type: String,
         default: "student"
+    },
+    verify: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -8,6 +8,7 @@ const { course, addcourse, courseDetails } = require("../controllers/courses")
 const { package, addPackage, packagesDetail } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
+const { verification } = require("../controllers/verification")
 
 
 // default route
@@ -51,10 +52,8 @@ router.get("/dashboard", (req, res) => {
     res.render("dashboard/new-dashboard", { title: "Dashboard", toast: Object.keys(option).length == 0 ? undefined : option })
 })
 
-// verificaiton route
-router.get("/verification",(req,res)=>{
-    res.render('verification')
-})
+// verification route
+router.get("/verification",verification)
 
 
 // table

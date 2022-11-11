@@ -8,7 +8,6 @@ var transport = nodemailer.createTransport({
         pass: process.env.emailPass
     }
 })
-console.log(process.env.email)
 module.exports = {
     async sendVerificationCode(email, code) {
         var send = await transport.sendMail({
