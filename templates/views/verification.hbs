@@ -55,33 +55,24 @@
                             </div>
                             {{!-- form --}}
                             <div class="bg-white w-50 mx-auto py-5  rounded-8">
-                                <form action="#"></form>
-                                <div class="row justify-content-center mb-3 gx-1">
-                                    <div class="" style="width:40px">
-                                        <input type="number" required id="val1" name="val1" max="9" min="0"
-                                            class="form-control verify-input border-0 shadow-none p-2">
-                                    </div>
-                                    <div class="" style="width:40px">
-                                        <input type="number" required id="val2" name="val2" max="9" min="0"
-                                            class="form-control verify-input border-0 shadow-none p-2">
-                                    </div>
-                                    <div class="" style="width:40px">
-                                        <input type="number" required id="val3" name="val3" max="9" min="0"
-                                            class="form-control verify-input border-0 shadow-none p-2">
-                                    </div>
-                                    <div class="" style="width:40px">
-                                        <input type="number" required maxlength="1" id="val4" name="val4" max="9"
-                                            min="0" class="form-control verify-input border-0 shadow-none p-2">
-                                    </div>
+                                <form action="/verifying" method="post" id="verification_form">
+                                <div class="row justify-content-center mb-3">
+                                    <input type="number" required id="val1" name="val1" max="9" min="0"
+                                        class="form-control verify-input border-0 shadow-none p-2">
+                                    <input type="number" required id="val2" name="val2" max="9" min="0"
+                                        class="form-control verify-input border-0 shadow-none p-2">
+                                    <input type="number" required id="val3" name="val3" max="9" min="0"
+                                        class="form-control verify-input border-0 shadow-none p-2">
+                                    <input type="number" required id="val4" name="val4" max="9" min="0"
+                                        class="form-control verify-input border-0 shadow-none p-2">
                                 </div>
-                                <div>
                                     <button class="btn btn-success px-3 py-2" type="submit">Verify!</button>
-                                </div>
                                 </form>
                             </div>
                             {{!-- endform --}}
                             {{!-- didn't recieve --}}
-                            <p class="fs-18 mt-3" style="font-weight: 300;">Didn't receive code?<br><a href="/" class="resend-code">Resend
+                            <p class="fs-18 mt-3" style="font-weight: 300;">Didn't receive code?<br><a href="#"
+                                    class="resend-code">Resend
                                     Code!</a></p>
                         </div>
                     </div>
@@ -92,24 +83,58 @@
     {{!--for form validaitons --}}
     <script src="./js/form-validations.js"></script>
     {{!-- verification form --}}
-    <script>
-        $(document).ready(function () {
-            var val1 = $('#val1').val()
-            //var val2 = $('#val2').val()
-            ///var val3 = $('#val3').val()
-            //var val4 = $('#val4').val()
-            $('#val1').keyup(function () {
-                // if(val >= 0){
-                $('#val2').focus()
-                //   }
-            })
-            $('#val2').keyup(function () {
-                $('#val3').focus()
-            })
-            $('#val3').keyup(function () {
-                $('#val4').focus()
-            })
+   <script>
+
+        const inputs = document.querySelectorAll(".verify-input")
+        inputs.forEach((input,index)=>{
+            input.dataset.index = index
+            input.addEventListener("keyup",handleOtp)
+            input.addEventListener('paste',handleOnPasteOtp)
         })
 
-    </script>
+        //handle otp
+
+        function handleOtp(e){
+            const input = e.target
+            let value = input.value
+            input.value = ""
+            input.value = value ? value[0] : ""
+            let fieldIndex = input.dataset.index
+            if(value.length > 0 && fieldIndex < inputs.length - 1 ){
+                input.nextElementSibling.focus()
+            }
+            if(e.key == "Backspace" && fieldIndex > 0){
+                input.previousElementSibling.focus()
+            }
+        }
+
+        // if otp is paste
+
+        function handleOnPasteOtp(e){
+            const data = e.clipboardData.getData('text')
+            const value = data.split("")
+            if(value.length === inputs.length){
+                inputs.forEach((input,index)=>(input.value = value[index]))
+            }
+        }
+/*
+//jquery to send next
+ $(document).ready(function(){
+            $('.verify-input').keyup(function(e){
+                const input = e.target
+                let value = input.value
+                //input.value = ""
+                input.value = value ? value[0] : ""
+                if(value.length >= 1){
+                   $(input).next().focus()
+                }
+                if(e.key == "Backspace"){
+                    if(value.length < 1){
+                        $(input).prev().focus()
+                    }
+                }
+            })
+        })
+*/
+   </script>
     {{>footer}}

@@ -54,6 +54,11 @@ router.get("/dashboard", (req, res) => {
 
 // verification route
 router.get("/verification",verification)
+router.post('/verifying',(req,res)=>{
+    let values  = '9122'
+    console.log(req.body)
+    res.render("verification")
+})
 
 
 // table
