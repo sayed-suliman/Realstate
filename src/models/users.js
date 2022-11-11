@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
     verify: {
         type: Boolean,
         default: false
+    },
+    package:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Package"
     }
 }, {
     timestamps: true

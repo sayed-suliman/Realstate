@@ -15,11 +15,11 @@
                                 <tbody>
                                     <tr>
                                         <th scope="row" class="text-start">Package</th>
-                                        <th class="text-end">{{package.name}}</th>
+                                        <th class="text-end">{{user.package.name}}</th>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Package Subtotal</td>
-                                        <td class="text-end">${{package.price}}</td>
+                                        <td class="text-end">${{user.package.price}}</td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Order Discounts</td>
@@ -27,11 +27,11 @@
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">{{package.tax}}%</td>
+                                        <td class="text-end">{{user.package.tax}}%</td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">${{package.total}}</th>
+                                        <th class="text-end">${{user.total}}</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -51,12 +51,13 @@
                                 <p class="mx-auto w-50 fs-18" style="font-weight: 300;">We have send 4 digits code via
                                     your email. Please
                                     check your email. The code will be expired in <b class="text-danger">10 minutes</b>.<br><span
-                                        style="color: var(--btn-primary);">{{email}}</span></p>
+                                        style="color: var(--btn-primary);">{{user.email}}</span></p>
                             </div>
                             {{!-- form --}}
                             <div class="bg-white w-50 mx-auto py-5  rounded-8">
                                 <form action="/verifying" method="post" id="verification_form">
                                     <div class="row justify-content-center mb-3">
+                                        <input type="hidden" value="{{user._id}}" name="userID">
                                         <input type="number" required id="val1" name="val1" max="9" min="0"
                                             class="form-control verify-input border-0 shadow-none p-2">
                                         <input type="number" required id="val2" name="val2" max="9" min="0"
@@ -70,12 +71,15 @@
                                     {{#if sent}}
                                         <p class="mb-0 mt-3 text-success fs-16">Verification code sent successfully.</p>
                                     {{/if}}
+                                    {{#if err}}
+                                        <p class="mb-0 mt-3 text-danger fs-16">{{err}}</p>
+                                    {{/if}}
                                 </form>
                             </div>
                             {{!-- endform --}}
                             {{!-- didn't recieve --}}
                             <p class="fs-18 mt-3" style="font-weight: 300;">Didn't receive code?<br><a
-                                    href="/resend?email={{email}}&package={{package._id}}" class=" resend-code">Resend
+                                    href="/resend?email={{user.email}}" class=" resend-code">Resend
                                     Code!</a></p>
                         </div>
                     </div>

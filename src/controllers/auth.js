@@ -35,6 +35,7 @@ const signUp = async (req, res) => {
                 package
             })
         } else {
+            console.log(data)
             const otpCode = generateCode();
             const user = await User(data).save()
             await OTP({
@@ -43,11 +44,12 @@ const signUp = async (req, res) => {
             }).save();
             sendVerificationCode(data.email, otpCode)
             if (user) {
+                console.log('user created')
+                console.log(user._id)
                 return res.redirect(url.format({
                     pathname: '/verification',
                     query: {
-                        "package": package._id.toString(),
-                        "user": data.email
+                        "user": user._id.toString()
                     }
                 }))
             }
