@@ -8,30 +8,15 @@ const { course, addcourse, courseDetails } = require("../controllers/courses")
 const { package, addPackage, packagesDetail } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
-const { verification } = require("../controllers/verification")
+const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
-const mailSent = require("./../controllers/mailServices")
+const { payment } = require("../controllers/payment")
+
 
 // default route
 router.get("/", (req, res) => {
     res.redirect("/login")
 })
-
-// test send email route
-// router.get("/testEmail", async (req, res) => {
-//     try {
-//         const emaildata = await req.body
-//         console.log(emaildata)
-//         await mailSent.sendVerificationCode(emaildata.email, emaildata.code)
-//         res.send({
-//             response:"Email sent successfullly"
-//         })
-//     } catch (e) {
-//         res.status(404).send({
-//             error: e
-//         })
-//     }
-// })
 
 
 // login route
@@ -45,11 +30,12 @@ router.get("/logout", (req, res) => {
         res.redirect('/');
     })
 })
-// sign up post 
-router.post("/checkout", signUpMiddleware, signUp)
+// checkout post 
 
 
 router.get('/checkout', checkout)
+// sign up used because their is registration on checkout
+router.post("/checkout", signUpMiddleware, signUp)
 router.get('/checkout2', doCheckout)
 
 
@@ -69,8 +55,10 @@ router.get("/dashboard", (req, res) => {
 
 // verification route
 router.get("/verification", verification)
+router.post("/verifying", doVerification)
 router.get('/resend', resendCode)
 
+router.get('/payment', payment)
 
 // table
 router.get("/dashboard/table", (req, res) => {

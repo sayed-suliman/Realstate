@@ -1,6 +1,6 @@
 const Package = require("../models/package");
 const {generateCode} = require('../helper/genCode');
-const { sendCode } = require("./mailServices");
+const { sendVerificationCode } = require("./mailServices");
 
 module.exports = {
     async checkout(req, res) {

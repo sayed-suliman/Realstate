@@ -1,18 +1,53 @@
-const Package = require("../models/package");
+const OTP = require("../models/otp");
+const User = require("../models/users");
+const url = require('url')
 
 module.exports = {
     async verification(req, res) {
-        var { package: packageID, user } = req.query;
-        console.log(packageID, user)
-        if (packageID && user) {
-            const package = await Package.findById(packageID);
-            var { price, tax } = package;
-            package.total = price * ((100 + tax) / 100)//total price with tax
+        try {
+            var { user: userID } = req.query;
+            console.log("UserId", userID)
+            if (userID) {
+                const user = await User.findById(userID).populate('package');
+                if (user) {
+                    var { price, tax } = user.package;
+                    user.total = price * ((100 + tax) / 100)//total price with tax
+
+                    return res.render('verification', {
+                        title: "Verification",
+                        user
+                    })
+                }
+            }
+            return res.redirect('/')
+        } catch (error) {
+            console.log(error.message)
+            return res.redirect('/')
+        }
+    },
+    async doVerification(req, res) {
+        const { val1, val2, val3, val4, userID } = req.body;
+        const code = val1 + val2 + val3 + val4
+        const otp = await OTP.findOne({ otp: code });
+        if (!otp) {
+            const user = await User.findById(userID).populate('package');
+            var { price, tax } = user.package;
+
+            user.total = price * ((100 + tax) / 100)//total price with tax
+
             return res.render('verification', {
                 title: "Verification",
-                package, email: user
+                user, err: "OTP incorrect or expired."
             })
         }
-        return res.redirect('/')
+        const user = await User.findByIdAndUpdate(userID, { verify: true })
+        await otp.deleteOne();
+        console.log(user)
+        res.redirect(url.format({
+            pathname: '/payment',
+            query: {
+                user: user._id.toString()
+            }
+        }))
     }
 }
