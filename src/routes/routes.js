@@ -9,6 +9,7 @@ const { package, addPackage, packagesDetail } = require("../controllers/package"
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification } = require("../controllers/verification")
+const { resendCode } = require("../controllers/resendCode")
 
 
 // default route
@@ -31,7 +32,7 @@ router.get("/logout", (req, res) => {
     })
 })
 // sign up post 
-router.post("/register", signUpMiddleware, signUp)
+router.post("/checkout", signUpMiddleware, signUp)
 
 
 router.get('/checkout', checkout)
@@ -53,12 +54,8 @@ router.get("/dashboard", (req, res) => {
 })
 
 // verification route
-router.get("/verification",verification)
-router.post('/verifying',(req,res)=>{
-    let values  = '9122'
-    console.log(req.body)
-    res.render("verification")
-})
+router.get("/verification", verification)
+router.get('/resend', resendCode)
 
 
 // table
