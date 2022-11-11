@@ -1,47 +1,58 @@
 /* poppins sanserif */
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
-:root{
+:root {
     /* colors */
-    --primary-color:#315181;
-    --primary-blue:#0f7ebe;
-    --border-blue:#51b9ff;
-    --light-white:#f2f2f2;
-    --btn-primary:#edc36f;
-    --color-white:#fff;
-    --color-black:#000;
+    --primary-color: #315181;
+    --primary-blue: #0f7ebe;
+    --border-blue: #51b9ff;
+    --light-white: #f2f2f2;
+    --btn-primary: #edc36f;
+    --color-white: #fff;
+    --color-black: #000;
+    --color-green: #00a912;
 
 }
+
 /* font sizes */
-.fs-12{
-    font-size: 12px!important;
+.fs-12 {
+    font-size: 12px !important;
 }
-.fs-14{
-    font-size: 14px!important;
+
+.fs-14 {
+    font-size: 14px !important;
 }
-.fs-16{
-    font-size: 16px!important;
+
+.fs-16 {
+    font-size: 16px !important;
 }
-.fs-18{
-    font-size: 18px!important;
+
+.fs-18 {
+    font-size: 18px !important;
 }
-.fs-20{
-    font-size: 20px!important;
+
+.fs-20 {
+    font-size: 20px !important;
 }
-.fs-22{
-    font-size: 22px!important;
+
+.fs-22 {
+    font-size: 22px !important;
 }
-.fs-24{
-    font-size: 24px!important;
+
+.fs-24 {
+    font-size: 24px !important;
 }
-.fs-26{
-    font-size: 26px!important;
+
+.fs-26 {
+    font-size: 26px !important;
 }
-.fs-28{
-    font-size: 28px!important;
+
+.fs-28 {
+    font-size: 28px !important;
 }
+
 /* border-radius */
-.rounded-8{
+.rounded-8 {
     border-radius: 8px;
 }
 
@@ -60,19 +71,23 @@
 
 
 /* borders for testing */
-.red{
+.red {
     border: 1px solid red;
 }
-.black{
+
+.black {
     border: 1px solid black;
 }
-.blue{
+
+.blue {
     border: 1px solid blue;
 }
-.yellow{
+
+.yellow {
     border: 1px solid yellow;
 }
-.green{
+
+.green {
     border: 1px solid green;
 }
 
@@ -82,41 +97,57 @@
 /* setting bootstrap background color */
 
 
-.bg-primary{
-    background: var(--primary-color)!important;
+.bg-primary {
+    background: var(--primary-color) !important;
 }
-.bg-white{
-    background: var(--color-white)!important;
+
+.bg-white {
+    background: var(--color-white) !important;
 }
+
 /* primary-btn */
-.btn-primary{
+.btn-primary {
     background: var(--btn-primary);
     white-space: nowrap;
 }
-.btn-primary:hover{
+
+.btn-primary:hover {
     background: var(--primary-color);
 }
+
+.btn-verify {
+    background-color: #00a912;
+    border-color: #00a912;
+}
+.btn-verify:hover{
+    background-color: #157347;
+    border-color: #157347;
+}
+
 /* anchor tags */
-.link-primary{
-    color: var(--primary-color)!important;
+.link-primary {
+    color: var(--primary-color) !important;
     text-decoration: none;
 }
-.link-primary:hover{
-    color: var(--btn-primary)!important;
+
+.link-primary:hover {
+    color: var(--btn-primary) !important;
 }
+
 /* table */
-.table-primary{
-    --bs-table-bg:var(--primary-blue);
+.table-primary {
+    --bs-table-bg: var(--primary-blue);
 }
-table th{
+
+table th {
     white-space: nowrap;
 }
 
 /* for whole website */
 /* bodyy */
-body{
-   background: var(--light-white);
-   font-family: 'Poppins', sans-serif;
+body {
+    background: var(--light-white);
+    font-family: 'Poppins', sans-serif;
 }
 
 
@@ -125,12 +156,14 @@ body{
 hero section in all pages
 
  *** */
- .hero-section{
-     background: url("./../images/hero-image/hero-1.jpg")center rgba(0,0,0,0.55);;
-     background-size: cover;
-     background-blend-mode: overlay;
- }
-.hero-section .container{
+.hero-section {
+    background: url("./../images/hero-image/hero-1.jpg")center rgba(0, 0, 0, 0.55);
+    ;
+    background-size: cover;
+    background-blend-mode: overlay;
+}
+
+.hero-section .container {
     height: 400px;
     /* background-color: rgba(0,0,0,0.55); */
 }
@@ -142,55 +175,64 @@ hero section in all pages
 **********************
 */
 .login-page input::-webkit-outer-spin-button,
-.login-page input::-webkit-inner-spin-button
-{
+.login-page input::-webkit-inner-spin-button {
     -webkit-appearance: none;
     margin: 0;
 }
-.login-page .card{
+
+.login-page .card {
     border: none;
     height: fit-content;
     padding: 0;
     border-radius: 8px;
-    box-shadow: 0 0 6px -3px rgba(0,0,0,0.55);
+    box-shadow: 0 0 6px -3px rgba(0, 0, 0, 0.55);
     padding-bottom: 32px;
 }
-.login-page .card label::after{
+
+.login-page .card label::after {
     content: " *";
-     color: red; 
+    color: red;
 }
-.login-page .login-image-div{
-    height:110px;
+
+.login-page .login-image-div {
+    height: 110px;
     padding-top: 50px;
     border-radius: 8px 8px 0 0;
 }
-.login-page p{
+
+.login-page p {
     font-size: 20px;
     padding: 0 20px;
 }
-.login-page h2{
+
+.login-page h2 {
     margin-top: 80px;
 }
+
 /* 
 
 dashboard
 
 */
-.dashboard .nav-link{
+.dashboard .nav-link {
     color: var(--color-black);
 }
-.dashboard .nav-tabs .nav-item.show .nav-link, .nav-tabs .nav-link.active{
+
+.dashboard .nav-tabs .nav-item.show .nav-link,
+.nav-tabs .nav-link.active {
     background-color: var(--primary-color);
     color: var(--color-white);
 }
-.dashboard ul.nav-tabs{
-    border-bottom: 0;
-}
-.dashboard ul.nav-tabs .nav-link{
+
+.dashboard ul.nav-tabs {
     border-bottom: 0;
 }
 
-.dashboard .tab-content table.table{
+.dashboard ul.nav-tabs .nav-link {
+    border-bottom: 0;
+}
+
+.dashboard .tab-content table.table {
     border-top: 2px solid var(--border-blue);
     margin-top: 1px;
     margin-left: 1px;
@@ -202,35 +244,39 @@ dashboard
 verification page
 
  ***************************************************************** */
- .resend-code{
+.resend-code {
     color: var(--border-blue);
     text-decoration: none;
     transition: all 0.2s;
- }
- .resend-code:hover{
+}
+
+.resend-code:hover {
     color: var(--btn-primary);
- }
- .verify-input{
+}
+
+.verify-input {
     text-align: center;
     border-radius: 0;
     width: 30px;
     margin-left: 5px;
-    color: var(--btn-primary)!important;
-    border-bottom: 1px solid var(--btn-primary)!important;
- }
+    color: var(--btn-primary) !important;
+    border-bottom: 1px solid var(--btn-primary) !important;
+}
 
 /* 
 +++++++++++++++++++++++++++++++++++++++++++++++ red laptop Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 */
-@media only screen and (max-width:1366px){
+@media only screen and (max-width:1366px) {
+
     /* 
         Dashbaord Page
     */
-    .dashboard .tab-content .table-container{
+    .dashboard .tab-content .table-container {
         overflow: auto;
     }
-    .dashboard .tab-content .table-container table{
+
+    .dashboard .tab-content .table-container table {
         width: 900px;
     }
 
@@ -240,15 +286,17 @@ verification page
 +++++++++++++++++++++++++++++++++++++++++++++++ red tablet Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 */
-@media only screen and (max-width:1023px){
-  .fs-22{
-    font-size: 18px!important;
-  }
-  .fs-18{
-    font-size: 16px!important;
-  }
-  .fs-16{
-    font-size: 15px!important;
-  }
+@media only screen and (max-width:1023px) {
+    .fs-22 {
+        font-size: 18px !important;
+    }
+
+    .fs-18 {
+        font-size: 16px !important;
+    }
+
+    .fs-16 {
+        font-size: 15px !important;
+    }
 
 }
