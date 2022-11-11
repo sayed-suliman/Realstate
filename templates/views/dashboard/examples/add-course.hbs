@@ -31,7 +31,7 @@
 
       <!-- Main content -->
       <section class="content">
-        <form action="add-course" method="post">
+        <form action="add-course" enctype="multipart/form-data" method="post">
           <div class="row">
             <div class="col-md-6">
               <div class="card card-primary">
@@ -52,6 +52,10 @@
                   <div class="form-group">
                     <label for="inputDescription">Course Description</label>
                     <textarea id="inputDescription" name="description" class="form-control" rows="4"></textarea>
+                  </div>
+                  <div class="form-group">
+                    <label for="uploadCourse">Upload Course</label>
+                    <input id="uploadCourse" type="file" required name="course_file" class="form-control" rows="4">
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
