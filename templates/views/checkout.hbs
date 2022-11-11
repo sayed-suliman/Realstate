@@ -51,6 +51,7 @@
                             <form action="/register" method="post">
                                 <div class="row text-start">
                                     <input required type="hidden" name="total" value="{{package.total}}">
+                                    <input required type="hidden" name="package" value="{{package._id}}">
                                     <div class="col-md-6 mb-3">
                                         <label for="f-n" class="form-label">First Name</label>
                                         <input required type="text" id="f-n" class="form-control shadow-none"

@@ -4,45 +4,54 @@
     <main class="login-page pt-5 ">
         <div class="container">
             <div class="row">
-                <!-- login -->
+                <!-- Package Detail -->
                 <div class="col-xxl-4 col-lg-5 text-center login">
                     <div class="card">
                         <div class="bg-primary w-100 login-image-div">
-                            <img src="./images/login/login-icon.png" class="img-fluid" alt="">
+                            <h3 class="text-white" style="margin-top: -5px;">Order Summary</h3>
                         </div>
-                        <h2 class="fw-bold">Login</h2>
-                        <!-- <p class="m-0 mb-3">Already Registered?</p> -->
-                        <p class="m-0 mb-3">Login here with your Email and Password</p>
-                        {{#if error}}
-                        <p class="fs-16 text-danger">{{error}}</p>
-                        {{/if}}
-                        <div class="px-3 mb-3">
-                            <form action="/login" method="post" id="login-form">
-                                <input type="email" class="form-control shadow-none mb-3" required name="email"
-                                    placeholder="Email">
-                                <input type="password" required class="form-control shadow-none mb-3" name="password"
-                                    placeholder="Password">
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
-                            </form>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-start">Package</th>
+                                        <th class="text-end">{{package.name}}</th>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Package Subtotal</td>
+                                        <td class="text-end">${{package.price}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Order Discounts</td>
+                                        <td class="text-danger text-end">-$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Taxes</td>
+                                        <td class="text-end">{{package.tax}}%</td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <th scope="row" class="text-start">Estimated Total</th>
+                                        <th class="text-end">${{package.total}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <span>
-                            <a href="#" class="link-primary">Forgot Password?</a>
-                        </span>
                     </div>
                 </div>
                 <!-- Register -->
                 <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
                     <div class="card pt-5 bg-primary text-white">
                         <div class="row">
-                            <h3>Verify account</h3>
+                            <h3>Email Verification</h3>
                             <div class="my-3">
                                 <img width="200" src="/images/icons/email-verification-icon.png" class="img-fluid"
                                     alt="">
                             </div>
                             <div>
-                                <p class="mx-auto w-50 fs-18">We have just send you 4 digit code via your email. Please
-                                    check your email</p>
+                                <p class="mx-auto w-50 fs-18" style="font-weight: 300;">We have send 4 digits code via
+                                    your email. Please
+                                    check your email.<br><span
+                                        style="color: var(--btn-primary);">sulimank418@gmail.com</span></p>
                             </div>
                             {{!-- form --}}
                             <div class="bg-white w-50 mx-auto py-5  rounded-8">
@@ -61,8 +70,8 @@
                                             class="form-control verify-input border-0 shadow-none p-2">
                                     </div>
                                     <div class="" style="width:40px">
-                                        <input type="number" required maxlength="1" id="val4" name="val4" max="9" min="0"
-                                            class="form-control verify-input border-0 shadow-none p-2">
+                                        <input type="number" required maxlength="1" id="val4" name="val4" max="9"
+                                            min="0" class="form-control verify-input border-0 shadow-none p-2">
                                     </div>
                                 </div>
                                 <div>
@@ -72,23 +81,9 @@
                             </div>
                             {{!-- endform --}}
                             {{!-- didn't recieve --}}
-                            <p class="fs-18 mt-3">Didn't recieve code?<br><a href="/" class="resend-code">Re-Send
+                            <p class="fs-18 mt-3" style="font-weight: 300;">Didn't receive code?<br><a href="/" class="resend-code">Resend
                                     Code!</a></p>
                         </div>
-                        {{!-- <div class="bg-primary w-100 login-image-div">
-                            <img src="./images/login/register-icon.png" class="img-fluid" alt="">
-                        </div>
-                        <h2 class="fw-bold">Register</h2>
-                        <!-- <p class="m-0 mb-3">New Here?</p> -->
-                        <p class="m-0 mb-3">Register here with your information</p>
-                        <div class="px-3 mb-3">
-                            <form action="/register" method="post">
-
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
-                                    Now</button>
-                            </form>
-                        </div> --}}
                     </div>
                 </div>
             </div>
@@ -104,9 +99,9 @@
             ///var val3 = $('#val3').val()
             //var val4 = $('#val4').val()
             $('#val1').keyup(function () {
-               // if(val >= 0){
+                // if(val >= 0){
                 $('#val2').focus()
-             //   }
+                //   }
             })
             $('#val2').keyup(function () {
                 $('#val3').focus()
