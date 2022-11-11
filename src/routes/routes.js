@@ -10,14 +10,28 @@ const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
-
+const mailSent = require("./../controllers/mailServices")
 
 // default route
 router.get("/", (req, res) => {
     res.redirect("/login")
 })
 
-
+// test send email route
+// router.get("/testEmail", async (req, res) => {
+//     try {
+//         const emaildata = await req.body
+//         console.log(emaildata)
+//         await mailSent.sendVerificationCode(emaildata.email, emaildata.code)
+//         res.send({
+//             response:"Email sent successfullly"
+//         })
+//     } catch (e) {
+//         res.status(404).send({
+//             error: e
+//         })
+//     }
+// })
 
 
 // login route
