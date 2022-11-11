@@ -213,10 +213,11 @@ verification page
  .verify-input{
     text-align: center;
     border-radius: 0;
+    width: 30px;
+    margin-left: 5px;
     color: var(--btn-primary)!important;
     border-bottom: 1px solid var(--btn-primary)!important;
  }
-
 
 /* 
 +++++++++++++++++++++++++++++++++++++++++++++++ red laptop Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
