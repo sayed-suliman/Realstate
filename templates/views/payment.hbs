@@ -1,0 +1,68 @@
+{{>header}}
+
+<body>
+    <main class="login-page pt-5 ">
+        <div class="container">
+            <div class="row">
+                <!-- Order Detail -->
+                <div class="col-xxl-6 col-lg-7 text-center login mx-auto">
+                    <div class="card">
+                        <div class="bg-primary w-100 login-image-div">
+                            <h3 class="text-white" style="margin-top: -5px;">User Details</h3>
+                        </div>
+                        <div class="card-body">
+                            <table class="table table-borderless">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-start">Name</th>
+                                        <th class="text-end">{{user.first_name}} {{user.last_name}}</th>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Email</td>
+                                        <td class="text-end">{{user.email}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Personal ID</td>
+                                        <td class="text-end">{{user.personal_id}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Phone</td>
+                                        <td class="text-end">{{user.phone}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <h3 class="mt-5">Order Summary</h3>
+                            <table class="table table-borderless mt-4">
+                                <tbody>
+                                    <tr>
+                                        <th scope="row" class="text-start">User</th>
+                                        <th class="text-end">{{user.package.name}}</th>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Package Subtotal</td>
+                                        <td class="text-end">${{user.package.price}}</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Order Discounts</td>
+                                        <td class="text-danger text-end">-$0</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Taxes</td>
+                                        <td class="text-end">{{user.package.tax}}%</td>
+                                    </tr>
+                                    <tr class="border-top">
+                                        <th scope="row" class="text-start">Estimated Total</th>
+                                        <th class="text-end">${{user.total}}</th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button class="btn btn-success">Stripe</button>
+                            <button class="btn btn-secondary">PayPal</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    {{!--for form validaitons --}}
+    <script src="./js/form-validations.js"></script>

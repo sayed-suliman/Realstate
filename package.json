@@ -11,6 +11,7 @@
   "author": "CreatechIt Team",
   "license": "ISC",
   "dependencies": {
+    "@paypal/checkout-server-sdk": "^1.0.3",
     "bcrypt": "^5.1.0",
     "connect-flash": "^0.1.1",
     "connect-mongo": "^4.6.0",
@@ -25,6 +26,7 @@
     "nodemailer": "^6.8.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
+    "stripe": "^10.17.0",
     "validator": "^13.7.0"
   },
   "devDependencies": {

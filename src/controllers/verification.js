@@ -1,38 +1,53 @@
 const OTP = require("../models/otp");
-const Package = require("../models/package");
 const User = require("../models/users");
+const url = require('url')
 
 module.exports = {
     async verification(req, res) {
-        var { package: packageID, user } = req.query;
-        console.log(packageID, user)
-        if (packageID && user) {
-            const package = await Package.findById(packageID);
-            var { price, tax } = package;
-            package.total = price * ((100 + tax) / 100)//total price with tax
-            return res.render('verification', {
-                title: "Verification",
-                package, email: user
-            })
+        try {
+            var { user: userID } = req.query;
+            console.log("UserId", userID)
+            if (userID) {
+                const user = await User.findById(userID).populate('package');
+                if (user) {
+                    var { price, tax } = user.package;
+                    user.total = price * ((100 + tax) / 100)//total price with tax
+
+                    return res.render('verification', {
+                        title: "Verification",
+                        user
+                    })
+                }
+            }
+            return res.redirect('/')
+        } catch (error) {
+            console.log(error.message)
+            return res.redirect('/')
         }
-        return res.redirect('/')
     },
     async doVerification(req, res) {
-        const { val1, val2, val3, val4, email, packageID } = req.body;
+        const { val1, val2, val3, val4, userID } = req.body;
         const code = val1 + val2 + val3 + val4
-        console.log(code)
         const otp = await OTP.findOne({ otp: code });
         if (!otp) {
-            const package = await Package.findById(packageID);
-            var { price, tax } = package;
-            package.total = price * ((100 + tax) / 100)//total price with tax
+            const user = await User.findById(userID).populate('package');
+            var { price, tax } = user.package;
+
+            user.total = price * ((100 + tax) / 100)//total price with tax
+
             return res.render('verification', {
                 title: "Verification",
-                package, email, err:"OTP incorrect or expired."
+                user, err: "OTP incorrect or expired."
             })
         }
-        await User.findOneAndUpdate({email},{verify:true})
+        const user = await User.findByIdAndUpdate(userID, { verify: true })
         await otp.deleteOne();
-        res.send("Verified")
+        console.log(user)
+        res.redirect(url.format({
+            pathname: '/payment',
+            query: {
+                user: user._id.toString()
+            }
+        }))
     }
 }
