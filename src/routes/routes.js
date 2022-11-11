@@ -8,7 +8,7 @@ const { course, addcourse, courseDetails } = require("../controllers/courses")
 const { package, addPackage, packagesDetail } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
-const { verification } = require("../controllers/verification")
+const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 
 
@@ -55,6 +55,7 @@ router.get("/dashboard", (req, res) => {
 
 // verification route
 router.get("/verification", verification)
+router.post("/verifying",doVerification)
 router.get('/resend', resendCode)
 
 

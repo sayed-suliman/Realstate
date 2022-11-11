@@ -57,6 +57,8 @@
                             <div class="bg-white w-50 mx-auto py-5  rounded-8">
                                 <form action="/verifying" method="post" id="verification_form">
                                     <div class="row justify-content-center mb-3">
+                                        <input type="hidden" value="{{email}}" name="email">
+                                        <input type="hidden" value="{{package._id}}" name="packageID">
                                         <input type="number" required id="val1" name="val1" max="9" min="0"
                                             class="form-control verify-input border-0 shadow-none p-2">
                                         <input type="number" required id="val2" name="val2" max="9" min="0"
@@ -69,6 +71,9 @@
                                     <button class="btn btn-success btn-verify px-3 py-2" type="submit">Verify!</button>
                                     {{#if sent}}
                                         <p class="mb-0 mt-3 text-success fs-16">Verification code sent successfully.</p>
+                                    {{/if}}
+                                    {{#if err}}
+                                        <p class="mb-0 mt-3 text-danger fs-16">{{err}}</p>
                                     {{/if}}
                                 </form>
                             </div>
