@@ -31,7 +31,7 @@ router.get("/logout", (req, res) => {
     })
 })
 // sign up post 
-router.post("/register", signUpMiddleware, signUp)
+router.post("/checkout", signUpMiddleware, signUp)
 
 
 router.get('/checkout', checkout)

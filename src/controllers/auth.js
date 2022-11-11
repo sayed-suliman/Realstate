@@ -25,7 +25,8 @@ const signUp = async (req, res) => {
             package.total = price * ((100 + tax) / 100)//total price with tax
             res.render("checkout", {
                 title: "Checkout",
-                data: [errorObj, package],
+                err: errorObj,
+                package
             })
         } else {
             console.log(data)
