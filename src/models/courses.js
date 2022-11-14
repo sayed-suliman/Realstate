@@ -11,7 +11,8 @@ const courseSchema = new mongoose.Schema({
     price:{
         type:Number
     }
-},{
-    timestamps:true
-}) 
-module.exports = mongoose.model("Course",courseSchema)
+}, {
+    timestamps: true
+})
+const Course = mongoose.model("Course", courseSchema)
+module.exports = Course

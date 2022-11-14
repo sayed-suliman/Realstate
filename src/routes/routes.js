@@ -13,6 +13,9 @@ const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const {addChapter,chapterDetail,postChapter} = require("../controllers/chapters")
+const { stripeAPI, paypalAPI, doPaypal, stripeSuccess } = require("../controllers/paymentGateWay")
+
+
 
 // default route
 router.get("/", (req, res) => {
@@ -60,6 +63,10 @@ router.post("/verifying", doVerification)
 router.get('/resend', resendCode)
 
 router.get('/payment', payment)
+router.post('/stripe', stripeAPI)
+router.get('/paypal', paypalAPI)
+router.post('/paypal-payment', doPaypal)
+router.get('/success', stripeSuccess)
 
 // table
 router.get("/dashboard/table", (req, res) => {

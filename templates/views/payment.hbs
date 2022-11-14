@@ -56,13 +56,16 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            <button class="btn btn-success">Stripe</button>
-                            <button class="btn btn-secondary">PayPal</button>
+                            <button class="btn btn-success" id="stripe-payment">Stripe</button>
+                            <a class="btn btn-secondary" href="/paypal">PayPal</a>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </main>
-    {{!--for form validaitons --}}
-    <script src="./js/form-validations.js"></script>
+    <script>
+        //Passing to the strip.js file form hbs data
+        const user = `{{{user._id}}}`
+    </script>
+    <script src="/js/stripe.js"></script>

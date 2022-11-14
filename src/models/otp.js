@@ -11,4 +11,5 @@ const otpSchema = mongoose.Schema({
 }, {
     timestamps: true
 })
-module.exports = mongoose.model('OTP', otpSchema)
+const OPT = mongoose.model('OTP', otpSchema)
+module.exports = OPT
