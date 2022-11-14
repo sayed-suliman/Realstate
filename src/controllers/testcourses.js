@@ -17,29 +17,36 @@ const course = async (req, res) => {
 const addcourse = async (req, res) => {
     try {
         const data = await req.body
+        const bufferData = await req.file.buffer
+        // console.log(bufferData)
         const package = await Package.findOne({ name: data.package })
         const addCourse = CourseModel({
             name: data.name,
             description: data.description,
             status: data.status,
-            package: package._id,
-            price:data.price
+            // package: package._id,
+            package: data.package,
+            pdffile:bufferData
         })
         await addCourse.save()
-        if (addCourse) {
-            var msg = encodeMsg('The Course has been created')
-            return res.redirect('/dashboard?msg=' + msg)
-        }
+        // if (addCourse) {
+        //     var msg = encodeMsg('The Course has been created')
+        //     return res.redirect('/dashboard?msg=' + msg)
+        // }
         // req.flash("alert_success", "Course Added Successfully.!")
         // res.redirect('/dashboard')
+        console.log(data)        
+        res.json({
+            msg:"added"
+        })
     } catch (e) {
-        var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
-        return res.redirect('/dashboard?msg=' + msg)
-        // res.status(403).json({
-        //     Error: e.message,
-        //     Status: 403,
-        //     msg: "Course Not Added"
-        // })
+        // var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
+        // return res.redirect('/dashboard?msg=' + msg)
+        res.status(403).json({
+            Error: e.message,
+            Status: 403,
+            msg: "Course Not Added"
+        })
     }
     // const courseAdded =await new AddCourse()
 }

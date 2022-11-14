@@ -7,6 +7,9 @@ const courseSchema = new mongoose.Schema({
         type:mongoose.Schema.Types.ObjectId,
         require:true,
         ref:'Package'
+    },
+    price:{
+        type:Number
     }
 },{
     timestamps:true

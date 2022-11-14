@@ -11,7 +11,8 @@ const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
-
+const { upload } = require("./../controllers/fileUpload")
+const {addChapter,chapterDetail,postChapter} = require("../controllers/chapters")
 
 // default route
 router.get("/", (req, res) => {
@@ -125,12 +126,42 @@ router.get("/dashboard/package-detail", packagesDetail)
 
 // course-add
 router.post("/dashboard/add-course", addcourse)
+
+
+
 // add course
 // render of course add
 router.get("/dashboard/add-course", course)
 
 // course-detail
 router.get("/dashboard/course-detail", courseDetails)
+
+// add chapter 
+// render of course add
+router.get("/dashboard/add-chapter", addChapter)
+// chapter details 
+// render of course add
+router.get("/dashboard/chapter-detail", chapterDetail)
+router.post("/add-chapter",upload.single("courseFile"),postChapter)
+
+
+
+// *****************************************************************
+
+// not completed yet just for testing courses
+
+// test addcourse with pdf
+// router.post("/add-course",upload.single("course_file"), addcourse)
+// readpdf
+const PDF = require("./../models/courses")
+router.get("/pdf-read",async(req,res)=>{
+    const pdfData =await  PDF.findById("6371df52e20dae60826d9b6a")
+    const decode= pdfData.pdffile.toString
+    res.send(pdfData.pdffile)
+})
+// ***************************************************************************
+
+
 
 // old-dashboard
 router.get("/old/dashboard", (req, res) => {

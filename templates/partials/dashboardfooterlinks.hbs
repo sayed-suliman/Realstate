@@ -92,6 +92,18 @@
             $('#course-link').addClass("active")
             $("#course-detail-link").addClass("active")
         }
+        //add-chapter
+        if (url.includes("add-chapter")) {
+            $("#dashboard-link").removeClass("active")
+            $('#chapter-link').addClass("active")
+            $("#chapter-add-link").addClass("active")
+        }
+         //chapter-detail
+        if (url.includes("chapter-detail")) {
+            $("#dashboard-link").removeClass("active")
+            $('#chapter-link').addClass("active")
+            $("#chapter-detail-link").addClass("active")
+        }
         //contact
         if (url.includes("contact")) {
             $("#dashboard-link").removeClass("active")
