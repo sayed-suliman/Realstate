@@ -6,10 +6,17 @@ module.exports = {
     async verification(req, res) {
         try {
             var { user: userID } = req.query;
-            console.log("UserId", userID)
             if (userID) {
                 const user = await User.findById(userID).populate('package');
-                if (user) {
+                // if user is verified already then redirect to payment
+                if (user.verified) {
+                    return res.redirect(url.format({
+                        pathname: '/payment',
+                        query: {
+                            user: user._id.toString()
+                        }
+                    }))
+                } else {
                     var { price, tax } = user.package;
                     user.total = price * ((100 + tax) / 100)//total price with tax
 
@@ -42,7 +49,6 @@ module.exports = {
         }
         const user = await User.findByIdAndUpdate(userID, { verify: true })
         await otp.deleteOne();
-        console.log(user)
         res.redirect(url.format({
             pathname: '/payment',
             query: {

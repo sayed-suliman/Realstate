@@ -4,11 +4,12 @@ const courseSchema = new mongoose.Schema({
     description: String,
     status: String,
     package: {
-        type:mongoose.Schema.Types.ObjectId,
-        require:true,
-        ref:'Package'
+        type: mongoose.Schema.Types.ObjectId,
+        require: true,
+        ref: 'Package'
     }
-},{
-    timestamps:true
-}) 
-module.exports = mongoose.model("Course",courseSchema)
+}, {
+    timestamps: true
+})
+const Course = mongoose.model("Course", courseSchema)
+module.exports = Course

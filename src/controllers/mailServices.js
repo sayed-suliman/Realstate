@@ -1,9 +1,9 @@
 const nodemailer = require('nodemailer')
 require('dotenv').config()
 const hbs = require("nodemailer-express-handlebars")
-console.log(__dirname)
 var transport = nodemailer.createTransport({
-    service: "gmail",
+    host: "smtp.mailtrap.io",
+    port: 2525,
     auth: {
         user: process.env.user,
         pass: process.env.pass
@@ -11,11 +11,11 @@ var transport = nodemailer.createTransport({
 })
 transport.use('compile', hbs({
     viewEngine: {
-        extname:".hbs",
+        extname: ".hbs",
         layoutsDir: __dirname + "/templates/views/mail/",
         defaultLayout: false
     },
-    extName:".hbs",
+    extName: ".hbs",
     viewPath: "templates/views/mail/"
 }))
 module.exports = {
@@ -26,8 +26,8 @@ module.exports = {
             subject: "Verify your Account",
             text: `Verification Code: ${code}`,
             template: "otp",
-            context:{
-                code:code
+            context: {
+                code: code
             }
         })
         if (send) {
