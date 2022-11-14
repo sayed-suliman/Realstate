@@ -60,13 +60,13 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "student"
     },
-    verify: {
+    verified: {
         type: Boolean,
         default: false
     },
-    package:{
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Package"
+    package: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Package"
     }
 }, {
     timestamps: true
@@ -85,7 +85,12 @@ userSchema.statics.findByCredentials = async (email, password) => {
 }
 
 
-
+userSchema.methods.toJSON = function () {
+    const user = this;
+    const userObj = user.toObject()
+    delete userObj.password;
+    return userObj
+}
 
 // hashed password
 userSchema.pre("save", async function (next) {

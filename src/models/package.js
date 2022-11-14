@@ -6,7 +6,8 @@ const packageSchema = new mongoose.Schema({
     status: String,
     tax: Number,
     price: Number
-},{
-    timestamps:true
+}, {
+    timestamps: true
 })
-module.exports = mongoose.model('Package', packageSchema)
+const Package = mongoose.model('Package', packageSchema)
+module.exports = Package

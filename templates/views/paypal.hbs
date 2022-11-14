@@ -1,0 +1,23 @@
+{{>header}}
+<script src="https://www.paypal.com/sdk/js?client-id={{Paypal_client_id}}"
+    data-sdk-integration-source="integrationbuilder"></script>
+
+<body>
+    <main class="login-page pt-5 ">
+        <div class="container">
+            <div class="row">
+                <!-- Order Detail -->
+                <div class="col-xxl-6 col-lg-7 text-center login mx-auto">
+                    <div class="card">
+                        <div class="bg-primary w-100 login-image-div">
+                            <h3 class="text-white" style="margin-top: -5px;">Payment With Paypal</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="paypal"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script src="/js/paypal.js"></script>
