@@ -19,7 +19,7 @@ const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require
 
 // default route
 router.get("/", (req, res) => {
-    res.redirect("/login")
+    res.render("package")
 })
 
 
