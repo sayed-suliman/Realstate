@@ -58,6 +58,7 @@ module.exports = {
                     user: user._id,
                     package: package._id,
                     amount: package.price * ((100 + package.tax) / 100),
+                    pay_method: "Stripe",
                     verified: false//need to change when the payment is confirmed 
                 }).save()
                 if (order) {
@@ -84,9 +85,21 @@ module.exports = {
         }
     },
     async paypalAPI(req, res) {
-        await res.render('paypal', {
-            Paypal_client_id: process.env.PAYPAL_CLIENT_ID
-        });
+        try {
+            if (req.query.user) {
+                const user = await User.findById(req.query.user).populate('package');
+                if (user) {
+                    return await res.render('paypal', {
+                        title: "PayPal",
+                        Paypal_client_id: process.env.PAYPAL_CLIENT_ID,
+                        user
+                    });
+                }
+            }
+            return res.redirect('/')
+        } catch (error) {
+            res.render('500')
+        }
     },
     async doPaypal(req, res) {
         const request = new paypal.orders.OrdersCreateRequest();
@@ -124,5 +137,27 @@ module.exports = {
         } catch (e) {
             res.status(500).json({ error: e.message });
         }
+    },
+    async paypalCapture(req, res) {
+        console.log(req.body)
+        const { id, status, purchase_units } = req.body.order;
+        if (status == "COMPLETED") {
+            console.log()
+            const user = await User.findById(req.body.userId).populate('package')
+            if (user) {
+                const order = await Order({
+                    user: user._id,
+                    package: user.package._id,
+                    amount: purchase_units[0].amount.value,
+                    pay_method: "PayPal",
+                    transaction: id,
+                    verified: true//because the status is completed
+                }).save()
+                if (order) {
+                    return res.status(201).json({ user })
+                }
+            }
+        }
+        return res.json({ failed: "Done" })
     }
 }

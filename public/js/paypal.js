@@ -18,7 +18,7 @@ const paypalButtonsComponent = paypal.Buttons({
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                userId: "636e4258a9da3fb91d81503c"
+                userId: user
             })
         }).then(res => {
             if (res.ok) {
@@ -38,7 +38,34 @@ const paypalButtonsComponent = paypal.Buttons({
         const captureOrderHandler = (details) => {
             const payerName = details.payer.name.given_name;
             console.log(details)
+            console.log(user)
             console.log('Transaction completed');
+            fetch('/paypal-capture', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    order: details, userId: user
+                })
+            }).then(res => {
+                if (res.ok) {
+                    return res.json();
+                }
+                return res.json().then(json => Promise.reject(json));
+            }).then((res) => {
+                console.log(res.user)
+                if (res.user) {
+                    console.log('asdf')
+                    alert('You have successful purchase the package.')
+                    const url = window.location.origin
+                    setInterval(() => {
+                        window.location.replace(`${url}/login`)
+                    }, 3000);
+                }
+            }).catch(e => {
+                console.error(e.error)
+            })
         };
 
         return actions.order.capture().then(captureOrderHandler);

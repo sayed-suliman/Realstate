@@ -47,7 +47,7 @@ module.exports = {
                 user, err: "OTP incorrect or expired."
             })
         }
-        const user = await User.findByIdAndUpdate(userID, { verify: true })
+        const user = await User.findByIdAndUpdate(userID, { verified: true })
         await otp.deleteOne();
         res.redirect(url.format({
             pathname: '/payment',

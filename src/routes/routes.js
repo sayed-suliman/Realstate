@@ -12,8 +12,8 @@ const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const {addChapter,chapterDetail,postChapter} = require("../controllers/chapters")
-const { stripeAPI, paypalAPI, doPaypal, stripeSuccess } = require("../controllers/paymentGateWay")
+const { addChapter, chapterDetail, postChapter } = require("../controllers/chapters")
+const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 
 
 
@@ -27,6 +27,9 @@ router.get("/", (req, res) => {
 router.get("/login", logged_in, login)
 // router.post('/login',postLogin)
 router.post('/login', authLocal, postLogin)
+router.post('/login-ajax', (req,res)=>{
+    console.log()
+})
 // Logout
 router.get("/logout", (req, res) => {
     req.logout(function (err) {
@@ -66,6 +69,7 @@ router.get('/payment', payment)
 router.post('/stripe', stripeAPI)
 router.get('/paypal', paypalAPI)
 router.post('/paypal-payment', doPaypal)
+router.post('/paypal-capture', paypalCapture)
 router.get('/success', stripeSuccess)
 
 // table
@@ -149,7 +153,7 @@ router.get("/dashboard/add-chapter", addChapter)
 // chapter details 
 // render of course add
 router.get("/dashboard/chapter-detail", chapterDetail)
-router.post("/add-chapter",upload.single("courseFile"),postChapter)
+router.post("/add-chapter", upload.single("courseFile"), postChapter)
 
 
 
@@ -161,9 +165,9 @@ router.post("/add-chapter",upload.single("courseFile"),postChapter)
 // router.post("/add-course",upload.single("course_file"), addcourse)
 // readpdf
 const PDF = require("./../models/courses")
-router.get("/pdf-read",async(req,res)=>{
-    const pdfData =await  PDF.findById("6371df52e20dae60826d9b6a")
-    const decode= pdfData.pdffile.toString
+router.get("/pdf-read", async (req, res) => {
+    const pdfData = await PDF.findById("6371df52e20dae60826d9b6a")
+    const decode = pdfData.pdffile.toString
     res.send(pdfData.pdffile)
 })
 // ***************************************************************************
