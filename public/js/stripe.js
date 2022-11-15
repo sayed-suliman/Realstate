@@ -1,4 +1,3 @@
-console.log(user)
 const stripeBtn = document.getElementById('stripe-payment');
 stripeBtn.addEventListener('click', function () {
     fetch('/stripe', {
