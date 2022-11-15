@@ -20,4 +20,4 @@ var logged_in = (req, res, next) => {
     }
 }
 
-module.exports = {authenticated,logged_in}
+module.exports = { authenticated, logged_in }
