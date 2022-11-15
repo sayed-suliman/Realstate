@@ -35,16 +35,16 @@
           </a>
         </li>
         <!-- Tables -->
-        <li class="nav-item">
+        {{!-- <li class="nav-item">
           <a href="/dashboard/table" id="table-link" class="nav-link">
             <i class="nav-icon fas fa-table"></i>
             <p>
               Tables
             </p>
           </a>
-        </li>
+        </li> --}}
         <!-- Calender -->
-        <li class="nav-item">
+        {{!-- <li class="nav-item">
           <a href="/dashboard/calendar" id="calendar-link" class="nav-link">
             <i class="nav-icon fas fa-calendar-alt"></i>
             <p>
@@ -82,7 +82,7 @@
               </a>
             </li>
           </ul>
-        </li>
+        </li> --}}
         <!-- Examples or pages -->
         <li class="nav-item">
           <a href="#" id="page-link" class="nav-link">
@@ -191,16 +191,40 @@
             </li>
           </ul>
         </li>
-        <!-- Search -->
+        {{!-- Quiz --}}
         <li class="nav-item">
+          <a href="#" id="chapter-link" class="nav-link">
+            <i class="nav-icon fas fa-pen"></i>
+            <p>
+              Quizzes
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/dashboard/add-chapter" id="chapter-add-link" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Add Quiz</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="/dashboard/chapter-detail" id="chapter-detail-link" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Quizzes Detail</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <!-- Search -->
+        {{!-- <li class="nav-item">
           <a href="/dashboard/search" id="search-link" class="nav-link">
             <i class="nav-icon fas fa-search"></i>
             <p>
               Search
             </p>
           </a>
-        </li>
-        <li class="nav-item">
+        </li> --}}
+        <li class="nav-item bg-danger">
           <a href="/logout" id="logout" class="nav-link">
             <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>
