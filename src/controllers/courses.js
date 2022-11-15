@@ -5,6 +5,7 @@ const course = async (req, res) => {
     try {
         // all added packages
         const packages = await Package.find()
+        console.log(packages)
         res.render("dashboard/examples/add-course", { title: "Dashboard | Add Course", packages })
     } catch (e) {
         res.status(404).json({

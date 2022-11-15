@@ -1,6 +1,8 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
+  <!-- toast(alert)-->
+    {{>alert}}
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
@@ -55,7 +57,7 @@
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Select Course</label>
-                    <select  id="inputStatus" name="package" class="form-control custom-select">
+                    <select  id="inputStatus" name="course" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
                       {{#each courses}}
                       <option value="{{this.name}}">{{this.name}}</option>

@@ -1,6 +1,7 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
+    
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -44,18 +45,20 @@
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                <th>File</th>
                                                 <th>Course</th>
+                                                <th>File</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each allCourses}}
+                                            {{#each chapters}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>{{this.package.name}}</td>
-                                                <td>{{this.description}}</td>
-                                                <td>{{this.status}}</td>
-                                                <td>{{this.price}}</td>
+                                                <td>{{this.course.name}}</td>
+                                                <td>
+                                                    <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
+                                                    {{this.fileName}}
+
+                                                </td>
                                             </tr>
                                             {{/each}}
                                         </tbody>

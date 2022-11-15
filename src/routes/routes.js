@@ -12,7 +12,7 @@ const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const {addChapter,chapterDetail,postChapter} = require("../controllers/chapters")
+const {addChapter,chapterDetail,postChapter,errorMsg} = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess } = require("../controllers/paymentGateWay")
 
 
@@ -144,12 +144,12 @@ router.get("/dashboard/add-course", course)
 router.get("/dashboard/course-detail", courseDetails)
 
 // add chapter 
-// render of course add
 router.get("/dashboard/add-chapter", addChapter)
+router.post("/dashboard/add-chapter",upload.single("courseFile"),postChapter,errorMsg)
+// for test below link
+router.post("/add-chapter",upload.single("courseFile"),postChapter,errorMsg)
 // chapter details 
-// render of course add
 router.get("/dashboard/chapter-detail", chapterDetail)
-router.post("/add-chapter",upload.single("courseFile"),postChapter)
 
 
 

@@ -1,10 +1,15 @@
 const multer = require("multer")
+const path = require("path")
 const storage = multer.diskStorage({
     destination:function(req,file,cb){
         cb(null,'public/uploaded-media/')
     },
     filename:function(req,file,cb){
-        cb(null,file.originalname+'.pdf')
+        console.log(file)
+        var fileName = path.parse(file.originalname).name //Filename without extension
+        var name = `${fileName}-${Date.now()}${path.extname(file.originalname)}`
+        console.log(name)
+        cb(null,name)
     }
 })
 
