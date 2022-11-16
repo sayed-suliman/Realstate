@@ -1,6 +1,7 @@
 const express = require("express")
 const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
+const { forgotPassword, doForgotPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
@@ -12,7 +13,7 @@ const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const {addChapter,chapterDetail,postChapter,errorMsg} = require("../controllers/chapters")
+const { addChapter, chapterDetail, postChapter, errorMsg } = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 const {addQuiz,quizDetail} = require("./../controllers/quiz")
 
@@ -27,7 +28,7 @@ router.get("/", (req, res) => {
 router.get("/login", logged_in, login)
 // router.post('/login',postLogin)
 router.post('/login', authLocal, postLogin)
-router.post('/login-ajax', (req,res)=>{
+router.post('/login-ajax', (req, res) => {
     console.log()
 })
 // Logout
@@ -37,9 +38,13 @@ router.get("/logout", (req, res) => {
         res.redirect('/');
     })
 })
+
+// forgot password
+router.get('/reset-password', forgotPassword)
+router.post('/reset-password', doForgotPassword)
+
+
 // checkout post 
-
-
 router.get('/checkout', checkout)
 // sign up used because their is registration on checkout
 router.post("/checkout", signUpMiddleware, signUp)
@@ -149,9 +154,9 @@ router.get("/dashboard/course-detail", courseDetails)
 
 // add chapter 
 router.get("/dashboard/add-chapter", addChapter)
-router.post("/dashboard/add-chapter",upload.single("courseFile"),postChapter,errorMsg)
+router.post("/dashboard/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // for test below link
-router.post("/add-chapter",upload.single("courseFile"),postChapter,errorMsg)
+router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // chapter details 
 router.get("/dashboard/chapter-detail", chapterDetail)
 
@@ -166,28 +171,12 @@ router.get("/dashboard/quiz-detail", quizDetail)
 
 
 
-// *****************************************************************
-
-// not completed yet just for testing courses
-
-// test addcourse with pdf
-// router.post("/add-course",upload.single("course_file"), addcourse)
-// readpdf
-const PDF = require("./../models/courses")
-router.get("/pdf-read", async (req, res) => {
-    const pdfData = await PDF.findById("6371df52e20dae60826d9b6a")
-    const decode = pdfData.pdffile.toString
-    res.send(pdfData.pdffile)
-})
-// ***************************************************************************
-
 
 
 // old-dashboard
 router.get("/old/dashboard", (req, res) => {
     res.render("old-dashboard", { title: "Dashboard" })
 })
-
 
 router.get("*", (req, res) => {
     res.json({
