@@ -1,0 +1,20 @@
+/* 
+
+green red green red green red green red  green red ---- Quiz pages ----- green red green red green red green red
+
+*/
+
+.quiz .options{
+    width: 60%;
+}
+.quiz .options input[type=text]{
+    width: 90%;
+}
+.quiz input.checkBox{
+    height: 18px;
+    /* transform: translate(0, 50%); */
+    width: 18px;
+}
+
+
+

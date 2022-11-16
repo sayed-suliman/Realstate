@@ -268,7 +268,12 @@ verification page
     border-bottom: 1px solid var(--btn-primary) !important;
 }
 
-/* 
+
+
+
+
+/*
+ 
 +++++++++++++++++++++++++++++++++++++++++++++++ red laptop Screen red +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 */
@@ -283,6 +288,7 @@ verification page
 
     .dashboard .tab-content .table-container table {
         width: 900px;
+        margin-left:10px;
     }
 
 }

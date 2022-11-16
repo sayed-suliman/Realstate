@@ -104,6 +104,18 @@
             $('#chapter-link').addClass("active")
             $("#chapter-detail-link").addClass("active")
         }
+        //add-quiz
+        if (url.includes("add-quiz")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz-link').addClass("active")
+            $("#quiz-add-link").addClass("active")
+        }
+         //chapter-detail
+        if (url.includes("quiz-detail")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz-link').addClass("active")
+            $("#quiz-detail-link").addClass("active")
+        }
         //contact
         if (url.includes("contact")) {
             $("#dashboard-link").removeClass("active")

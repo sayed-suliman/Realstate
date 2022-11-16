@@ -1,4 +1,3 @@
-const express = require("express")
 const Course = require("./../models/courses")
 const { encodeMsg ,decodeMsg} = require("../helper/createMsg");
 const Chapters = require("./../models/chapters")

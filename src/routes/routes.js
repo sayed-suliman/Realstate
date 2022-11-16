@@ -14,7 +14,7 @@ const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const {addChapter,chapterDetail,postChapter,errorMsg} = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
-
+const {addQuiz,quizDetail} = require("./../controllers/quiz")
 
 
 // default route
@@ -154,6 +154,15 @@ router.post("/dashboard/add-chapter",upload.single("courseFile"),postChapter,err
 router.post("/add-chapter",upload.single("courseFile"),postChapter,errorMsg)
 // chapter details 
 router.get("/dashboard/chapter-detail", chapterDetail)
+
+
+// ******************************* Quiz part **************************
+// add quiz 
+router.get("/dashboard/add-quiz", addQuiz)
+// router.post("/dashboard/add-quiz",upload.single("courseFile"),postChapter,errorMsg)
+
+// quiz details 
+router.get("/dashboard/quiz-detail", quizDetail)
 
 
 
