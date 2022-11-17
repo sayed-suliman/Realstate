@@ -1,7 +1,7 @@
 const express = require("express")
 const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
-const { forgotPassword, doForgotPassword } = require("../controllers/reset-password")
+const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
@@ -15,9 +15,14 @@ const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg } = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
-const {addQuiz,quizDetail} = require("./../controllers/quiz")
+const { addQuiz, quizDetail } = require("./../controllers/quiz")
+const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
 
 
+router.get("/test", (req, res) => {
+    sendVerificationCode('bedike2748@jernang.com', '1234')
+    res.render("package")
+})
 // default route
 router.get("/", (req, res) => {
     res.render("package")
@@ -41,7 +46,11 @@ router.get("/logout", (req, res) => {
 
 // forgot password
 router.get('/reset-password', forgotPassword)
-router.post('/reset-password', doForgotPassword)
+router.get('/forgot-password', (req, res) => res.redirect('/reset-password'))
+router.post('/forgot-password', doForgotPassword)
+// Used in email 
+router.get('/user/reset-password', resetPassword)
+router.post('/reset-password', doResetPassword)
 
 
 // checkout post 
@@ -62,7 +71,10 @@ router.get("/dashboard", (req, res) => {
         var msg = decodeMsg(msgToken)
         option = msg
     }
-    res.render("dashboard/new-dashboard", { title: "Dashboard", toast: Object.keys(option).length == 0 ? undefined : option })
+    res.render("dashboard/new-dashboard", {
+        title: "Dashboard",
+        toast: Object.keys(option).length == 0 ? undefined : option,
+    })
 })
 
 // verification route
@@ -178,6 +190,7 @@ router.get("/old/dashboard", (req, res) => {
     res.render("old-dashboard", { title: "Dashboard" })
 })
 
+router.get('/500', (req, res) => res.render('500'))
 router.get("*", (req, res) => {
     res.json({
         Error: "404 Page not found"
