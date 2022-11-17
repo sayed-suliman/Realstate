@@ -7,7 +7,10 @@ $(document).ready(function () {
         allQuestions = $(".question-no").length
         divElement.innerHTML = `
         <div class="form-group">
-        <label for="question-${questionNumber}">Question ${questionNumber}</label>
+        <label for="question-${questionNumber}" class="w-100">
+            Question ${questionNumber}
+            <button type="button" class="btn p-0 float-right cross">x</button>
+        </label>
         <input type="text" id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
         </div>
         <div class="form-group">
@@ -67,5 +70,19 @@ $(document).ready(function () {
         </div>
         `
         questionsParentDev.append(divElement)
+        $(".cross").click(function (event) {
+            // console.log(($(".question-no").length))
+            // console.log("next",$($(this).parents()[2]).next()[0][0])
+            // console.log("parent",questionsParentDev[0])
+            // console.log("parent",questionsParentDev[0].length)
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+            if(!($($(this).parents()[2]).next()[0])){
+                   $(this).parents()[2].remove()
+            }else{
+                alert("Remove the last question plz")
+                return
+            }
+        })
     })
 })

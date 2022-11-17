@@ -64,6 +64,11 @@ hbs.registerHelper('ifEquals', function (arg1, arg2, block) {
     }
     return block.inverse(this);
 });
+// title on allpages
+hbs.registerHelper("site_Title",function(){
+    return process.env.SITE_NAME
+})
+
 
 app.use(allRoutes)
 

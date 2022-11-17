@@ -15,6 +15,13 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     /* transform: translate(0, 50%); */
     width: 18px;
 }
+.cross{
+    font-size: 22px;
+    color: red;
+    font-weight: bold;
+    line-height: 24px;
+}
+
 
 
 

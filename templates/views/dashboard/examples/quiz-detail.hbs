@@ -44,12 +44,23 @@
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>Name</th>
-                                                <th>Course</th>
-                                                <th>File</th>
+                                                <th>Title</th>
+                                                <th>Chapter</th>
+                                                <th>Order</th>
                                             </tr>
                                         </thead>
+                                        {{!-- static --}}
                                         <tbody>
+                                            <tr>
+                                                <td>Mid</td>
+                                                <td>Java</td>
+                                                <td>1</td>
+                                            </tr>
+                                        </tbody>
+
+
+                                        {{!-- dynamic --}}
+                                        {{!-- <tbody>
                                             {{#each chapters}}
                                             <tr>
                                                 <td>{{this.name}}</td>
@@ -61,7 +72,7 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
-                                        </tbody>
+                                        </tbody> --}}
                                         {{!-- <tfoot>
                                             <tr>
                                                 <th>Rendering engine</th>
