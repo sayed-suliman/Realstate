@@ -59,6 +59,11 @@ router.get('/checkout', checkout)
 router.post("/checkout", signUpMiddleware, signUp)
 router.get('/checkout2', doCheckout)
 
+// for testing checkout 
+router.get("/check",(req,res)=>{
+    res.render("check",{title: "Checkout"})
+})
+
 
 // middleware for all dashboard route
 router.use('/dashboard', authenticated)
