@@ -18,7 +18,9 @@ module.exports = {
 
             return res.render('verification', {
                 title: "Verification",
-                user, sent: true
+                user,
+                // sent is used to show the msg at view 
+                sent: true
             })
         }
         return res.redirect('/')

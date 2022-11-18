@@ -38,8 +38,159 @@
                         </div>
                     </div>
                 </div>
+                <!-- Login -->
+                <div class="col-xxl-4 col-xl-4 col-lg-5 text-center login mx-auto">
+                    <div class="card">
+                        <div class="bg-primary w-100 login-image-div">
+                            <img src="./images/login/login-icon.png" class="img-fluid" alt="">
+                        </div>
+                        <h2 class="fw-bold">Login</h2>
+                        <!-- <p class="m-0 mb-3">Already Registered?</p> -->
+                        <p class="m-0 mb-3">Login here with your Email and Password</p>
+                        {{#if error}}
+                        <p class="fs-16 text-danger">{{error}}</p>
+                        {{/if}}
+                        <div class="px-3 mb-3">
+                            <form action="/login" method="post" id="login-form">
+                                <input type="email" class="form-control shadow-none mb-3" required name="email"
+                                    placeholder="Email">
+                                <input type="password" required class="form-control shadow-none mb-3" name="password"
+                                    placeholder="Password">
+                                <button type="submit"
+                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
+                            </form>
+                        </div>
+                        <span>
+                            <a href="/reset-password" class="link-primary">Forgot Password?</a>
+                        </span>
+                    </div>
+                </div>
                 <!-- Register -->
-                <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
+                <div class="col-xxl-4 col-xl-4 col-lg-4 my-3 my-lg-0 text-center register">
+                    <div class="card">
+                        <div class="bg-primary w-100 login-image-div">
+                            <img src="./images/login/register-icon.png" class="img-fluid" alt="">
+                        </div>
+                        <h2 class="fw-bold">Register</h2>
+                        <!-- <p class="m-0 mb-3">New Here?</p> -->
+                        <p class="m-0 mb-3">Register here with your information</p>
+                        <div class="px-3 mb-3">
+                            {{!-- <form action="/checkout" method="post">
+                                <div class="row text-start">
+                                    <input required type="hidden" name="total" value="{{package.total}}">
+                                    <input required type="hidden" name="package" value="{{package._id}}">
+                                    <div class="col-12 mb-3">
+                                        <label for="f-n" class="form-label">Full Name</label>
+                                        <input required type="text" id="f-n" class="form-control shadow-none"
+                                            name="first_name" placeholder="Full Name">
+                                    </div>
+                                    <div class="col-md-12 mb-3">
+                                        <label for="email" class="form-label">Email</label>
+                                        <input required type="email" id="email" class="form-control shadow-none"
+                                            name="email" placeholder="Email">
+                                        {{#if err}}
+                                        <div id="em" class="form-text text-danger">{{err.email}}</div>
+                                        {{/if}}
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label for="password" class="form-label">Password</label>
+                                        <input required id="password" type="password"
+                                            class="form-control shadow-none mb-3 pass" name="password"
+                                            placeholder="Password">
+                                    </div>
+                                    <div class="col-12 mb-3">
+                                        <label for="c_password" class="form-label">Confirm Password</label>
+                                        <input required type="password" id="c_password" name="c_password"
+                                            class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
+                                        {{#if err.password}}
+                                        <div class="form-text text-danger">{{err.password}}</div>
+                                        {{/if}}
+                                    </div>
+                                </div>
+                                <button type="submit"
+                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
+                                    Now</button>
+                                <p class="mt-2">Already a member? <a class="text-primary text-decoration-none"
+                                        href="/login?redirectTo=payment">Login</a></p>
+                            </form> --}}
+                            <button type="button" class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3"
+                                data-bs-toggle="modal" data-bs-target="#registrationModal">
+                                Register Now
+                            </button>
+                            {{!-- Register Modal --}}
+                            <!-- Modal -->
+                            <div class="modal fade" id="registrationModal" data-bs-backdrop="static"
+                                data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <div class="text-end">
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div>
+                                                <h3 class="fw-bold mb-5">Sign Up</h3>
+                                            </div>
+                                            <form action="/register" method="post">
+                                                <div class="row text-start">
+                                                    <input required type="hidden" name="total"
+                                                        value="{{package.total}}">
+                                                    <input required type="hidden" name="package"
+                                                        value="{{package._id}}">
+                                                    <div class="col-12 mb-3">
+                                                        <label for="f-n" class="form-label">Full Name</label>
+                                                        <input required type="text" id="f-n"
+                                                            class="form-control shadow-none" name="name"
+                                                            placeholder="Full Name">
+                                                    </div>
+                                                    <div class="col-md-12 mb-3">
+                                                        <label for="email" class="form-label">Email</label>
+                                                        <input required type="email" id="email"
+                                                            class="form-control shadow-none" name="email"
+                                                            placeholder="Email">
+                                                        {{#if err}}
+                                                        <div id="em" class="form-text text-danger">{{err.email}}</div>
+                                                        {{/if}}
+                                                    </div>
+                                                    <div class="col-12 mb-3">
+                                                        <label for="password" class="form-label">Password</label>
+                                                        <input required id="password" type="password"
+                                                            class="form-control shadow-none pass" name="password"
+                                                            placeholder="Password">
+                                                    </div>
+                                                    <div class="col-12 mb-3">
+                                                        <label for="c_password" class="form-label">Confirm
+                                                            Password</label>
+                                                        <input required type="password" id="c_password"
+                                                            name="c_password" class="form-control shadow-none mb-3 pass"
+                                                            placeholder="Confirm Password">
+                                                        {{#if err.password}}
+                                                        <div class="form-text text-danger">{{err.password}}</div>
+                                                        {{/if}}
+                                                    </div>
+                                                </div>
+                                                <button type="submit"
+                                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
+                                                    Now</button>
+                                                <p class="mt-2">Already a member? <a
+                                                        class="text-primary text-decoration-none"
+                                                        href="/login?redirectTo=payment">Login</a></p>
+                                            </form>
+                                        </div>
+                                        {{!-- <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary">Understood</button>
+                                        </div> --}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Register -->
+                {{!-- <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
                     <div class="card">
                         <div class="bg-primary w-100 login-image-div">
                             <img src="./images/login/register-icon.png" class="img-fluid" alt="">
@@ -116,6 +267,7 @@
                                         {{!-- {{#if err}}
                                         <div id="pi" class="form-text text-danger">{{err.email}}</div>
                                         {{/if}} --}}
+                                        {{!--
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="c_password" class="form-label">Confirm Password</label>
@@ -129,13 +281,21 @@
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
                                     Now</button>
-                                <p class="mt-2">Already a member? <a class="text-primary text-decoration-none" href="/login?redirectTo=payment">Login</a></p>
+                                <p class="mt-2">Already a member? <a class="text-primary text-decoration-none"
+                                        href="/login?redirectTo=payment">Login</a></p>
                             </form>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
         </div>
     </main>
-    {{!--for form validaitons --}}
+    {{!--for form validations --}}
     <script src="./js/form-validations.js"></script>
+    {{>footer}}
+    <script>
+        var err = `{{{err}}}`
+        if(err){
+            new bootstrap.Modal(document.getElementById("registrationModal")).show()
+        }
+    </script>
