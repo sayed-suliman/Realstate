@@ -87,6 +87,9 @@
        
         <!--  pages -->
         {{!-- <li class="nav-item">
+        {{#ifEquals user.role "admin"}}
+        <!-- Examples or pages -->
+        <li class="nav-item">
           <a href="#" id="page-link" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
             <p>
@@ -231,6 +234,7 @@
                 <p>Contact us</p>
               </a>
             </li>
+        {{/ifEquals}}
         <!-- Search -->
         {{!-- <li class="nav-item">
           <a href="/dashboard/search" id="search-link" class="nav-link">
@@ -240,6 +244,7 @@
             </p>
           </a>
         </li> --}}
+        <!--Logout -->
         <li class="nav-item">
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>

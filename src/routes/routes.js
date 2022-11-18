@@ -10,7 +10,7 @@ const { package, addPackage, packagesDetail } = require("../controllers/package"
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
-const { resendCode } = require("../controllers/resendCode")
+const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg ,deleteChapter} = require("../controllers/chapters")
@@ -55,13 +55,15 @@ router.post('/reset-password', doResetPassword)
 
 // checkout post 
 router.get('/checkout', checkout)
+router.get("/register", (req, res) => res.redirect('/'))
+router.post("/register", signUpMiddleware, signUp)
 // sign up used because their is registration on checkout
-router.post("/checkout", signUpMiddleware, signUp)
+// router.post("/checkout", signUpMiddleware, signUp)
 router.get('/checkout2', doCheckout)
 
 // for testing checkout 
-router.get("/check",(req,res)=>{
-    res.render("check",{title: "Checkout"})
+router.get("/check", (req, res) => {
+    res.render("check", { title: "Checkout" })
 })
 
 

@@ -15,7 +15,7 @@ const login = (req, res) => {
     })
 }
 const postLogin = (req, res) => {
-    console.log("session",req.session)
+    console.log("session", req.session)
     res.redirect('/dashboard')
 }
 
