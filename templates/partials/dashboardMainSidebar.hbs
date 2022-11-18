@@ -11,8 +11,8 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
-        <img src="https://ui-avatars.com/api/?name={{user.name}}&rounded=true"
-          class="img-circle elevation-2" alt="User Image">
+        <img src="https://ui-avatars.com/api/?name={{user.name}}&rounded=true" class="img-circle elevation-2"
+          alt="User Image">
       </div>
       <div class="info">
         <a href="#" class="d-block">{{user.name}}</a>
@@ -84,11 +84,11 @@
           </ul>
         </li> --}}
 
-       
+
         <!--  pages -->
-        {{!-- <li class="nav-item">
-        {{#ifEquals user.role "admin"}}
-        <!-- Examples or pages -->
+        <li class="nav-item">
+          {{#ifEquals user.role "admin"}}
+          <!-- Examples or pages -->
         <li class="nav-item">
           <a href="#" id="page-link" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
@@ -123,7 +123,7 @@
               </a>
             </li>
           </ul>
-        </li> --}}
+        </li> 
         <!-- Package -->
         <li class="nav-item">
           <a href="#" id="package-link" class="nav-link">
@@ -220,7 +220,7 @@
             </li>
           </ul>
         </li>
-         {{!-- Users --}}
+        {{!-- Users --}}
         <li class="nav-item">
           <a href="/dashboard/contacts" id="contact-link" class="nav-link">
             <i class="far fa-user nav-icon"></i>
@@ -229,11 +229,11 @@
         </li>
         {{!-- Contact Us --}}
         <li class="nav-item">
-              <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
-                <i class="far fa-address-card nav-icon"></i>
-                <p>Contact us</p>
-              </a>
-            </li>
+          <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
+            <i class="far fa-address-card nav-icon"></i>
+            <p>Contact us</p>
+          </a>
+        </li>
         {{/ifEquals}}
         <!-- Search -->
         {{!-- <li class="nav-item">
