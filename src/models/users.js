@@ -2,17 +2,12 @@ const mongoose = require("mongoose")
 const bcrypt = require("bcrypt")
 const validator = require("validator")
 const userSchema = new mongoose.Schema({
-    first_name: {
+    name: {
         type: String,
         required: true
     },
-    last_name: {
+    driver_license: {
         type: String,
-        required: true
-    },
-    personal_id: {
-        type: String,
-        required: true,
         unique: true
     },
     email: {
@@ -28,28 +23,22 @@ const userSchema = new mongoose.Schema({
         },
     },
     phone: {
-        type: Number,
-        required: true
+        type: Number
     },
     city: {
         type: String,
-        required: true
     },
     address: {
         type: String,
-        required: true
     },
     state: {
         type: String,
-        required: true
     },
     zip_code: {
         type: Number,
-        required: true
     },
     dob: {
         type: Date,
-        required: true
     },
     password: {
         type: String,

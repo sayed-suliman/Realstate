@@ -128,6 +128,15 @@
     background-color: #157347;
     border-color: #157347;
 }
+.btn-paypal {
+    background-color: #3b7bbf;
+    border-color: #3b7bbf;
+}
+
+.btn-paypal:hover {
+    background-color: #1c5999;
+    border-color: #1c5999;
+}
 
 /* anchor tags */
 .link-primary {
