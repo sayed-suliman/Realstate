@@ -17,7 +17,7 @@ const upload = multer({
     // dest:"uploaded-media",
     storage:storage,
     limits:{
-        fileSize:9000000
+        fileSize:10000000
     },
     fileFilter(req,file,cb){
         if(!file.originalname.endsWith('.pdf')){

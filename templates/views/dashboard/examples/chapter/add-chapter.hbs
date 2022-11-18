@@ -1,0 +1,104 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini">
+  <!-- toast(alert)-->
+    {{>alert}}
+  <!-- Site wrapper -->
+  <div class="wrapper">
+    <!-- Navbar -->
+    {{>dashboardNavbar}}
+    <!-- /.navbar -->
+
+    <!-- Main Sidebar Container -->
+    {{>dashboardMainSidebar}}
+
+    <!-- Content Wrapper. Contains page content -->
+    <div class="content-wrapper">
+      <!-- Content Header (Page header) -->
+      <section class="content-header">
+        <div class="container-fluid">
+          <div class="row mb-2">
+            <div class="col-sm-6">
+              <h1>Add Chapter</h1>
+            </div>
+            <div class="col-sm-6">
+              <ol class="breadcrumb float-sm-right">
+                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                <li class="breadcrumb-item active">Add Chapter</li>
+              </ol>
+            </div>
+          </div>
+        </div><!-- /.container-fluid -->
+      </section>
+
+      <!-- Main content -->
+      <section class="content">
+        <form action="add-chapter" method="post" enctype="multipart/form-data">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="card card-primary">
+                <div class="card-header">
+                  <h3 class="card-title">General</h3>
+
+                  <div class="card-tools">
+                    <button type="button" class="btn btn-tool" data-card-widget="collapse" title="Collapse">
+                      <i class="fas fa-minus"></i>
+                    </button>
+                  </div>
+                </div>
+                <div class="card-body">
+                  <div class="form-group">
+                    <label for="inputName">Chapter Name</label>
+                    <input  type="text" id="inputName" name="name" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than 10Mb)</span></label>
+                    <input  type="file" id="coursefile" name="courseFile" class="form-control">
+                  </div>
+                  <div class="form-group">
+                    <label for="inputStatus">Select Course</label>
+                    <select  id="inputStatus" name="course" class="form-control custom-select">
+                      <option selected disabled value="">Select one</option>
+                      {{#each courses}}
+                      <option value="{{this.name}}">{{this.name}}</option>
+                      {{/each}}
+                    </select>
+                  </div>
+                  {{!-- price --}}
+                  {{!-- <div class="form-group">
+                    <label for="price">Package Price</label>
+                    <input type="number" id="price" name="price" class="form-control">
+                  </div> --}}
+                </div>
+                <!-- /.card-body -->
+              </div>
+              <!-- /.card -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button type="reset" class="btn btn-secondary">Cancel</button>
+              <button type="submit" class="btn btn-success float-right">Add new Chapter</button>
+            </div>
+          </div>
+        </form>
+      </section>
+      <!-- /.content -->
+    </div>
+    <!-- /.content-wrapper -->
+
+    {{>dashboardfooter}}
+
+    <!-- Control Sidebar -->
+    <aside class="control-sidebar control-sidebar-dark">
+      <!-- Control sidebar content goes here -->
+    </aside>
+    <!-- /.control-sidebar -->
+  </div>
+  <!-- ./wrapper -->
+
+  <!-- jQuery -->
+  {{>dashboardfooterlinks}}
+</body>
+
+</html>

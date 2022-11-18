@@ -42,6 +42,7 @@ app.use((req, res, next) => {
     res.locals.toast_success = req.flash('alert_success')
     res.locals.toast_error = req.flash('alert_error')
     res.locals.error = req.flash('error')
+    res.locals.user = req.user
     next()
 })
 
@@ -69,6 +70,15 @@ hbs.registerHelper("site_Title",function(){
     return process.env.SITE_NAME
 })
 
+// managing routes.
+hbs.registerHelper("userRoute",function(user){
+    const role = user.data.root._locals.user.role
+    if(role === "student"){
+        return ""
+    }else{
+        return "/admin"
+    }
+})
 
 app.use(allRoutes)
 

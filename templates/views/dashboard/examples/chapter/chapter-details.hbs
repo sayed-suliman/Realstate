@@ -47,6 +47,7 @@
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
+                                                <th>Edit/Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -58,6 +59,18 @@
                                                     <a href="/{{this.path}}" target="_blank">
                                                     <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
                                                     {{this.fileName}}
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a href="/dashboard/chapter-detail/edit-chapter" type="button">
+                                                        <button class="btn btn-success">
+                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                    </a>
+                                                     <a href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}" type="button">
+                                                        <button class="btn btn-danger">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                        </button>
                                                     </a>
                                                 </td>
                                             </tr>

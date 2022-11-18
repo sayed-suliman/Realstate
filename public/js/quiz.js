@@ -25,7 +25,7 @@ $(document).ready(function () {
                     <div class="d-flex  align-items-center">
                         <input type="radio" value="" class="checkBox" name="q-${questionNumber}-op"
                         id="q-${questionNumber}-op1">
-                        <label for="q-${questionNumber}-op1" class="m-0 ml-1">Correct</label>
+                        <label for="q-${questionNumber}-op1" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
                 <div class="d-flex">
@@ -37,7 +37,7 @@ $(document).ready(function () {
                     <div class="d-flex  align-items-center">
                         <input type="radio" value="" class="checkBox" name="q-${questionNumber}-op"
                             id="q-${questionNumber}-op2">
-                        <label for="q-${questionNumber}-op2" class="m-0 ml-1">Correct</label>
+                        <label for="q-${questionNumber}-op2" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
                 <div class="d-flex">
@@ -49,7 +49,7 @@ $(document).ready(function () {
                     <div class="d-flex  align-items-center">
                          <input type="radio" value="" class="checkBox" name="q-${questionNumber}-op"
                             id="q-${questionNumber}-op3">
-                        <label for="q-${questionNumber}-op3" class="m-0 ml-1">Correct</label>
+                        <label for="q-${questionNumber}-op3" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
                 <div class="d-flex">
@@ -61,7 +61,7 @@ $(document).ready(function () {
                     <div class="d-flex  align-items-center">
                         <input type="radio" value="" class="checkBox" name="q-${questionNumber}-op"
                             id="q-${questionNumber}-op4">
-                        <label for="q-${questionNumber}-op4" class="m-0 ml-1">Correct</label>
+                        <label for="q-${questionNumber}-op4" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
 
@@ -71,10 +71,6 @@ $(document).ready(function () {
         `
         questionsParentDev.append(divElement)
         $(".cross").click(function (event) {
-            // console.log(($(".question-no").length))
-            // console.log("next",$($(this).parents()[2]).next()[0][0])
-            // console.log("parent",questionsParentDev[0])
-            // console.log("parent",questionsParentDev[0].length)
             event.stopPropagation();
             event.stopImmediatePropagation();
             if(!($($(this).parents()[2]).next()[0])){

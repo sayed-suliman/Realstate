@@ -10,7 +10,7 @@
 <!-- AdminLTE for demo purposes -->
 <script src="../dashboard/dist/js/demo.js"></script>
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-{{!-- <script src="../dashboard/dist/js/pages/dashboard3.js"></script> --}}
+<script src="../dashboard/dist/js/pages/dashboard3.js"></script>
 <script>
     $(document).ready(function () {
         const url = $(location).attr('href')
@@ -119,13 +119,13 @@
         //contact
         if (url.includes("contact")) {
             $("#dashboard-link").removeClass("active")
-            $('#page-link').addClass("active")
+           // $('#page-link').addClass("active")
             $("#contact-link").addClass("active")
         }
         //contact-us
         if (url.includes("contact-us")) {
             $("#dashboard-link").removeClass("active")
-            $('#page-link').addClass("active")
+           // $('#page-link').addClass("active")
             $("#contact-us-link").addClass("active")
             $("#contact-link").removeClass("active")
         }

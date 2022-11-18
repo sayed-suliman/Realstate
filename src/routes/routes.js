@@ -13,7 +13,7 @@ const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const { addChapter, chapterDetail, postChapter, errorMsg } = require("../controllers/chapters")
+const { addChapter, chapterDetail, postChapter, errorMsg ,deleteChapter} = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
@@ -169,6 +169,7 @@ router.get("/dashboard/add-course", course)
 // course-detail
 router.get("/dashboard/course-detail", courseDetails)
 
+
 // add chapter 
 router.get("/dashboard/add-chapter", addChapter)
 router.post("/dashboard/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
@@ -176,6 +177,26 @@ router.post("/dashboard/add-chapter", upload.single("courseFile"), postChapter, 
 router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // chapter details 
 router.get("/dashboard/chapter-detail", chapterDetail)
+// Edit Chapters 
+router.get("/dashboard/chapter-detail/edit-chapter", chapterDetail)
+// Edit Chapters 
+router.get("/dashboard/chapter-detail/delete-chapter", deleteChapter)
+// Edit Chapters 
+const fs = require("fs")
+router.get("/delete-chapter", async(req,res)=>{
+    try{
+    fs.unlink("public/uploaded-media/423_resume (2)-1668757496789.pdf",(err,data)=>{
+        console.log("delte",err,data)
+    })
+        res.json({
+            msg:'deleted'
+        })
+    }catch (e){
+        res.status(404).json({
+            error:e.message
+        })
+    }
+})
 
 
 // ******************************* Quiz part **************************
