@@ -89,6 +89,40 @@ router.get("/verification", verification)
 router.post("/verifying", doVerification)
 router.get('/resend', resendCode)
 
+// ***********************************
+// Testing stripe payment
+const calculateOrderAmount = (items) => {
+    // Replace this constant with a calculation of the order's amount
+    // Calculate the order total on the server to prevent
+    // people from directly manipulating the amount on the client
+    return 1400;
+};
+const stripe = require("stripe")('sk_test_51M3z5GKOuw5TLgjoZ2Ozl4M3vOED7obBWiwsCKeZEKJcZ3L6ROKBBDXYh2FiqpjXT7wEtLhlYc0PAYkhh1ZlM4gm008NSPI6dl');
+
+router.post('/create-payment-intent', async(req, res) => {
+    const { items } = req.body;
+    console.log(req.body)
+
+    // Create a PaymentIntent with the order amount and currency
+    const paymentIntent = await stripe.paymentIntents.create({
+        amount: calculateOrderAmount(items),
+        currency: "usd",
+        setup_future_usage: 'off_session',
+        // payment_method_types:['card'],
+        automatic_payment_methods: {
+            enabled: true,
+        },
+    });
+    //   console.log(paymentIntent)
+    res.send({
+        clientSecret: paymentIntent.client_secret,
+    });
+})
+
+
+// ***********************************
+
+
 router.get('/payment', payment)
 router.post('/stripe', stripeAPI)
 router.get('/paypal', paypalAPI)

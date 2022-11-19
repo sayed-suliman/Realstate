@@ -13,11 +13,12 @@ const orderSchema = mongoose.Schema({
     },
     amount: Number,
     verified: Boolean,
+    status: String,
     pay_method: String,
     transaction: {
         type: String,
         default: null
     }
-}, { timestamp: true })
+}, { timestamps: true })
 const Order = model('order', orderSchema)
 module.exports = Order;

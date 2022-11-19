@@ -1,7 +1,7 @@
 {{>header}}
 
 <body>
-    <main class="login-page pt-5 ">
+    <main class="login-page py-5 ">
         <div class="container">
             <div class="row">
                 <!-- Order Detail -->
@@ -21,17 +21,9 @@
                                         <td scope="row" class="text-start">Email</td>
                                         <td class="text-end">{{user.email}}</td>
                                     </tr>
-                                    <tr>
-                                        <td scope="row" class="text-start">Driver License / CA ID Number</td>
-                                        <td class="text-end">{{user.personal_id}}</td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row" class="text-start">Phone</td>
-                                        <td class="text-end">{{user.phone}}</td>
-                                    </tr>
                                 </tbody>
                             </table>
-                            <h3 class="mt-5">Order Summary</h3>
+                            <h3>Order Summary</h3>
                             <table class="table table-borderless mt-4">
                                 <tbody>
                                     <tr>
@@ -54,11 +46,51 @@
                                         <th scope="row" class="text-start">Estimated Total</th>
                                         <th class="text-end">${{user.total}}</th>
                                     </tr>
+                                    <tr class="border-bottom">
+                                        <td colspan="2">
+                                            <div class="input-group mb-3 justify-content-end">
+                                                <input type="text" class="st-input" placeholder="Coupon Code"
+                                                    aria-describedby="coupon-code">
+                                                <button class="btn btn-outline-secondary" type="button"
+                                                    id="coupon-code">Apply Code</button>
+                                            </div>
+                                        </td>
+                                    </tr>
                                 </tbody>
                             </table>
+                            <div class="div">
+                                <div class="row mb-3">
+                                    <div class="col">
+                                        <label class="float-start mb-1" for="driver-id">Driver License / CA ID
+                                            Number</label>
+                                        <input class="st-input w-100" type="text"
+                                            placeholder="Driver License / CA ID Number" id="driver-id">
+                                        <p class="fs-12 text-start p-0 ps-1 opacity-0 m-0 text-danger">msg</p>
+                                    </div>
+                                    <div class="col">
+                                        <label class="float-start mb-1" for="dob">Date of Birth</label>
+                                        <input class="st-input w-100" type="date" id="dob">
+                                        <p class="fs-12 text-start p-0 ps-1 opacity-0 m-0 text-danger">msg</p>
+                                    </div>
+                                </div>
+                                {{!-- Stripe Form --}}
+                                <form id="payment-form">
+                                    <div id="payment-element">
+                                        <!--Stripe.js injects the Payment Element-->
+                                    </div>
+                                    <button id="submit" class="stripe-submit btn btn-secondary w-50 mx-auto d-none">
+                                        <div class="spinner hidden" id="spinner"></div>
+                                        <span id="button-text">Pay now</span>
+                                    </button>
+                                    <div id="payment-message" class="hidden"></div>
+                                </form>
+                            </div>
                             <button class="btn btn-success" id="stripe-payment"><i class="fa-solid fa-credit-card"></i>
                                 Card</button>
-                            <a class="btn btn-paypal text-white" href="/paypal?user={{user._id}}"><i class="fa-brands fa-cc-paypal"></i> PayPal</a>
+                            <a class="btn btn-paypal text-white" href="/paypal?user={{user._id}}"><i
+                                    class="fa-brands fa-cc-paypal"></i> PayPal</a>
+
+
                         </div>
                     </div>
                 </div>
@@ -69,4 +101,5 @@
         //Passing to the strip.js file form hbs data
         const user = `{{{user._id}}}`
     </script>
+    <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/stripe.js"></script>
