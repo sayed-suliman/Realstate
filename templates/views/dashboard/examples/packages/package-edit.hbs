@@ -1,8 +1,6 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
-  <!-- toast(alert)-->
-    {{>alert}}
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
@@ -19,12 +17,12 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Add Chapter</h1>
+              <h1>Add Package</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                <li class="breadcrumb-item active">Add Chapter</li>
+                <li class="breadcrumb-item active">Project Add</li>
               </ol>
             </div>
           </div>
@@ -33,7 +31,7 @@
 
       <!-- Main content -->
       <section class="content">
-        <form action="add-chapter" method="post" enctype="multipart/form-data">
+        <form action="update-package?pId={{package._id}}" method="post">
           <div class="row">
             <div class="col-md-6">
               <div class="card card-primary">
@@ -48,35 +46,41 @@
                 </div>
                 <div class="card-body">
                   <div class="form-group">
-                    <label for="inputName">Chapter Name</label>
-                    <input  type="text" required id="inputName" name="name" class="form-control">
+                    <label for="inputName">Package Name</label>
+                    <input type="text" id="inputName" value="{{package.name}}" name="name" class="form-control">
                   </div>
                   <div class="form-group">
-                    <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than 10Mb)</span></label>
-                    <input required  type="file" id="coursefile" name="courseFile" class="form-control">
+                    <label for="inputDescription">Package Description</label>
+                    <textarea id="inputDescription" name="description" class="form-control" rows="4">{{package.description}}</textarea>
                   </div>
                   <div class="form-group">
-                    <label for="inputStatus">Select Course</label>
-                    <select  id="inputStatus" required name="course" class="form-control custom-select">
+                    <label for="inputStatus">Status</label>
+                    <select id="inputStatus" name="status" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
-                      {{#each courses}}
-                      <option value="{{this.name}}">{{this.name}}</option>
-                      {{/each}}
+                      <option value="draft">Draft</option>
+                      <option value="publish">Publish</option>
                     </select>
                   </div>
-                  {{!-- price --}}
-                  {{!-- <div class="form-group">
+                  <div class="row">
+                  <div class="form-group col">
                     <label for="price">Package Price</label>
-                    <input type="number" id="price" name="price" class="form-control">
-                  </div> --}}
-                </div>
-                <div class="card-footer">
-                  <button type="reset" class="btn btn-secondary">Cancel</button>
-              <button type="submit" class="btn btn-success float-right">Add new Chapter</button>
+                    <input type="number" id="price" value="{{package.price}}" name="price" class="form-control">
+                  </div>
+                  <div class="form-group col">
+                    <label for="price">Package Tax(%)</label>
+                    <input type="number" id="price" name="tax" value="{{package.tax}}" class="form-control">
+                  </div>
+                  </div>
                 </div>
                 <!-- /.card-body -->
               </div>
               <!-- /.card -->
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-6">
+              <button type="reset" class="btn btn-secondary">Cancel</button>
+              <button type="submit" class="btn btn-success float-right">Update Package</button>
             </div>
           </div>
         </form>

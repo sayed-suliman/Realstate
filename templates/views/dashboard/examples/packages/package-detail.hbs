@@ -9,6 +9,10 @@
 
         <!-- Main Sidebar Container -->
         {{>dashboardMainSidebar}}
+        {{!-- alert toast --}}
+        {{>alert}}
+
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -16,12 +20,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Courses Detail</h1>
+                            <h1>Packages Detail</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                                <li class="breadcrumb-item active">Courses Detail</li>
+                                <li class="breadcrumb-item active">Packages Detail</li>
                             </ol>
                         </div>
                     </div>
@@ -44,32 +48,36 @@
                                         <thead>
                                             <tr>
                                                 <th>name</th>
-                                                <th>Package</th>
                                                 <th>Description</th>
+                                                <th>Tax</th>
                                                 <th>Status</th>
-                                                <th>Price</th>
+                                                <th>Edit/Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each allCourses}}
+                                            {{#each packages}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>{{this.package.name}}</td>
                                                 <td>{{this.description}}</td>
+                                                <td>{{this.tax}}%</td>
                                                 <td>{{this.status}}</td>
-                                                <td>{{this.price}}</td>
+                                                <td>
+                                                    <a href="/dashboard/package-detail/edit-package?pId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-success">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                    </a>
+                                                    <a href="/dashboard/package-detail/delete-package?cId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </a>
+                                                </td>
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                        {{!-- <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot> --}}
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -118,7 +126,7 @@
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
-                "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
+                "paging": "{{#ifEquals packages.length 10}}true{{/ifEquals}}",
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,

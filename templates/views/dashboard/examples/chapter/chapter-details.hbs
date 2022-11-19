@@ -1,7 +1,7 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
-    
+
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -10,6 +10,11 @@
 
         <!-- Main Sidebar Container -->
         {{>dashboardMainSidebar}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- toast(alert)-->
+
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -57,19 +62,21 @@
                                                 <td>{{this.course.name}}</td>
                                                 <td>
                                                     <a href="/{{this.path}}" target="_blank">
-                                                    <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
-                                                    {{this.fileName}}
+                                                        <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
+                                                        {{this.fileName}}
                                                     </a>
                                                 </td>
                                                 <td>
-                                                    <a href="/dashboard/chapter-detail/edit-chapter" type="button">
+                                                    <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
+                                                        type="button">
                                                         <button class="btn btn-success">
-                                                        <i class="fa-solid fa-pen-to-square"></i>
+                                                            <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                     <a href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}" type="button">
+                                                    <a href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}"
+                                                        type="button">
                                                         <button class="btn btn-danger">
-                                                        <i class="fa-solid fa-trash"></i>
+                                                            <i class="fa-solid fa-trash"></i>
                                                         </button>
                                                     </a>
                                                 </td>

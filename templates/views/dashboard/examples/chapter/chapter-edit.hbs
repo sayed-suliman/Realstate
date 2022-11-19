@@ -2,7 +2,7 @@
 
 <body class="hold-transition sidebar-mini">
   <!-- toast(alert)-->
-    {{>alert}}
+  {{!-- {{>alert}} --}}
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
@@ -24,7 +24,7 @@
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                <li class="breadcrumb-item active">Add Chapter</li>
+                <li class="breadcrumb-item active">Edit Chapter</li>
               </ol>
             </div>
           </div>
@@ -33,7 +33,7 @@
 
       <!-- Main content -->
       <section class="content">
-        <form action="add-chapter" method="post" enctype="multipart/form-data">
+        <form action="update-chapter?cId={{chapter._id}}" method="post" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-6">
               <div class="card card-primary">
@@ -49,38 +49,43 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Chapter Name</label>
-                    <input  type="text" id="inputName" name="name" class="form-control">
+                    <input type="text" required id="inputName" name="name" value="{{chapter.name}}" class="form-control">
                   </div>
                   <div class="form-group">
-                    <label for="coursefile">Chapter Name</label>
-                    <input  type="file" id="coursefile" name="courseFile" class="form-control">
+                    <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than
+                        10Mb)</span></label>
+                    <input type="file" id="coursefile" name="courseFile" class="form-control border-0 px-0">
+                    <p class="mb-0 mt-2">
+                      <b>Already Uploaded Chapter:</b>
+                      <a href="/{{chapter.path}}" target="_blank">{{chapter.fileName}}
+                        <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
+                      </a>
+                    </p>
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Select Course</label>
-                    <select  id="inputStatus" name="course" class="form-control custom-select">
-                      <option selected disabled value="">Select one</option>
+                    <select id="inputStatus" required name="course" class="form-control custom-select">
+                      <option disabled value="">Select one</option>
+                      <option selected value="{{chapter.course.name}}">{{chapter.course.name}}</option>
                       {{#each courses}}
                       <option value="{{this.name}}">{{this.name}}</option>
                       {{/each}}
                     </select>
                   </div>
-                  {{!-- price --}}
-                  {{!-- <div class="form-group">
-                    <label for="price">Package Price</label>
-                    <input type="number" id="price" name="price" class="form-control">
-                  </div> --}}
                 </div>
                 <!-- /.card-body -->
+                <div class="card-footer">
+                  <button type="submit" class="btn btn-success float-right">Update Chapter</button>
+                </div>
               </div>
               <!-- /.card -->
             </div>
           </div>
-          <div class="row">
+          {{!-- <div class="row">
             <div class="col-md-6">
-              <button type="reset" class="btn btn-secondary">Cancel</button>
-              <button type="submit" class="btn btn-success float-right">Add new Chapter</button>
+              <button type="submit" class="btn btn-success float-right">Update Chapter</button>
             </div>
-          </div>
+          </div> --}}
         </form>
       </section>
       <!-- /.content -->
@@ -88,12 +93,6 @@
     <!-- /.content-wrapper -->
 
     {{>dashboardfooter}}
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
   </div>
   <!-- ./wrapper -->
 

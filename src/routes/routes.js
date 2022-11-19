@@ -5,15 +5,15 @@ const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = req
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails } = require("../controllers/courses")
-const { package, addPackage, packagesDetail } = require("../controllers/package")
+const { course, addcourse, courseDetails ,deleteCourse,editCourse,updateCourse} = require("../controllers/courses")
+const { package, addPackage, packagesDetail ,editPackage ,updatePackage} = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const { addChapter, chapterDetail, postChapter, errorMsg ,deleteChapter} = require("../controllers/chapters")
+const { addChapter, chapterDetail, postChapter, errorMsg ,deleteChapter,editChapter,updateChapter} = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
@@ -153,24 +153,36 @@ router.get("/dashboard/language-menu", (req, res) => {
 router.get("/dashboard/profile", (req, res) => {
     res.render("dashboard/examples/profile", { title: "Dashboard | Profile" })
 })
-// package
+
+
+// ****************************** Packages
+//add package
 router.get("/dashboard/add-package", package)
 router.post('/dashboard/add-package', addPackage)
-router.get("/dashboard/edit-package/:id", package)
+// package details
 router.get("/dashboard/package-detail", packagesDetail)
-
-// course-add
-router.post("/dashboard/add-course", addcourse)
-
+router.get("/dashboard/package-detail/edit-package", editPackage)
+router.post("/dashboard/package-detail/update-package", updatePackage)
 
 
+
+//  ******************************* Courses
 // add course
 // render of course add
 router.get("/dashboard/add-course", course)
+// course-add post
+router.post("/dashboard/add-course", addcourse)
 
 // course-detail
 router.get("/dashboard/course-detail", courseDetails)
+// course-delete
+router.get("/dashboard/course-detail/delete-course", deleteCourse)
+// edit-course
+router.get("/dashboard/course-detail/edit-course", editCourse)
+// update-course
+router.post("/dashboard/course-detail/update-course",updateCourse)
 
+// ********************************** Chapter Part
 
 // add chapter 
 router.get("/dashboard/add-chapter", addChapter)
@@ -180,26 +192,11 @@ router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // chapter details 
 router.get("/dashboard/chapter-detail", chapterDetail)
 // Edit Chapters 
-router.get("/dashboard/chapter-detail/edit-chapter", chapterDetail)
-// Edit Chapters 
+router.get("/dashboard/chapter-detail/edit-chapter", editChapter)
+// Delete Chapters 
 router.get("/dashboard/chapter-detail/delete-chapter", deleteChapter)
-// Edit Chapters 
-const fs = require("fs")
-router.get("/delete-chapter", async(req,res)=>{
-    try{
-    fs.unlink("public/uploaded-media/423_resume (2)-1668757496789.pdf",(err,data)=>{
-        console.log("delte",err,data)
-    })
-        res.json({
-            msg:'deleted'
-        })
-    }catch (e){
-        res.status(404).json({
-            error:e.message
-        })
-    }
-})
-
+// Update Chapter
+router.post("/dashboard/chapter-detail/update-chapter",upload.single("courseFile"), updateChapter)
 
 // ******************************* Quiz part **************************
 // add quiz 
