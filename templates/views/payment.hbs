@@ -59,6 +59,7 @@
                                 </tbody>
                             </table>
                             <div class="div">
+                                {{#if showDOB}}
                                 <div class="row mb-3">
                                     <div class="col">
                                         <label class="float-start mb-1" for="driver-id">Driver License / CA ID
@@ -73,22 +74,34 @@
                                         <p class="fs-12 text-start p-0 ps-1 opacity-0 m-0 text-danger">msg</p>
                                     </div>
                                 </div>
+                                {{/if}}
                                 {{!-- Stripe Form --}}
                                 <form id="payment-form">
                                     <div id="payment-element">
                                         <!--Stripe.js injects the Payment Element-->
                                     </div>
-                                    <button id="submit" class="stripe-submit btn btn-secondary w-50 mx-auto d-none">
-                                        <div class="spinner hidden" id="spinner"></div>
-                                        <span id="button-text">Pay now</span>
-                                    </button>
+                                    <div class="payment-form-btn d-none justify-content-center">
+                                        <button id="submit" type="submit"
+                                            class="stripe-submit btn btn-secondary w-50 mt-4 me-2">
+                                            <div class="spinner d-none" id="spinner">
+                                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                            </div>
+                                            <span id="button-text">Pay now</span>
+                                        </button>
+                                        <span class="stripe-submit btn btn-success mt-4" id="stripe-reset">
+                                            <span id="button-text">PayPal</span>
+                                        </span>
+                                    </div>
                                     <div id="payment-message" class="hidden"></div>
                                 </form>
                             </div>
-                            <button class="btn btn-success" id="stripe-payment"><i class="fa-solid fa-credit-card"></i>
-                                Card</button>
-                            <a class="btn btn-paypal text-white" href="/paypal?user={{user._id}}"><i
-                                    class="fa-brands fa-cc-paypal"></i> PayPal</a>
+                            <div class="btn-pay">
+                                <button class="btn btn-success px-5 py-2" id="stripe-payment"><i
+                                        class="fa-solid fa-credit-card"></i>
+                                    Card</button>
+                                <a class="btn btn-paypal px-5 py-2 text-white" href="/paypal?user={{user._id}}"><i
+                                        class="fa-brands fa-cc-paypal"></i> PayPal</a>
+                            </div>
 
 
                         </div>
@@ -100,6 +113,8 @@
     <script>
         //Passing to the strip.js file form hbs data
         const user = `{{{user._id}}}`
+        const driverID_db = `{{{user.driver_license}}}`
+        const dob_db = `{{{user.dob}}}`
     </script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/stripe.js"></script>

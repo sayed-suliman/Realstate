@@ -37,7 +37,7 @@ module.exports = {
                     var { price, tax } = user.package;
                     user.total = price * ((100 + tax) / 100)
 
-                    return res.render('payment', { title: "Payment", user })
+                    return res.render('payment', { title: "Payment", user, showDOB: user.driver_license == undefined ? true : false })
                 }
             }
             return res.redirect('/')
