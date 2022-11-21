@@ -115,8 +115,14 @@ router.get("/dashboard/searchResult", (req, res) => {
 
 
 router.get('/dashboard/view-course', (req, res) => {
-    res.render('dashboard/student/view-course')
+    res.render('dashboard/student/view-course', { title: "Course" })
 })
+router.get('/dashboard/view-chapter', (req, res) => {
+    res.render('dashboard/student/view-chapter', {
+        title: "View Chapter"
+    })
+})
+
 // mailbox =>
 
 // inbox
