@@ -19,5 +19,19 @@ var logged_in = (req, res, next) => {
         next()
     }
 }
+var isStudent = (req,res,next)=>{
+    if(req.user.role === "student"){
+        next()
+    }else{
+        res.redirect("/dashboard")
+    }
+}
+var isAdmin = (req,res,next)=>{
+    if(req.user.role === "admin"){
+        next()
+    }else{
+        res.redirect("/dashboard")
+    }
+}
 
-module.exports = { authenticated, logged_in }
+module.exports = { authenticated, logged_in ,isStudent,isAdmin}

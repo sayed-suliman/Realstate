@@ -2,7 +2,7 @@
 
 <body class="hold-transition sidebar-mini">
   <!-- toast(alert)-->
-    {{>alert}}
+  {{>alert}}
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
@@ -49,15 +49,16 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Chapter Name</label>
-                    <input  type="text" required id="inputName" name="name" class="form-control">
+                    <input type="text" required id="inputName" name="name" class="form-control">
                   </div>
                   <div class="form-group">
-                    <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than 10Mb)</span></label>
-                    <input required  type="file" id="coursefile" name="courseFile" class="form-control">
+                    <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than
+                        10Mb)</span></label>
+                    <input required type="file" id="coursefile" name="courseFile" class="form-control">
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Select Course</label>
-                    <select  id="inputStatus" required name="course" class="form-control custom-select">
+                    <select id="inputStatus" required name="course" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
                       {{#each courses}}
                       <option value="{{this.name}}">{{this.name}}</option>
@@ -72,7 +73,7 @@
                 </div>
                 <div class="card-footer">
                   <button type="reset" class="btn btn-secondary">Cancel</button>
-              <button type="submit" class="btn btn-success float-right">Add new Chapter</button>
+                  <button type="submit" class="btn btn-success float-right">Add new Chapter</button>
                 </div>
                 <!-- /.card-body -->
               </div>

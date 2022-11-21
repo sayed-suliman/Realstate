@@ -98,8 +98,9 @@ const editChapter = async (req, res) => {
         let chapterId = req.query.cId
         const chapter = await Chapters.findById(chapterId).populate("course")
         const courses = await Course.find()
-        res.render("dashboard/examples/chapter/edit-chapter", {
+        res.render("dashboard/examples/chapter/chapter-edit", {
             courses,
+            chapter,
             title: "Dashboard | Edit Chapter",
         })
     } catch (e) {

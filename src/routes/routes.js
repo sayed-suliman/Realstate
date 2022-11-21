@@ -3,7 +3,7 @@ const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
 const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in } = require("../middleware/authentication")
+const { authenticated, logged_in,isStudent,isAdmin } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage ,deletePackage} = require("../controllers/package")
@@ -96,22 +96,6 @@ router.post('/paypal-payment', doPaypal)
 router.post('/paypal-capture', paypalCapture)
 router.get('/success', stripeSuccess)
 
-// table
-router.get("/dashboard/table", (req, res) => {
-    res.render("dashboard/table", { title: "Dashboard | Table" })
-})
-// calender
-router.get("/dashboard/calendar", (req, res) => {
-    res.render("dashboard/calendar", { title: "Dashboard | Calendar" })
-})
-// search
-router.get("/dashboard/search", (req, res) => {
-    res.render("dashboard/search", { title: "Dashboard | Search" })
-})
-// search-result
-router.get("/dashboard/searchResult", (req, res) => {
-    res.render("dashboard/search-result", { title: "Dashboard | Search Result" })
-})
 
 
 router.get('/dashboard/view-course', (req, res) => {
@@ -123,58 +107,28 @@ router.get('/dashboard/view-chapter', (req, res) => {
     })
 })
 
-// mailbox =>
-
-// inbox
-router.get("/dashboard/inbox", (req, res) => {
-    res.render("dashboard/mailbox/inbox", { title: "Dashboard | Inbox" })
-})
-// read
-router.get("/dashboard/read", (req, res) => {
-    res.render("dashboard/mailbox/read", { title: "Dashboard | Read" })
-})
-// compose
-router.get("/dashboard/compose", (req, res) => {
-    res.render("dashboard/mailbox/compose", { title: "Dashboard | Compose" })
-})
 
 // examples =>
 // contact-us
-router.get("/dashboard/contact-us", (req, res) => {
+router.get("/dashboard/contact-us",isStudent,(req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
 })
-// contacts
-router.get("/dashboard/contacts", (req, res) => {
-    res.render("dashboard/examples/contacts", { title: "Dashboard | Contact" })
-})
-// invoice-print
-router.get("/dashboard/invoice-print", (req, res) => {
-    res.render("dashboard/examples/invoice-print", { title: "Dashboard | Invoice Print" })
-})
-// invoice
-router.get("/dashboard/invoice", (req, res) => {
-    res.render("dashboard/examples/invoice", { title: "Dashboard | Invoice" })
-})
-// language-menu
-router.get("/dashboard/language-menu", (req, res) => {
-    res.render("dashboard/examples/language-menu", { title: "Dashboard | Language Menu" })
-})
-// profile
-router.get("/dashboard/profile", (req, res) => {
-    res.render("dashboard/examples/profile", { title: "Dashboard | Profile" })
+// users
+router.get("/dashboard/users", (req, res) => {
+    res.render("dashboard/examples/users", { title: "Dashboard | Users" })
 })
 
 
 // ****************************** Packages
 //add package
-router.get("/dashboard/add-package", package)
-router.post('/dashboard/add-package', addPackage)
+router.get("/dashboard/add-package",isAdmin, isAdmin,package)
+router.post('/dashboard/add-package', isAdmin, addPackage)
 // package details
-router.get("/dashboard/package-detail", packagesDetail)
-router.get("/dashboard/package-detail/edit-package", editPackage)
-router.post("/dashboard/package-detail/update-package", updatePackage)
+router.get("/dashboard/package-detail", isAdmin, packagesDetail)
+router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage)
+router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage)
 // delete package
-router.get("/dashboard/package-detail/delete-package",deletePackage)
+router.get("/dashboard/package-detail/delete-package",isAdmin, deletePackage)
 
 
 
@@ -218,20 +172,27 @@ router.get("/dashboard/add-quiz", addQuiz)
 // quiz details 
 router.get("/dashboard/quiz-detail", quizDetail)
 
-
-
-
-
-// old-dashboard
-router.get("/old/dashboard", (req, res) => {
-    res.render("old-dashboard", { title: "Dashboard" })
+// *************************** Cuopon code generator
+router.get("/cuponGenerator",(req,res)=>{
+    try{
+        // const cuoponCodes = await  
+        res.status(201).json({
+            msg:"Welcome",
+            data:req.body
+        })
+    }catch (e){
+        res.status(404).json({
+            eror:e.message,
+            status:404
+        })
+    }
 })
 
+
+// eroor 500 page
 router.get('/500', (req, res) => res.render('500'))
-router.get("*", (req, res) => {
-    res.json({
-        Error: "404 Page not found"
-    })
+router.get("*", async(req, res) => {
+    res.render("404",{err:"Page not Found Go back"})
 })
 
 

@@ -77,8 +77,16 @@ module.exports = {
         try{
             let packageId = req.query.pId
             const package = await Package.findById(packageId)
+           await package.remove()
+           var msg = encodeMsg("Package and their related courses are deleted","danger")
+           return res.redirect("/dashboard/package-detail?msg=" + msg)
+         
         }catch (e){
-            res.render("404")
+            res.render("500")
+            // res.status(404).json({
+            //     msg:e.message,
+            //     status:404
+            // })
         }
     }
 }

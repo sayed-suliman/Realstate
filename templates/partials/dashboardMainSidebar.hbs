@@ -34,92 +34,16 @@
             </p>
           </a>
         </li>
-        <!-- Tables -->
-        {{!-- <li class="nav-item">
-          <a href="/dashboard/table" id="table-link" class="nav-link">
-            <i class="nav-icon fas fa-table"></i>
-            <p>
-              Tables
-            </p>
-          </a>
-        </li> --}}
-        <!-- Calender -->
-        {{!-- <li class="nav-item">
-          <a href="/dashboard/calendar" id="calendar-link" class="nav-link">
-            <i class="nav-icon fas fa-calendar-alt"></i>
-            <p>
-              Calendar
-              <span class="badge badge-info right">2</span>
-            </p>
+        {{#ifEquals user.role "student"}}
+        <li class="nav-item">
+          <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-id-card-clip nav-icon"></i>
+            <p>Contact us</p>
           </a>
         </li>
-        <!-- Mail Box -->
-        <li class="nav-item">
-          <a href="#" id="mailbox-link" class="nav-link">
-            <i class="nav-icon far fa-envelope"></i>
-            <p>
-              Mailbox
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/inbox" id="inbox-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Inbox</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/dashboard/compose" id="compose-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Compose</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/dashboard/read" id="read-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Read</p>
-              </a>
-            </li>
-          </ul>
-        </li> --}}
+        {{/ifEquals}}
         {{#ifEquals user.role "admin"}}
-        <!-- Examples or pages -->
-        <li class="nav-item">
-          <a href="#" id="page-link" class="nav-link">
-            <i class="nav-icon fas fa-book"></i>
-            <p>
-              Pages
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/invoice" id="invoice-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Invoice</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/dashboard/profile" id="profile-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Profile</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/dashboard/contacts" id="contact-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Contacts</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Contact us</p>
-              </a>
-            </li>
-          </ul>
-        </li>
         <!-- Package -->
         <li class="nav-item">
           <a href="#" id="package-link" class="nav-link">
@@ -215,6 +139,13 @@
               </a>
             </li>
           </ul>
+        </li>
+        <li class="nav-item">
+          <a href="/dashboard/users" id="contact-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-users nav-icon"></i>
+            <p>Users</p>
+          </a>
         </li>
         {{/ifEquals}}
         <!-- Search -->
