@@ -5,15 +5,15 @@ const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = req
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails ,deleteCourse,editCourse,updateCourse} = require("../controllers/courses")
-const { package, addPackage, packagesDetail ,editPackage ,updatePackage} = require("../controllers/package")
+const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
+const { package, addPackage, packagesDetail, editPackage, updatePackage } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const { addChapter, chapterDetail, postChapter, errorMsg ,deleteChapter,editChapter,updateChapter} = require("../controllers/chapters")
+const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
@@ -113,6 +113,10 @@ router.get("/dashboard/searchResult", (req, res) => {
     res.render("dashboard/search-result", { title: "Dashboard | Search Result" })
 })
 
+
+router.get('/dashboard/view-course', (req, res) => {
+    res.render('dashboard/student/view-course')
+})
 // mailbox =>
 
 // inbox
@@ -180,7 +184,7 @@ router.get("/dashboard/course-detail/delete-course", deleteCourse)
 // edit-course
 router.get("/dashboard/course-detail/edit-course", editCourse)
 // update-course
-router.post("/dashboard/course-detail/update-course",updateCourse)
+router.post("/dashboard/course-detail/update-course", updateCourse)
 
 // ********************************** Chapter Part
 
@@ -196,7 +200,7 @@ router.get("/dashboard/chapter-detail/edit-chapter", editChapter)
 // Delete Chapters 
 router.get("/dashboard/chapter-detail/delete-chapter", deleteChapter)
 // Update Chapter
-router.post("/dashboard/chapter-detail/update-chapter",upload.single("courseFile"), updateChapter)
+router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), updateChapter)
 
 // ******************************* Quiz part **************************
 // add quiz 

@@ -1,0 +1,129 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="content pt-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Course Name</h3>
+                                    <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <input type="text" name="table_search" class="form-control float-right"
+                                                placeholder="Search">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-default">
+                                                    <i class="fas fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <tbody>
+                                            <tr>
+                                                <td>Chapter</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quiz</td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chapter</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quiz</td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chapter</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quiz</td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chapter</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quiz</td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Chapter</td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td>Quiz</td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+
+</body>
+
+</html>
