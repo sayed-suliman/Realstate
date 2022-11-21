@@ -6,7 +6,7 @@ const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
-const { package, addPackage, packagesDetail, editPackage, updatePackage } = require("../controllers/package")
+const { package, addPackage, packagesDetail, editPackage, updatePackage ,deletePackage} = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
@@ -167,6 +167,8 @@ router.post('/dashboard/add-package', addPackage)
 router.get("/dashboard/package-detail", packagesDetail)
 router.get("/dashboard/package-detail/edit-package", editPackage)
 router.post("/dashboard/package-detail/update-package", updatePackage)
+// delete package
+router.get("/dashboard/package-detail/delete-package",deletePackage)
 
 
 

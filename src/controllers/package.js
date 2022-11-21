@@ -72,5 +72,13 @@ module.exports = {
         } catch (e) {
             res.render("404")
         }
+    },
+    async deletePackage(req,res) {
+        try{
+            let packageId = req.query.pId
+            const package = await Package.findById(packageId)
+        }catch (e){
+            res.render("404")
+        }
     }
 }
