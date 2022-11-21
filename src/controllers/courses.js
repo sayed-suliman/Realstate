@@ -1,17 +1,17 @@
 const Package = require("../models/package")
 const CourseModel = require("../models/courses")
-const { encodeMsg } = require("../helper/createMsg");
+const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const course = async (req, res) => {
     try {
         // all added packages
-        const packages = await Package.find()
-        console.log(packages)
-        res.render("dashboard/examples/add-course", { title: "Dashboard | Add Course", packages })
+        const packages = await Package.find({ status: "publish" })
+        res.render("dashboard/examples/courses/add-course", { title: "Dashboard | Add Course", packages })
     } catch (e) {
-        res.status(404).json({
-            Error: e,
-            Status: 404
-        })
+        // res.status(404).json({
+        //     Error: e,
+        //     Status: 404
+        // })
+        res.render("404")
     }
 }
 // Add Course
@@ -24,7 +24,7 @@ const addcourse = async (req, res) => {
             description: data.description,
             status: data.status,
             package: package._id,
-            price:data.price
+            price: data.price
         })
         await addCourse.save()
         if (addCourse) {
@@ -49,13 +49,79 @@ const addcourse = async (req, res) => {
 const courseDetails = async (req, res) => {
     try {
         const allCourses = await CourseModel.find().populate('package')
-        res.render("dashboard/examples/course-detail", { title: "Dashboard | Course Detail", allCourses })
+        var msgToken = req.query.msg;
+        var option = {}
+        if (msgToken) {
+            var msg = decodeMsg(msgToken)
+            option = msg
+        }
+        res.render("dashboard/examples/courses/course-detail",
+            {
+                title: "Dashboard | Course Detail",
+                allCourses,
+                toast: Object.keys(option).length == 0 ? undefined : option
+            })
     } catch (e) {
-        res.status(403).json({
-            Error: e.message,
-            Status: 403,
-            msg: "Courses Not Find"
-        })
+        // res.status(403).json({
+        //     Error: e.message,
+        //     Status: 403,
+        //     msg: "Courses Not Find"
+        // })
+        res.render("404")
     }
 }
-module.exports = { course, addcourse, courseDetails }
+// editCourse
+const editCourse = async (req, res) => {
+    try {
+        let courseId = req.query.cId
+        const course = await CourseModel.findById(courseId).populate("package")
+        const packages = await Package.find({ status: "publish" })
+        res.render("dashboard/examples/courses/course-edit",
+            { title: "Dashboard | Edit Course", packages, course }
+        )
+    } catch (e) {
+     res.render("500")
+    }
+}
+// update course
+// update
+const updateCourse = async (req, res) => {
+    try {
+        const data = req.body
+        const course = await CourseModel.findById(req.query.cId)
+        const packageId = await Package.findOne({ name: data.package })
+        await course.updateOne({
+            name: data.name,
+            description: data.description,
+            status: data.status,
+            package: packageId._id,
+            price: data.price
+        })
+        var msg = encodeMsg("Course Updated")
+        return res.redirect("/dashboard/course-detail?msg=" + msg)
+    } catch (e) {
+        res.render('404')
+        // res.status(404).json({
+        //     err: e.message,
+        //     status: 404
+        // })
+    }
+}
+
+
+
+// delete Course
+// Chapter Delete
+const deleteCourse = async (req, res) => {
+    try {
+        const id = await req.query.cId
+        const course = await CourseModel.findById(id)
+        await course.remove()
+        var msg = encodeMsg("Course Deleted", type = 'danger', status = 404)
+        res.redirect("/dashboard/course-detail?msg=" + msg)
+        // const chapterData = 
+    } catch (e) {
+        res.render("500.hbs")
+    }
+}
+module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse }

@@ -79,7 +79,6 @@ hbs.registerHelper("userRoute",function(user){
         return "/admin"
     }
 })
-
 app.use(allRoutes)
 
 

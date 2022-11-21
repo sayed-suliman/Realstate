@@ -83,12 +83,8 @@
             </li>
           </ul>
         </li> --}}
-
-
-        <!--  pages -->
-        <li class="nav-item">
-          {{#ifEquals user.role "admin"}}
-          <!-- Examples or pages -->
+        {{#ifEquals user.role "admin"}}
+        <!-- Examples or pages -->
         <li class="nav-item">
           <a href="#" id="page-link" class="nav-link">
             <i class="nav-icon fas fa-book"></i>
@@ -123,7 +119,7 @@
               </a>
             </li>
           </ul>
-        </li> 
+        </li>
         <!-- Package -->
         <li class="nav-item">
           <a href="#" id="package-link" class="nav-link">
@@ -219,20 +215,6 @@
               </a>
             </li>
           </ul>
-        </li>
-        {{!-- Users --}}
-        <li class="nav-item">
-          <a href="/dashboard/contacts" id="contact-link" class="nav-link">
-            <i class="far fa-user nav-icon"></i>
-            <p>Users</p>
-          </a>
-        </li>
-        {{!-- Contact Us --}}
-        <li class="nav-item">
-          <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
-            <i class="far fa-address-card nav-icon"></i>
-            <p>Contact us</p>
-          </a>
         </li>
         {{/ifEquals}}
         <!-- Search -->
