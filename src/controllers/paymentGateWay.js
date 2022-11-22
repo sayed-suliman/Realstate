@@ -1,21 +1,17 @@
 require('dotenv').config()
 const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
-const paypal = require('@paypal/checkout-server-sdk');
+const paypal = require('paypal-rest-sdk');
 const User = require('../models/users');
 const Order = require("../models/order")
 const Package = require("../models/package")
 const url = require('url');
 const { encodeMsg } = require('../helper/createMsg');
 
-const Environment = process.env.NODE_ENV === "production" ?
-    paypal.core.LiveEnvironment :
-    paypal.core.SandboxEnvironment;
-const paypalClient = new paypal.core.PayPalHttpClient(
-    new Environment(
-        process.env.PAYPAL_CLIENT_ID,
-        process.env.PAYPAL_CLIENT_SECRET
-    )
-)
+paypal.configure({
+    mode: process.env.SITE_DEBUG ? 'sandbox' : 'live',
+    client_id: process.env.PAYPAL_CLIENT_ID,
+    client_secret: process.env.PAYPAL_CLIENT_SECRET
+})
 const calculateOrderAmount = (items) => {
     const { price, tax } = items;
     // calculating tax
@@ -24,150 +20,58 @@ const calculateOrderAmount = (items) => {
     return totalAmount * 100;
 };
 module.exports = {
-    async stripeAPI(req, res) {
-        try {
-            const user = await User.findById(req.body.userId).populate('package');
-            if (user) {
-                const { price, tax, name } = user.package;
-                const totalAmount = price * ((100 + tax) / 100)
-                const session = await stripe.checkout.sessions.
-                    create({
-                        payment_method_types: ["card"],
-                        // mode change to subscription when needed
-                        mode: "payment",
-                        line_items: [{
-                            price_data: {
-                                currency: 'usd',
-                                product_data: { name },
-                                unit_amount: totalAmount * 100
-                            },
-                            quantity: 1
-                        }],
-                        success_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
-                        cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
-                    })
-                res.json({ url: session.url });
-                // console.log(session)
-            }
-        } catch (e) {
-            console.log(e)
-            res.status(500).json({ error: e.message });
-        }
-    },
-    async stripeSuccess(req, res) {
-        try {
-            const userId = req.query.user;
-            const paymentId = req.query.payment_intent;
-            console.log(req.query)
-            const user = await User.findById(userId).populate('package');
-            // const package = await Package.findById(packageId);
-            if (user) {
-                const order = await Order({
-                    user: user._id,
-                    package: user.package._id,
-                    amount: user.package.price * ((100 + user.package.tax) / 100),
-                    pay_method: "Stripe",
-                    transaction: paymentId,
-                    verified: true
-                }).save()
-                if (order) {
-                    return req.login(user, function (err) {
-                        if (err) { return next(err); }
-                        return res.redirect(url.format({
-                            pathname: '/dashboard',
-                            query: {
-                                msg: encodeMsg('Welcome to Real Estate')
-                            }
-                        }));
-                    });
-                }
-            }
-            return res.redirect(url.format({
-                pathname: '/payment',
-                query: {
-                    user: userId
-                }
-            }))
-        } catch (error) {
-            console.log("500 Erro:", error)
-            res.render('500')
-        }
-    },
     async paypalAPI(req, res) {
         try {
-            if (req.query.user) {
-                const user = await User.findById(req.query.user).populate('package');
-                if (user) {
-                    return await res.render('paypal', {
-                        title: "PayPal",
-                        Paypal_client_id: process.env.PAYPAL_CLIENT_ID,
-                        user
-                    });
+            const user = await User.findById(req.body.userId).populate('package');
+            console.log(req.body)
+            const create_payment_json = {
+                intent: 'sale',
+                payer: {
+                    payment_method: 'paypal',
+                },
+                redirect_urls: {
+                    return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
+                    cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
+                },
+                transactions: [
+                    {
+                        item_list: {
+                            items: [
+                                {
+                                    name: user.package.name,
+                                    description: user.package.description,
+                                    quantity: 1,
+                                    price: user.package.price * ((100 + user.package.tax) / 100),
+                                    // tax: '0.45',
+                                    currency: 'USD',
+                                }
+                            ],
+                        },
+                        amount: {
+                            currency: 'USD',
+                            total: user.package.price * ((100 + user.package.tax) / 100),
+                        },
+                        payment_options: {
+                            allowed_payment_method: 'IMMEDIATE_PAY',
+                        },
+                    },
+                ],
+            };
+            paypal.payment.create(create_payment_json, (e, payment) => {
+                if (e) {
+                    console.log(e.response.details)
+                    return res.status(500).json({ error: e.response.message });
                 }
-            }
-            return res.redirect('/')
+                for (let i = 0; i < payment.links.length; i++) {
+                    if (payment.links[i].rel === 'approval_url') {
+                        console.log(payment.links[i].href)
+                        res.send({ url: payment.links[i].href })
+                    }
+                }
+            })
         } catch (error) {
             res.render('500')
         }
-    },
-    async doPaypal(req, res) {
-        const request = new paypal.orders.OrdersCreateRequest();
-        const user = await User.findById(req.body.userId).populate('package');
-        const { price, tax, name } = user.package;
-        const total = price * ((100 + tax) / 100)
-        request.prefer("return=representation");
-        request.requestBody({
-            intent: 'CAPTURE',
-            purchase_units: [{
-                amount: {
-                    currency_code: 'USD',
-                    value: total,
-                    breakdown: {
-                        item_total: {
-                            currency_code: 'USD',
-                            value: total
-                        }
-                    }
-                },
-                items: [{
-                    name,
-                    unit_amount: {
-                        currency_code: 'USD',
-                        value: total
-                    },
-                    quantity: 1
-                }]
-            }]
-        })
-
-        try {
-            const order = await paypalClient.execute(request);
-            res.json({ id: order.result.id })
-        } catch (e) {
-            res.status(500).json({ error: e.message });
-        }
-    },
-    async paypalCapture(req, res) {
-        console.log(req.body)
-        const { id, status, purchase_units } = req.body.order;
-        if (status == "COMPLETED") {
-            console.log()
-            const user = await User.findById(req.body.userId).populate('package')
-            if (user) {
-                const order = await Order({
-                    user: user._id,
-                    package: user.package._id,
-                    amount: purchase_units[0].amount.value,
-                    pay_method: "PayPal",
-                    transaction: id,
-                    verified: true//because the status is completed
-                }).save()
-                if (order) {
-                    return res.status(201).json({ user })
-                }
-            }
-        }
-        return res.json({ failed: "Done" })
     },
     async stripeIntent(req, res) {
         try {
@@ -204,6 +108,48 @@ module.exports = {
             res.send(paymentIntent)
         } catch (error) {
             res.send({ error: "Server error" })
+        }
+    },
+    async paymentSuccess(req, res) {
+        try {
+            const userId = req.query.user;
+            // payment_intent is generated by stripe
+            // paymentId is generated by paypal
+            const paymentId = req.query.payment_intent || req.query.paymentId;
+            console.log(req.query)
+            console.log(paymentId)
+            const user = await User.findById(userId).populate('package');
+            // const package = await Package.findById(packageId);
+            if (user) {
+                const order = await Order({
+                    user: user._id,
+                    package: user.package._id,
+                    amount: user.package.price * ((100 + user.package.tax) / 100),
+                    pay_method: req.query.payment_intent ? "Stripe" : "PayPal",
+                    transaction: paymentId,
+                    verified: true
+                }).save()
+                if (order) {
+                    return req.login(user, function (err) {
+                        if (err) { return next(err); }
+                        return res.redirect(url.format({
+                            pathname: '/dashboard',
+                            query: {
+                                msg: encodeMsg('Welcome to Real Estate')
+                            }
+                        }));
+                    });
+                }
+            }
+            return res.redirect(url.format({
+                pathname: '/payment',
+                query: {
+                    user: userId
+                }
+            }))
+        } catch (error) {
+            console.log("500 Erro:", error)
+            res.render('500')
         }
     }
 }
