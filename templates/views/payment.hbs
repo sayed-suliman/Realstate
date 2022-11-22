@@ -12,6 +12,13 @@
                         </div>
                         <div class="card-body">
                             <table class="table table-borderless">
+                                {{#if alert}}
+                                <div class="alert {{#ifEquals toast.type "success"}} alert-success {{else}} alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
+                                    {{alert.text}}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {{/if}}
                                 <tbody>
                                     <tr>
                                         <th scope="row" class="text-start">Name</th>
@@ -96,11 +103,18 @@
                                 </form>
                             </div>
                             <div class="btn-pay">
-                                <button class="btn btn-success px-5 py-2" id="stripe-payment"><i
-                                        class="fa-solid fa-credit-card"></i>
-                                    Card</button>
-                                <a class="btn btn-paypal px-5 py-2 text-white" href="/paypal?user={{user._id}}"><i
-                                        class="fa-brands fa-cc-paypal"></i> PayPal</a>
+                                <button class="btn btn-success px-5 py-2" id="stripe-payment">
+                                    <div class="spinner d-none" id="spinner-stripe">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                    </div>
+                                    <span id="button-text"><i class="fa-solid fa-credit-card"></i> Card</span>
+                                </button>
+                                <button class="btn btn-paypal px-5 py-2 text-white paypal">
+                                    <div class="spinner d-none" id="spinner-paypal">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                    </div>
+                                    <span id="button-text"><i class="fa-brands fa-cc-paypal"></i> PayPal</span>
+                                </button>
                             </div>
 
 
@@ -110,6 +124,7 @@
             </div>
         </div>
     </main>
+    {{>footer}}
     <script>
         //Passing to the strip.js file form hbs data
         const user = `{{{user._id}}}`
@@ -119,4 +134,4 @@
         const user_name = `{{{user.name}}}`
     </script>
     <script src="https://js.stripe.com/v3/"></script>
-    <script src="/js/stripe.js"></script>
+    <script src="/js/payment.js"></script>
