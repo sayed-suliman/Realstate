@@ -3,10 +3,10 @@ const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
 const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in,isStudent,isAdmin } = require("../middleware/authentication")
+const { authenticated, logged_in, isStudent, isAdmin } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
-const { package, addPackage, packagesDetail, editPackage, updatePackage ,deletePackage} = require("../controllers/package")
+const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
 const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
@@ -14,7 +14,7 @@ const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
-const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
+const { stripeAPI, paypalAPI, doPaypal, paymentSuccess, paypalCapture, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
 const { getVoucher, detailsVoucher } = require("../controllers/vouchers")
@@ -92,15 +92,10 @@ router.get('/resend', resendCode)
 
 // payment routes
 router.get('/payment', payment)
-router.post('/stripe', stripeAPI)
 router.post('/create-payment-intent', stripeIntent)
 router.post('/cancel-payment-intent', stripeIntentCancel)
-router.get('/paypal', paypalAPI)
-router.post('/paypal-payment', doPaypal)
-router.post('/paypal-capture', paypalCapture)
-router.get('/success', stripeSuccess)
-
-
+router.post('/paypal', paypalAPI)
+router.get('/success', paymentSuccess)
 
 router.get('/dashboard/view-course', (req, res) => {
     res.render('dashboard/student/view-course', { title: "Course" })
@@ -110,11 +105,8 @@ router.get('/dashboard/view-chapter', (req, res) => {
         title: "View Chapter"
     })
 })
-
-
-// examples =>
 // contact-us
-router.get("/dashboard/contact-us",isStudent,(req, res) => {
+router.get("/dashboard/contact-us", isStudent, (req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
 })
 // users
@@ -125,14 +117,14 @@ router.get("/dashboard/users", (req, res) => {
 
 // ****************************** Packages
 //add package
-router.get("/dashboard/add-package",isAdmin, isAdmin,package)
+router.get("/dashboard/add-package", isAdmin, isAdmin, package)
 router.post('/dashboard/add-package', isAdmin, addPackage)
 // package details
 router.get("/dashboard/package-detail", isAdmin, packagesDetail)
 router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage)
 router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage)
 // delete package
-router.get("/dashboard/package-detail/delete-package",isAdmin, deletePackage)
+router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage)
 
 
 
@@ -179,23 +171,23 @@ router.get("/dashboard/quiz-detail", quizDetail)
 
 
 // ***************************** Vouchers
-router.get("/dashboard/add-voucher",getVoucher)
+router.get("/dashboard/add-voucher", getVoucher)
 
-router.get("/dashboard/voucher-detail",detailsVoucher)
+router.get("/dashboard/voucher-detail", detailsVoucher)
 
 
 // *************************** Cuopon code generator
-router.get("/cuponGenerator",(req,res)=>{
-    try{
+router.get("/cuponGenerator", (req, res) => {
+    try {
         // const cuoponCodes = await  
         res.status(201).json({
-            msg:"Welcome",
-            data:req.body
+            msg: "Welcome",
+            data: req.body
         })
-    }catch (e){
+    } catch (e) {
         res.status(404).json({
-            eror:e.message,
-            status:404
+            eror: e.message,
+            status: 404
         })
     }
 })
@@ -203,8 +195,8 @@ router.get("/cuponGenerator",(req,res)=>{
 
 // eroor 500 page
 router.get('/500', (req, res) => res.render('500'))
-router.get("*", async(req, res) => {
-    res.render("404",{err:"Page not Found Go back"})
+router.get("*", async (req, res) => {
+    res.render("404", { err: "Page not Found Go back" })
 })
 
 

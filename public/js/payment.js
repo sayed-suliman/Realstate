@@ -1,6 +1,7 @@
 const stripeBtn = document.getElementById('stripe-payment');
 const id = document.getElementById('driver-id')
 const dob = document.getElementById('dob')
+const paypalBtn = document.querySelector('.paypal')
 stripeBtn.addEventListener('click', function () {
     // This is your test publishable API key.
     const stripe = Stripe("pk_test_51M3z5GKOuw5TLgjou3da1GAfExQ2086PzeF7XIIhjvWs7FtT4hgVPiZW6LdZaBWWHetRLIbIUeSbO3isf4d72DWY00WRc6mhDD");
@@ -167,6 +168,23 @@ stripeBtn.addEventListener('click', function () {
         }
     }
 
+})
 
+paypalBtn.addEventListener('click', async function () {
+    paypalBtn.disabled = true;
+    document.querySelector('#stripe-payment').disabled = true;
+    document.querySelector("#spinner-paypal").classList.remove("d-none");
+    paypalBtn.querySelector("#button-text").classList.add("d-none");
 
+    const response = await fetch('/paypal', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: user })
+    })
+    if (response.ok) {
+        const { url } = await response.json()
+        window.location.href = url
+    } else {
+        console.error(response)
+    }
 })

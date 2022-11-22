@@ -138,6 +138,12 @@
     background-color: #1c5999;
     border-color: #1c5999;
 }
+.btn-paypal:disabled {
+    color: var(--bs-bt-disabled-color);
+    background-color: #1c5999;
+    border-color: #1c5999;
+    opacity: var(--bs-btn-disabled-opacity);
+}
 
 /* anchor tags */
 .link-primary {
