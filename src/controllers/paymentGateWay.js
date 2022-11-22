@@ -57,7 +57,8 @@ module.exports = {
     async stripeSuccess(req, res) {
         try {
             const userId = req.query.user;
-            // const packageId = req.query.package;
+            const paymentId = req.query.payment_intent;
+            console.log(req.query)
             const user = await User.findById(userId).populate('package');
             // const package = await Package.findById(packageId);
             if (user) {
@@ -66,7 +67,8 @@ module.exports = {
                     package: user.package._id,
                     amount: user.package.price * ((100 + user.package.tax) / 100),
                     pay_method: "Stripe",
-                    verified: true//need to change when the payment is confirmed 
+                    transaction: paymentId,
+                    verified: true
                 }).save()
                 if (order) {
                     return req.login(user, function (err) {
@@ -167,10 +169,9 @@ module.exports = {
         }
         return res.json({ failed: "Done" })
     },
-    async stripeTest(req, res) {
+    async stripeIntent(req, res) {
         try {
             const { userId, id, dob } = req.body;
-            console.log(req.body)
             const user = await User.findById(userId).populate('package');
             if (user) {
                 await user.updateOne({ dob, driver_license: id })
@@ -194,7 +195,7 @@ module.exports = {
             res.send({ error: "Server error" })
         }
     },
-    async stripeTestCancel(req, res) {
+    async stripeIntentCancel(req, res) {
         try {
             const paymentIntent = await stripe.paymentIntents.cancel(
                 req.body.id

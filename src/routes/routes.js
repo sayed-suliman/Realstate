@@ -14,7 +14,7 @@ const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg } = require("../controllers/chapters")
-const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture, stripeTest, stripeTestCancel } = require("../controllers/paymentGateWay")
+const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
 
@@ -92,8 +92,6 @@ router.get('/resend', resendCode)
 // ***********************************
 // Testing stripe payment
 
-router.post('/create-payment-intent', stripeTest)
-router.post('/cancel-payment-intent', stripeTestCancel)
 
 
 // ***********************************
@@ -101,6 +99,8 @@ router.post('/cancel-payment-intent', stripeTestCancel)
 
 router.get('/payment', payment)
 router.post('/stripe', stripeAPI)
+router.post('/create-payment-intent', stripeIntent)
+router.post('/cancel-payment-intent', stripeIntentCancel)
 router.get('/paypal', paypalAPI)
 router.post('/paypal-payment', doPaypal)
 router.post('/paypal-capture', paypalCapture)

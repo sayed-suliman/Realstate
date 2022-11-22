@@ -1,26 +1,7 @@
 const stripeBtn = document.getElementById('stripe-payment');
-const id = document.getElementById('driver-id') 
+const id = document.getElementById('driver-id')
 const dob = document.getElementById('dob')
 stripeBtn.addEventListener('click', function () {
-    // fetch('/stripe', {
-    //     method: 'POST',
-    //     headers: {
-    //         'Content-Type': 'application/json'
-    //     },
-    //     body: JSON.stringify({
-    //         userId: user
-    //     })
-    // }).then(res => {
-    //     if (res.ok) {
-    //         return res.json();
-    //     }
-    //     return res.json().then(json => Promise.reject(json));
-    // }).then((req) => {
-    //     window.location = req.url;
-    // }).catch(e => {
-    //     console.error(e.error)
-    // })
-
     // This is your test publishable API key.
     const stripe = Stripe("pk_test_51M3z5GKOuw5TLgjou3da1GAfExQ2086PzeF7XIIhjvWs7FtT4hgVPiZW6LdZaBWWHetRLIbIUeSbO3isf4d72DWY00WRc6mhDD");
     const showInputMessage = (element, msg) => {
@@ -33,7 +14,7 @@ stripeBtn.addEventListener('click', function () {
         }, 4000)
 
     }
-    if(!driverID_db && !dob_db){
+    if (!driverID_db && !dob_db) {
         if (!id.value && !dob.value) {
             showInputMessage(id, "This field is required")
             showInputMessage(dob, "This field is required")
@@ -47,7 +28,7 @@ stripeBtn.addEventListener('click', function () {
         } else if (dob.value) {
             const now = new Date();
             const age = new Date(dob.value)
-    
+
             if (age.getDate() >= now.getDate()) {
                 showInputMessage(dob, "DOB can't be greater than or equal to Today.")
                 return;
@@ -67,10 +48,11 @@ stripeBtn.addEventListener('click', function () {
         .addEventListener("submit", handleSubmit);
     // Fetches a payment intent and captures the client secret
     async function initialize() {
+        var body = driverID_db ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
         const response = await fetch("/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ userId: user, id: id.value, dob: dob.value }),
+            body: JSON.stringify(body),
         });
         const { clientSecret, id: payId } = await response.json();
         paymentId = payId
@@ -92,12 +74,17 @@ stripeBtn.addEventListener('click', function () {
     async function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
-
+        console.log(paymentId)
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                // Make sure to change this to your payment completion page
                 return_url: `${window.location.origin}/success?user=${user}`,
+                payment_method_data: {
+                    billing_details: {
+                        name: user_name,
+                        email: user_email
+                    }
+                }
             }
         });
         if (error.type === "card_error" || error.type === "validation_error") {
