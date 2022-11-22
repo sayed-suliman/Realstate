@@ -17,7 +17,7 @@ const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editCha
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
-const { getVoucher, detailsVoucher } = require("../controllers/vouchers")
+const { getVoucher, detailsVoucher, postVoucher, deleteVoucher } = require("../controllers/vouchers")
 
 
 router.get("/test", (req, res) => {
@@ -180,9 +180,11 @@ router.get("/dashboard/quiz-detail", quizDetail)
 
 // ***************************** Vouchers
 router.get("/dashboard/add-voucher",getVoucher)
+router.post("/dashboard/voucher-generated",postVoucher)
 
 router.get("/dashboard/voucher-detail",detailsVoucher)
-
+// delete
+router.get("/dashboard/voucher-detail/delete-voucher", deleteVoucher)
 
 // *************************** Cuopon code generator
 router.get("/cuponGenerator",(req,res)=>{

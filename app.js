@@ -79,6 +79,28 @@ hbs.registerHelper("userRoute",function(user){
         return "/admin"
     }
 })
+// check status pending expires or active
+hbs.registerHelper("checkStatus",(start,end)=>{
+   const todayDate = new Date
+   if(todayDate > end){
+       return "Expired"
+    }
+    if(todayDate < start){
+        return "Pending"
+    }
+   if( todayDate > start && todayDate < end ){
+       return "Active"
+    }
+})
+// format date
+hbs.registerHelper("formatDate",(date)=>{
+    let year = date.getFullYear()
+    let month = date.getMonth()
+    let day = date.getDate()
+  return `${day} - ${month} - ${year}` 
+})
+
+
 app.use(allRoutes)
 
 

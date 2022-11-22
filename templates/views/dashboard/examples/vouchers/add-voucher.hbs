@@ -10,6 +10,9 @@
         <!-- Main Sidebar Container -->
         {{>dashboardMainSidebar}}
 
+        {{!-- alert toast --}}
+        {{>alert}}
+        
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
             <!-- Content Header (Page header) -->
@@ -17,7 +20,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Add Course</h1>
+                            <h1>Generate Voucher Code</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -31,7 +34,7 @@
 
             <!-- Main content -->
             <section class="content">
-                <form action="add-course" method="post">
+                <form action="voucher-generated" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -46,37 +49,107 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="form-group">
-                                        <label for="inputName">Course Name</label>
-                                        <input required type="text" id="inputName" name="name" class="form-control">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="howLong">Length of Voucher</label>
+                                                <select required id="howLong" name="long" class="form-control">
+                                                    <option disabled selected value="">Select Lenght of Code</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {{!-- <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="counts">Counts of Vouchers</label>
+                                                <input required type="text" id="counts" name="counts"
+                                                    class="form-control" placeholder="Generate number of codes">
+                                            </div>
+                                        </div> --}}
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label for="pattern">Pattern <span
+                                                        class="small">(optional)</span></label>
+                                                <input type="text" id="pattern" name="pattern" class="form-control"
+                                                    placeholder="##-##-##">
+                                            </div>
+                                        </div>
+                                        {{!-- <div class="col-4 align-self-end">
+                                            <div class="form-group">
+                                                <button class="btn btn-danger">
+                                                    Generate Code
+                                                </button>
+                                            </div>
+                                        </div> --}}
+                                    </div>
+                                    {{!-- 2nd row --}}
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <div class="form-group">
+                                                <label for="length">Length</label>
+                                                <input required type="number" id="length" name="length"
+                                                    class="form-control">
+                                            </div>
+                                        </div>
+                                        <div class="col-4 align-self-end">
+                                            <div class="form-group">
+                                                <div
+                                                    class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
+                                                    <input type="checkbox" class="custom-control-input"
+                                                        id="checkUnlimited">
+                                                    <label class="custom-control-label" for="checkUnlimited">For
+                                                        Unlimited</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {{!-- 3rd row --}}
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label>Valid From</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input required type="text" class="form-control"
+                                                        data-inputmask-alias="datetime"
+                                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask=""
+                                                        inputmode="numeric" name="validFrom">
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                        <div class="col-6">
+                                            <div class="form-group">
+                                                <label>Valid Till</label>
+                                                <div class="input-group">
+                                                    <div class="input-group-prepend">
+                                                        <span class="input-group-text"><i
+                                                                class="far fa-calendar-alt"></i>
+                                                        </span>
+                                                    </div>
+                                                    <input required type="text" class="form-control"
+                                                        data-inputmask-alias="datetime"
+                                                        data-inputmask-inputformat="dd/mm/yyyy" data-mask=""
+                                                        inputmode="numeric" name="validTill">
+                                                </div>
+
+                                            </div>
+                                        </div>
                                     </div>
                                     <div class="form-group">
-                                        <label for="inputDescription">Course Description</label>
-                                        <textarea id="inputDescription" name="description" class="form-control"
-                                            rows="4"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputStatus">Status</label>
-                                        <select required id="inputStatus" name="status"
-                                            class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
-                                            <option value="draft">Draft</option>
-                                            <option value="publish">Publish</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="price">Price</label>
-                                        <input required type="number" id="price" name="price" class="form-control">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputStatus">Add Packages</label>
-                                        <select required id="inputStatus" name="package"
-                                            class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
-                                            {{#each packages}}
-                                            <option value="{{this.name}}">{{this.name}}</option>
-                                            {{/each}}
-                                        </select>
+                                        <label for="discount">Discount (%)</label>
+                                        <input required type="number" id="discount" name="discount"
+                                            class="form-control">
                                     </div>
                                     {{!-- price --}}
                                     {{!-- <div class="form-group">
@@ -111,6 +184,164 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+
+
+
+
+    <script src="/dashboard/plugins/select2/js/select2.full.min.js"></script>
+
+    <script src="/dashboard/plugins/inputmask/jquery.inputmask.min.js"></script>
+
+    <script src="/dashboard/plugins/daterangepicker/daterangepicker.js"></script>
+
+    {{!-- custom js or jquery --}}
+    <script>
+        $(document).ready(function () {
+            $("#checkUnlimited").change(function () {
+                if (this.checked === true) {
+                    $("#length").prop('disabled', true)
+                    $("#length").val("")
+                } else {
+                    $("#length").prop('disabled', false)
+                }
+            })
+        })
+    </script>
+
+    <script>
+        $(function () {
+            //Initialize Select2 Elements
+            $('.select2').select2()
+
+            //Initialize Select2 Elements
+            $('.select2bs4').select2({
+                theme: 'bootstrap4'
+            })
+
+            //Datemask dd/mm/yyyy
+            $('#datemask').inputmask('dd/mm/yyyy', { 'placeholder': 'dd/mm/yyyy' })
+            //Datemask2 mm/dd/yyyy
+            $('#datemask2').inputmask('mm/dd/yyyy', { 'placeholder': 'mm/dd/yyyy' })
+            //Money Euro
+            $('[data-mask]').inputmask()
+
+            //Date picker
+            $('#reservationdate').datetimepicker({
+                format: 'L'
+            });
+
+            //Date and time picker
+            $('#reservationdatetime').datetimepicker({ icons: { time: 'far fa-clock' } });
+
+            //Date range picker
+            $('#reservation').daterangepicker()
+            //Date range picker with time picker
+            $('#reservationtime').daterangepicker({
+                timePicker: true,
+                timePickerIncrement: 30,
+                locale: {
+                    format: 'MM/DD/YYYY hh:mm A'
+                }
+            })
+            //Date range as a button
+            $('#daterange-btn').daterangepicker(
+                {
+                    ranges: {
+                        'Today': [moment(), moment()],
+                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                        'This Month': [moment().startOf('month'), moment().endOf('month')],
+                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
+                    },
+                    startDate: moment().subtract(29, 'days'),
+                    endDate: moment()
+                },
+                function (start, end) {
+                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
+                }
+            )
+
+            //Timepicker
+            $('#timepicker').datetimepicker({
+                format: 'LT'
+            })
+
+            //Bootstrap Duallistbox
+            $('.duallistbox').bootstrapDualListbox()
+
+            //Colorpicker
+            $('.my-colorpicker1').colorpicker()
+            //color picker with addon
+            $('.my-colorpicker2').colorpicker()
+
+            $('.my-colorpicker2').on('colorpickerChange', function (event) {
+                $('.my-colorpicker2 .fa-square').css('color', event.color.toString());
+            })
+
+            $("input[data-bootstrap-switch]").each(function () {
+                $(this).bootstrapSwitch('state', $(this).prop('checked'));
+            })
+
+        })
+        // BS-Stepper Init
+        document.addEventListener('DOMContentLoaded', function () {
+            window.stepper = new Stepper(document.querySelector('.bs-stepper'))
+        })
+
+        // DropzoneJS Demo Code Start
+        Dropzone.autoDiscover = false
+
+        // Get the template HTML and remove it from the doumenthe template HTML and remove it from the doument
+        var previewNode = document.querySelector("#template")
+        previewNode.id = ""
+        var previewTemplate = previewNode.parentNode.innerHTML
+        previewNode.parentNode.removeChild(previewNode)
+
+        var myDropzone = new Dropzone(document.body, { // Make the whole body a dropzone
+            url: "/target-url", // Set the url
+            thumbnailWidth: 80,
+            thumbnailHeight: 80,
+            parallelUploads: 20,
+            previewTemplate: previewTemplate,
+            autoQueue: false, // Make sure the files aren't queued until manually added
+            previewsContainer: "#previews", // Define the container to display the previews
+            clickable: ".fileinput-button" // Define the element that should be used as click trigger to select files.
+        })
+
+        myDropzone.on("addedfile", function (file) {
+            // Hookup the start button
+            file.previewElement.querySelector(".start").onclick = function () { myDropzone.enqueueFile(file) }
+        })
+
+        // Update the total progress bar
+        myDropzone.on("totaluploadprogress", function (progress) {
+            document.querySelector("#total-progress .progress-bar").style.width = progress + "%"
+        })
+
+        myDropzone.on("sending", function (file) {
+            // Show the total progress bar when upload starts
+            document.querySelector("#total-progress").style.opacity = "1"
+            // And disable the start button
+            file.previewElement.querySelector(".start").setAttribute("disabled", "disabled")
+        })
+
+        // Hide the total progress bar when nothing's uploading anymore
+        myDropzone.on("queuecomplete", function (progress) {
+            document.querySelector("#total-progress").style.opacity = "0"
+        })
+
+        // Setup the buttons for all transfers
+        // The "add files" button doesn't need to be setup because the config
+        // `clickable` has already been specified.
+        document.querySelector("#actions .start").onclick = function () {
+            myDropzone.enqueueFiles(myDropzone.getFilesWithStatus(Dropzone.ADDED))
+        }
+        document.querySelector("#actions .cancel").onclick = function () {
+            myDropzone.removeAllFiles(true)
+        }
+  // DropzoneJS Demo Code End
+    </script>
 </body>
 
 </html>
