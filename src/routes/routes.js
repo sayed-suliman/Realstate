@@ -17,6 +17,7 @@ const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editCha
 const { stripeAPI, paypalAPI, doPaypal, stripeSuccess, paypalCapture } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
+const { getVoucher, detailsVoucher } = require("../controllers/vouchers")
 
 
 router.get("/test", (req, res) => {
@@ -171,6 +172,14 @@ router.get("/dashboard/add-quiz", addQuiz)
 
 // quiz details 
 router.get("/dashboard/quiz-detail", quizDetail)
+
+
+
+// ***************************** Vouchers
+router.get("/dashboard/add-voucher",getVoucher)
+
+router.get("/dashboard/voucher-detail",detailsVoucher)
+
 
 // *************************** Cuopon code generator
 router.get("/cuponGenerator",(req,res)=>{

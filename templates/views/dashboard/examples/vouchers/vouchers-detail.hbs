@@ -1,0 +1,142 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+        {{!-- alert toast --}}
+        {{>alert}}
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Packages Detail</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Packages Detail</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                {{!-- <div class="card-header">
+                                    <h3 class="card-title">DataTable with minimal features & hover style</h3>
+                                </div> --}}
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>name</th>
+                                                <th>Description</th>
+                                                <th>Tax</th>
+                                                <th>Status</th>
+                                                <th>Edit/Delete</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each packages}}
+                                            <tr>
+                                                <td>{{this.name}}</td>
+                                                <td>{{this.description}}</td>
+                                                <td>{{this.tax}}%</td>
+                                                <td>{{this.status}}</td>
+                                                <td>
+                                                    <a href="/dashboard/package-detail/edit-package?pId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-success">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                    </a>
+                                                    <a href="/dashboard/package-detail/delete-package?pId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!-- table jquery plugins --}}
+    <!-- DataTables  & Plugins -->
+    <script src="../dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/jszip/jszip.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": "{{#ifEquals packages.length 10}}true{{/ifEquals}}",
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+
+</body>
+
+</html>

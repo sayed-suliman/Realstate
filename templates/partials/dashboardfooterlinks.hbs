@@ -110,11 +110,23 @@
             $('#quiz-link').addClass("active")
             $("#quiz-add-link").addClass("active")
         }
-         //chapter-detail
+         //quiz-detail
         if (url.includes("quiz-detail")) {
             $("#dashboard-link").removeClass("active")
             $('#quiz-link').addClass("active")
             $("#quiz-detail-link").addClass("active")
+        }
+        //add-voucher
+         if (url.includes("add-voucher")) {
+            $("#dashboard-link").removeClass("active")
+            $('#voucher-link').addClass("active")
+            $("#voucher-add-link").addClass("active")
+        }
+         //voucher-detail
+        if (url.includes("voucher-detail")) {
+            $("#dashboard-link").removeClass("active")
+            $('#voucher-link').addClass("active")
+            $("#voucher-detail-link").addClass("active")
         }
         //users
         if (url.includes("users")) {
