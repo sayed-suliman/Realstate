@@ -5,6 +5,9 @@ const { encodeMsg } = require("../helper/createMsg");
 
 module.exports = {
     async payment(req, res) {
+        console.log(res.locals.error.length)
+        var msg = { text: res.locals.error, type: 'danger' }
+
         const userID = req.query.user
         try {
             if (userID) {
@@ -13,6 +16,7 @@ module.exports = {
                     const orders = await Order.find({ user: user._id })
                         .populate('package', '_id').populate('user', '_id');
                     if (orders.length > 0) {
+                        console.log('user order exist')
                         // return array of bool
                         var checkAlreadyBuyPackage = orders.map((order) => {
                             return order.package._id.toString() == user.package._id.toString()
@@ -36,8 +40,8 @@ module.exports = {
                     }
                     var { price, tax } = user.package;
                     user.total = price * ((100 + tax) / 100)
-
-                    return res.render('payment', { title: "Payment", user, showDOB: (user.driver_license == undefined || user.dob == undefined) ? true : false })
+                    console.log(msg)
+                    return res.render('payment', { title: "Payment", user, alert: res.locals.error.length>0 ? msg : undefined, showDOB: (user.driver_license == undefined || user.dob == undefined) ? true : false })
                 }
             }
             return res.redirect('/')
