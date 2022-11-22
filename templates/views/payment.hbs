@@ -96,9 +96,12 @@
                                 </form>
                             </div>
                             <div class="btn-pay">
-                                <button class="btn btn-success px-5 py-2" id="stripe-payment"><i
-                                        class="fa-solid fa-credit-card"></i>
-                                    Card</button>
+                                <button class="btn btn-success px-5 py-2" id="stripe-payment">
+                                    <div class="spinner d-none" id="spinner-stripe">
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                    </div>
+                                    <span id="button-text"><i class="fa-solid fa-credit-card"></i> Card</span>
+                                </button>
                                 <button class="btn btn-paypal px-5 py-2 text-white paypal">
                                     <div class="spinner d-none" id="spinner-paypal">
                                         <i class="fa-solid fa-circle-notch fa-spin"></i>

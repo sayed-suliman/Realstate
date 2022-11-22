@@ -2,20 +2,21 @@ const stripeBtn = document.getElementById('stripe-payment');
 const id = document.getElementById('driver-id')
 const dob = document.getElementById('dob')
 const paypalBtn = document.querySelector('.paypal')
+const showInputMessage = (element, msg) => {
+    element.nextElementSibling.classList.replace('opacity-0', 'opacity-100')
+    element.nextElementSibling.textContent = msg
+
+    setTimeout(() => {
+        element.nextElementSibling.classList.replace('opacity-100', 'opacity-0')
+        element.nextElementSibling.textContent = ""
+    }, 4000)
+
+}
+
 stripeBtn.addEventListener('click', function () {
     // This is your test publishable API key.
     const stripe = Stripe("pk_test_51M3z5GKOuw5TLgjou3da1GAfExQ2086PzeF7XIIhjvWs7FtT4hgVPiZW6LdZaBWWHetRLIbIUeSbO3isf4d72DWY00WRc6mhDD");
-    const showInputMessage = (element, msg) => {
-        element.nextElementSibling.classList.replace('opacity-0', 'opacity-100')
-        element.nextElementSibling.textContent = msg
-
-        setTimeout(() => {
-            element.nextElementSibling.classList.replace('opacity-100', 'opacity-0')
-            element.nextElementSibling.textContent = ""
-        }, 4000)
-
-    }
-    if (!driverID_db && !dob_db) {
+    if (!driverID_db || !dob_db) {
         if (!id.value && !dob.value) {
             showInputMessage(id, "This field is required")
             showInputMessage(dob, "This field is required")
@@ -36,6 +37,7 @@ stripeBtn.addEventListener('click', function () {
             }
         }
     }
+    setCardBtnLoading(true)
 
     let elements;
     let paymentId;
@@ -43,13 +45,14 @@ stripeBtn.addEventListener('click', function () {
 
     initialize();
     checkStatus();
+    setCardBtnLoading(false)
 
     document
         .querySelector("#payment-form")
         .addEventListener("submit", handleSubmit);
     // Fetches a payment intent and captures the client secret
     async function initialize() {
-        var body = driverID_db ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
+        var body = (driverID_db && dob_db) ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
         const response = await fetch("/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -167,19 +170,53 @@ stripeBtn.addEventListener('click', function () {
             document.querySelector("#button-text").classList.remove("d-none");
         }
     }
-
+    function setCardBtnLoading(isLoading) {
+        if (isLoading) {
+            stripeBtn.disabled = true;
+            paypalBtn.disabled = true;
+            document.querySelector("#spinner-stripe").classList.remove("d-none");
+            stripeBtn.querySelector("#button-text").classList.add("d-none");
+        } else {
+            stripeBtn.disabled = false;
+            paypalBtn.disabled = false;
+            document.querySelector("#spinner-stripe").classList.add("d-none");
+            stripeBtn.querySelector("#button-text").classList.remove("d-none");
+        }
+    }
 })
 
 paypalBtn.addEventListener('click', async function () {
+    if (!driverID_db || !dob_db) {
+        if (!id.value && !dob.value) {
+            showInputMessage(id, "This field is required")
+            showInputMessage(dob, "This field is required")
+            return;
+        } else if (!id.value) {
+            showInputMessage(id, "This field is required")
+            return;
+        } else if (!dob.value) {
+            showInputMessage(dob, "This field is required")
+            return;
+        } else if (dob.value) {
+            const now = new Date();
+            const age = new Date(dob.value)
+
+            if (age.getDate() >= now.getDate()) {
+                showInputMessage(dob, "DOB can't be greater than or equal to Today.")
+                return;
+            }
+        }
+    }
     paypalBtn.disabled = true;
-    document.querySelector('#stripe-payment').disabled = true;
+    stripeBtn.disabled = true;
     document.querySelector("#spinner-paypal").classList.remove("d-none");
     paypalBtn.querySelector("#button-text").classList.add("d-none");
 
+    var body = (driverID_db && dob_db) ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
     const response = await fetch('/paypal', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ userId: user })
+        body: JSON.stringify(body)
     })
     if (response.ok) {
         const { url } = await response.json()

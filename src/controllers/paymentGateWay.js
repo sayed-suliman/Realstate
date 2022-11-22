@@ -22,55 +22,61 @@ const calculateOrderAmount = (items) => {
 module.exports = {
     async paypalAPI(req, res) {
         try {
-            const user = await User.findById(req.body.userId).populate('package');
+            const { userId, id, dob } = req.body;
+            const user = await User.findById(userId).populate('package');
             console.log(req.body)
-            const create_payment_json = {
-                intent: 'sale',
-                payer: {
-                    payment_method: 'paypal',
-                },
-                redirect_urls: {
-                    return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
-                    cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
-                },
-                transactions: [
-                    {
-                        item_list: {
-                            items: [
-                                {
-                                    name: user.package.name,
-                                    description: user.package.description,
-                                    quantity: 1,
-                                    price: user.package.price * ((100 + user.package.tax) / 100),
-                                    // tax: '0.45',
-                                    currency: 'USD',
-                                }
-                            ],
-                        },
-                        amount: {
-                            currency: 'USD',
-                            total: user.package.price * ((100 + user.package.tax) / 100),
-                        },
-                        payment_options: {
-                            allowed_payment_method: 'IMMEDIATE_PAY',
-                        },
+            if (user) {
+                await user.updateOne({ dob, driver_license: id })
+                const create_payment_json = {
+                    intent: 'sale',
+                    payer: {
+                        payment_method: 'paypal',
                     },
-                ],
-            };
-            paypal.payment.create(create_payment_json, (e, payment) => {
-                if (e) {
-                    console.log(e.response.details)
-                    return res.status(500).json({ error: e.response.message });
-                }
-                for (let i = 0; i < payment.links.length; i++) {
-                    if (payment.links[i].rel === 'approval_url') {
-                        console.log(payment.links[i].href)
-                        res.send({ url: payment.links[i].href })
+                    redirect_urls: {
+                        return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
+                        cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
+                    },
+                    transactions: [
+                        {
+                            item_list: {
+                                items: [
+                                    {
+                                        name: user.package.name,
+                                        description: user.package.description,
+                                        quantity: 1,
+                                        price: user.package.price * ((100 + user.package.tax) / 100),
+                                        // tax: '0.45',
+                                        currency: 'USD',
+                                    }
+                                ],
+                            },
+                            amount: {
+                                currency: 'USD',
+                                total: user.package.price * ((100 + user.package.tax) / 100),
+                            },
+                            payment_options: {
+                                allowed_payment_method: 'IMMEDIATE_PAY',
+                            },
+                        },
+                    ],
+                };
+                paypal.payment.create(create_payment_json, (e, payment) => {
+                    if (e) {
+                        console.log(e.response.details)
+                        return res.status(500).json({ error: e.response.message });
                     }
-                }
-            })
+                    for (let i = 0; i < payment.links.length; i++) {
+                        if (payment.links[i].rel === 'approval_url') {
+                            console.log(payment.links[i].href)
+                            res.send({ url: payment.links[i].href })
+                        }
+                    }
+                })
+                return true;
+            }
+            res.send({ url: `${process.env.SERVER_URI}/` })
         } catch (error) {
-            res.render('500')
+            res.send({ error: "Server Error" })
         }
     },
     async stripeIntent(req, res) {
