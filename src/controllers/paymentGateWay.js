@@ -16,6 +16,13 @@ const paypalClient = new paypal.core.PayPalHttpClient(
         process.env.PAYPAL_CLIENT_SECRET
     )
 )
+const calculateOrderAmount = (items) => {
+    const { price, tax } = items;
+    // calculating tax
+    const totalAmount = price * ((100 + tax) / 100)
+    // converting to cents because stripe accept cents only
+    return totalAmount * 100;
+};
 module.exports = {
     async stripeAPI(req, res) {
         try {
@@ -50,16 +57,18 @@ module.exports = {
     async stripeSuccess(req, res) {
         try {
             const userId = req.query.user;
-            const packageId = req.query.package;
-            const user = await User.findById(userId);
-            const package = await Package.findById(packageId);
-            if (user && package) {
+            const paymentId = req.query.payment_intent;
+            console.log(req.query)
+            const user = await User.findById(userId).populate('package');
+            // const package = await Package.findById(packageId);
+            if (user) {
                 const order = await Order({
                     user: user._id,
-                    package: package._id,
-                    amount: package.price * ((100 + package.tax) / 100),
+                    package: user.package._id,
+                    amount: user.package.price * ((100 + user.package.tax) / 100),
                     pay_method: "Stripe",
-                    verified: false//need to change when the payment is confirmed 
+                    transaction: paymentId,
+                    verified: true
                 }).save()
                 if (order) {
                     return req.login(user, function (err) {
@@ -159,5 +168,42 @@ module.exports = {
             }
         }
         return res.json({ failed: "Done" })
+    },
+    async stripeIntent(req, res) {
+        try {
+            const { userId, id, dob } = req.body;
+            const user = await User.findById(userId).populate('package');
+            if (user) {
+                await user.updateOne({ dob, driver_license: id })
+
+                // Create a PaymentIntent with the order amount and currency
+                const paymentIntent = await stripe.paymentIntents.create({
+                    amount: calculateOrderAmount(user.package),
+                    currency: "usd",
+                    setup_future_usage: 'off_session',
+                    // payment_method_types:['card'],
+                    automatic_payment_methods: {
+                        enabled: true,
+                    },
+                });
+                res.send({
+                    clientSecret: paymentIntent.client_secret,
+                    id: paymentIntent.id
+                });
+            }
+        } catch (error) {
+            res.send({ error: "Server error" })
+        }
+    },
+    async stripeIntentCancel(req, res) {
+        try {
+            const paymentIntent = await stripe.paymentIntents.cancel(
+                req.body.id
+            );
+            console.log(paymentIntent)
+            res.send(paymentIntent)
+        } catch (error) {
+            res.send({ error: "Server error" })
+        }
     }
 }
