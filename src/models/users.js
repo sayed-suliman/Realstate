@@ -8,7 +8,7 @@ const userSchema = new mongoose.Schema({
     },
     driver_license: {
         type: String,
-        unique: true
+        unique: true,
     },
     email: {
         type: String,
@@ -39,6 +39,7 @@ const userSchema = new mongoose.Schema({
     },
     dob: {
         type: Date,
+        default:""
     },
     password: {
         type: String,
