@@ -7,17 +7,17 @@ const { authenticated, logged_in, isStudent, isAdmin } = require("../middleware/
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
-const { decodeMsg } = require("../helper/createMsg")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
-const { stripeAPI, paypalAPI, doPaypal, paymentSuccess, paypalCapture, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
+const {  paypalAPI,  paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
-const { sendResetEmail, sendVerificationCode } = require("../controllers/mailServices")
+const {  sendVerificationCode } = require("../controllers/mailServices")
 const { getVoucher, detailsVoucher, postVoucher, deleteVoucher } = require("../controllers/vouchers")
+const { dashboard } = require("../controllers/dashboard")
 
 
 router.get("/test", (req, res) => {
@@ -72,29 +72,7 @@ router.get("/check", (req, res) => {
 router.use('/dashboard', authenticated)
 
 // main-dashboard
-router.get("/dashboard", (req, res) => {
-    try {
-        var msgToken = req.query.msg;
-        var msg = {}
-        if (res.locals.error.length > 0) {
-            msg = decodeMsg(res.locals.error[0])
-        }
-        if (res.locals.success.length > 0) {
-            msg = decodeMsg(res.locals.success[0])
-        }
-        //only used for payment
-        if (msgToken) {
-            msg = decodeMsg(msgToken)
-        }
-        res.render("dashboard/new-dashboard", {
-            title: "Dashboard",
-            toast: Object.keys(msg).length == 0 ? undefined : msg,
-        })
-    } catch (error) {
-        console.log(error)
-        res.redirect('/500')
-    }
-})
+router.get("/dashboard", dashboard)
 
 // verification route
 router.get("/verification", verification)
@@ -182,10 +160,10 @@ router.get("/dashboard/quiz-detail", quizDetail)
 
 
 // ***************************** Vouchers
-router.get("/dashboard/add-voucher",getVoucher)
-router.post("/dashboard/voucher-generated",postVoucher)
+router.get("/dashboard/add-voucher", getVoucher)
+router.post("/dashboard/voucher-generated", postVoucher)
 
-router.get("/dashboard/voucher-detail",detailsVoucher)
+router.get("/dashboard/voucher-detail", detailsVoucher)
 // delete
 router.get("/dashboard/voucher-detail/delete-voucher", deleteVoucher)
 router.get("/dashboard/add-voucher", getVoucher)
