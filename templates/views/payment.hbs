@@ -12,6 +12,13 @@
                         </div>
                         <div class="card-body">
                             <table class="table table-borderless">
+                                {{#if alert}}
+                                <div class="alert {{#ifEquals toast.type "success"}} alert-success {{else}} alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
+                                    {{alert.text}}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                        aria-label="Close"></button>
+                                </div>
+                                {{/if}}
                                 <tbody>
                                     <tr>
                                         <th scope="row" class="text-start">Name</th>
@@ -117,6 +124,7 @@
             </div>
         </div>
     </main>
+    {{>footer}}
     <script>
         //Passing to the strip.js file form hbs data
         const user = `{{{user._id}}}`

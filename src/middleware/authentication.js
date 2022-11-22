@@ -1,11 +1,29 @@
+const Order = require("../models/order")
+const url = require('url');
+const { encodeMsg } = require("../helper/createMsg");
+
 // for authenticated user only
-var authenticated = (req, res, next) => {
+var authenticated = async (req, res, next) => {
     if (req.isAuthenticated()) {
         //this used for to avoid going back when user logged out 
         res.set('Cache-Control', 'no-cache,private,no-store,must-revalidate,post-check=0,pre-check=0')
         // pass auth user to all view when used this middleware
         res.locals.user = req.user
-        next()
+
+        // check whether user bought a package or not
+        if (req.user.role == "student") {
+            var order = await Order.findOne({ user: req.user._id })
+            if (!order) {
+                req.flash('error', "Please make a payment to continue.")
+                return res.redirect(url.format({
+                    pathname: '/payment',
+                    query: {
+                        user: req.user._id.toString()
+                    }
+                }))
+            }
+        }
+        return next()
     } else {
         req.flash("error", "Please! Login to continue.")
         res.redirect('/login')
@@ -14,24 +32,27 @@ var authenticated = (req, res, next) => {
 // redirect to dashboard when user is logged in 
 var logged_in = (req, res, next) => {
     if (req.isAuthenticated()) {
+
+        req.flash('error', encodeMsg('test', "danger"))
+        req.flash('success', encodeMsg('test'))
         res.redirect('/dashboard')
     } else {
         next()
     }
 }
-var isStudent = (req,res,next)=>{
-    if(req.user.role === "student"){
+var isStudent = (req, res, next) => {
+    if (req.user.role === "student") {
         next()
-    }else{
+    } else {
         res.redirect("/dashboard")
     }
 }
-var isAdmin = (req,res,next)=>{
-    if(req.user.role === "admin"){
+var isAdmin = (req, res, next) => {
+    if (req.user.role === "admin") {
         next()
-    }else{
+    } else {
         res.redirect("/dashboard")
     }
 }
 
-module.exports = { authenticated, logged_in ,isStudent,isAdmin}
+module.exports = { authenticated, logged_in, isStudent, isAdmin }
