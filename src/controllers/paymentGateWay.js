@@ -1,5 +1,5 @@
 require('dotenv').config()
-const stripe = require('stripe')(process.env.STRIPE_PUBLISHABLE_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const paypal = require('paypal-rest-sdk');
 const User = require('../models/users');
 const Order = require("../models/order")

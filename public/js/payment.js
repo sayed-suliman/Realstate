@@ -60,6 +60,7 @@ stripeBtn.addEventListener('click', function () {
         });
         const { clientSecret, id: payId } = await response.json();
         paymentId = payId
+        console.log(clientSecret)
         document.querySelector('.btn-pay').classList.add('d-none')
 
         const appearance = {

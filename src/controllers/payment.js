@@ -5,9 +5,7 @@ const { encodeMsg } = require("../helper/createMsg");
 
 module.exports = {
     async payment(req, res) {
-        console.log(res.locals.error.length)
         var msg = { text: res.locals.error, type: 'danger' }
-
         const userID = req.query.user
         try {
             if (userID) {
@@ -40,7 +38,6 @@ module.exports = {
                     }
                     var { price, tax } = user.package;
                     user.total = price * ((100 + tax) / 100)
-                    console.log(msg)
                     return res.render('payment', { title: "Payment", stripe_api: process.env.STRIPE_PUBLISHABLE_KEY, user, alert: res.locals.error.length > 0 ? msg : undefined, showDOB: (user.driver_license == undefined || user.dob == undefined) ? true : false })
                 }
             }
