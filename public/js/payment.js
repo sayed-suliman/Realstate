@@ -14,8 +14,8 @@ const showInputMessage = (element, msg) => {
 }
 
 stripeBtn.addEventListener('click', function () {
-    // This is your test publishable API key.
-    const stripe = Stripe("pk_test_51M3z5GKOuw5TLgjou3da1GAfExQ2086PzeF7XIIhjvWs7FtT4hgVPiZW6LdZaBWWHetRLIbIUeSbO3isf4d72DWY00WRc6mhDD");
+    // This is your publishable API key.
+    const stripe = Stripe(STRIPE_API);
     if (!driverID_db || !dob_db) {
         if (!id.value && !dob.value) {
             showInputMessage(id, "This field is required")
@@ -78,7 +78,6 @@ stripeBtn.addEventListener('click', function () {
     async function handleSubmit(e) {
         e.preventDefault();
         setLoading(true);
-        console.log(paymentId)
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
