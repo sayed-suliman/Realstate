@@ -95,6 +95,8 @@ hbs.registerHelper("checkStatus",(start,end)=>{
 })
 // format date
 hbs.registerHelper("formatDate",(date)=>{
+    console.log(new Date(date).getMonth())
+
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()

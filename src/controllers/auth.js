@@ -8,7 +8,6 @@ const { sendVerificationCode } = require("./mailServices")
 
 
 const login = (req, res) => {
-    req.session.url = req.url;
     console.log(req.session)
     res.render("login", {
         title: "Login"
@@ -17,6 +16,8 @@ const login = (req, res) => {
 const postLogin = (req, res) => {
     console.log("session", req.session)
     res.redirect('/dashboard')
+    delete req.session.returnURL
+    console.log(req.session)
 }
 
 const signUp = async (req, res) => {
