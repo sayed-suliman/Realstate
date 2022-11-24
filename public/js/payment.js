@@ -2,6 +2,8 @@ const stripeBtn = document.getElementById('stripe-payment');
 const id = document.getElementById('driver-id')
 const dob = document.getElementById('dob')
 const paypalBtn = document.querySelector('.paypal')
+const couponBtn = document.querySelector('#coupon-btn')
+const couponInput = document.querySelector('#coupon-code')
 const showInputMessage = (element, msg) => {
     element.nextElementSibling.classList.replace('opacity-0', 'opacity-100')
     element.nextElementSibling.textContent = msg
@@ -243,5 +245,42 @@ paypalBtn.addEventListener('click', async function () {
             document.querySelector("#spinner-paypal").classList.add("d-none");
             paypalBtn.querySelector("#button-text").classList.remove("d-none");
         }
+    }
+})
+
+couponBtn.addEventListener('click', async function (e) {
+    const code = couponInput.value
+
+    setLoading(true)
+    const response = await fetch('/check-coupon', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code })
+    })
+    const result = await response.json();
+    setLoading(false)
+    console.log(result)
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            couponBtn.disabled = true;
+            couponBtn.querySelector('.text').classList.add('d-none');
+            couponBtn.querySelector('.spinner').classList.remove('d-none')
+        } else {
+            couponBtn.disabled = false;
+            couponBtn.querySelector('.text').classList.remove('d-none');
+            couponBtn.querySelector('.spinner').classList.add('d-none')
+        }
+    }
+    function showMessage(messageText) {
+        const messageContainer = document.querySelector("#payment-message");
+
+        messageContainer.classList.remove("d-none");
+        messageContainer.textContent = messageText;
+
+        setTimeout(function () {
+            messageContainer.classList.add("d-none");
+            messageText.textContent = "";
+        }, 4000);
     }
 })

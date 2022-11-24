@@ -13,7 +13,8 @@
                         <div class="card-body">
                             <table class="table table-borderless">
                                 {{#if alert}}
-                                <div class="alert {{#ifEquals toast.type "success"}} alert-success {{else}} alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
+                                <div class="alert {{#ifEquals toast.type " success"}} alert-success {{else}}
+                                    alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
                                     {{alert.text}}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
@@ -56,11 +57,18 @@
                                     <tr class="border-bottom">
                                         <td colspan="2">
                                             <div class="input-group mb-3 justify-content-end">
-                                                <input type="text" class="st-input" placeholder="Coupon Code"
-                                                    aria-describedby="coupon-code">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    id="coupon-code">Apply Code</button>
+                                                <input type="text" class="st-input" id="coupon-code"
+                                                    placeholder="Coupon Code" aria-describedby="coupon-code">
+                                                <button class="btn btn-outline-secondary" type="button" id="coupon-btn">
+                                                    <div class="spinner d-none">
+                                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                                    </div>
+                                                    <span class="text">
+                                                        Apply Code
+                                                    </span>
+                                                </button>
                                             </div>
+                                            <p class="fs-12 text-start p-0 ps-1 opacity-0 m-0 text-danger">msg</p>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -134,7 +142,7 @@
         const dob_db = `{{{user.dob}}}`
         const user_email = `{{{user.email}}}`
         const user_name = `{{{user.name}}}`
-        const STRIPE_API =`{{{stripe_api}}}`
+        const STRIPE_API = `{{{stripe_api}}}`
     </script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/payment.js"></script>

@@ -16,7 +16,7 @@ const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editCha
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
-const { getCoupon, detailsCoupon, postCoupon, deleteCoupon } = require("../controllers/coupons")
+const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
 
@@ -88,6 +88,8 @@ router.post('/create-payment-intent', stripeIntent)
 router.post('/cancel-payment-intent', stripeIntentCancel)
 router.post('/paypal', paypalAPI)
 router.get('/success', paymentSuccess)
+router.post('/check-coupon', couponAPI)
+
 
 router.get('/dashboard/view-course', (req, res) => {
     res.render('dashboard/student/view-course', { title: "Course" })
