@@ -132,6 +132,10 @@ hbs.registerHelper("checkData",(data,arr)=>{
 //         return ''
 //     }
 // })
+hbs.registerHelper('checkDraftOrPublish',(arg)=>{
+    if(arg === 'publish') return "Selected"
+    if(arg === 'draft') return "Selected"
+})
 
 
 app.use(allRoutes)

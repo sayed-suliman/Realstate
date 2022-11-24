@@ -4,7 +4,7 @@ const Course = require("../models/courses")
 module.exports = {
     async package(req, res) {
         try {
-            const courses = await Course.find()
+            const courses = await Course.find({status:'publish'})
             if (req.params.id) {
                 return res.render("dashboard/examples/packages/add-package", {
                     title: req.params.id + "| Edit Package",

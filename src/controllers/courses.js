@@ -5,7 +5,6 @@ const course = async (req, res) => {
     try {
         // all added packages
         const packages = await Package.find({ status: "publish" })
-        console.log(packages)
         res.render("dashboard/examples/courses/add-course", { title: "Dashboard | Add Course", packages })
     } catch (e) {
         // res.status(404).json({
@@ -29,15 +28,27 @@ const addcourse = async (req, res) => {
             price: data.price
         })
         await addCourse.save()
-        if(data.package){
-            data.package.forEach(async element => {
-                let packageCourse = await Package.findOne({name:element})
-                let courseId = await CourseModel.find({ name: data.name }).select("_id")
-                // packageCourse.courses.push(courseId)
-                // await packageCourse.save()
-                console.log(packageCourse.courses)
-                console.log(courseId)
-            });
+        if (data.package) {
+            if (Array.isArray(data.package)) {
+                data.package.forEach(async element => {
+                    console.log(element)
+                    let packageCourse = await Package.findOne({ name: element })
+                    let courseId = await CourseModel.findOne({ name: data.name }).select("_id")
+                    packageCourse.courses = packageCourse.courses.concat(courseId)
+                    await packageCourse.save()
+                    // packageCourse.courses.push(courseId)
+                    // await packageCourse.save()
+                    return;
+                });
+            }
+            // console.log(data.package)
+            // console.log(package)
+            let packageCourse = await Package.findOne({ name: data.package })
+            let courseId = await CourseModel.findOne({ name: data.name }).select("_id")
+            //     // packageCourse.courses.push(courseId)
+            //     // await packageCourse.save()
+            packageCourse.courses = packageCourse.courses.concat(courseId)
+            await packageCourse.save()
         }
         if (addCourse) {
             var msg = encodeMsg('The Course has been created')
@@ -46,13 +57,15 @@ const addcourse = async (req, res) => {
         // req.flash("alert_success", "Course Added Successfully.!")
         // res.redirect('/dashboard')
     } catch (e) {
-        // var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
-        // return res.redirect('/dashboard?msg=' + msg)
-        res.status(403).json({
-            Error: e.message,
-            Status: 403,
-            msg: "Course Not Added"
-        })
+        var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
+        return res.redirect('/dashboard?msg=' + msg)
+
+        // testing purpose
+        // res.status(403).json({
+        //     Error: e.message,
+        //     Status: 403,
+        //     msg: "Course Not Added"
+        // })
     }
     // const courseAdded =await new AddCourse()
 }
@@ -74,12 +87,12 @@ const courseDetails = async (req, res) => {
                 toast: Object.keys(option).length == 0 ? undefined : option
             })
     } catch (e) {
-        // res.status(403).json({
-        //     Error: e.message,
-        //     Status: 403,
-        //     msg: "Courses Not Find"
-        // })
-        res.render("404")
+        res.status(403).json({
+            Error: e.message,
+            Status: 403,
+            msg: "Courses Not Find"
+        })
+        // res.render("404")
     }
 }
 // editCourse
@@ -92,7 +105,7 @@ const editCourse = async (req, res) => {
             { title: "Dashboard | Edit Course", packages, course }
         )
     } catch (e) {
-     res.render("500")
+        res.render("500")
     }
 }
 // update course
@@ -100,23 +113,75 @@ const editCourse = async (req, res) => {
 const updateCourse = async (req, res) => {
     try {
         const data = req.body
+        const cId = req.query.cId
         const course = await CourseModel.findById(req.query.cId)
+        const packages = await Package.find({ name: req.body.package }).select("_id")
         const packageId = await Package.findOne({ name: data.package })
+        const allPackages = await Package.find()
+
+        
         await course.updateOne({
-            name: data.name,
-            description: data.description,
-            status: data.status,
-            package: packageId._id,
-            price: data.price
+            ...data,
+            package: packages,
         })
-        var msg = encodeMsg("Course Updated")
-        return res.redirect("/dashboard/course-detail?msg=" + msg)
+        if (course) {
+            if (!data.package) {
+                    allPackages.forEach(async (onePackage) => {
+                    const index = onePackage.courses.indexOf(cId)
+                    onePackage.courses.splice(index, 1)
+                    await onePackage.save()
+                })
+            }
+            if (data.package) {
+                if (Array.isArray(data.package)) {
+                    allPackages.forEach(async (eachPackage) => {
+                        data.package.forEach(async element => {
+                            if (eachPackage.name === element) {
+                                let courseIndex = eachPackage.courses.indexOf(cId)
+                                if (!(courseIndex > -1)) {
+                                    eachPackage.courses = eachPackage.courses.concat(cId)
+                                }
+                            } else {
+                                let courseIndex = eachPackage.courses.indexOf(cId)
+                                if (!(courseIndex > -1)) {
+                                    eachPackage.courses.splice(courseIndex, 1)
+                                }
+                            }
+                        });
+                        await eachPackage.save()
+                    })
+                }else{
+                    allPackages.forEach(async (eachPackage) => {
+                        if (eachPackage.name === data.package) {
+                            let courseIndex = eachPackage.courses.indexOf(cId)
+                            if (!(courseIndex > -1)) {
+                                eachPackage.courses = eachPackage.courses.concat(cId)
+                                await eachPackage.save()
+                            }
+                            return;
+                        } else {
+                            let courseIndex = eachPackage.courses.indexOf(cId)
+                            if (courseIndex > -1) {
+                                eachPackage.courses.splice(courseIndex, 1)
+                                await eachPackage.save()
+                            }
+                        }
+                    })
+                }
+            }
+            var msg = encodeMsg("Course Updated")
+            return res.redirect("/dashboard/course-detail?msg=" + msg)
+        }
+
+
     } catch (e) {
-        res.render('404')
-        // res.status(404).json({
-        //     err: e.message,
-        //     status: 404
-        // })
+        // res.render('404')
+
+        // testing purpose
+        res.status(404).json({
+            err: e.message,
+            status: 404
+        })
     }
 }
 

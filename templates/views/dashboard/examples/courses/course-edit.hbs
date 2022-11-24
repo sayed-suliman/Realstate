@@ -57,9 +57,9 @@
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
                     <select required id="inputStatus" name="status" class="form-control custom-select">
-                      <option selected disabled value="">Select one</option>
-                      <option value="draft">Draft</option>
-                      <option value="publish">Publish</option>
+                      <option disabled value="">Select one</option>
+                      <option {{checkDraftOrPublish course.status}} value="draft">Draft</option>
+                      <option {{checkDraftOrPublish course.status}} value="publish">Publish</option>
                     </select>
                   </div>
                   <div class="form-group">

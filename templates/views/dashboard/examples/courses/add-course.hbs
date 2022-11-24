@@ -47,7 +47,7 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Course Name</label>
-                    <input required type="text" id="inputName" name="name" class="form-control">
+                    <input type="text" id="inputName" name="name" class="form-control">
                   </div>
                   <div class="form-group">
                     <label for="inputDescription">Course Description</label>
@@ -55,7 +55,7 @@
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
-                    <select required id="inputStatus" name="status" class="form-control custom-select">
+                    <select id="inputStatus" name="status" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
                       <option value="draft">Draft</option>
                       <option value="publish">Publish</option>
@@ -63,7 +63,7 @@
                   </div>
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input required type="number" id="price" name="price" class="form-control">
+                    <input type="number" min="0" id="price" name="price" class="form-control">
                   </div>
                   {{!-- <div class="form-group">
                     <label for="inputStatus">Add Packages</label>
