@@ -3,9 +3,9 @@ const Course = require("./courses")
 
 const packageSchema = new mongoose.Schema({
     name: String,
-    description: String,
     status: String,
     tax: Number,
+    courses:[{type:mongoose.Schema.Types.ObjectId,ref:"Course"}],
     price: Number
 }, {
     timestamps: true

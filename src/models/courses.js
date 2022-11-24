@@ -3,11 +3,7 @@ const courseSchema = new mongoose.Schema({
     name: String,
     description: String,
     status: String,
-    package: {
-        type:mongoose.Schema.Types.ObjectId,
-        require:true,
-        ref:'Package'
-    },
+    package: [{type:mongoose.Schema.Types.ObjectId,ref:'Package'}],
     price:{
         type:Number
     }

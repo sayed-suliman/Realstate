@@ -52,14 +52,18 @@
                                                 <th>Description</th>
                                                 <th>Status</th>
                                                 <th>Price</th>
-                                                <th>Edit/Delete</th>
+                                                <th>Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#each allCourses}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>{{this.package.name}}</td>
+                                                <td>
+                                                    {{#each this.package}}
+                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
+                                                    {{/each}}
+                                                </td>
                                                 <td>{{this.description}}</td>
                                                 <td>{{this.status}}</td>
                                                 <td>{{this.price}}</td>
@@ -70,12 +74,12 @@
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    <a href="/dashboard/course-detail/delete-course?cId={{this._id}}"
+                                                    {{!-- <a href="/dashboard/course-detail/delete-course?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </button>
-                                                    </a>
+                                                    </a> --}}
                                                 </td>
                                             </tr>
                                             {{/each}}

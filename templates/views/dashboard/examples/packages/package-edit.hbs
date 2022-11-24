@@ -50,8 +50,14 @@
                     <input type="text" id="inputName" value="{{package.name}}" name="name" class="form-control">
                   </div>
                   <div class="form-group">
-                    <label for="inputDescription">Package Description</label>
-                    <textarea id="inputDescription" name="description" class="form-control" rows="4">{{package.description}}</textarea>
+                    <label>Select Courses to Add in Package</label>
+                    {{#each courses}}
+                    <div class="custom-control custom-checkbox">
+                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                       {{checkData this.name ../package.courses}} value="{{this.name}}" type="checkbox" name="coursename" id="{{this.name}}" >
+                      <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
+                    </div>
+                    {{/each}}
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>

@@ -49,9 +49,19 @@
                     <label for="inputName">Package Name</label>
                     <input type="text" id="inputName" name="name" class="form-control">
                   </div>
-                  <div class="form-group">
+                  {{!-- <div class="form-group">
                     <label for="inputDescription">Package Description</label>
                     <textarea id="inputDescription" name="description" class="form-control" rows="4"></textarea>
+                  </div> --}}
+                  <div class="form-group">
+                    <label>Select Courses to Add in Package</label>
+                    {{#each courses}}
+                    <div class="custom-control custom-checkbox">
+                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                        value="{{this.name}}" type="checkbox" name="coursename" id="{{this.name}}">
+                      <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
+                    </div>
+                    {{/each}}
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
@@ -62,19 +72,19 @@
                     </select>
                   </div>
                   <div class="row">
-                  <div class="form-group col">
-                    <label for="price">Package Price</label>
-                    <input type="number" id="price" name="price" class="form-control">
-                  </div>
-                  <div class="form-group col">
-                    <label for="price">Package Tax(%)</label>
-                    <input type="number" id="price" name="tax" class="form-control">
-                  </div>
+                    <div class="form-group col">
+                      <label for="price">Package Price</label>
+                      <input type="number" id="price" name="price" class="form-control">
+                    </div>
+                    <div class="form-group col">
+                      <label for="price">Package Tax(%)</label>
+                      <input type="number" min="0" max="100" id="price" name="tax" class="form-control">
+                    </div>
                   </div>
                 </div>
-                  <div class="card-footer">
-                 <button type="reset" class="btn btn-secondary">Cancel</button>
-              <button type="submit" class="btn btn-success float-right">Create new Package</button>
+                <div class="card-footer">
+                  <button type="reset" class="btn btn-secondary">Cancel</button>
+                  <button type="submit" class="btn btn-success float-right">Create new Package</button>
                 </div>
                 <!-- /.card-body -->
               </div>

@@ -48,17 +48,23 @@
                                         <thead>
                                             <tr>
                                                 <th>name</th>
-                                                <th>Description</th>
+                                                <th>Courses</th>
                                                 <th>Tax</th>
                                                 <th>Status</th>
-                                                <th>Edit/Delete</th>
+                                                <th>Price</th>
+                                                <th>Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#each packages}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>{{this.description}}</td>
+                                                <td>
+                                                    {{#each this.courses}}
+                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
+                                                    {{/each}}
+                                                </td>
+                                                <td>{{this.price}}</td>
                                                 <td>{{this.tax}}%</td>
                                                 <td>{{this.status}}</td>
                                                 <td>
@@ -68,12 +74,13 @@
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    <a href="/dashboard/package-detail/delete-package?pId={{this._id}}"
+                                                    {{!-- <a
+                                                        href="/dashboard/package-detail/delete-package?pId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>
                                                         </button>
-                                                    </a>
+                                                    </a> --}}
                                                 </td>
                                             </tr>
                                             {{/each}}

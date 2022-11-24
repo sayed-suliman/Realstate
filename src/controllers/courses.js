@@ -5,6 +5,7 @@ const course = async (req, res) => {
     try {
         // all added packages
         const packages = await Package.find({ status: "publish" })
+        console.log(packages)
         res.render("dashboard/examples/courses/add-course", { title: "Dashboard | Add Course", packages })
     } catch (e) {
         // res.status(404).json({
@@ -14,19 +15,30 @@ const course = async (req, res) => {
         res.render("404")
     }
 }
-// Add Course
+// Add Course or post
 const addcourse = async (req, res) => {
     try {
         const data = await req.body
-        const package = await Package.findOne({ name: data.package })
+        // const 
+        const package = await Package.find({ name: req.body.package }).select("_id")
         const addCourse = CourseModel({
             name: data.name,
             description: data.description,
             status: data.status,
-            package: package._id,
+            package: package,
             price: data.price
         })
         await addCourse.save()
+        if(data.package){
+            data.package.forEach(async element => {
+                let packageCourse = await Package.findOne({name:element})
+                let courseId = await CourseModel.find({ name: data.name }).select("_id")
+                // packageCourse.courses.push(courseId)
+                // await packageCourse.save()
+                console.log(packageCourse.courses)
+                console.log(courseId)
+            });
+        }
         if (addCourse) {
             var msg = encodeMsg('The Course has been created')
             return res.redirect('/dashboard?msg=' + msg)
@@ -34,13 +46,13 @@ const addcourse = async (req, res) => {
         // req.flash("alert_success", "Course Added Successfully.!")
         // res.redirect('/dashboard')
     } catch (e) {
-        var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
-        return res.redirect('/dashboard?msg=' + msg)
-        // res.status(403).json({
-        //     Error: e.message,
-        //     Status: 403,
-        //     msg: "Course Not Added"
-        // })
+        // var msg = encodeMsg('Some error while creating Course.', 'danger', '500')
+        // return res.redirect('/dashboard?msg=' + msg)
+        res.status(403).json({
+            Error: e.message,
+            Status: 403,
+            msg: "Course Not Added"
+        })
     }
     // const courseAdded =await new AddCourse()
 }

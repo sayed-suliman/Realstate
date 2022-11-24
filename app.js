@@ -10,6 +10,7 @@ const flash = require('connect-flash')
 
 // Routes
 const allRoutes = require("./src/routes/routes")
+const Course = require("./src/models/courses")
 require("dotenv").config()
 // database connection
 require("./src/db/conn")
@@ -95,10 +96,40 @@ hbs.registerHelper("checkStatus",(start,end)=>{
 // format date
 hbs.registerHelper("formatDate",(date)=>{
     let year = date.getFullYear()
-    let month = date.getMonth()
+    let month = date.getMonth() + 1
     let day = date.getDate()
   return `${day} - ${month} - ${year}` 
 })
+// check data if present in collection or not . From packages
+hbs.registerHelper("checkData",(data,arr)=>{
+    let check = false
+    arr.forEach(arrId => {
+        if(arrId.name === data){
+            return check = true
+        }
+    });
+    if(check){
+        return 'checked'
+    }else{
+        return ''
+    }
+})
+
+// // check data if present in collection or not . From packages
+// hbs.registerHelper("checkData",(data,arr)=>{
+//     let check = false
+//     arr.forEach(cs => {
+//         if(cs.name === data){
+//             console.log(true)
+//             return check = true
+//         }
+//     });
+//     if(check){
+//         return 'checked'
+//     }else{
+//         return ''
+//     }
+// })
 
 
 app.use(allRoutes)
