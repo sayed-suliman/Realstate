@@ -11,6 +11,11 @@ module.exports = {
             if (userID) {
                 const user = await User.findById(userID).populate('package');
                 if (user) {
+                    if(user.package == undefined){
+                        const msg = encodeURIComponent("Please! Select a Package to continue.")
+                        const type = encodeURIComponent("danger")
+                        return res.redirect(`/?msg=${msg}&type=${type}`);
+                    }
                     const orders = await Order.find({ user: user._id })
                         .populate('package', '_id').populate('user', '_id');
                     if (orders.length > 0) {
@@ -43,6 +48,7 @@ module.exports = {
             }
             return res.redirect('/')
         } catch (error) {
+            console.log(error.message)
             res.render('500')
         }
     }

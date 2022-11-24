@@ -13,11 +13,12 @@ const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
-const {  paypalAPI,  paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
+const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
-const {  sendVerificationCode } = require("../controllers/mailServices")
-const { getVoucher, detailsVoucher, postVoucher, deleteVoucher } = require("../controllers/vouchers")
+const { sendVerificationCode } = require("../controllers/mailServices")
+const { getCoupon, detailsCoupon, postCoupon, deleteCoupon } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
+const { users } = require("../controllers/users")
 
 
 router.get("/test", (req, res) => {
@@ -26,7 +27,9 @@ router.get("/test", (req, res) => {
 })
 // default route
 router.get("/", (req, res) => {
-    res.render("package")
+    const msg = req.query.msg;
+    const type = req.query.type;
+    res.render("package", { msg: { text: msg, type } })
 })
 
 
@@ -99,9 +102,7 @@ router.get("/dashboard/contact-us", isStudent, (req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
 })
 // users
-router.get("/dashboard/users", (req, res) => {
-    res.render("dashboard/examples/users", { title: "Dashboard | Users" })
-})
+router.get("/dashboard/users", users)
 
 
 // ****************************** Packages
@@ -159,16 +160,16 @@ router.get("/dashboard/quiz-detail", quizDetail)
 
 
 
-// ***************************** Vouchers
-router.get("/dashboard/add-voucher", getVoucher)
-router.post("/dashboard/voucher-generated", postVoucher)
+// ***************************** Coupons
+router.get("/dashboard/add-coupon", getCoupon)
+router.post("/dashboard/coupon-generated", postCoupon)
 
-router.get("/dashboard/voucher-detail", detailsVoucher)
+router.get("/dashboard/coupon-detail", detailsCoupon)
 // delete
-router.get("/dashboard/voucher-detail/delete-voucher", deleteVoucher)
-router.get("/dashboard/add-voucher", getVoucher)
+router.get("/dashboard/coupon-detail/delete-coupon", deleteCoupon)
+router.get("/dashboard/add-coupon", getCoupon)
 
-router.get("/dashboard/voucher-detail", detailsVoucher)
+router.get("/dashboard/coupon-detail", detailsCoupon)
 
 
 // *************************** Cuopon code generator
