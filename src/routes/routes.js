@@ -21,7 +21,7 @@ const { dashboard } = require("../controllers/dashboard")
 
 
 router.get("/test", (req, res) => {
-    sendVerificationCode('bedike2748@jernang.com', '1234')
+    sendVerificationCode('sulimank418@gmail.com', '1234')
     res.render("package")
 })
 // default route

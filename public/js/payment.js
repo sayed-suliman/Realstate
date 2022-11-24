@@ -45,7 +45,7 @@ stripeBtn.addEventListener('click', function () {
 
     initialize();
     checkStatus();
-    setCardBtnLoading(false)
+    // setCardBtnLoading(false)
 
     document
         .querySelector("#payment-form")
@@ -58,9 +58,13 @@ stripeBtn.addEventListener('click', function () {
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(body),
         });
-        const { clientSecret, id: payId } = await response.json();
+        const { clientSecret, id: payId, error } = await response.json();
         paymentId = payId
-        console.log(clientSecret)
+        setCardBtnLoading(false)
+        if (error) {
+            showInputMessage(id, error)
+            return;
+        }
         document.querySelector('.btn-pay').classList.add('d-none')
 
         const appearance = {
@@ -174,12 +178,12 @@ stripeBtn.addEventListener('click', function () {
         if (isLoading) {
             stripeBtn.disabled = true;
             paypalBtn.disabled = true;
-            document.querySelector("#spinner-stripe").classList.remove("d-none");
+            stripeBtn.querySelector("#spinner-stripe").classList.remove("d-none");
             stripeBtn.querySelector("#button-text").classList.add("d-none");
         } else {
             stripeBtn.disabled = false;
             paypalBtn.disabled = false;
-            document.querySelector("#spinner-stripe").classList.add("d-none");
+            stripeBtn.querySelector("#spinner-stripe").classList.add("d-none");
             stripeBtn.querySelector("#button-text").classList.remove("d-none");
         }
     }
@@ -207,10 +211,7 @@ paypalBtn.addEventListener('click', async function () {
             }
         }
     }
-    paypalBtn.disabled = true;
-    stripeBtn.disabled = true;
-    document.querySelector("#spinner-paypal").classList.remove("d-none");
-    paypalBtn.querySelector("#button-text").classList.add("d-none");
+    setPaypalLoading(true)
 
     var body = (driverID_db && dob_db) ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
     const response = await fetch('/paypal', {
@@ -219,9 +220,28 @@ paypalBtn.addEventListener('click', async function () {
         body: JSON.stringify(body)
     })
     if (response.ok) {
-        const { url } = await response.json()
-        window.location.href = url
+        const { url, error } = await response.json()
+        if (error) {
+            showInputMessage(id, error)
+            setPaypalLoading(false)
+        }
+        if (url) {
+            window.location.href = url
+        }
     } else {
         console.error(response)
+    }
+    function setPaypalLoading(isLoading) {
+        if (isLoading) {
+            paypalBtn.disabled = true;
+            stripeBtn.disabled = true;
+            document.querySelector("#spinner-paypal").classList.remove("d-none");
+            paypalBtn.querySelector("#button-text").classList.add("d-none");
+        } else {
+            paypalBtn.disabled = false;
+            stripeBtn.disabled = false;
+            document.querySelector("#spinner-paypal").classList.add("d-none");
+            paypalBtn.querySelector("#button-text").classList.remove("d-none");
+        }
     }
 })

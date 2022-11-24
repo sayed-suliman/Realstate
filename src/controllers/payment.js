@@ -37,7 +37,7 @@ module.exports = {
                         }
                     }
                     var { price, tax } = user.package;
-                    user.total = price * ((100 + tax) / 100)
+                    user.total = Math.round(price * ((100 + tax) / 100))
                     return res.render('payment', { title: "Payment", stripe_api: process.env.STRIPE_PUBLISHABLE_KEY, user, alert: res.locals.error.length > 0 ? msg : undefined, showDOB: (user.driver_license == undefined || user.dob == undefined) ? true : false })
                 }
             }

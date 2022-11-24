@@ -6,6 +6,9 @@ const User = require("../models/users");
 
 module.exports = {
     async checkout(req, res) {
+        console.log(req.session)
+        // for login only
+        req.session.returnURL = req.url
         try {
             const id = req.query.package;
             if (id) {

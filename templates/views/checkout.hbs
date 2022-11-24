@@ -3,10 +3,10 @@
 <body>
     <main class="login-page pt-5 ">
         <div class="container">
-            <div class="row">
+            <div class="row justify-content-center">
                 <!-- Package Detail -->
-                <div class="col-xxl-4 col-lg-5 text-center login">
-                    <div class="card">
+                <div class="col-md-8 col-xxl-4 col-lg-6 text-center login">
+                    <div class="card h-100">
                         <div class="bg-primary w-100 login-image-div">
                             <h3 class="text-white" style="margin-top: -5px;">Order Summary</h3>
                         </div>
@@ -39,8 +39,8 @@
                     </div>
                 </div>
                 <!-- Login -->
-                <div class="col-xxl-4 col-xl-4 col-lg-5 text-center login mx-auto">
-                    <div class="card">
+                <div class="col-md-8 col-xxl-4 col-xl-4 col-lg-6 mt-3 mt-lg-0 text-center login mx-auto">
+                    <div class="card h-100">
                         <div class="bg-primary w-100 login-image-div">
                             <img src="./images/login/login-icon.png" class="img-fluid" alt="">
                         </div>
@@ -66,8 +66,8 @@
                     </div>
                 </div>
                 <!-- Register -->
-                <div class="col-xxl-4 col-xl-4 col-lg-4 my-3 my-lg-0 text-center register">
-                    <div class="card">
+                <div class="col-md-8 col-xxl-4 col-xl-4 col-lg-6 my-3 my-xl-0 text-center register">
+                    <div class="card h-100">
                         <div class="bg-primary w-100 login-image-div">
                             <img src="./images/login/register-icon.png" class="img-fluid" alt="">
                         </div>
@@ -75,44 +75,6 @@
                         <!-- <p class="m-0 mb-3">New Here?</p> -->
                         <p class="m-0 mb-3">Register here with your information</p>
                         <div class="px-3 mb-3">
-                            {{!-- <form action="/checkout" method="post">
-                                <div class="row text-start">
-                                    <input required type="hidden" name="total" value="{{package.total}}">
-                                    <input required type="hidden" name="package" value="{{package._id}}">
-                                    <div class="col-12 mb-3">
-                                        <label for="f-n" class="form-label">Full Name</label>
-                                        <input required type="text" id="f-n" class="form-control shadow-none"
-                                            name="first_name" placeholder="Full Name">
-                                    </div>
-                                    <div class="col-md-12 mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input required type="email" id="email" class="form-control shadow-none"
-                                            name="email" placeholder="Email">
-                                        {{#if err}}
-                                        <div id="em" class="form-text text-danger">{{err.email}}</div>
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input required id="password" type="password"
-                                            class="form-control shadow-none mb-3 pass" name="password"
-                                            placeholder="Password">
-                                    </div>
-                                    <div class="col-12 mb-3">
-                                        <label for="c_password" class="form-label">Confirm Password</label>
-                                        <input required type="password" id="c_password" name="c_password"
-                                            class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
-                                        {{#if err.password}}
-                                        <div class="form-text text-danger">{{err.password}}</div>
-                                        {{/if}}
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
-                                    Now</button>
-                                <p class="mt-2">Already a member? <a class="text-primary text-decoration-none"
-                                        href="/login?redirectTo=payment">Login</a></p>
-                            </form> --}}
                             <button type="button" class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3"
                                 data-bs-toggle="modal" data-bs-target="#registrationModal">
                                 Register Now
@@ -173,9 +135,6 @@
                                                 <button type="submit"
                                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
                                                     Now</button>
-                                                <p class="mt-2">Already a member? <a
-                                                        class="text-primary text-decoration-none"
-                                                        href="/login?redirectTo=payment">Login</a></p>
                                             </form>
                                         </div>
                                         {{!-- <div class="modal-footer">
@@ -189,104 +148,6 @@
                         </div>
                     </div>
                 </div>
-                <!-- Register -->
-                {{!-- <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
-                    <div class="card">
-                        <div class="bg-primary w-100 login-image-div">
-                            <img src="./images/login/register-icon.png" class="img-fluid" alt="">
-                        </div>
-                        <h2 class="fw-bold">Register</h2>
-                        <!-- <p class="m-0 mb-3">New Here?</p> -->
-                        <p class="m-0 mb-3">Register here with your information</p>
-                        <div class="px-3 mb-3">
-                            <form action="/checkout" method="post">
-                                <div class="row text-start">
-                                    <input required type="hidden" name="total" value="{{package.total}}">
-                                    <input required type="hidden" name="package" value="{{package._id}}">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="f-n" class="form-label">First Name</label>
-                                        <input required type="text" id="f-n" class="form-control shadow-none"
-                                            name="first_name" placeholder="First Name">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="l-n" class="form-label">Last Name</label>
-                                        <input required type="text" id="l-n" class="form-control shadow-none"
-                                            name="last_name" placeholder="Last Name">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input required type="email" id="email" class="form-control shadow-none"
-                                            name="email" placeholder="Email">
-                                        {{#if err}}
-                                        <div id="em" class="form-text text-danger">{{err.email}}</div>
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="ph-n" class="form-label">Phone Number</label>
-                                        <input required type="number" id="ph-n" class="form-control shadow-none"
-                                            name="phone" placeholder="Phone Number">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="city" class="form-label">City</label>
-                                        <input required type="text" id="city" class="form-control shadow-none"
-                                            name="city" placeholder="City">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input required type="text" id="address" class="form-control shadow-none"
-                                            name="address" placeholder="Address">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="state" class="form-label">State</label>
-                                        <input required type="text" id="state" class="form-control shadow-none"
-                                            name="state" placeholder="State">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="z-c" class="form-label">Zip Code</label>
-                                        <input required id="z-c" type="number" class="form-control shadow-none"
-                                            name="zip_code" placeholder="Zip Code">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="p-i" class="form-label">Personal Id</label>
-                                        <input required type="text" id="p-i" class="form-control shadow-none"
-                                            name="personal_id" placeholder="Your Personal Id">
-                                        {{#if err}}
-                                        <div id="pi" class="form-text text-danger">{{err.personal_id}}</div>
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="dob" class="form-label">Date of Birth</label>
-                                        <input required type="date" id="dob" class="form-control shadow-none" name="dob"
-                                            value="pla">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input required id="password" type="password"
-                                            class="form-control shadow-none mb-3 pass" name="password"
-                                            placeholder="Password">
-                                        {{!-- {{#if err}}
-                                        <div id="pi" class="form-text text-danger">{{err.email}}</div>
-                                        {{/if}} --}}
-                                        {{!--
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="c_password" class="form-label">Confirm Password</label>
-                                        <input required type="password" id="c_password" name="c_password"
-                                            class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
-                                        {{#if err.password}}
-                                        <div class="form-text text-danger">{{err.password}}</div>
-                                        {{/if}}
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
-                                    Now</button>
-                                <p class="mt-2">Already a member? <a class="text-primary text-decoration-none"
-                                        href="/login?redirectTo=payment">Login</a></p>
-                            </form>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
     </main>
