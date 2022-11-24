@@ -61,7 +61,7 @@
                                             <tr>
                                                 <td style="max-width: 350px;">{{this.code}}</td>
                                                 <td>{{this.discount}}%</td>
-                                                <td>{{this.length}}</td>
+                                                <td>{{#ifEquals this.length "-1"}}Unlimited{{else}}{{this.length}}{{/ifEquals}}</td>
                                                 <td>{{formatDate this.validFrom}}</td>
                                                 <td>{{formatDate this.validTill}}</td>
                                                 <td>{{checkStatus this.validFrom this.validTill}}</td>

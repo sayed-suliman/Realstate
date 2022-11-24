@@ -1,5 +1,5 @@
 require('dotenv').config()
-const stripe = require('stripe')(process.env.STRIPE_PRIVATE_KEY);
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY);
 const paypal = require('paypal-rest-sdk');
 const User = require('../models/users');
 const Order = require("../models/order")
@@ -17,7 +17,7 @@ const calculateOrderAmount = (items) => {
     // calculating tax
     const totalAmount = price * ((100 + tax) / 100)
     // converting to cents because stripe accept cents only
-    return totalAmount * 100;
+    return Math.round(totalAmount * 100);
 };
 module.exports = {
     async paypalAPI(req, res) {
@@ -26,50 +26,59 @@ module.exports = {
             const user = await User.findById(userId).populate('package');
             console.log(req.body)
             if (user) {
-                await user.updateOne({ dob, driver_license: id })
-                const create_payment_json = {
-                    intent: 'sale',
-                    payer: {
-                        payment_method: 'paypal',
-                    },
-                    redirect_urls: {
-                        return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
-                        cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
-                    },
-                    transactions: [
-                        {
-                            item_list: {
-                                items: [
-                                    {
-                                        name: user.package.name,
-                                        description: user.package.description,
-                                        quantity: 1,
-                                        price: user.package.price * ((100 + user.package.tax) / 100),
-                                        // tax: '0.45',
-                                        currency: 'USD',
-                                    }
-                                ],
-                            },
-                            amount: {
-                                currency: 'USD',
-                                total: user.package.price * ((100 + user.package.tax) / 100),
-                            },
-                            payment_options: {
-                                allowed_payment_method: 'IMMEDIATE_PAY',
-                            },
-                        },
-                    ],
-                };
-                paypal.payment.create(create_payment_json, (e, payment) => {
-                    if (e) {
-                        console.log(e.response.details)
-                        return res.status(500).json({ error: e.response.message });
-                    }
-                    for (let i = 0; i < payment.links.length; i++) {
-                        if (payment.links[i].rel === 'approval_url') {
-                            console.log(payment.links[i].href)
-                            res.send({ url: payment.links[i].href })
+                user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
+                    console.log(error)
+                    console.log(user)
+                    if (error) {
+                        if (error.message.indexOf('duplicate key error') != -1) {
+                            res.send({ error: "Driver License is already taken." })
                         }
+                    }
+                    if (result) {
+                        const create_payment_json = {
+                            intent: 'sale',
+                            payer: {
+                                payment_method: 'paypal',
+                            },
+                            redirect_urls: {
+                                return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
+                                cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
+                            },
+                            transactions: [
+                                {
+                                    item_list: {
+                                        items: [
+                                            {
+                                                name: user.package.name,
+                                                description: user.package.description,
+                                                quantity: 1,
+                                                price: Math.round(user.package.price * ((100 + user.package.tax) / 100)),
+                                                // tax: '0.45',
+                                                currency: 'USD',
+                                            }
+                                        ],
+                                    },
+                                    amount: {
+                                        currency: 'USD',
+                                        total: Math.round(user.package.price * ((100 + user.package.tax) / 100)),
+                                    },
+                                    payment_options: {
+                                        allowed_payment_method: 'IMMEDIATE_PAY',
+                                    },
+                                },
+                            ],
+                        };
+
+                        paypal.payment.create(create_payment_json, (e, payment) => {
+                            if (e) {
+                                return res.status(500).json({ error: e.response.message });
+                            }
+                            for (let i = 0; i < payment.links.length; i++) {
+                                if (payment.links[i].rel === 'approval_url') {
+                                    res.send({ url: payment.links[i].href })
+                                }
+                            }
+                        })
                     }
                 })
                 return true;
@@ -81,27 +90,38 @@ module.exports = {
     },
     async stripeIntent(req, res) {
         try {
+            console.log("hello")
             const { userId, id, dob } = req.body;
             const user = await User.findById(userId).populate('package');
             if (user) {
-                await user.updateOne({ dob, driver_license: id })
-
-                // Create a PaymentIntent with the order amount and currency
-                const paymentIntent = await stripe.paymentIntents.create({
-                    amount: calculateOrderAmount(user.package),
-                    currency: "usd",
-                    setup_future_usage: 'off_session',
-                    // payment_method_types:['card'],
-                    automatic_payment_methods: {
-                        enabled: true,
-                    },
-                });
-                res.send({
-                    clientSecret: paymentIntent.client_secret,
-                    id: paymentIntent.id
-                });
+                user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
+                    console.log(error)
+                    console.log(user)
+                    if (error) {
+                        if (error.message.indexOf('duplicate key error') != -1) {
+                            res.send({ error: "Driver License is already taken." })
+                        }
+                    }
+                    if (result) {
+                        // Create a PaymentIntent with the order amount and currency
+                        const paymentIntent = await stripe.paymentIntents.create({
+                            amount: calculateOrderAmount(user.package),
+                            currency: "usd",
+                            setup_future_usage: 'off_session',
+                            // payment_method_types:['card'],
+                            automatic_payment_methods: {
+                                enabled: true,
+                            },
+                        });
+                        res.send({
+                            clientSecret: paymentIntent.client_secret,
+                            id: paymentIntent.id
+                        });
+                    }
+                })
             }
         } catch (error) {
+            console.log(error.message)
             res.send({ error: "Server error" })
         }
     },
@@ -119,6 +139,7 @@ module.exports = {
     async paymentSuccess(req, res) {
         try {
             const userId = req.query.user;
+            console.log(req.query)
             // payment_intent is generated by stripe
             // paymentId is generated by paypal
             const paymentId = req.query.payment_intent || req.query.paymentId;

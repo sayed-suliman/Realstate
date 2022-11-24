@@ -2,7 +2,8 @@ const passport = require("passport");
 require('../controllers/passport')
 
 module.exports = passport.authenticate('local', {
-    // successRedirect: '/dashboard',
-    failureRedirect: '/login',
+    // back mean to the same page
+    // also use link i.e /login
+    failureRedirect: 'back',
     failureFlash: true
 })
