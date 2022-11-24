@@ -1,8 +1,8 @@
 const generateVoucher = require("voucher-code-generator")
-const Voucher = require("./../models/vouchers")
+const Coupon = require("../models/coupons")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 module.exports = {
-    async getVoucher(req, res) {
+    async getCoupon(req, res) {
         try {
             var msgToken = req.query.msg;
             var option = {}
@@ -10,8 +10,8 @@ module.exports = {
                 var msg = decodeMsg(msgToken)
                 option = msg
             }
-            res.render("dashboard/examples/vouchers/add-voucher", {
-                title: "Dashboard | Add Voucher",
+            res.render("dashboard/examples/coupons/add-coupon", {
+                title: "Dashboard | Add Coupon",
                 toast: Object.keys(option).length == 0 ? undefined : option
             })
         } catch (e) {
@@ -21,7 +21,7 @@ module.exports = {
             })
         }
     },
-    async postVoucher(req, res) {
+    async postCoupon(req, res) {
         try {
             var data = await req.body
             data.length = data.length || -1
@@ -29,42 +29,47 @@ module.exports = {
                 length: 10,
                 pattern: data.pattern
             })
-            const voucherAdded = await Voucher({
+            console.log("Before",data.validFrom)
+            data.validFrom = new Date(data.validFrom)
+            data.validTill = new Date(data.validTill)
+            console.log("After",data.validFrom)
+            const couponAdded = await Coupon({
                 code: codes[0],
                 discount: data.discount,
                 length: data.length,
                 validFrom: data.validFrom,
                 validTill: data.validTill
             })
-            await voucherAdded.save()
+            await couponAdded.save()
             
-            var msg = await encodeMsg("Voucher code has been generated, Please check Voucher Details Page")
-            return res.redirect("/dashboard/add-voucher?msg=" + msg)
+            var msg = await encodeMsg("Coupon code has been generated, Please check Coupon Details Page")
+            return res.redirect("/dashboard/add-coupon?msg=" + msg)
         } catch (e) {
+            console.log(e.message)
             var msg = await encodeMsg("Sorry!" + e.message, 'danger')
-            return res.redirect("/dashboard/add-voucher?msg=" + msg)
+            return res.redirect("/dashboard/add-coupon?msg=" + msg)
             // res.status(404).json({
             //     status:404,
             //     error:e.message
             // })
         }
     },
-    async detailsVoucher(req, res) {
+    async detailsCoupon(req, res) {
         try {
             var msgToken = req.query.msg;
-            const vouchers = await Voucher.find().sort({ createdAt: 1 })
+            const coupons = await Coupon.find().sort({ createdAt: 1 })
             var option = {}
             if (msgToken) {
                 var msg = decodeMsg(msgToken)
                 option = msg
             }
             // res.json({
-            //     vouchers,
+            //     coupons,
             //     status:403
             // })  
-            res.render("dashboard/examples/vouchers/vouchers-detail", {
-                title: "Dashboard | Vouchers Detail",
-                vouchers,
+            res.render("dashboard/examples/coupons/coupons-detail", {
+                title: "Dashboard | Coupons Detail",
+                coupons,
                 toast: Object.keys(option).length == 0 ? undefined : option
 
             })
@@ -75,13 +80,13 @@ module.exports = {
             })
         }
     },
-    async deleteVoucher(req, res) {
+    async deleteCoupon(req, res) {
         try {
-            let voucherId = req.query.vId
-            const voucher = await Voucher.findById(voucherId)
-            await voucher.remove()
-            var msg = encodeMsg("Voucher Delete Successfully", "danger")
-            return res.redirect("/dashboard/voucher-detail?msg=" + msg)
+            let couponId = req.query.vId
+            const coupon = await Coupon.findById(couponId)
+            await coupon.remove()
+            var msg = encodeMsg("Coupon Delete Successfully", "danger")
+            return res.redirect("/dashboard/coupon-detail?msg=" + msg)
 
         } catch (e) {
             res.render("500")

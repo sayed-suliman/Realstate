@@ -57,7 +57,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each vouchers}}
+                                            {{#each coupons}}
                                             <tr>
                                                 <td style="max-width: 350px;">{{this.code}}</td>
                                                 <td>{{this.discount}}%</td>
@@ -72,7 +72,7 @@
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a> --}}
-                                                    <a href="/dashboard/voucher-detail/delete-voucher?vId={{this._id}}"
+                                                    <a href="/dashboard/coupon-detail/delete-coupon?vId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>

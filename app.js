@@ -67,55 +67,86 @@ hbs.registerHelper('ifEquals', function (arg1, arg2, block) {
     return block.inverse(this);
 });
 // title on allpages
-hbs.registerHelper("site_Title",function(){
+hbs.registerHelper("site_Title", function () {
     return process.env.SITE_NAME
 })
 
 // managing routes.
-hbs.registerHelper("userRoute",function(user){
+hbs.registerHelper("userRoute", function (user) {
     const role = user.data.root._locals.user.role
-    if(role === "student"){
+    if (role === "student") {
         return ""
-    }else{
+    } else {
         return "/admin"
     }
 })
-// check status pending expires or active
-hbs.registerHelper("checkStatus",(start,end)=>{
-   const todayDate = new Date
-   if(todayDate > end){
-       return "Expired"
+hbs.registerHelper('ifCond', function (v1, operator, v2, options) {
+
+    switch (operator) {
+        case '==':
+            return (v1 == v2) ? options.fn(this) : options.inverse(this);
+        case '===':
+            return (v1 === v2) ? options.fn(this) : options.inverse(this);
+        case '!=':
+            return (v1 != v2) ? options.fn(this) : options.inverse(this);
+        case '!==':
+            return (v1 !== v2) ? options.fn(this) : options.inverse(this);
+        case '<':
+            return (v1 < v2) ? options.fn(this) : options.inverse(this);
+        case '<=':
+            return (v1 <= v2) ? options.fn(this) : options.inverse(this);
+        case '>':
+            return (v1 > v2) ? options.fn(this) : options.inverse(this);
+        case '>=':
+            return (v1 >= v2) ? options.fn(this) : options.inverse(this);
+        case '&&':
+            return (v1 && v2) ? options.fn(this) : options.inverse(this);
+        case '||':
+            return (v1 || v2) ? options.fn(this) : options.inverse(this);
+        default:
+            return options.inverse(this);
     }
-    if(todayDate < start){
+});
+// check status pending expires or active
+hbs.registerHelper("checkStatus", (start, end) => {
+    const todayDate = new Date
+    if (todayDate > end) {
+        return "Expired"
+    }
+    if (todayDate < start) {
         return "Pending"
     }
-   if( todayDate > start && todayDate < end ){
-       return "Active"
+    if (todayDate > start && todayDate < end) {
+        return "Active"
     }
 })
 // format date
-hbs.registerHelper("formatDate",(date)=>{
-    console.log(new Date(date).getMonth())
-
+hbs.registerHelper("formatDate", (date) => {
     let year = date.getFullYear()
     let month = date.getMonth() + 1
     let day = date.getDate()
-  return `${day} - ${month} - ${year}` 
+    return `${month}/${day}/${year}`
 })
 // check data if present in collection or not . From packages
-hbs.registerHelper("checkData",(data,arr)=>{
+hbs.registerHelper("checkData", (data, arr) => {
     let check = false
     arr.forEach(arrId => {
-        if(arrId.name === data){
+        if (arrId.name === data) {
             return check = true
         }
     });
-    if(check){
+    if (check) {
         return 'checked'
-    }else{
+    } else {
         return ''
     }
 })
+hbs.registerHelper('forLoop', function (n, block) {
+    var value = '';
+    for (var i = 1; i <= n; ++i)
+        value += block.fn(i);
+    return value;
+});
 
 // // check data if present in collection or not . From packages
 // hbs.registerHelper("checkData",(data,arr)=>{

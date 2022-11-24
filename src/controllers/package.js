@@ -27,7 +27,7 @@ module.exports = {
         try {
             // const 
             const course = await Course.find({ name: req.body.coursename }).select("_id")
-            const packageData = await req.body 
+            const packageData = await req.body
             // const coursesName = []
             // course.forEach(course => {
             //     coursesName.push(course.name)
@@ -82,16 +82,19 @@ module.exports = {
             let packageId = req.query.pId
             const courses = await Course.find();
             const package = await Package.findById(packageId).populate('courses');
-            // const packages = await Package.find({ status: "publish" })
-            res.render("dashboard/examples/packages/package-edit",
-                { title: "Dashboard | Edit Package", package,courses }
-            )
+            if (package) {
+                // const packages = await Package.find({ status: "publish" })
+                return res.render("dashboard/examples/packages/package-edit",
+                    { title: "Dashboard | Edit Package", package, courses }
+                )
+            }
+            res.redirect('/dashboard/package-detail')
         } catch (e) {
-            res.status(404).json({
-                error: e.message,
-                status: 404
-            })
-            // res.render("500")
+            if (e.message.includes('Cast to ObjectId')) {
+                return res.redirect('/dashboard/package-detail')
+            }
+            console.log(e.message)
+            res.render("500")
         }
     },
     async updatePackage(req, res) {
@@ -103,7 +106,7 @@ module.exports = {
             // const packageId = await Package.findOne({ name: data.package })
             await package.updateOne({
                 ...data,
-                courses:course
+                courses: course
             })
             // res.json({
             //     data:package
