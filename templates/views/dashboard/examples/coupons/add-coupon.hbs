@@ -20,7 +20,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Generate Cuopon Code</h1>
+                            <h1>Generate Coupon Code</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -34,7 +34,7 @@
 
             <!-- Main content -->
             <section class="content">
-                <form action="voucher-generated" method="post">
+                <form action="coupon-generated" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -88,7 +88,8 @@
                                                     class="custom-control custom-switch custom-switch-off-danger custom-switch-on-success">
                                                     <input type="checkbox" class="custom-control-input"
                                                         id="checkUnlimited">
-                                                    <label class="custom-control-label" for="checkUnlimited">Unlimited</label>
+                                                    <label class="custom-control-label"
+                                                        for="checkUnlimited">Unlimited</label>
                                                 </div>
                                             </div>
                                         </div>
@@ -126,13 +127,12 @@
                                                         data-inputmask-inputformat="dd/mm/yyyy" data-mask=""
                                                         inputmode="numeric" name="validTill">
                                                 </div>
-
                                             </div>
                                         </div>
                                     </div>
                                     <div class="form-group">
                                         <label for="discount">Discount (%)</label>
-                                        <input required type="number" min="0" max="0" id="discount" name="discount"
+                                        <input required type="number" min="0" max="100" id="discount" name="discount"
                                             class="form-control">
                                     </div>
                                     {{!-- price --}}
