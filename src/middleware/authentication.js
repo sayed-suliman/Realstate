@@ -1,6 +1,9 @@
 const Order = require("../models/order")
 const url = require('url');
 const { encodeMsg } = require("../helper/createMsg");
+const OTP = require("../models/otp");
+const { generateCode } = require("../helper/genCode");
+const { sendVerificationCode } = require("../controllers/mailServices");
 
 // for authenticated user only
 var authenticated = async (req, res, next) => {
@@ -12,6 +15,20 @@ var authenticated = async (req, res, next) => {
 
         // check whether user bought a package or not
         if (req.user.role == "student") {
+            if (!req.user.verified) {
+                const otpCode = generateCode();
+                await OTP({
+                    email: req.user.email,
+                    otp: otpCode
+                }).save();
+                sendVerificationCode(req.user.email, otpCode)
+                return res.redirect(url.format({
+                    pathname: '/verification',
+                    query: {
+                        "user": req.user._id.toString()
+                    }
+                }))
+            }
             var order = await Order.findOne({ user: req.user._id })
             if (!order) {
                 req.flash('error', "Please make a payment to continue.")
