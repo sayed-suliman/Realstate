@@ -1,10 +1,11 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Package = require("../models/package")
-const Course = require("../models/courses")
+const Course = require("../models/courses");
+const { diffIndexes } = require("../models/courses");
 module.exports = {
     async package(req, res) {
         try {
-            const courses = await Course.find({status:'publish'})
+            const courses = await Course.find({ status: 'publish' })
             if (req.params.id) {
                 return res.render("dashboard/examples/packages/add-package", {
                     title: req.params.id + "| Edit Package",
@@ -28,6 +29,7 @@ module.exports = {
             // const 
             const course = await Course.find({ name: req.body.coursename }).select("_id")
             const packageData = await req.body
+            let selectCourses = req.body.coursename
             // const coursesName = []
             // course.forEach(course => {
             //     coursesName.push(course.name)
@@ -40,6 +42,19 @@ module.exports = {
                 price: packageData.price
             }).save();
             if (package) {
+                if (selectCourses) {
+                    if (Array.isArray(selectCourses)) {
+                        selectCourses.forEach(async (cs) => {
+                            let course = await Course.findOne({ name: cs })
+                            course.package = course.package.concat(package._id)
+                            await course.save()
+                        })
+                    } else {
+                        const oneCourse = await Course.findOne({ name: selectCourses })
+                        oneCourse.package = oneCourse.package.concat(package._id)
+                        await oneCourse.save()
+                    }
+                }
                 var msg = encodeMsg('The package has been created')
                 return res.redirect('/dashboard?msg=' + msg)
             }
@@ -100,14 +115,62 @@ module.exports = {
     async updatePackage(req, res) {
         try {
             const data = req.body
-            console.log(req.body)
-            const package = await Package.findById(req.query.pId)
+            const pId = req.query.pId
+            const package = await Package.findById(pId)
             const course = await Course.find({ name: req.body.coursename }).select("_id")
+            // get all courses to update their packages
+            let courses = await Course.find()
             // const packageId = await Package.findOne({ name: data.package })
             await package.updateOne({
                 ...data,
                 courses: course
             })
+            if (package) {
+                if (!(data.coursename)) {
+                    console.log('nocourses-selected')
+                    const courses = await Course.find()
+                    courses.forEach(async (cs) => {
+                        const index = cs.package.indexOf(pId)
+                        cs.package.splice(index, 1)
+                        await cs.save()
+                    })
+                }
+                if (data.coursename) {
+                    if (Array.isArray(data.coursename)) {
+                        courses.forEach(async (cs) => {
+                            const index = cs.package.indexOf(pId)
+                            let isCourseContain = data.coursename.includes(cs.name)
+                            if (isCourseContain) {
+                                if (!(index > -1)) {
+                                    cs.package = cs.package.concat(pId)
+                                }
+                            } else {
+                                if (index > -1) {
+                                    cs.package.splice(index, 1)
+                                }
+                            }
+                            await cs.save()
+                            console.log('saved', cs)
+                        })
+                    } else {
+                        console.log('another here')
+                        courses.forEach(async (cs) => {
+                            const index = cs.package.indexOf(pId)
+                            if (cs.name == data.coursename) {
+                                if (!(index > -1)) {
+                                    cs.package = cs.package.concat(pId)
+                                    await cs.save()
+                                }
+                            } else {
+                                if (index > -1) {
+                                    cs.package.splice(index, 1)
+                                    await cs.save()
+                                }
+                            }
+                        })
+                    }
+                }
+            }
             // res.json({
             //     data:package
             // })

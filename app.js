@@ -163,9 +163,9 @@ hbs.registerHelper('forLoop', function (n, block) {
 //         return ''
 //     }
 // })
-hbs.registerHelper('checkDraftOrPublish',(arg)=>{
-    if(arg === 'publish') return "Selected"
-    if(arg === 'draft') return "Selected"
+hbs.registerHelper('checkDraftOrPublish', (arg, arg2) => {
+    if (arg === arg2) return "Selected"
+    if (arg === arg2) return "Selected"
 })
 
 

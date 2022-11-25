@@ -28,29 +28,29 @@ const addcourse = async (req, res) => {
             price: data.price
         })
         await addCourse.save()
-        if (data.package) {
-            if (Array.isArray(data.package)) {
-                data.package.forEach(async element => {
-                    console.log(element)
-                    let packageCourse = await Package.findOne({ name: element })
+        if (addCourse) {
+            if (data.package) {
+                if (Array.isArray(data.package)) {
+                    data.package.forEach(async element => {
+                        let packageCourse = await Package.findOne({ name: element })
+                        let courseId = await CourseModel.findOne({ name: data.name }).select("_id")
+                        packageCourse.courses = packageCourse.courses.concat(courseId)
+                        await packageCourse.save()
+                        // packageCourse.courses.push(courseId)
+                        // await packageCourse.save()
+                        return;
+                    });
+                } else {
+                    // console.log(data.package)
+                    // console.log(package)
+                    let packageCourse = await Package.findOne({ name: data.package })
                     let courseId = await CourseModel.findOne({ name: data.name }).select("_id")
+                    //     // packageCourse.courses.push(courseId)
+                    //     // await packageCourse.save()
                     packageCourse.courses = packageCourse.courses.concat(courseId)
                     await packageCourse.save()
-                    // packageCourse.courses.push(courseId)
-                    // await packageCourse.save()
-                    return;
-                });
+                }
             }
-            // console.log(data.package)
-            // console.log(package)
-            let packageCourse = await Package.findOne({ name: data.package })
-            let courseId = await CourseModel.findOne({ name: data.name }).select("_id")
-            //     // packageCourse.courses.push(courseId)
-            //     // await packageCourse.save()
-            packageCourse.courses = packageCourse.courses.concat(courseId)
-            await packageCourse.save()
-        }
-        if (addCourse) {
             var msg = encodeMsg('The Course has been created')
             return res.redirect('/dashboard?msg=' + msg)
         }
@@ -119,14 +119,14 @@ const updateCourse = async (req, res) => {
         const packageId = await Package.findOne({ name: data.package })
         const allPackages = await Package.find()
 
-        
+
         await course.updateOne({
             ...data,
             package: packages,
         })
         if (course) {
             if (!data.package) {
-                    allPackages.forEach(async (onePackage) => {
+                allPackages.forEach(async (onePackage) => {
                     const index = onePackage.courses.indexOf(cId)
                     onePackage.courses.splice(index, 1)
                     await onePackage.save()
@@ -134,23 +134,21 @@ const updateCourse = async (req, res) => {
             }
             if (data.package) {
                 if (Array.isArray(data.package)) {
-                    allPackages.forEach(async (eachPackage) => {
-                        data.package.forEach(async element => {
-                            if (eachPackage.name === element) {
-                                let courseIndex = eachPackage.courses.indexOf(cId)
-                                if (!(courseIndex > -1)) {
-                                    eachPackage.courses = eachPackage.courses.concat(cId)
-                                }
-                            } else {
-                                let courseIndex = eachPackage.courses.indexOf(cId)
-                                if (!(courseIndex > -1)) {
-                                    eachPackage.courses.splice(courseIndex, 1)
-                                }
+                    allPackages.forEach(async (pk) => {
+                        const index = pk.courses.indexOf(cId)
+                        let isPackageContain = data.package.includes(pk.name)
+                        if (isPackageContain) {
+                            if (!(index > -1)) {
+                                pk.courses = pk.courses.concat(cId)
                             }
-                        });
-                        await eachPackage.save()
+                        } else {
+                            if (index > -1) {
+                                pk.courses.splice(index, 1)
+                            }
+                        }
+                        await pk.save()
                     })
-                }else{
+                } else {
                     allPackages.forEach(async (eachPackage) => {
                         if (eachPackage.name === data.package) {
                             let courseIndex = eachPackage.courses.indexOf(cId)

@@ -62,9 +62,9 @@
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
                     <select id="inputStatus" name="status" class="form-control custom-select">
-                      <option selected disabled value="">Select one</option>
-                      <option value="draft">Draft</option>
-                      <option value="publish">Publish</option>
+                      <option disabled value="">Select one</option>
+                      <option {{checkDraftOrPublish package.status 'draft'}} value="draft">Draft</option>
+                      <option {{checkDraftOrPublish package.status 'publish'}} value="publish">Publish</option>
                     </select>
                   </div>
                   <div class="row">
@@ -74,7 +74,7 @@
                   </div>
                   <div class="form-group col">
                     <label for="price">Package Tax(%)</label>
-                    <input type="number" id="price" name="tax" value="{{package.tax}}" class="form-control">
+                    <input type="number" min="0" max="100" id="price" name="tax" value="{{package.tax}}" class="form-control">
                   </div>
                   </div>
                 </div>
