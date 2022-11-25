@@ -18,6 +18,10 @@ const orderSchema = mongoose.Schema({
     transaction: {
         type: String,
         default: null
+    },
+    discount: {
+        type: Number,
+        default: 0
     }
 }, { timestamps: true })
 const Order = model('order', orderSchema)

@@ -91,7 +91,21 @@ module.exports = {
         }
     },
     async couponAPI(req, res) {
-        console.log(req.body)
-        res.send({ status: req.body })
+        const { code } = req.body;
+        console.log(code)
+        var coupon = await Coupon.findOne({ code: code, length: { $ne: 0 } });
+        coupon = coupon.toObject()
+        delete coupon.length
+        delete coupon.validFrom
+        delete coupon.validTill
+        delete coupon.createdAt
+        delete coupon.updatedAt
+
+        console.log(coupon)
+
+        if (coupon) {
+            return res.send({ success: { msg: `${coupon.discount}% discount is applied on your payment.`, coupon } })
+        }
+        res.send({ error: "Coupon Code doesn't exist." })
     }
 }

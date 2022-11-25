@@ -1,14 +1,15 @@
 const mongoose = require("mongoose")
 const voucherSchema = new mongoose.Schema({
-    code:String,
-    discount:Number,
-    length:Number,
-    validFrom:Date,
-    validTill:Date
+    code: String,
+    discount: Number,
+    length: Number,
+    validFrom: Date,
+    validTill: Date
 },
-{
-    timestamps:true
-}
+    {
+        timestamps: true
+    }
 
 )
-module.exports = mongoose.model("coupon",voucherSchema)
+const Coupon = mongoose.model("coupon", voucherSchema)
+module.exports = Coupon
