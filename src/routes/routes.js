@@ -3,7 +3,7 @@ const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
 const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in, isStudent, isAdmin } = require("../middleware/authentication")
+const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
@@ -38,7 +38,7 @@ router.get("/", async (req, res) => {
 // login route
 router.get("/login", logged_in, login)
 // router.post('/login',postLogin)
-router.post('/login', authLocal, postLogin)
+router.post('/login', verifiedAndPaid,authLocal, postLogin)
 router.post('/login-ajax', (req, res) => {
     console.log()
 })
