@@ -23,16 +23,14 @@ module.exports = {
     },
     async postCoupon(req, res) {
         try {
+            console.log(req.body.validFrom)
             var data = await req.body
             data.length = data.length || -1
             let codes = await generateVoucher.generate({
                 length: 10,
                 pattern: data.pattern
             })
-            console.log("Before",data.validFrom)
-            data.validFrom = new Date(data.validFrom)
-            data.validTill = new Date(data.validTill)
-            console.log("After",data.validFrom)
+
             const couponAdded = await Coupon({
                 code: codes[0],
                 discount: data.discount,
@@ -41,7 +39,7 @@ module.exports = {
                 validTill: data.validTill
             })
             await couponAdded.save()
-            
+
             var msg = await encodeMsg("Coupon code has been generated, Please check Coupon Details Page")
             return res.redirect("/dashboard/add-coupon?msg=" + msg)
         } catch (e) {
@@ -91,5 +89,23 @@ module.exports = {
         } catch (e) {
             res.render("500")
         }
+    },
+    async couponAPI(req, res) {
+        const { code } = req.body;
+        console.log(code)
+        var coupon = await Coupon.findOne({ code: code, length: { $ne: 0 } });
+        coupon = coupon.toObject()
+        delete coupon.length
+        delete coupon.validFrom
+        delete coupon.validTill
+        delete coupon.createdAt
+        delete coupon.updatedAt
+
+        console.log(coupon)
+
+        if (coupon) {
+            return res.send({ success: { msg: `${coupon.discount}% discount is applied on your payment.`, coupon } })
+        }
+        res.send({ error: "Coupon Code doesn't exist." })
     }
 }

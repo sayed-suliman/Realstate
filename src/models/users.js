@@ -39,7 +39,7 @@ const userSchema = new mongoose.Schema({
     },
     dob: {
         type: Date,
-        default:""
+        default: ""
     },
     password: {
         type: String,

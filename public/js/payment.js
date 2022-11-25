@@ -2,6 +2,11 @@ const stripeBtn = document.getElementById('stripe-payment');
 const id = document.getElementById('driver-id')
 const dob = document.getElementById('dob')
 const paypalBtn = document.querySelector('.paypal')
+const couponBtn = document.querySelector('#coupon-btn')
+const couponInput = document.querySelector('#coupon-code')
+
+let couponId;
+
 const showInputMessage = (element, msg) => {
     element.nextElementSibling.classList.replace('opacity-0', 'opacity-100')
     element.nextElementSibling.textContent = msg
@@ -42,7 +47,7 @@ stripeBtn.addEventListener('click', function () {
     let elements;
     let paymentId;
     let paymentElement;
-
+    console.log(couponId)
     initialize();
     checkStatus();
     // setCardBtnLoading(false)
@@ -52,7 +57,7 @@ stripeBtn.addEventListener('click', function () {
         .addEventListener("submit", handleSubmit);
     // Fetches a payment intent and captures the client secret
     async function initialize() {
-        var body = (driverID_db && dob_db) ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
+        var body = (driverID_db && dob_db) ? { userId: user, couponId } : { userId: user, id: id.value, dob: dob.value, couponId }
         const response = await fetch("/create-payment-intent", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -86,7 +91,7 @@ stripeBtn.addEventListener('click', function () {
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${window.location.origin}/success?user=${user}`,
+                return_url: `${window.location.origin}/success?user=${user}&couponId=${couponId}`,
                 payment_method_data: {
                     billing_details: {
                         name: user_name,
@@ -213,7 +218,7 @@ paypalBtn.addEventListener('click', async function () {
     }
     setPaypalLoading(true)
 
-    var body = (driverID_db && dob_db) ? { userId: user } : { userId: user, id: id.value, dob: dob.value }
+    var body = (driverID_db && dob_db) ? { userId: user, couponId } : { userId: user, id: id.value, dob: dob.value, couponId }
     const response = await fetch('/paypal', {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -243,5 +248,70 @@ paypalBtn.addEventListener('click', async function () {
             document.querySelector("#spinner-paypal").classList.add("d-none");
             paypalBtn.querySelector("#button-text").classList.remove("d-none");
         }
+    }
+})
+
+couponBtn.addEventListener('click', async function (e) {
+    const code = couponInput.value
+    if (code) {
+        setLoading(true)
+        const response = await fetch('/check-coupon', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code })
+        })
+        setLoading(false)
+        const result = await response.json();
+        console.log(result)
+        if (response.ok) {
+            if (result.error) {
+                showMessage(result.error)
+            }
+            if (result.success) {
+                const { coupon: couponDetail, msg } = result.success
+                const currentPrice = packageTotal
+                const discount = document.querySelector('.discount')//only discount price
+                const discountRow = document.querySelector('.discount-row')//discount row 
+                const discountPrice = discountRow.querySelector('.discount-price')//total price after discount
+
+                // discount of the current price
+                let discountInUSD = Number(currentPrice) * (Number(couponDetail.discount) / 100)
+                // price after discount
+                let calculatedPrice = Number(currentPrice) - discountInUSD
+
+                showMessage(msg, 'success')
+                couponId = couponDetail._id
+                discount.textContent = `\$${discountInUSD.toFixed(2)}`;
+                discountPrice.textContent = `\$${calculatedPrice}`;
+                discountRow.classList.replace('d-none', 'd-table-row')
+            }
+        }
+    } else {
+        showMessage("Please enter the Coupon code.")
+    }
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            couponBtn.disabled = true;
+            couponBtn.querySelector('.text').classList.add('d-none');
+            couponBtn.querySelector('.spinner').classList.remove('d-none')
+        } else {
+            couponBtn.disabled = false;
+            couponBtn.querySelector('.text').classList.remove('d-none');
+            couponBtn.querySelector('.spinner').classList.add('d-none')
+        }
+    }
+    function showMessage(messageText, type = "danger") {
+        const messageContainer = document.querySelector(".coupon-msg");
+
+        messageContainer.classList.remove("opacity-0");
+        messageContainer.classList.replace("text-danger", `text-${type}`);
+        messageContainer.textContent = messageText;
+
+        // setTimeout(function () {
+        //     messageContainer.classList.add("opacity-0");
+        //     messageContainer.classList.replace(`text-${type}`, "text-danger");
+        //     messageContainer.textContent = "no msg";
+        // }, 4000);
     }
 })

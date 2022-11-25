@@ -6,6 +6,7 @@ const Order = require("../models/order")
 const Package = require("../models/package")
 const url = require('url');
 const { encodeMsg } = require('../helper/createMsg');
+const Coupon = require('../models/coupons');
 
 paypal.configure({
     mode: process.env.SITE_DEBUG ? 'sandbox' : 'live',
@@ -22,7 +23,7 @@ const calculateOrderAmount = (items) => {
 module.exports = {
     async paypalAPI(req, res) {
         try {
-            const { userId, id, dob } = req.body;
+            const { userId, id, dob, couponId } = req.body;
             const user = await User.findById(userId).populate('package');
             console.log(req.body)
             if (user) {
@@ -35,13 +36,21 @@ module.exports = {
                         }
                     }
                     if (result) {
+                        var price = Math.round(user.package.price * ((100 + user.package.tax) / 100))
+                        let discount = 0;
+                        if (couponId) {
+                            const coupon = await Coupon.findById(couponId).where('length').ne(0)
+                            discount = Number(price) * (Number(coupon.discount) / 100)
+                            console.log(discount)
+                        }
+                        var amount = price - discount
                         const create_payment_json = {
                             intent: 'sale',
                             payer: {
                                 payment_method: 'paypal',
                             },
                             redirect_urls: {
-                                return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}`,
+                                return_url: `${process.env.SERVER_URI}/success?user=${user._id.toString()}&package=${user.package._id}&couponId=${couponId}`,
                                 cancel_url: `${process.env.SERVER_URI}/payment?user=${user._id.toString()}`
                             },
                             transactions: [
@@ -52,7 +61,7 @@ module.exports = {
                                                 name: user.package.name,
                                                 description: user.package.description,
                                                 quantity: 1,
-                                                price: Math.round(user.package.price * ((100 + user.package.tax) / 100)),
+                                                price: amount,
                                                 // tax: '0.45',
                                                 currency: 'USD',
                                             }
@@ -60,7 +69,7 @@ module.exports = {
                                     },
                                     amount: {
                                         currency: 'USD',
-                                        total: Math.round(user.package.price * ((100 + user.package.tax) / 100)),
+                                        total: amount,
                                     },
                                     payment_options: {
                                         allowed_payment_method: 'IMMEDIATE_PAY',
@@ -90,22 +99,30 @@ module.exports = {
     },
     async stripeIntent(req, res) {
         try {
-            console.log("hello")
-            const { userId, id, dob } = req.body;
+
+            const { userId, id, dob, couponId } = req.body;
             const user = await User.findById(userId).populate('package');
             if (user) {
                 user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
-                    console.log(error)
-                    console.log(user)
                     if (error) {
                         if (error.message.indexOf('duplicate key error') != -1) {
                             res.send({ error: "Driver License is already taken." })
                         }
                     }
                     if (result) {
+                        var price = calculateOrderAmount(user.package)
+                        let discount = 0;
+                        if (couponId) {
+                            const coupon = await Coupon.findById(couponId).where('length').ne(0)
+                            discount = Number(price) * (Number(coupon.discount) / 100)
+                            console.log(discount)
+                        }
+                        var amount = price - discount
+
+                        console.log(amount)
                         // Create a PaymentIntent with the order amount and currency
                         const paymentIntent = await stripe.paymentIntents.create({
-                            amount: calculateOrderAmount(user.package),
+                            amount,
                             currency: "usd",
                             setup_future_usage: 'off_session',
                             // payment_method_types:['card'],
@@ -115,7 +132,7 @@ module.exports = {
                         });
                         res.send({
                             clientSecret: paymentIntent.client_secret,
-                            id: paymentIntent.id
+                            id: paymentIntent.id, couponId
                         });
                     }
                 })
@@ -139,6 +156,7 @@ module.exports = {
     async paymentSuccess(req, res) {
         try {
             const userId = req.query.user;
+            const couponId = req.query.couponId;
             console.log(req.query)
             // payment_intent is generated by stripe
             // paymentId is generated by paypal
@@ -146,12 +164,20 @@ module.exports = {
             const user = await User.findById(userId).populate('package');
             // const package = await Package.findById(packageId);
             if (user) {
+                let discount = 0
+                let price = user.package.price * ((100 + user.package.tax) / 100)
+                if (couponId) {
+                    const coupon = await Coupon.findById(couponId).where('length')
+                    discount = Number(price) * (Number(coupon.discount) / 100)
+                    await Coupon.findByIdAndUpdate(couponId, { $inc: { length: -1 } })
+                }
                 const order = await Order({
                     user: user._id,
                     package: user.package._id,
-                    amount: user.package.price * ((100 + user.package.tax) / 100),
+                    amount: price - discount,
                     pay_method: req.query.payment_intent ? "Stripe" : "PayPal",
                     transaction: paymentId,
+                    discount,
                     verified: true
                 }).save()
                 if (order) {
