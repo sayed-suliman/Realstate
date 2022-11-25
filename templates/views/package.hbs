@@ -10,7 +10,9 @@
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>
         {{/if}}
-        <a href="/checkout?package=636b5e1e1d884c047bddcfbc" class="btn btn-success">Basic ($1199)</a>
-        <a href="/checkout?package=636b7ddbd2dccf7bc0b180de" class="btn btn-info">Silver ($1299)</a>
+        {{#each packages}}
+        <a href="/checkout?package={{this._id}}" class="btn btn-success">{{this.name}} (${{this.price}})</a>
+        {{/each}}
+        {{!-- <a href="/checkout?package=636b7ddbd2dccf7bc0b180de" class="btn btn-info">Silver ($1299)</a> --}}
     </div>
     {{>footer}}

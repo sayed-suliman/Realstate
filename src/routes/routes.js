@@ -16,9 +16,10 @@ const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editCha
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
-const { getCoupon, detailsCoupon, postCoupon, deleteCoupon } = require("../controllers/coupons")
+const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
+const Package = require("../models/package")
 
 
 router.get("/test", (req, res) => {
@@ -26,10 +27,11 @@ router.get("/test", (req, res) => {
     res.render("package")
 })
 // default route
-router.get("/", (req, res) => {
+router.get("/", async (req, res) => {
     const msg = req.query.msg;
     const type = req.query.type;
-    res.render("package", { msg: { text: msg, type } })
+    const packages = await Package.find({ status: "publish" });
+    res.render("package", { packages, msg: { text: msg, type } })
 })
 
 
@@ -88,6 +90,8 @@ router.post('/create-payment-intent', stripeIntent)
 router.post('/cancel-payment-intent', stripeIntentCancel)
 router.post('/paypal', paypalAPI)
 router.get('/success', paymentSuccess)
+router.post('/check-coupon', couponAPI)
+
 
 router.get('/dashboard/view-course', (req, res) => {
     res.render('dashboard/student/view-course', { title: "Course" })

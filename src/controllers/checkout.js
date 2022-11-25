@@ -12,7 +12,8 @@ module.exports = {
         try {
             const id = req.query.package;
             if (id) {
-                var package = await Package.findById(id)
+                var package = await Package.findById(id).where('status').equals('publish');
+                console.log(package)
                 if (package) {
                     if (req.user) {
                         await User.findByIdAndUpdate(req.user._id,{package:id})

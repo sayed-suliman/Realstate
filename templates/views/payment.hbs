@@ -13,7 +13,8 @@
                         <div class="card-body">
                             <table class="table table-borderless">
                                 {{#if alert}}
-                                <div class="alert {{#ifEquals toast.type "success"}} alert-success {{else}} alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
+                                <div class="alert {{#ifEquals toast.type " success"}} alert-success {{else}}
+                                    alert-danger {{/ifEquals}} alert-dismissible fade show" role="alert">
                                     {{alert.text}}
                                     <button type="button" class="btn-close" data-bs-dismiss="alert"
                                         aria-label="Close"></button>
@@ -42,24 +43,40 @@
                                         <td class="text-end">${{user.package.price}}</td>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">Order Discounts</td>
-                                        <td class="text-danger text-end">-$0</td>
-                                    </tr>
-                                    <tr>
                                         <td scope="row" class="text-start">Taxes</td>
                                         <td class="text-end">{{user.package.tax}}%</td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Order Discount</td>
+                                        <td class="text-danger text-end discount">-$0</td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
                                         <th class="text-end">${{user.total}}</th>
                                     </tr>
+                                    <tr class="discount-row d-none">
+                                        <td scope="row" class="text-start">After Discount</td>
+                                        <th class="text-end discount-price text-success">$00</th>
+                                    </tr>
                                     <tr class="border-bottom">
                                         <td colspan="2">
-                                            <div class="input-group mb-3 justify-content-end">
-                                                <input type="text" class="st-input" placeholder="Coupon Code"
-                                                    aria-describedby="coupon-code">
-                                                <button class="btn btn-outline-secondary" type="button"
-                                                    id="coupon-code">Apply Code</button>
+                                            <div class="col-8 ms-auto">
+                                                <div class="input-group justify-content-end">
+                                                    <input type="text" class="st-input" id="coupon-code"
+                                                        placeholder="Coupon Code" aria-describedby="coupon-code">
+                                                    <button class="btn btn-outline-secondary" type="button"
+                                                        id="coupon-btn" style="width: 130px;">
+                                                        <div class="spinner d-none">
+                                                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                                        </div>
+                                                        <span class="text">
+                                                            Apply Code
+                                                        </span>
+                                                    </button>
+                                                </div>
+                                                <p
+                                                    class="fs-14 text-center p-0 ps-1 opacity-0 m-0 text-danger coupon-msg">
+                                                    msg</p>
                                             </div>
                                         </td>
                                     </tr>
@@ -134,7 +151,8 @@
         const dob_db = `{{{user.dob}}}`
         const user_email = `{{{user.email}}}`
         const user_name = `{{{user.name}}}`
-        const STRIPE_API =`{{{stripe_api}}}`
+        const STRIPE_API = `{{{stripe_api}}}`
+        const packageTotal = `{{{user.total}}}`
     </script>
     <script src="https://js.stripe.com/v3/"></script>
     <script src="/js/payment.js"></script>
