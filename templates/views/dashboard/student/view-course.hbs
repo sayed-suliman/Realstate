@@ -48,47 +48,14 @@
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
                                         <tbody>
+                                            {{#each course.contents}}
                                             <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
+                                                <td><a href="/dashboard/view-chapter/{{this._id}}"
+                                                        class="text-dark">{{this.name}}</a></td>
                                                 <td></td>
                                             </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
+                                            {{/each}}
+                                             <tr>
                                                 <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
                                                 <td class="text-right"><span class="badge badge-primary">20
                                                         Questions</span></td>

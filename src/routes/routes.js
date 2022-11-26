@@ -5,23 +5,22 @@ const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = req
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse } = require("../controllers/courses")
+const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
-const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
+const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
-const {order} = require("./../controllers/order")
+const { order } = require("./../controllers/order")
 const Package = require("../models/package")
-const { viewCourse } = require("../controllers/view-course")
 
 
 router.get("/test", (req, res) => {
@@ -95,13 +94,8 @@ router.get('/success', paymentSuccess)
 router.post('/check-coupon', couponAPI)
 
 
-router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
-router.get('/dashboard/view-course/:id', viewCourse)
-router.get('/dashboard/view-chapter', (req, res) => {
-    res.render('dashboard/student/view-chapter', {
-        title: "View Chapter"
-    })
-})
+
+
 // contact-us
 router.get("/dashboard/contact-us", isStudent, (req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
@@ -138,6 +132,9 @@ router.get("/dashboard/course-detail/delete-course", deleteCourse)
 router.get("/dashboard/course-detail/edit-course", editCourse)
 // update-course
 router.post("/dashboard/course-detail/update-course", updateCourse)
+// for student
+router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
+router.get('/dashboard/view-course/:id', viewCourse)
 
 // ********************************** Chapter Part
 
@@ -154,6 +151,9 @@ router.get("/dashboard/chapter-detail/edit-chapter", editChapter)
 router.get("/dashboard/chapter-detail/delete-chapter", deleteChapter)
 // Update Chapter
 router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), updateChapter)
+//for student 
+router.get('/dashboard/view-chapter', (req, res) => { res.redirect('/dashboard') })
+router.get('/dashboard/view-chapter/:id', viewChapter)
 
 // ******************************* Quiz part **************************
 // add quiz 
@@ -177,7 +177,7 @@ router.get("/dashboard/add-coupon", getCoupon)
 router.get("/dashboard/coupon-detail", detailsCoupon)
 
 // ******************************** Orders
-router.get("/dashboard/order",order)
+router.get("/dashboard/order", order)
 
 
 // eroor 500 page
