@@ -54,7 +54,7 @@ const postChapter = async (req, res) => {
             course: courseId._id
         })
         await chapterAdded.save()
-        if (chapterAdded) {
+        if(chapterAdded){
             courseId.contents.push(chapterAdded._id)
             await courseId.save()
         }
@@ -138,13 +138,13 @@ const updateChapter = async (req, res) => {
             fs.unlink("public/" + oldPath, (err, data) => {
                 console.log("delte", err, data)
             })
-            if (!(afterindex > -1)) {
+            if(!(afterindex > -1)){
                 courseId.contents.push(cId)
                 await courseId.save()
             }
-            if (!(beforeCoure._id.toString() == courseId._id.toString())) {
-                if (beforeindex > -1) {
-                    beforeCoure.contents.splice(beforeindex, 1)
+            if(!(beforeCoure._id.toString() == courseId._id.toString())){
+                if(beforeindex > -1){
+                    beforeCoure.contents.splice(beforeindex,1)
                     await beforeCoure.save()
                 }
             }
@@ -156,13 +156,13 @@ const updateChapter = async (req, res) => {
             name: req.body.name,
             course: courseId._id,
         })
-        if (!(afterindex > -1)) {
+        if(!(afterindex > -1)){
             courseId.contents.push(cId)
             await courseId.save()
         }
-        if (!(beforeCoure._id.toString() == courseId._id.toString())) {
-            if (beforeindex > -1) {
-                beforeCoure.contents.splice(beforeindex, 1)
+        if(!(beforeCoure._id.toString() == courseId._id.toString())){
+            if(beforeindex > -1){
+                beforeCoure.contents.splice(beforeindex,1)
                 await beforeCoure.save()
             }
         }

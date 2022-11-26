@@ -39,9 +39,12 @@ module.exports = {
                 status: packageData.status,
                 tax: packageData.tax,
                 courses: course,
-                price: packageData.price
+                price: packageData.price,
             }).save();
             if (package) {
+                // link added to package
+                package.link =  process.env.SERVER_URI+"/checkout?package="+package._id
+                await package.save()
                 if (selectCourses) {
                     if (Array.isArray(selectCourses)) {
                         selectCourses.forEach(async (cs) => {

@@ -1,0 +1,137 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Order</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Order</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{course.name}}</h3>
+                                    <div class="card-tools">
+                                        <div class="input-group input-group-sm" style="width: 150px;">
+                                            <button type="submit" class="btn btn-default">
+                                               Edit <i class="fa-solid fa-pen-to-square"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <tbody>
+                                            {{#each course.contents}}
+                                            <tr>
+                                                <td style="width: 100px;">{{increment @index}}</td>
+                                                <td><a href="/dashboard/view-chapter"
+                                                        class="text-dark">{{this.name}}</a></td>
+                                                <td><button class="btn"><i
+                                                            class="fa-sharp fa-solid fa-sort nav-icon"></i></button>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{!-- <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
+                                                <td class="text-right"><span class="badge badge-primary">20
+                                                        Questions</span></td>
+                                            </tr> --}}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+
+
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    </script>
+</body>
+
+</html>
