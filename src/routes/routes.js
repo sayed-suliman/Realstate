@@ -14,12 +14,12 @@ const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
-const { addQuiz, quizDetail } = require("./../controllers/quiz")
+const { addQuiz, quizDetail, postQuiz } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
-const {order} = require("./../controllers/order")
+const {order,orderCourse} = require("./../controllers/order")
 const Package = require("../models/package")
 const { viewCourse } = require("../controllers/view-course")
 
@@ -158,7 +158,7 @@ router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFil
 // ******************************* Quiz part **************************
 // add quiz 
 router.get("/dashboard/add-quiz", addQuiz)
-// router.post("/dashboard/add-quiz",upload.single("courseFile"),postChapter,errorMsg)
+router.post("/dashboard/add-quiz",postQuiz)
 
 // quiz details 
 router.get("/dashboard/quiz-detail", quizDetail)
@@ -178,6 +178,8 @@ router.get("/dashboard/coupon-detail", detailsCoupon)
 
 // ******************************** Orders
 router.get("/dashboard/order",order)
+router.get("/dashboard/order/course/:id",orderCourse)
+
 
 
 // eroor 500 page

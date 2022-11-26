@@ -122,10 +122,13 @@ hbs.registerHelper("checkStatus", (start, end) => {
 })
 // format date
 hbs.registerHelper("formatDate", (date) => {
-    let year = date.getFullYear()
-    let month = date.getMonth() + 1
-    let day = date.getDate()
-    return `${month}/${day}/${year}`
+    if(date){
+        let year = date.getFullYear()
+        let month = date.getMonth() + 1
+        let day = date.getDate()
+        return `${month}/${day}/${year}`
+    }
+    return ""
 })
 // check data if present in collection or not . From packages
 hbs.registerHelper("checkData", (data, arr) => {
@@ -166,6 +169,11 @@ hbs.registerHelper('forLoop', function (n, block) {
 hbs.registerHelper('checkDraftOrPublish', (arg, arg2) => {
     if (arg === arg2) return "Selected"
     if (arg === arg2) return "Selected"
+})
+
+// incrementing by 1
+hbs.registerHelper('increment',(arg)=>{
+    return ++arg
 })
 
 

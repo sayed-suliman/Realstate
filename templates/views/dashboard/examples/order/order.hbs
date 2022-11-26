@@ -43,15 +43,17 @@
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
+                                                <th style="width: 65px;">S.No</th>
                                                 <th>Course Name</th>
-                                                <th>Package</th>
-                                                <th>Chapters</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#each courses}}
                                             <tr>
-                                                <td>{{this.name}}</td>
+                                                <td>{{increment @index}}</td>
+                                                <td>
+                                                    <a href="/dashboard/order/course/{{this._id}}">{{this.name}}</a>
+                                                </td>
                                                 {{!-- <td>
                                                     <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
                                                         type="button">

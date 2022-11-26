@@ -55,7 +55,7 @@ const postChapter = async (req, res) => {
         })
         await chapterAdded.save()
         if(chapterAdded){
-            courseId.chapter.push(chapterAdded._id)
+            courseId.contents.push(chapterAdded._id)
             await courseId.save()
         }
 
@@ -123,8 +123,8 @@ const updateChapter = async (req, res) => {
         const chapter = await Chapters.findById(cId)
         const beforeCoure = await Course.findById(chapter.course)
         const courseId = await Course.findOne({ name: data.course })
-        let beforeindex = beforeCoure.chapter.indexOf(cId)
-        let afterindex = courseId.chapter.indexOf(cId)
+        let beforeindex = beforeCoure.contents.indexOf(cId)
+        let afterindex = courseId.contents.indexOf(cId)
         // if we have file than do this operation 
         if (req.file) {
             const filePath = 'uploaded-media/' + req.file.filename
@@ -139,12 +139,12 @@ const updateChapter = async (req, res) => {
                 console.log("delte", err, data)
             })
             if(!(afterindex > -1)){
-                courseId.chapter.push(cId)
+                courseId.contents.push(cId)
                 await courseId.save()
             }
             if(!(beforeCoure._id.toString() == courseId._id.toString())){
                 if(beforeindex > -1){
-                    beforeCoure.chapter.splice(beforeindex,1)
+                    beforeCoure.contents.splice(beforeindex,1)
                     await beforeCoure.save()
                 }
             }
@@ -157,12 +157,12 @@ const updateChapter = async (req, res) => {
             course: courseId._id,
         })
         if(!(afterindex > -1)){
-            courseId.chapter.push(cId)
+            courseId.contents.push(cId)
             await courseId.save()
         }
         if(!(beforeCoure._id.toString() == courseId._id.toString())){
             if(beforeindex > -1){
-                beforeCoure.chapter.splice(beforeindex,1)
+                beforeCoure.contents.splice(beforeindex,1)
                 await beforeCoure.save()
             }
         }
