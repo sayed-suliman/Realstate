@@ -8,7 +8,10 @@ const userSchema = new mongoose.Schema({
     },
     driver_license: {
         type: String,
-        unique: true,
+        index: {
+            unique: true,
+            sparse: true
+        }
     },
     email: {
         type: String,

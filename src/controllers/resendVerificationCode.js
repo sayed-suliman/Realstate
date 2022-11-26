@@ -9,9 +9,9 @@ module.exports = {
         if (email) {
             const otpCode = generateCode()
             sendVerificationCode(email, otpCode)
-            const user = await User.findOne({ email });
+            const user = await User.findOne({ email }).populate('package');
             const code = await OTP.findOne({ email });
-
+            console.log(user)
             // check whether otp exist or not
             code ? await code.updateOne({ otp: otpCode }) :
                 await OTP({ email, otp: otpCode }).save()
