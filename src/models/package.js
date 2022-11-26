@@ -5,7 +5,7 @@ const packageSchema = new mongoose.Schema({
     name: String,
     status: String,
     tax: Number,
-    courses:[{type:mongoose.Schema.Types.ObjectId,ref:"Course"}],
+    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
     price: Number
 }, {
     timestamps: true
