@@ -54,6 +54,11 @@ const postChapter = async (req, res) => {
             course: courseId._id
         })
         await chapterAdded.save()
+        if(chapterAdded){
+            courseId.chapter.push(chapterAdded._id)
+            await courseId.save()
+        }
+
         var msg = encodeMsg("Your Chapter has been added")
         return res.redirect('/dashboard?msg=' + msg)
 
@@ -97,7 +102,7 @@ const editChapter = async (req, res) => {
     try {
         let chapterId = req.query.cId
         const chapter = await Chapters.findById(chapterId).populate("course")
-        const courses = await Course.find()
+        const courses = await Course.find({status:"publish"})
         res.render("dashboard/examples/chapter/chapter-edit", {
             courses,
             chapter,
@@ -114,8 +119,13 @@ const editChapter = async (req, res) => {
 const updateChapter = async (req, res) => {
     try {
         const data = req.body
-        const chapter = await Chapters.findById(req.query.cId)
+        const cId = req.query.cId
+        const chapter = await Chapters.findById(cId)
+        const beforeCoure = await Course.findById(chapter.course)
         const courseId = await Course.findOne({ name: data.course })
+        let beforeindex = beforeCoure.chapter.indexOf(cId)
+        let afterindex = courseId.chapter.indexOf(cId)
+        // if we have file than do this operation 
         if (req.file) {
             const filePath = 'uploaded-media/' + req.file.filename
             const oldPath = chapter.path
@@ -128,13 +138,34 @@ const updateChapter = async (req, res) => {
             fs.unlink("public/" + oldPath, (err, data) => {
                 console.log("delte", err, data)
             })
+            if(!(afterindex > -1)){
+                courseId.chapter.push(cId)
+                await courseId.save()
+            }
+            if(!(beforeCoure._id.toString() == courseId._id.toString())){
+                if(beforeindex > -1){
+                    beforeCoure.chapter.splice(beforeindex,1)
+                    await beforeCoure.save()
+                }
+            }
             var msg = encodeMsg("Chapter Updated")
             return res.redirect("/dashboard/chapter-detail?msg="+msg)
         }
+        // if the file is not selected then do this operation
         await chapter.updateOne({
             name: req.body.name,
             course: courseId._id,
         })
+        if(!(afterindex > -1)){
+            courseId.chapter.push(cId)
+            await courseId.save()
+        }
+        if(!(beforeCoure._id.toString() == courseId._id.toString())){
+            if(beforeindex > -1){
+                beforeCoure.chapter.splice(beforeindex,1)
+                await beforeCoure.save()
+            }
+        }
         var msg = encodeMsg("Chapter Updated")
         res.redirect("/dashboard/chapter-detail?msg="+msg)
     } catch (e) {

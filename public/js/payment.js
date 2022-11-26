@@ -33,10 +33,10 @@ stripeBtn.addEventListener('click', function () {
             showInputMessage(dob, "This field is required")
             return;
         } else if (dob.value) {
-            const now = new Date();
+            const now =  new Date();
             const age = new Date(dob.value)
-
-            if (age.getDate() >= now.getDate()) {
+            console.log('now',now,'age',age)
+            if ( age > now ) {
                 showInputMessage(dob, "DOB can't be greater than or equal to Today.")
                 return;
             }

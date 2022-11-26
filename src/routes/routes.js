@@ -19,6 +19,7 @@ const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
+const {order} = require("./../controllers/order")
 const Package = require("../models/package")
 
 
@@ -175,22 +176,8 @@ router.get("/dashboard/add-coupon", getCoupon)
 
 router.get("/dashboard/coupon-detail", detailsCoupon)
 
-
-// *************************** Cuopon code generator
-router.get("/cuponGenerator", (req, res) => {
-    try {
-        // const cuoponCodes = await  
-        res.status(201).json({
-            msg: "Welcome",
-            data: req.body
-        })
-    } catch (e) {
-        res.status(404).json({
-            eror: e.message,
-            status: 404
-        })
-    }
-})
+// ******************************** Orders
+router.get("/dashboard/order",order)
 
 
 // eroor 500 page
