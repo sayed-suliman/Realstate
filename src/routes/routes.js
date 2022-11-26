@@ -21,6 +21,7 @@ const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
 const {order} = require("./../controllers/order")
 const Package = require("../models/package")
+const { viewCourse } = require("../controllers/view-course")
 
 
 router.get("/test", (req, res) => {
@@ -39,7 +40,7 @@ router.get("/", async (req, res) => {
 // login route
 router.get("/login", logged_in, login)
 // router.post('/login',postLogin)
-router.post('/login', verifiedAndPaid,authLocal, postLogin)
+router.post('/login', verifiedAndPaid, authLocal, postLogin)
 router.post('/login-ajax', (req, res) => {
     console.log()
 })
@@ -94,9 +95,8 @@ router.get('/success', paymentSuccess)
 router.post('/check-coupon', couponAPI)
 
 
-router.get('/dashboard/view-course', (req, res) => {
-    res.render('dashboard/student/view-course', { title: "Course" })
-})
+router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
+router.get('/dashboard/view-course/:id', viewCourse)
 router.get('/dashboard/view-chapter', (req, res) => {
     res.render('dashboard/student/view-chapter', {
         title: "View Chapter"

@@ -50,6 +50,7 @@ stripeBtn.addEventListener('click', function () {
     console.log(couponId)
     initialize();
     checkStatus();
+
     // setCardBtnLoading(false)
 
     document
@@ -64,6 +65,8 @@ stripeBtn.addEventListener('click', function () {
             body: JSON.stringify(body),
         });
         const { clientSecret, id: payId, error } = await response.json();
+        // hide the coupon input when the payment is initialized
+        document.querySelector('.coupon-input-row').classList.add('d-none')
         paymentId = payId
         setCardBtnLoading(false)
         if (error) {
@@ -119,6 +122,8 @@ stripeBtn.addEventListener('click', function () {
             paymentElement.destroy()
             document.querySelector('.payment-form-btn').classList.replace('d-flex', 'd-none');
             document.querySelector('.btn-pay').classList.remove('d-none')
+            // show the coupon
+            document.querySelector('.coupon-input-row').classList.remove('d-none')
         }
     }
 
@@ -225,6 +230,8 @@ paypalBtn.addEventListener('click', async function () {
         body: JSON.stringify(body)
     })
     if (response.ok) {
+        // hiding the coupon input when the payment is initialized
+        document.querySelector('.coupon-input-row').classList.add('d-none')
         const { url, error } = await response.json()
         if (error) {
             showInputMessage(id, error)
@@ -253,6 +260,9 @@ paypalBtn.addEventListener('click', async function () {
 
 couponBtn.addEventListener('click', async function (e) {
     const code = couponInput.value
+    const discount = document.querySelector('.discount')//only discount price
+    const discountRow = document.querySelector('.discount-row')//discount row 
+    const discountPrice = discountRow.querySelector('.discount-price')//total price after discount
     if (code) {
         setLoading(true)
         const response = await fetch('/check-coupon', {
@@ -263,16 +273,18 @@ couponBtn.addEventListener('click', async function (e) {
         setLoading(false)
         const result = await response.json();
         console.log(result)
+
+
         if (response.ok) {
             if (result.error) {
-                showMessage(result.error)
+                discountRow.classList.replace('d-table-row', 'd-none')
+                discount.textContent = `\$0`;
+                showMessage(result.error, "danger")
+                couponId = undefined
             }
             if (result.success) {
                 const { coupon: couponDetail, msg } = result.success
                 const currentPrice = packageTotal
-                const discount = document.querySelector('.discount')//only discount price
-                const discountRow = document.querySelector('.discount-row')//discount row 
-                const discountPrice = discountRow.querySelector('.discount-price')//total price after discount
 
                 // discount of the current price
                 let discountInUSD = Number(currentPrice) * (Number(couponDetail.discount) / 100)
@@ -287,7 +299,10 @@ couponBtn.addEventListener('click', async function (e) {
             }
         }
     } else {
-        showMessage("Please enter the Coupon code.")
+        showMessage("Please enter the Coupon code.", "danger")
+        discountRow.classList.replace('d-table-row', 'd-none')
+        discount.textContent = `\$0`;
+        couponId = undefined
     }
 
     function setLoading(isLoading) {
@@ -305,7 +320,9 @@ couponBtn.addEventListener('click', async function (e) {
         const messageContainer = document.querySelector(".coupon-msg");
 
         messageContainer.classList.remove("opacity-0");
-        messageContainer.classList.replace("text-danger", `text-${type}`);
+        messageContainer.classList.remove("text-danger");
+        messageContainer.classList.remove("text-success");
+        messageContainer.classList.add(`text-${type}`);
         messageContainer.textContent = messageText;
 
         // setTimeout(function () {
