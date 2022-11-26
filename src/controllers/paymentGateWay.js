@@ -39,7 +39,7 @@ module.exports = {
                         var price = Math.round(user.package.price * ((100 + user.package.tax) / 100))
                         let discount = 0;
                         if (couponId) {
-                            const coupon = await Coupon.findById(couponId).where('length').ne(0)
+                            const coupon = await Coupon.findById(couponId).where('length').ne(0).gte('validTill', new Date())
                             discount = Number(price) * (Number(coupon.discount) / 100)
                             console.log(discount)
                         }
@@ -113,7 +113,7 @@ module.exports = {
                         var price = calculateOrderAmount(user.package)
                         let discount = 0;
                         if (couponId) {
-                            const coupon = await Coupon.findById(couponId).where('length').ne(0)
+                            const coupon = await Coupon.findById(couponId).where('length').ne(0).gte('validTill', new Date())
                             discount = Number(price) * (Number(coupon.discount) / 100)
                             console.log(discount)
                         }
@@ -166,7 +166,7 @@ module.exports = {
             if (user) {
                 let discount = 0
                 let price = user.package.price * ((100 + user.package.tax) / 100)
-                if (couponId) {
+                if (couponId != 'undefined') {
                     const coupon = await Coupon.findById(couponId).where('length')
                     discount = Number(price) * (Number(coupon.discount) / 100)
                     await Coupon.findByIdAndUpdate(couponId, { $inc: { length: -1 } })
