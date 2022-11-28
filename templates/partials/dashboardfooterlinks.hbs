@@ -80,6 +80,11 @@
             $('#package-link').addClass("active")
             $("#package-detail-link").addClass("active")
         }
+        //courses(student view)
+        if (url.includes("courses")) {
+            $("#dashboard-link").removeClass("active")
+            $('#courses').addClass("active")
+        }
         //add-course
         if (url.includes("add-course")) {
             $("#dashboard-link").removeClass("active")

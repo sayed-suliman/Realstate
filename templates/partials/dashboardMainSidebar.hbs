@@ -42,6 +42,13 @@
             <p>Contact us</p>
           </a>
         </li>
+        <li class="nav-item">
+          <a href="/dashboard/courses" id="courses" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+             <i class="nav-icon fas fa-book"></i>
+            <p>Courses</p>
+          </a>
+        </li>
         {{/ifEquals}}
         {{#ifEquals user.role "admin"}}
         <!-- Package -->

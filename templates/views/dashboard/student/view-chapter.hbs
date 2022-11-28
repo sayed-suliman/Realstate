@@ -36,7 +36,20 @@
 
                                 <div class="card-body">
                                     <div class="row">
-                                        
+                                        <div class="w-100" style="height: calc(100vh - 180px);">
+                                            <object
+                                                data='/{{chapter.path}}'
+                                                type="application/pdf" width="100%" height="100%">
+
+                                                <iframe
+                                                    src='/{{chapter.path}}'
+                                                    width="100%" height="100%">
+                                                    <p>This browser does not support PDF!</p>
+                                                </iframe>
+                                            </object>
+                                        </div>
+                                        {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div> --}}
+                                       
                                     </div>
                                 </div>
 
@@ -66,7 +79,8 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
-
+    {{!-- <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
+    {{!-- <script src="/js/pdfviewer.js"></script> --}}
 </body>
 
 </html>

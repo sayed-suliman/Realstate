@@ -201,6 +201,25 @@ const deleteCourse = async (req, res) => {
     }
 }
 
+// Student all courses
+var allCourses = async (req, res) => {
+    try {
+        await req.user.populate({ path: 'package', populate: { path: 'courses' } })
+        var userCourses = await req.user.package.courses
+        res.render("dashboard/examples/courses/course-detail",
+            {
+                title: "Dashboard | All Courses",
+                userCourses,
+            })
+    } catch (e) {
+        res.status(403).json({
+            Error: e.message,
+            Status: 403,
+            msg: "Courses Not Find"
+        })
+        // res.render("404")
+    }
+}
 //for the student view
 var viewCourse = async (req, res) => {
     try {
@@ -235,4 +254,4 @@ var viewCourse = async (req, res) => {
         }))
     }
 }
-module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse }
+module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, allCourses, viewCourse }

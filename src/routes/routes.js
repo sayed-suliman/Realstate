@@ -5,7 +5,7 @@ const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = req
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse } = require("../controllers/courses")
+const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse, allCourses } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
@@ -118,6 +118,8 @@ router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage)
 
 
 //  ******************************* Courses
+// for student view only
+router.get("/dashboard/courses", allCourses)
 // add course
 // render of course add
 router.get("/dashboard/add-course", course)

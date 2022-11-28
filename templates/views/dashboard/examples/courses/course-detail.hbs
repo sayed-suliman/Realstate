@@ -20,7 +20,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Courses Detail</h1>
+                            <h1>{{#ifEquals user.role "admin"}}Courses Detail{{else}}All Courses{{/ifEquals}}</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -44,10 +44,11 @@
                                 </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
+                                    {{#ifEquals user.role "admin"}}
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>name</th>
+                                                <th>Name</th>
                                                 <th>Package</th>
                                                 <th>Description</th>
                                                 <th>Status</th>
@@ -74,7 +75,8 @@
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    {{!-- <a href="/dashboard/course-detail/delete-course?cId={{this._id}}"
+                                                    {{!-- <a
+                                                        href="/dashboard/course-detail/delete-course?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>
@@ -94,6 +96,49 @@
                                             </tr>
                                         </tfoot> --}}
                                     </table>
+                                    {{/ifEquals}}
+                                    {{#ifEquals user.role "student"}}
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Progress</th>
+                                                <th>View</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each userCourses}}
+                                            <tr>
+                                                <td>
+                                                    <a href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                                                </td>
+                                                <td>
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger"
+                                                            style="width: {{progress}}%"></div>
+                                                    </div>
+                                                    {{progress}}%
+                                                </td>
+                                                <td>
+                                                    <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
+                                                        <i class="fas fa-book"></i> View Course
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                        {{!-- <tfoot>
+                                            <tr>
+                                                <th>Rendering engine</th>
+                                                <th>Browser</th>
+                                                <th>Platform(s)</th>
+                                                <th>Engine version</th>
+                                                <th>CSS grade</th>
+                                            </tr>
+                                        </tfoot> --}}
+                                    </table>
+
+                                    {{/ifEquals}}
                                 </div>
                                 <!-- /.card-body -->
                             </div>
