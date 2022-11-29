@@ -176,6 +176,14 @@ hbs.registerHelper('increment',(arg)=>{
     return ++arg
 })
 
+// return checked from 2 arguments 
+hbs.registerHelper("returnChecked",(arg1,arg2)=>{
+   arg1++
+   if(arg1 == arg2){
+    return 'checked'
+   }
+})
+
 
 app.use(allRoutes)
 

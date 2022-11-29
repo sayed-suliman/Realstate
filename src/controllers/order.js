@@ -14,12 +14,16 @@ module.exports = {
     async orderCourse(req,res){
         try{
             const cId = req.params.id
-            const course = await Courses.findById(cId).populate('contents')
-            console.log(course)
+            const course = await Courses.findById(cId).populate('chapters').populate("quizzes")
+            const mergeContents = [
+                ...course.quizzes,
+                ...course.chapters
+            ]
+            const contents = mergeContents.sort((p1,p2)=>(p1.order>p2.order)?1:(p1.order<p2.order)?-1:0)
             res.render("dashboard/examples/order/order-course",{
              title:'Dashboard | Order-Course',
-             course,
-
+             contents,
+             course
             })
          }catch (err) {
             console.log(err.message)
