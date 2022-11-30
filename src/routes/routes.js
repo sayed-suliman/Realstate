@@ -14,7 +14,7 @@ const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
-const { addQuiz, quizDetail, postQuiz } = require("./../controllers/quiz")
+const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
@@ -164,6 +164,12 @@ router.post("/dashboard/add-quiz",postQuiz)
 
 // quiz details 
 router.get("/dashboard/quiz-detail", quizDetail)
+
+// quiz edit page
+router.get("/dashboard/quiz-detail/edit-quiz",editQuiz)
+// update post quiz
+router.post("/dashboard/quiz-detail/update-quiz",updateQuiz)
+
 
 
 

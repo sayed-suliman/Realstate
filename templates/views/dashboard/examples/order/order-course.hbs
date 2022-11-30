@@ -39,8 +39,8 @@
                                     <h3 class="card-title">{{course.name}}</h3>
                                     <div class="card-tools">
                                         <div class="input-group input-group-sm" style="width: 150px;">
-                                            <button type="submit" class="btn btn-default">
-                                               Edit <i class="fa-solid fa-pen-to-square"></i>
+                                            <button type="button" class="btn btn-default" id="edit-btn">
+                                                Edit <i class="fa-solid fa-pen-to-square"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -49,7 +49,7 @@
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
                                         <tbody>
-                                            {{#each course.contents}}
+                                            {{#each contents}}
                                             <tr>
                                                 <td style="width: 100px;">{{increment @index}}</td>
                                                 <td><a href="/dashboard/view-chapter"
@@ -59,51 +59,12 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
-                                            {{!-- <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Chapter</a></td>
-                                                <td></td>
-                                            </tr>
-                                            <tr>
-                                                <td><a href="/dashboard/view-chapter" class="text-dark">Quiz</a></td>
-                                                <td class="text-right"><span class="badge badge-primary">20
-                                                        Questions</span></td>
-                                            </tr> --}}
                                         </tbody>
                                     </table>
                                 </div>
-
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-success">Update</button>
+                                </div>
                             </div>
 
                         </div>
@@ -131,6 +92,9 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+
+    {{!-- js for order --}}
+    <script src="/js/course-order.js"></script>
     </script>
 </body>
 

@@ -1,8 +1,6 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
-    <!-- toast(alert)-->
-    {{>alert}}
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -33,7 +31,7 @@
 
             <!-- Main content -->
             <section class="content">
-                <form action="add-quiz" method="post">
+                <form action="update-quiz?qId={{quiz._id}}" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -52,7 +50,8 @@
                                     <div class="form-group">
                                         <label for="inputStatus">Select Quiz/Term</label>
                                         <select id="inputStatus" required name="name" class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
+                                            <option disabled value="">Select one</option>
+                                            <option value="{{quiz.type}}" class="d-none">{{quiz.type}}</option>
                                             <option value="quiz">Quiz</option>
                                             <option value="term">Term</option>
                                         </select>
@@ -60,7 +59,8 @@
                                     <div class="form-group">
                                         <label for="inputStatus">Select Course</label>
                                         <select id="inputStatus" required name="course" class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
+                                            <option disabled value="">Select one</option>
+                                            <option value="{{quiz.course.name}}" class="d-none">{{quiz.course.name}}</option>
                                             {{#each courses}}
                                             <option value="{{this.name}}">{{this.name}}</option>
                                             {{/each}}
@@ -68,67 +68,72 @@
                                         </select>
                                     </div>
                                     <div id="questions">
+                                            {{#each quiz.questions}}
                                         <div class="question-no">
                                             <div class="form-group">
-                                                <label for="question-1">
-                                                    Question 1
+                                                <label for="question-{{increment @index}}" class="w-100">
+                                                    Question {{increment @index}}
+                                                     <button type="button" class="btn p-0 float-right cross">x</button>
                                                 </label> 
-                                                <input type="text" required id="question-1" name="question-1"
+                                                <input type="text" required value="{{this.question}}" id="question-{{increment @index}}" name="question-{{increment @index}}"
                                                     class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <div class="quiz">
+                                                    {{#each this.options}}
                                                     <div class="d-flex">
                                                         <div class="options">
-                                                            <label for="opt1-q-1" class="col-form-label">1</label>
-                                                            <input id="opt1-q-1" type="text" required class=""
-                                                                name="question-1-opt">
+                                                            <label for="opt{{@index}}-q-{{increment @../index}}" class="col-form-label">{{increment @index}}</label>
+                                                            <input id="opt{{@index}}-q-{{increment @../index}}" type="text" value="{{this}}" required class=""
+                                                                name="question-{{increment @../index}}-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
-                                                            <input type="radio" required value="1" class="checkBox" name="question-1-ans"
-                                                                id="q-1-op1">
-                                                            <label for="q-1-op1" class="m-0 ml-1">Correct Answer</label>
+                                                            <input type="radio" required value="{{increment @index}}" {{returnChecked @index ../this.ans}} class="checkBox" name="question-{{increment @../index}}-ans"
+                                                                id="q-{{increment @../index}}-op{{increment @index}}">
+                                                            <label for="q-{{increment @../index}}-op{{increment @index}}" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    {{/each}}
+                                                    {{!-- <div class="d-flex">
+                                                        <div class="options">
+                                                            <label for="opt2-q-{{increment @index}}" class="col-form-label">2</label>
+                                                            <input id="opt2-q-{{increment @index}}" type="text" required class=""
+                                                                name="question-{{increment @index}}-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="2" class="checkBox" name="question-{{increment @index}}-ans"
+                                                                id="q-{{increment @index}}-op2">
+                                                            <label for="q-{{increment @index}}-op2" class="m-0 ml-1">Correct Answer</label>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex">
                                                         <div class="options">
-                                                            <label for="opt2-q-1" class="col-form-label">2</label>
-                                                            <input id="opt2-q-1" type="text" required class=""
-                                                                name="question-1-opt">
+                                                            <label for="opt3-q-{{increment @index}}" class="col-form-label">3</label>
+                                                            <input id="opt3-q-{{increment @index}}" type="text" required class=""
+                                                                name="question-{{increment @index}}-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="2" class="checkBox" name="question-1-ans"
-                                                                id="q-1-op2">
-                                                            <label for="q-1-op2" class="m-0 ml-1">Correct Answer</label>
+                                                            <input type="radio" value="3" class="checkBox" name="question-{{increment @index}}-ans"
+                                                                id="q-{{increment @index}}-op3">
+                                                            <label for="q-{{increment @index}}-op3" class="m-0 ml-1">Correct Answer</label>
                                                         </div>
                                                     </div>
                                                     <div class="d-flex">
                                                         <div class="options">
-                                                            <label for="opt3-q-1" class="col-form-label">3</label>
-                                                            <input id="opt3-q-1" type="text" required class=""
-                                                                name="question-1-opt">
+                                                            <label for="opt4-q-{{increment @index}}" class="col-form-label">4</label>
+                                                            <input id="opt4-q-{{increment @index}}" type="text" required class=""
+                                                                name="question-{{increment @index}}-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="3" class="checkBox" name="question-1-ans"
-                                                                id="q-1-op3">
-                                                            <label for="q-1-op3" class="m-0 ml-1">Correct Answer</label>
+                                                            <input type="radio" value="4" class="checkBox" name="question-{{increment @index}}-ans"
+                                                                id="q-{{increment @index}}-op4">
+                                                            <label for="q-{{increment @index}}-op4" class="m-0 ml-1">Correct Answer</label>
                                                         </div>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <div class="options">
-                                                            <label for="opt4-q-1" class="col-form-label">4</label>
-                                                            <input id="opt4-q-1" type="text" required class=""
-                                                                name="question-1-opt">
-                                                        </div>
-                                                        <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="4" class="checkBox" name="question-1-ans"
-                                                                id="q-1-op4">
-                                                            <label for="q-1-op4" class="m-0 ml-1">Correct Answer</label>
-                                                        </div>
-                                                    </div>
+                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>
+                                            {{/each}}
                                     </div>
 
                                 </div>
@@ -144,7 +149,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <button type="reset" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-success float-right">Add Quiz</button>
+                            <button type="submit" class="btn btn-success float-right">Update Quiz</button>
                         </div>
                     </div>
                 </form>

@@ -11,7 +11,8 @@ const courseSchema = new mongoose.Schema({
     price: {
         type: Number
     },
-    contents: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }]
+    quizzes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Quiz' }],
+    chapters: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Chapter' }],
 }, {
     timestamps: true
 })
