@@ -60,12 +60,12 @@
                                     </tr>
                                     <tr class="border-bottom coupon-input-row">
                                         <td colspan="2">
-                                            <div class="col-8 ms-auto">
-                                                <div class="input-group justify-content-end">
+                                            <div class="col-md-8 ms-auto">
+                                                <div class="input-group justify-content-md-end">
                                                     <input type="text" class="st-input" id="coupon-code"
                                                         placeholder="Coupon Code" aria-describedby="coupon-code">
                                                     <button class="btn btn-outline-secondary" type="button"
-                                                        id="coupon-btn" style="width: 130px;">
+                                                        id="coupon-btn" style="width: 120px;">
                                                         <div class="spinner d-none">
                                                             <i class="fa-solid fa-circle-notch fa-spin"></i>
                                                         </div>
@@ -122,11 +122,12 @@
                             </div>
                             {{!-- Select the payment method(paypal or stripe) --}}
                             <div class="btn-pay">
-                                <button class="btn btn-success px-5 py-2" id="stripe-payment">
+                                <button class="btn btn-success px-5 py-2 mb-2 mb-md-0" id="stripe-payment">
                                     <div class="spinner d-none" id="spinner-stripe">
                                         <i class="fa-solid fa-circle-notch fa-spin"></i>
                                     </div>
-                                    <span id="button-text"><i class="fa-solid fa-credit-card"></i> Pay with Credit Card</span>
+                                    <span id="button-text"><i class="fa-solid fa-credit-card"></i> Pay with Credit
+                                        Card</span>
                                 </button>
                                 <button class="btn btn-paypal px-5 py-2 text-white paypal">
                                     <div class="spinner d-none" id="spinner-paypal">
@@ -135,9 +136,30 @@
                                     <span id="button-text"><i class="fa-brands fa-cc-paypal"></i> Pay with PayPal</span>
                                 </button>
                             </div>
+                            <div class="btn-coupon-register d-none">
+                                <button class="btn btn-success px-5 py-2 mb-2 mb-md-0" style="width: 200px;" id="coupon-register">
+                                    <div class="spinner d-none" >
+                                        <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                    </div>
+                                    <span class="text" id="button-text">Register</span>
+                                </button>
+                                <p class="fs-14 text-center p-0 ps-1 opacity-0 m-0 text-danger coupon-reg-msg">
+                                    this is jsut thasd asdf asdf </p>
+                            </div>
 
 
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Modal -->
+        <div class="modal fade" id="coupon" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false"
+            aria-labelledby="couponLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-body p-4">
+                        <p class="mb-0 text-center">Coupon code applied successful.</p>
                     </div>
                 </div>
             </div>
