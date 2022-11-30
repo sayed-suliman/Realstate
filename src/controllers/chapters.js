@@ -28,7 +28,7 @@ const addChapter = async (req, res) => {
             var msg = decodeMsg(msgToken)
             option = msg
         }
-        const courses = await Course.find({status:"publish"})
+        const courses = await Course.find({ status: "publish" })
         res.render("dashboard/examples/chapter/add-chapter", {
             courses,
             title: "Dashboard | Add Chapter",
@@ -90,8 +90,8 @@ const deleteChapter = async (req, res) => {
         await chapter.remove()
         fs.unlink("public/" + chapter.path, (err, data) => {
         })
-        var msg = encodeMsg("Chapter Deleted",type='danger', status = 404)
-        res.redirect("/dashboard/chapter-detail?msg="+msg)
+        var msg = encodeMsg("Chapter Deleted", type = 'danger', status = 404)
+        res.redirect("/dashboard/chapter-detail?msg=" + msg)
         // const chapterData = 
     } catch (e) {
         res.render("500.hbs")
@@ -102,7 +102,7 @@ const editChapter = async (req, res) => {
     try {
         let chapterId = req.query.cId
         const chapter = await Chapters.findById(chapterId).populate("course")
-        const courses = await Course.find({status:"publish"})
+        const courses = await Course.find({ status: "publish" })
         res.render("dashboard/examples/chapter/chapter-edit", {
             courses,
             chapter,
@@ -149,7 +149,7 @@ const updateChapter = async (req, res) => {
                 }
             }
             var msg = encodeMsg("Chapter Updated")
-            return res.redirect("/dashboard/chapter-detail?msg="+msg)
+            return res.redirect("/dashboard/chapter-detail?msg=" + msg)
         }
         // if the file is not selected then do this operation
         await chapter.updateOne({
@@ -167,7 +167,7 @@ const updateChapter = async (req, res) => {
             }
         }
         var msg = encodeMsg("Chapter Updated")
-        res.redirect("/dashboard/chapter-detail?msg="+msg)
+        res.redirect("/dashboard/chapter-detail?msg=" + msg)
     } catch (e) {
         res.status(404).json({
             err: e.message,
@@ -176,6 +176,13 @@ const updateChapter = async (req, res) => {
     }
 }
 
+// for student view
+const viewChapter = async (req, res) => {
+    const ID = req.params.id
+    const chapter = await Chapters.findById(ID);
+    console.log(chapter)
+    res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
+}
 
 // error msg
 const errorMsg = async (error, req, res, next) => {
@@ -188,4 +195,4 @@ const errorMsg = async (error, req, res, next) => {
 }
 
 
-module.exports = { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter }
+module.exports = { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter }

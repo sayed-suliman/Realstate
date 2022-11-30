@@ -1,6 +1,7 @@
 const Package = require("../models/package")
 const CourseModel = require("../models/courses")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
+const url = require('url');
 const course = async (req, res) => {
     try {
         // all added packages
@@ -199,4 +200,39 @@ const deleteCourse = async (req, res) => {
         res.render("500.hbs")
     }
 }
-module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse }
+
+//for the student view
+var viewCourse = async (req, res) => {
+    try {
+        const ID = req.params.id
+        const course = await CourseModel.findById(ID).populate('contents')
+        if (course) {
+            // sorting the chapter by name 
+            course.contents.sort((a, b) => {
+                if (a.name < b.name) { return -1; }
+                if (a.name > b.name) { return 1; }
+                return 0;
+            })
+            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, course })
+        }
+        res.redirect('/dashboard')
+    } catch (err) {
+        console.log(err.message)
+        if (err.message.includes('ObjectId failed')) {
+            return res.redirect(url.format({
+                pathname: '/dashboard',
+                query: {
+                    msg: encodeMsg("Course Id doesn't exist.", 'danger')
+                }
+            }))
+
+        }
+        res.redirect(url.format({
+            pathname: '/dashboard',
+            query: {
+                msg: encodeMsg(err.message, 'danger')
+            }
+        }))
+    }
+}
+module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse }

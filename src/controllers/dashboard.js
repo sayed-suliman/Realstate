@@ -17,9 +17,8 @@ module.exports = {
             }
 
             if (req.user.role == 'student') {
-                await req.user.populate({ path: 'package', populate: { path: 'courses'} })
+                await req.user.populate({ path: 'package', populate: { path: 'courses' } })
                 var userCourses = await req.user.package.courses
-                console.log(userCourses)
                 return res.render("dashboard/new-dashboard", {
                     title: "Dashboard",
                     userCourses,
