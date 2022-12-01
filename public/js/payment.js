@@ -345,10 +345,12 @@ couponBtn.addEventListener('click', async function (e) {
 couponRegister.addEventListener('click', async function (e) {
     if (couponId) {
         setLoading(true)
+        var body = (driverID_db && dob_db) ? { user, couponId } : { user, id: id.value, dob: dob.value, couponId }
+
         const response = await fetch('/register-coupon', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ couponId, user })
+            body: JSON.stringify(body)
         })
         setLoading(false)
         const result = await response.json();
@@ -364,6 +366,10 @@ couponRegister.addEventListener('click', async function (e) {
                 }, 3000)
             }
             if (result.error) {
+                if (result.id) {
+                    showInputMessage(id, result.error)
+                    return;
+                }
                 showMessage(result.error, "danger")
             }
         }
