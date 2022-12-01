@@ -11,6 +11,7 @@
 -->
 
 <body class="hold-transition sidebar-mini">
+    <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -31,29 +32,29 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Chapter: {{chapter.name}}</h3>
+                                    <h3 class="card-title">Quiz: {{quiz.name}}</h3>
                                 </div>
-
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="w-100" style="height: calc(100vh - 180px);">
-                                            <object data='/{{chapter.path}}' type="application/pdf" width="100%"
-                                                height="100%">
-
-                                                <iframe src='/{{chapter.path}}' width="100%" height="100%">
-                                                    <p>This browser does not support PDF!</p>
-                                                </iframe>
-                                            </object>
+                                    <form id="quiz">
+                                        {{#each quiz.questions}}
+                                        <div class="form-group">
+                                            <label >{{this.question}}</label>
+                                            {{#each this.options}}
+                                            <div class="form-group clearfix" id="exampleInputEmail1">
+                                                <div class="icheck-primary d-inline">
+                                                    <input type="radio" id="qu-{{@../index}}-op-{{@index}}" value="{{@index}}" name="q-{{@../index}}" required>
+                                                    <label class="font-weight-normal" for="qu-{{@../index}}-op-{{@index}}">
+                                                        {{this}}
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            {{/each}}
                                         </div>
-                                        {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div>
-                                        --}}
-                                        <button class="btn btn-success mt-2 float-left" id="completed">Mark as
-                                            completed</button>
-                                    </div>
+                                        {{/each}}
+                                    <button class="btn btn-success mt-2 float-left" type="submit">Submit</button>
+                                    </form>
                                 </div>
-
                             </div>
-
                         </div>
                     </div>
                     <!-- /.row -->
@@ -80,20 +81,10 @@
     {{>dashboardfooterlinks}}
     {{!--
     <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
-    {{!--
-    <script src="/js/pdfviewer.js"></script> --}}
+
+    <script src="/js/quiz.js"></script>
     <script>
-        const complete = document.querySelector('#completed')
-        const id = `{{{chapter._id}}}`
-        complete.addEventListener('click', async (e) => {
-            const res = await fetch('/mark-completed', {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({id})
-            })
-            const result = await res.json()
-            console.log(result)
-        })
+        const id = `{{{quiz._id}}}`
     </script>
 </body>
 

@@ -235,6 +235,7 @@ var viewCourse = async (req, res) => {
             })
             // unlock the first content of the current chapter
             contents[0].status = contents[0].status == 0 ? 1 : contents[0].status
+            contents[1].status = contents[0].status == 0 ? 1 : contents[0].status
             return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
         }
         res.redirect('/dashboard')
