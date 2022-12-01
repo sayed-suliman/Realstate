@@ -48,8 +48,12 @@
                                 <div class="card-body">
                                     {{!-- select quiz or term --}}
                                     <div class="form-group">
+                                        <label for="inputName">Quiz/Term Name</label>
+                                        <input type="text" id="inputName" value="{{quiz.name}}" name="name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
                                         <label for="inputStatus">Select Quiz/Term</label>
-                                        <select id="inputStatus" required name="name" class="form-control custom-select">
+                                        <select id="inputStatus" required name="type" class="form-control custom-select">
                                             <option disabled value="">Select one</option>
                                             <option value="{{quiz.type}}" class="d-none">{{quiz.type}}</option>
                                             <option value="quiz">Quiz</option>

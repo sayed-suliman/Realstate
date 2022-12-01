@@ -51,8 +51,10 @@ const postQuiz = async (req, res) => {
         const data = req.body
         const course = await Course.findOne({ name: data.course })
         const name = data.name
+        const type = data.type
         delete data.name
         delete data.course
+        delete data.type
         const questions = Object.keys(data).length / 3
         for (let i = 1; i <= questions; i++) {
             fullQuiz.push(
@@ -66,6 +68,7 @@ const postQuiz = async (req, res) => {
         const quizAdded = await Quiz({
             course: course._id,
             name: name,
+            type:type,
             questions: fullQuiz,
         }).save()
         if (quizAdded) {
@@ -119,8 +122,10 @@ const updateQuiz = async (req, res) => {
         const afterCourseindex = afterCourse.quizzes.indexOf(qId)
 
         const name = data.name
+        const type = data.type
         delete data.name
         delete data.course
+        delete data.type
         const questions = Object.keys(data).length / 3
         for (let i = 1; i <= questions; i++) {
             fullQuiz.push(
@@ -134,6 +139,7 @@ const updateQuiz = async (req, res) => {
         await quiz.updateOne({
             questions: fullQuiz,
             name,
+            type,
             course: afterCourse._id
         })
         if (!(oldCourse.name == afterCourse)) {

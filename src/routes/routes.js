@@ -19,8 +19,10 @@ const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
-const {order,orderCourse} = require("./../controllers/order")
+const { order, orderCourse } = require("./../controllers/order")
 const Package = require("../models/package")
+const Chapter = require("./../models/chapters")
+const Quiz = require("../models/quiz")
 
 
 router.get("/test", (req, res) => {
@@ -158,15 +160,15 @@ router.get('/dashboard/view-chapter/:id', viewChapter)
 // ******************************* Quiz part **************************
 // add quiz 
 router.get("/dashboard/add-quiz", addQuiz)
-router.post("/dashboard/add-quiz",postQuiz)
+router.post("/dashboard/add-quiz", postQuiz)
 
 // quiz details 
 router.get("/dashboard/quiz-detail", quizDetail)
 
 // quiz edit page
-router.get("/dashboard/quiz-detail/edit-quiz",editQuiz)
+router.get("/dashboard/quiz-detail/edit-quiz", editQuiz)
 // update post quiz
-router.post("/dashboard/quiz-detail/update-quiz",updateQuiz)
+router.post("/dashboard/quiz-detail/update-quiz", updateQuiz)
 
 
 
@@ -183,15 +185,38 @@ router.get("/dashboard/add-coupon", getCoupon)
 router.get("/dashboard/coupon-detail", detailsCoupon)
 
 // ******************************** Orders
-router.get("/dashboard/order",order)
-router.get("/dashboard/order/course/:id",orderCourse)
+router.get("/dashboard/order", order)
+router.get("/dashboard/order/course/:id", orderCourse)
+// jquery test request
+router.post('/jquery/submitData', async (req, res) => {
+    let contents = req.body
+    const chapters = []
+    const quizzes = []
+    for (let content in contents) {
+        if (contents[content].type === 'chapter') chapters.push(contents[content])
+        if (contents[content].type === 'quiz' || contents[content].type === 'term') quizzes.push(contents[content])
+    }
+    chapters.forEach(async (chapter) => {
+        const selectChapter = await Chapter.findById(chapter._id)
+        selectChapter.order = chapter.order
+        await selectChapter.save()
+    })
+    quizzes.forEach(async (quiz) => {
+        const selectQuiz = await Quiz.findById(quiz._id)
+        selectQuiz.order = quiz.order
+        await selectQuiz.save()
+    })
+    res.send({
+        msg: "Success"
+    })
+})
 
 
 
 // eroor 500 page
 router.get('/500', (req, res) => res.render('500'))
 router.get("*", async (req, res) => {
-    res.render("404", { err: "Page not Found Go back" })
+    res.render("404", { title:"404 Error",err: "Page not Found Go back" })
 })
 
 

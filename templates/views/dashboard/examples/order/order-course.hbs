@@ -17,7 +17,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Order</h1>
+                            <h1>Order <span style="font-size: 16px;">({{course.name}})</span></h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -35,35 +35,46 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title">{{course.name}}</h3>
-                                    <div class="card-tools">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-                                            <button type="button" class="btn btn-default" id="edit-btn">
-                                                Edit <i class="fa-solid fa-pen-to-square"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
-                                        <tbody>
+                                        <thead>
+                                            <tr>
+                                            <th style="width: 100px;">S.No</th>
+                                            <th>Name</th>
+                                            <th>Order</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="tblLocations">
                                             {{#each contents}}
                                             <tr>
-                                                <td style="width: 100px;">{{increment @index}}</td>
-                                                <td><a href="/dashboard/view-chapter"
-                                                        class="text-dark">{{this.name}}</a></td>
-                                                <td><button class="btn"><i
-                                                            class="fa-sharp fa-solid fa-sort nav-icon"></i></button>
-                                                </td>
+                                                <td>{{increment @index}}</td>
+                                                <td>{{this.name}}</td>
+                                                {{!-- <td>
+                                                    <button class="btn drag-btn"><i
+                                                            class="fa-sharp fa-solid fa-sort nav-icon"></i>
+                                                    </button>
+                                                </td> --}}
+                                                <td>{{this.order}}</td>
+                                                <td class="d-none">{{this.type}}</td>
+                                                <td class="d-none">{{this._id}}</td>
+                                            </tr>
+                                            {{else}}
+                                            <tr>
+                                                <td>There is no contents in this Course</td>
                                             </tr>
                                             {{/each}}
                                         </tbody>
+
                                     </table>
                                 </div>
+                                {{!-- footer of the card --}}
                                 <div class="card-footer">
-                                    <button type="submit" class="btn btn-success">Update</button>
+                                    <!-- Button trigger modal -->
+                                    <button type="button" id="modal-btn" class="btn btn-primary d-none"
+                                        data-toggle="modal" data-target="#staticBackdrop">
+                                        Launch static backdrop modal
+                                    </button>
+                                    <button type="button" id="update-btn" class="btn btn-success">Update</button>
                                 </div>
                             </div>
 
@@ -80,6 +91,35 @@
         </div>
         <!-- /.content-wrapper -->
 
+
+        {{!-- showing success message in model when updated--}}
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    {{!-- <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Modal title</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div> --}}
+                    <div class="modal-body">
+                        Your Data has been updated Successfully
+                    </div>
+                    <div class="modal-footer">
+                        <a href="/dashboard/order/course/{{course._id}}">
+                            <button type="button" class="btn btn-secondary px-4">
+                                Ok
+                            </button>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
         {{>dashboardfooter}}
 
         <!-- Control Sidebar -->
@@ -92,7 +132,34 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+    {{!-- --}}
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+    <link rel="stylesheet"
+        href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
+    <script type="text/javascript"
+        src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
 
+    <script type="text/javascript">
+        $(function () {
+            $("#tblLocations").sortable({
+                items: 'tr',
+                cursor: 'pointer',
+                axis: 'y',
+                dropOnEmpty: false,
+                start: function (e, ui) {
+                    ui.item.addClass("selected");
+                },
+                stop: function (e, ui) {
+                    ui.item.removeClass("selected");
+                    $(this).find("tr").each(function (index) {
+
+                        $(this).find("td").eq(2).html(index + 1);
+
+                    });
+                }
+            });
+        });
+    </script>
     {{!-- js for order --}}
     <script src="/js/course-order.js"></script>
     </script>
