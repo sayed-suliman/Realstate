@@ -5,7 +5,7 @@ const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = req
 const authLocal = require("../middleware/auth-strategy")
 const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse } = require("../controllers/courses")
+const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse, allCourses } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
 const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
@@ -16,7 +16,7 @@ const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editCha
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
-const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI } = require("../controllers/coupons")
+const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users } = require("../controllers/users")
 const { order, orderCourse } = require("./../controllers/order")
@@ -94,6 +94,7 @@ router.post('/cancel-payment-intent', stripeIntentCancel)
 router.post('/paypal', paypalAPI)
 router.get('/success', paymentSuccess)
 router.post('/check-coupon', couponAPI)
+router.post('/register-coupon', couponRegisterAPI)
 
 
 
@@ -120,6 +121,8 @@ router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage)
 
 
 //  ******************************* Courses
+// for student view only
+router.get("/dashboard/courses", allCourses)
 // add course
 // render of course add
 router.get("/dashboard/add-course", course)

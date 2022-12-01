@@ -4,24 +4,28 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
 
 */
 
-.quiz .options{
+.quiz .options {
     width: 60%;
 }
-.quiz .options input[type=text]{
+
+.quiz .options input[type=text] {
     width: 90%;
 }
-.quiz input.checkBox{
+
+.quiz input.checkBox {
     height: 18px;
     /* transform: translate(0, 50%); */
     width: 18px;
 }
-.cross{
+
+.cross {
     font-size: 22px;
     color: red;
     font-weight: bold;
     line-height: 24px;
 }
 
-
-
-
+.event-none {
+    pointer-events: none;
+    background-color: rgba(0, 0, 0, .05);
+}

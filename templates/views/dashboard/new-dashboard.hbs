@@ -144,21 +144,21 @@
                       <tr>
                         <th>Course Name</th>
                         <th>Progress</th>
-                        <th>View</th>
+                        <th class="text-right">View</th>
                       </tr>
                     </thead>
                     <tbody>
                       {{#each userCourses}}
                       <tr>
                         <td>
-                          {{this.name}}
+                          <a href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
                         </td>
                         <td>
                           <div class="progress progress-xs">
                             <div class="progress-bar progress-bar-danger" style="width: {{progress}}%"></div>
                           </div>
                         </td>
-                        <td>
+                        <td class="text-right">
                           <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a>
