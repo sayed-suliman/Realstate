@@ -74,11 +74,27 @@ $(document).ready(function () {
         $(".cross").click(function (event) {
             event.stopPropagation();
             event.stopImmediatePropagation();
-            if(!($($(this).parents()[2]).next()[0])){
-                   $(this).parents()[2].remove()
-            }else{
+            if (!($($(this).parents()[2]).next()[0])) {
+                $(this).parents()[2].remove()
+            } else {
                 alert("Remove the last question plz")
                 return
+            }
+        })
+    })
+    $('#quiz').submit(function (e) {
+        e.preventDefault()
+        console.log($(this).serializeArray())
+        $.ajax({
+            url: '/test-quiz',
+            type: 'POST',
+            data: $(this).serializeArray(),
+            dataType: 'json',
+            success:(data)=>{
+                console.log(data)
+            },
+            error:(error)=>{
+                console.log(error)
             }
         })
     })

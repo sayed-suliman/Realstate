@@ -110,41 +110,51 @@ module.exports = {
         res.send({ error: "Coupon Code doesn't exist." })
     },
     async couponRegisterAPI(req, res) {
-        const { couponId } = req.body;
-        var coupon = await Coupon.findOne({ couponId, validTill: { $gte: new Date() }, length: { $ne: 0 }, discount: 100 });
-        console.log(coupon)
-        if (coupon) {
-            coupon = coupon.toObject()
-            delete coupon.length
-            delete coupon.validFrom
-            delete coupon.validTill
-            delete coupon.createdAt
-            delete coupon.updatedAt
-            console.log(req.body.user)
-            const user = await User.findById(req.body.user).populate('package');
-            const order = await Order({
-                user: user._id,
-                package: user.package._id,
-                amount: 0,
-                pay_method: "Coupon Discount",
-                discount: coupon.discount,
-                verified: true
-            }).save()
-            if (order) {
-                await Coupon.findOneAndUpdate({ _id: coupon._id, length: { $gt: 0 } }, { $inc: { length: -1 } })
-                return req.login(user, function (err) {
-                    if (err) { return next(err); }
-                    return res.send({
-                        url: url.format({
-                            pathname: '/dashboard',
-                            query: {
-                                msg: encodeMsg('Welcome to Real Estate')
+        try {
+            if (req.body.couponId && req.body.user) {
+                const { couponId, dob, id } = req.body;
+                var coupon = await Coupon.findOne({ couponId, validTill: { $gte: new Date() }, length: { $ne: 0 }, discount: 100 });
+                const user = await User.findById(req.body.user).populate('package');
+                if (coupon) {
+                    user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
+                        if (error) {
+                            if (error.message.indexOf('duplicate key error') != -1) {
+                                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
+                                return res.send({ error: "Driver License is already taken.",id:true })
                             }
-                        })
-                    });
-                });
+                        }
+                        if (result) {
+                            await Order({
+                                user: user._id,
+                                package: user.package._id,
+                                amount: 0,
+                                pay_method: "Coupon Discount",
+                                discount: coupon.discount,
+                                verified: true
+                            }).save()
+                            await Coupon.findOneAndUpdate({ _id: coupon._id, length: { $gt: 0 } }, { $inc: { length: -1 } })
+                            return req.login(user, function (err) {
+                                if (err) { return next(err); }
+                                return res.send({
+                                    url: url.format({
+                                        pathname: '/dashboard',
+                                        query: {
+                                            msg: encodeMsg('Welcome to Real Estate')
+                                        }
+                                    })
+                                });
+                            });
+                        }
+                    })
+                }else{
+                    return res.send({ error: "Coupon Code doesn't exist." })
+                }
+            }else{
+                return res.send({ error: "Coupon code is required." })
             }
+        } catch (error) {
+            res.send({ error: error.message })
         }
-        res.send({ error: "Coupon Code doesn't exist." })
+
     }
 }

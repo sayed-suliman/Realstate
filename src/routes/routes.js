@@ -14,7 +14,7 @@ const { payment } = require("../controllers/payment")
 const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
-const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz } = require("./../controllers/quiz")
+const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz } = require("./../controllers/quiz")
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
@@ -94,7 +94,10 @@ router.post('/paypal', paypalAPI)
 router.get('/success', paymentSuccess)
 router.post('/check-coupon', couponAPI)
 router.post('/register-coupon', couponRegisterAPI)
-
+router.post('/mark-completed', (req, res) => {
+    console.log(req.body)
+    res.send(req.body)
+})
 
 
 
@@ -176,6 +179,13 @@ router.get("/dashboard/quiz-detail/edit-quiz", editQuiz)
 // update post quiz
 router.post("/dashboard/quiz-detail/update-quiz", updateQuiz)
 
+// Student(view)
+router.get('/dashboard/view-quiz/:id', viewQuiz)
+router.post('/test-quiz', (req,res)=>{
+    console.log(req.body)
+    res.send(req.body)
+})
+
 
 
 
@@ -201,7 +211,7 @@ router.post('/sort/data', sortData)
 // eroor 500 page
 router.get('/500', (req, res) => res.render('500'))
 router.get("*", async (req, res) => {
-    res.render("404", { title:"404 Error",err: "Page not Found Go back" })
+    res.render("404", { title: "404 Error", err: "Page not Found Go back" })
 })
 
 

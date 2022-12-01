@@ -68,7 +68,7 @@ const postQuiz = async (req, res) => {
         const quizAdded = await Quiz({
             course: course._id,
             name: name,
-            type:type,
+            type: type,
             questions: fullQuiz,
         }).save()
         if (quizAdded) {
@@ -163,4 +163,21 @@ const updateQuiz = async (req, res) => {
     }
 }
 
-module.exports = { quizDetail, addQuiz, postQuiz, editQuiz, updateQuiz }
+// Student view
+const viewQuiz = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const quiz = await Quiz.findById(id);
+        if (quiz) {
+            res.render('dashboard/student/view-quiz', {
+                title: `Quiz | ${quiz.name}`,
+                quiz
+            })
+        }
+    } catch (error) {
+        res.redirect('/500')
+    }
+
+}
+
+module.exports = { quizDetail, addQuiz, postQuiz, editQuiz, updateQuiz, viewQuiz }
