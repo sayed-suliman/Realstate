@@ -11,7 +11,7 @@ $(document).ready(function () {
                 _id:tds[4].innerText
             }
         }
-       $.ajax('/jquery/submitData',{
+       $.ajax('/sort/data',{
             type:'POST',
             data:obj,
             success:function(data,status,xhr){

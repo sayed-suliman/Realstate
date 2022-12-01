@@ -184,6 +184,22 @@ hbs.registerHelper("returnChecked",(arg1,arg2)=>{
    }
 })
 
+// check if available then return the body
+hbs.registerHelper("checkError",(arg,option)=>{
+    if(arg){
+        return option.fn(this)
+    }
+})
+
+// check for role or package when admin are adding new user
+hbs.registerHelper("checkroleorpackage",(arg1,arg2,option)=>{
+    console.log('a',arg1,'b',arg2)
+    if(arg1 == arg2) return option.fn(this)
+})
+hbs.registerHelper("returnSelected",(arg1)=>{
+   if(!arg1) return 'selected'
+})
+
 
 app.use(allRoutes)
 

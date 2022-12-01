@@ -1,4 +1,7 @@
-const User = require("../models/users")
+const Package = require("../models/package");
+const { validationResult } = require("express-validator")
+const User = require("../models/users");
+const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 
 module.exports = {
     async users(req, res) {
@@ -13,7 +16,78 @@ module.exports = {
         const users = await User.find({ role: "student" }).populate('package').limit(parseInt(limit)).skip(parseInt((page - 1) * limit));
         users.currentPage = page;
         users.pages = noOfPages;
-        res.render("dashboard/examples/users", { title: "Dashboard | Users", users })
+        res.render("dashboard/examples/users/users", { title: "Dashboard | Users", users })
+    },
+    async addUsers(req, res) {
+        try {
+            const packages = await Package.find({ status: "publish" })
+            var msgToken = req.query.msg;
+            var option = {}
+            if (msgToken) {
+                var msg = decodeMsg(msgToken)
+                option = msg
+            }
+            res.render("dashboard/examples/users/add-users", {
+                title: "Dashboard | Add-User",
+                packages,
+                toast: Object.keys(option).length == 0 ? undefined : option
+            })
+        } catch (e) {
+            res.render("500", {
+                title: 'Error 500',
+                err: e.message
+            })
+        }
+
+    },
+    // post user
+    async postUser(req, res) {
+        try {
+            const data = req.body
+            const formValidations = validationResult(req)
+            const packages = await Package.find({ status: "publish" })
+            const package = await Package.findOne({ name: data.package }).select("_id") || ""
+            if (formValidations.errors.length) {
+                const errorObj = {}
+                formValidations.errors.forEach(element => {
+                    errorObj[element.param] = element.msg
+                });
+                console.log('error', errorObj)
+                console.log('data', data)
+                return res.render("dashboard/examples/users/add-users", {
+                    title: "Dashboard | Add-User",
+                    err: errorObj,
+                    data,
+                    packages
+                })
+            }
+            const user = await User({
+                name:data.name,
+                email:data.email,
+                role:data.role,
+                package,
+                dob:data.dob,
+                password:data.password,
+                verified:true,
+            }).save()
+            var msg = encodeMsg("User Added")
+            res.redirect("/dashboard/add-user?msg=" + msg) 
+            // const packages = await Package.find({ status: "publish" })
+            // res.render("dashboard/examples/users/add-users", {
+            //     title: "Dashboard | Add-User",
+            //     packages
+            // })
+        } catch (e) {
+            // res.render("500", {
+            //     title: 'Error 500',
+            //     err: e.message
+            // })
+            res.status(404).json({
+                err: e.message,
+                status: 404
+            })
+        }
+
     }
 }
 // router.get("/getTask", auth, async (req, res) => {

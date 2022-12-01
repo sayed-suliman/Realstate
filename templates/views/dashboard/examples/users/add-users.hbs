@@ -1,0 +1,187 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+        <!-- toast(alert)-->
+        {{>alert}}
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Add User</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Add Users</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-info">
+                                <div class="card-header">
+                                    <h3 class="card-title">User Data</h3>
+                                </div>
+
+                                <form action="add-user" method="post" class="form-horizontal">
+                                    <div class="card-body">
+                                        {{!-- fullname --}}
+                                        <div class="form-group row">
+                                            <label for="fullname" class="col-sm-2 col-form-label">Full Name</label>
+                                            <div class="col-sm-10">
+                                                <input required type="text" value="{{data.name}}" name="name"
+                                                    class="form-control" id="fullname" placeholder="Full Name">
+                                            </div>
+                                        </div>
+                                        {{!-- role --}}
+                                        <div class="form-group row">
+                                            <label for="role" class="col-sm-2 col-form-label">Role</label>
+                                            <div class="col-sm-10">
+                                                <select required id="role" name="role"
+                                                    class="form-control custom-select">
+                                                    <option {{returnSelected data.role}} disabled value="">Select one
+                                                    </option>
+                                                    <option {{#checkroleorpackage data.role 'student'
+                                                        }}selected{{/checkroleorpackage}} value="student">Student
+                                                    </option>
+                                                    <option {{#checkroleorpackage data.role 'admin'
+                                                        }}selected{{/checkroleorpackage}} value="admin">Admin</option>
+                                                    <option {{#checkroleorpackage data.role 'regulator'
+                                                        }}selected{{/checkroleorpackage}} value="regulator">Regulator
+                                                    </option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {{!-- package --}}
+                                        <div class="form-group row">
+                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select
+                                                Package</label>
+                                            <div class="col-sm-10">
+                                                <select id="selectPackage" name="package"
+                                                    class="form-control custom-select">
+                                                    <option {{returnSelected data.package}} disabled value="">Select one
+                                                    </option>
+                                                    {{#each packages}}
+                                                    <option {{#checkroleorpackage data.package
+                                                        this.name}}selected{{/checkroleorpackage}}
+                                                        value="{{this.name}}">{{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {{!-- date of birth --}}
+                                        <div class="form-group row">
+                                            <label for="" class="col-sm-2 col-form-label">Date of Birth</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <input type="date" name="dob" value="{{data.dob}}"
+                                                        class="form-control datetimepicker-input"
+                                                        data-target="#reservationdate">
+                                                    <div class="input-group-append" data-target="#reservationdate"
+                                                        data-toggle="datetimepicker">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{!-- license --}}
+                                        <div class="form-group row">
+                                            <label for="license" class="col-sm-2 col-form-label">Driver License</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name="driver_license" value="{{data.driver_license}}"
+                                                    class="form-control {{#checkError err.driver_license}}is-invalid{{/checkError}}"
+                                                    id="license" placeholder="Driving License">
+                                                <span
+                                                    class="license-error invalid-feedback">{{err.driver_license}}</span>
+                                            </div>
+                                        </div>
+                                        {{!-- email --}}
+                                        <div class="form-group row">
+                                            <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                            <div class="col-sm-10">
+                                                <input type="email" name="email" value="{{data.email}}"
+                                                    class="form-control {{#checkError err.email}}is-invalid{{/checkError}}"
+                                                    id="email" placeholder="Email">
+                                                <span class="email-error invalid-feedback">{{err.email}}</span>
+                                            </div>
+                                        </div>
+                                        {{!-- password --}}
+                                        <div class="form-group row">
+                                            <label for="password" class="col-sm-2 col-form-label">Password</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" value="{{data.password}}" name="password"
+                                                    class="form-control" id="password" placeholder="Password">
+                                            </div>
+                                        </div>
+                                        {{!-- confirm password --}}
+                                        {{!-- <div class="form-group row">
+                                            <label for="c-password" class="col-sm-2 col-form-label">Confirm
+                                                Password</label>
+                                            <div class="col-sm-10">
+                                                <input type="text" name class="form-control" id="c-password"
+                                                    placeholder="ConfirmPassword">
+                                            </div>
+                                        </div> --}}
+                                        {{!-- this is check box --}}
+                                        {{!-- <div class="form-group row">
+                                            <div class="offset-sm-2 col-sm-10">
+                                                <div class="form-check">
+                                                    <input type="checkbox" class="form-check-input" id="exampleCheck2">
+                                                    <label class="form-check-label" for="exampleCheck2">Remember
+                                                        me</label>
+                                                </div>
+                                            </div>
+                                        </div> --}}
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-info">Add User</button>
+                                        <button type="reset" class="btn btn-default float-right">Cancel</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+
+</body>
+
+</html>

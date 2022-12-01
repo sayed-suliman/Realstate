@@ -21,7 +21,7 @@ $(document).ready(function () {
                 <div class="d-flex">
                     <div class="options">
                         <label for="opt1-q-${questionNumber}" class="col-form-label">1</label>
-                        <input id="opt1-q-${questionNumber}" type="text" required class="" name="question-${questionNumber}-opt">
+                        <input id="opt1-q-${questionNumber}" type="text" required class="form-control d-inline-block" name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
                         <input type="radio" required value="1" class="checkBox" name="question-${questionNumber}-ans"
@@ -29,10 +29,10 @@ $(document).ready(function () {
                         <label for="q-${questionNumber}-op1" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex my-2">
                     <div class="options">
                         <label for="opt2-q-${questionNumber}" class="col-form-label">2</label>
-                        <input id="opt2-q-${questionNumber}" type="text" required class=""
+                        <input id="opt2-q-${questionNumber}" type="text" required class="form-control d-inline-block"
                         name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
@@ -44,7 +44,7 @@ $(document).ready(function () {
                 <div class="d-flex">
                      <div class="options">
                          <label for="opt3-q-${questionNumber}" class="col-form-label">3</label>
-                         <input id="opt3-q-${questionNumber}" type="text" required class=""
+                         <input id="opt3-q-${questionNumber}" type="text" required class="form-control d-inline-block"
                                name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
@@ -53,10 +53,10 @@ $(document).ready(function () {
                         <label for="q-${questionNumber}-op3" class="m-0 ml-1">Correct Answer</label>
                     </div>
                 </div>
-                <div class="d-flex">
+                <div class="d-flex my-2">
                     <div class="options">
                         <label for="opt4-q-${questionNumber}" class="col-form-label">4</label>
-                        <input id="opt4-q-${questionNumber}" type="text" required class="" 
+                        <input id="opt4-q-${questionNumber}" type="text" required class="form-control d-inline-block" 
                         name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">

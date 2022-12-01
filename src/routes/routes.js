@@ -18,11 +18,10 @@ const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz } = require("./../co
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
-const { users } = require("../controllers/users")
-const { order, orderCourse } = require("./../controllers/order")
+const { users, addUsers, postUser } = require("../controllers/users")
+const { order, orderCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
-const Chapter = require("./../models/chapters")
-const Quiz = require("../models/quiz")
+const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 
 
 router.get("/test", (req, res) => {
@@ -103,8 +102,12 @@ router.post('/register-coupon', couponRegisterAPI)
 router.get("/dashboard/contact-us", isStudent, (req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
 })
-// users
+// ********************************************* users
 router.get("/dashboard/users", users)
+router.get("/dashboard/add-user", addUsers)
+// post user by admin
+router.post("/dashboard/add-user", addUserByAdminMiddleware,postUser)
+
 
 
 // ****************************** Packages
@@ -190,29 +193,8 @@ router.get("/dashboard/coupon-detail", detailsCoupon)
 // ******************************** Orders
 router.get("/dashboard/order", order)
 router.get("/dashboard/order/course/:id", orderCourse)
-// jquery test request
-router.post('/jquery/submitData', async (req, res) => {
-    let contents = req.body
-    const chapters = []
-    const quizzes = []
-    for (let content in contents) {
-        if (contents[content].type === 'chapter') chapters.push(contents[content])
-        if (contents[content].type === 'quiz' || contents[content].type === 'term') quizzes.push(contents[content])
-    }
-    chapters.forEach(async (chapter) => {
-        const selectChapter = await Chapter.findById(chapter._id)
-        selectChapter.order = chapter.order
-        await selectChapter.save()
-    })
-    quizzes.forEach(async (quiz) => {
-        const selectQuiz = await Quiz.findById(quiz._id)
-        selectQuiz.order = quiz.order
-        await selectQuiz.save()
-    })
-    res.send({
-        msg: "Success"
-    })
-})
+// sort data using jquery..!
+router.post('/sort/data', sortData)
 
 
 

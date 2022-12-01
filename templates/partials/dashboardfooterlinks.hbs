@@ -138,11 +138,16 @@
             $('#voucher-link').addClass("active")
             $("#voucher-detail-link").addClass("active")
         }
-        //users
+        //add users
+         if (url.includes("add-user")) {
+            $("#dashboard-link").removeClass("active")
+            $('#users-link').addClass("active")
+            $("#users-add-link").addClass("active")
+        }
         if (url.includes("users")) {
             $("#dashboard-link").removeClass("active")
-           // $('#page-link').addClass("active")
-            $("#contact-link").addClass("active")
+            $('#users-link').addClass("active")
+            $("#users-all-link").addClass("active")
         }
         //order
         if (url.includes("order")) {

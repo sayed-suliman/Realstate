@@ -85,10 +85,10 @@
                                             <div class="form-group">
                                                 <div class="quiz">
                                                     {{#each this.options}}
-                                                    <div class="d-flex">
+                                                    <div class="d-flex mb-2">
                                                         <div class="options">
                                                             <label for="opt{{@index}}-q-{{increment @../index}}" class="col-form-label">{{increment @index}}</label>
-                                                            <input id="opt{{@index}}-q-{{increment @../index}}" type="text" value="{{this}}" required class=""
+                                                            <input id="opt{{@index}}-q-{{increment @../index}}" type="text" value="{{this}}" required class="form-control d-inline-block"
                                                                 name="question-{{increment @../index}}-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
