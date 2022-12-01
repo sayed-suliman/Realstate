@@ -1,6 +1,10 @@
 const generateVoucher = require("voucher-code-generator")
 const Coupon = require("../models/coupons")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
+const Order = require('../models/order')
+const User = require('../models/users')
+const url = require('url')
+
 module.exports = {
     async getCoupon(req, res) {
         try {
@@ -94,8 +98,6 @@ module.exports = {
         const { code } = req.body;
         var coupon = await Coupon.findOne({ code, validTill: { $gte: new Date() }, length: { $ne: 0 } });
         console.log(coupon)
-        console.log(new Date())
-
         if (coupon) {
             coupon = coupon.toObject()
             delete coupon.length
@@ -104,6 +106,44 @@ module.exports = {
             delete coupon.createdAt
             delete coupon.updatedAt
             return res.send({ success: { msg: `${coupon.discount}% discount is applied on your payment.`, coupon } })
+        }
+        res.send({ error: "Coupon Code doesn't exist." })
+    },
+    async couponRegisterAPI(req, res) {
+        const { couponId } = req.body;
+        var coupon = await Coupon.findOne({ couponId, validTill: { $gte: new Date() }, length: { $ne: 0 }, discount: 100 });
+        console.log(coupon)
+        if (coupon) {
+            coupon = coupon.toObject()
+            delete coupon.length
+            delete coupon.validFrom
+            delete coupon.validTill
+            delete coupon.createdAt
+            delete coupon.updatedAt
+            console.log(req.body.user)
+            const user = await User.findById(req.body.user).populate('package');
+            const order = await Order({
+                user: user._id,
+                package: user.package._id,
+                amount: 0,
+                pay_method: "Coupon Discount",
+                discount: coupon.discount,
+                verified: true
+            }).save()
+            if (order) {
+                await Coupon.findOneAndUpdate({ _id: coupon._id, length: { $gt: 0 } }, { $inc: { length: -1 } })
+                return req.login(user, function (err) {
+                    if (err) { return next(err); }
+                    return res.send({
+                        url: url.format({
+                            pathname: '/dashboard',
+                            query: {
+                                msg: encodeMsg('Welcome to Real Estate')
+                            }
+                        })
+                    });
+                });
+            }
         }
         res.send({ error: "Coupon Code doesn't exist." })
     }

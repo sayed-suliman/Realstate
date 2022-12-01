@@ -169,7 +169,7 @@ module.exports = {
                 if (couponId != 'undefined') {
                     const coupon = await Coupon.findById(couponId).where('length')
                     discount = Number(price) * (Number(coupon.discount) / 100)
-                    await Coupon.findByIdAndUpdate(couponId, { $inc: { length: -1 } })
+                    await Coupon.findOneAndUpdate({ _id:couponId , length: { $gt: 0 } }, { $inc: { length: -1 } })
                 }
                 const order = await Order({
                     user: user._id,

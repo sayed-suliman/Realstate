@@ -4,6 +4,7 @@ const dob = document.getElementById('dob')
 const paypalBtn = document.querySelector('.paypal')
 const couponBtn = document.querySelector('#coupon-btn')
 const couponInput = document.querySelector('#coupon-code')
+const couponRegister = document.querySelector('#coupon-register')
 
 let couponId;
 
@@ -33,10 +34,10 @@ stripeBtn.addEventListener('click', function () {
             showInputMessage(dob, "This field is required")
             return;
         } else if (dob.value) {
-            const now =  new Date();
+            const now = new Date();
             const age = new Date(dob.value)
-            console.log('now',now,'age',age)
-            if ( age > now ) {
+            console.log('now', now, 'age', age)
+            if (age > now) {
                 showInputMessage(dob, "DOB can't be greater than or equal to Today.")
                 return;
             }
@@ -268,7 +269,7 @@ couponBtn.addEventListener('click', async function (e) {
         const response = await fetch('/check-coupon', {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ code })
+            body: JSON.stringify({ code, user })
         })
         setLoading(false)
         const result = await response.json();
@@ -276,6 +277,12 @@ couponBtn.addEventListener('click', async function (e) {
 
 
         if (response.ok) {
+            if (result.url) {
+                new bootstrap.Modal('#coupon').show()
+                setTimeout(() => {
+                    window.location.href = result.url
+                }, 3000)
+            }
             if (result.error) {
                 discountRow.classList.replace('d-table-row', 'd-none')
                 discount.textContent = `\$0`;
@@ -285,7 +292,10 @@ couponBtn.addEventListener('click', async function (e) {
             if (result.success) {
                 const { coupon: couponDetail, msg } = result.success
                 const currentPrice = packageTotal
-
+                if (couponDetail.discount == 100) {
+                    document.querySelector('.btn-pay').classList.add('d-none')
+                    document.querySelector('.btn-coupon-register').classList.remove('d-none')
+                }
                 // discount of the current price
                 let discountInUSD = Number(currentPrice) * (Number(couponDetail.discount) / 100)
                 // price after discount
@@ -330,5 +340,55 @@ couponBtn.addEventListener('click', async function (e) {
         //     messageContainer.classList.replace(`text-${type}`, "text-danger");
         //     messageContainer.textContent = "no msg";
         // }, 4000);
+    }
+})
+couponRegister.addEventListener('click', async function (e) {
+    if (couponId) {
+        setLoading(true)
+        const response = await fetch('/register-coupon', {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ couponId, user })
+        })
+        setLoading(false)
+        const result = await response.json();
+        console.log(result)
+
+
+        if (response.ok) {
+            console.log(result)
+            if (result.url) {
+                new bootstrap.Modal('#coupon').show()
+                setTimeout(() => {
+                    window.location.href = result.url
+                }, 3000)
+            }
+            if (result.error) {
+                showMessage(result.error, "danger")
+            }
+        }
+    } else {
+        showMessage("Please enter the Coupon code again.", "danger")
+    }
+
+    function setLoading(isLoading) {
+        if (isLoading) {
+            couponRegister.disabled = true;
+            couponRegister.querySelector('.text').classList.add('d-none');
+            couponRegister.querySelector('.spinner').classList.remove('d-none')
+        } else {
+            couponRegister.disabled = false;
+            couponRegister.querySelector('.text').classList.remove('d-none');
+            couponRegister.querySelector('.spinner').classList.add('d-none')
+        }
+    }
+    function showMessage(messageText, type = "danger") {
+        const messageContainer = document.querySelector(".coupon-reg-msg");
+
+        messageContainer.classList.remove("opacity-0");
+        messageContainer.classList.remove("text-danger");
+        messageContainer.classList.remove("text-success");
+        messageContainer.classList.add(`text-${type}`);
+        messageContainer.textContent = messageText;
     }
 })

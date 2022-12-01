@@ -201,19 +201,41 @@ const deleteCourse = async (req, res) => {
     }
 }
 
+// Student all courses
+var allCourses = async (req, res) => {
+    try {
+        await req.user.populate({ path: 'package', populate: { path: 'courses' } })
+        var userCourses = await req.user.package.courses
+        res.render("dashboard/examples/courses/course-detail",
+            {
+                title: "Dashboard | All Courses",
+                userCourses,
+            })
+    } catch (e) {
+        res.status(403).json({
+            Error: e.message,
+            Status: 403,
+            msg: "Courses Not Find"
+        })
+        // res.render("404")
+    }
+}
 //for the student view
 var viewCourse = async (req, res) => {
     try {
         const ID = req.params.id
-        const course = await CourseModel.findById(ID).populate('contents')
+        const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes')
         if (course) {
             // sorting the chapter by name 
-            course.contents.sort((a, b) => {
-                if (a.name < b.name) { return -1; }
-                if (a.name > b.name) { return 1; }
+            const contents = [...course.quizzes, ...course.chapters]
+            contents.sort((a, b) => {
+                if (a.order < b.order) { return -1; }
+                if (a.order > b.order) { return 1; }
                 return 0;
             })
-            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, course })
+            // unlock the first content of the current chapter
+            contents[0].status = contents[0].status == 0 ? 1 : contents[0].status
+            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
         }
         res.redirect('/dashboard')
     } catch (err) {
@@ -235,4 +257,4 @@ var viewCourse = async (req, res) => {
         }))
     }
 }
-module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse }
+module.exports = { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, allCourses, viewCourse }
