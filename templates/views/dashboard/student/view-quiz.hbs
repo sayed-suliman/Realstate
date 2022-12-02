@@ -36,23 +36,38 @@
                                 </div>
                                 <div class="card-body">
                                     <form id="quiz">
+                                        <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
-                                        <div class="form-group">
-                                            <label >{{this.question}}</label>
-                                            {{#each this.options}}
-                                            <div class="form-group clearfix" id="exampleInputEmail1">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="qu-{{@../index}}-op-{{@index}}" value="{{@index}}" name="q-{{@../index}}" required>
-                                                    <label class="font-weight-normal" for="qu-{{@../index}}-op-{{@index}}">
-                                                        {{this}}
-                                                    </label>
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}" id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="qu-{{@../index}}-op-{{@index}}"
+                                                            value="{{@index}}" name="q-{{@../index}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="qu-{{@../index}}-op-{{@index}}">
+                                                            {{this}}
+                                                        </label>
+                                                    </div>
                                                 </div>
+                                                {{/each}}
                                             </div>
-                                            {{/each}}
+                                            <div class="feedback font-weight-bold">
+                                                This is just testing
+                                            </div>
                                         </div>
                                         {{/each}}
-                                    <button class="btn btn-success mt-2 float-left" type="submit">Submit</button>
+                                        <button class="btn btn-success mt-2 float-left" type="submit">Submit</button>
                                     </form>
+                                    <div
+                                        class="spinner d-none flex-column align-items-center position-absolute place-center">
+                                        <span class="loader ">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                        </span>
+                                        <span class="text font-weight-bold">msg</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -83,9 +98,6 @@
     <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
 
     <script src="/js/quiz.js"></script>
-    <script>
-        const id = `{{{quiz._id}}}`
-    </script>
 </body>
 
 </html>
