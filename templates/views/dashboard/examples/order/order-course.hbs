@@ -18,7 +18,8 @@
                     <div class="row mb-2">
                         <div class="col-sm-6">
                             <h1>Order <span style="font-size: 16px;">({{course.name}})</span></h1>
-                            <p class="text-warning m-0" style="font-size: 22px;">Put the Chapters and Quizzes in a particular order by dragging here</p>
+                            <p class="text-warning m-0" style="font-size: 22px;">Put the Chapters and Quizzes in a
+                                particular order by dragging here</p>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -40,9 +41,9 @@
                                     <table class="table table-hover text-nowrap">
                                         <thead>
                                             <tr>
-                                            <th style="width: 100px;">S.No</th>
-                                            <th>Name</th>
-                                            <th>Order</th>
+                                                <th style="width: 100px;">S.No</th>
+                                                <th>Name</th>
+                                                <th>Order</th>
                                             </tr>
                                         </thead>
                                         <tbody id="tblLocations">
@@ -69,7 +70,7 @@
                                     </table>
                                 </div>
                                 {{!-- footer of the card --}}
-                                <div class="card-footer">
+                                <div class="card-footer {{#ifEquals user.role 'regulator'}}d-none{{/ifEquals}}">
                                     <!-- Button trigger modal -->
                                     <button type="button" id="modal-btn" class="btn btn-primary d-none"
                                         data-toggle="modal" data-target="#staticBackdrop">
@@ -139,7 +140,7 @@
         href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/themes/smoothness/jquery-ui.css" />
     <script type="text/javascript"
         src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.24/jquery-ui.min.js"></script>
-
+    {{#ifEquals user.role "admin"}}
     <script type="text/javascript">
         $(function () {
             $("#tblLocations").sortable({
@@ -161,6 +162,7 @@
             });
         });
     </script>
+    {{/ifEquals}}
     {{!-- js for order --}}
     <script src="/js/course-order.js"></script>
     </script>

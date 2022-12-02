@@ -3,7 +3,7 @@ const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
 const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid } = require("../middleware/authentication")
+const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid, isAdminorRegulator } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse, allCourses } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
@@ -107,19 +107,19 @@ router.get("/dashboard/contact-us", isStudent, (req, res) => {
     res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
 })
 // ********************************************* users
-router.get("/dashboard/users", users)
-router.get("/dashboard/add-user", addUsers)
+router.get("/dashboard/users", isAdminorRegulator, users)
+router.get("/dashboard/add-user", isAdmin, addUsers)
 // post user by admin
-router.post("/dashboard/add-user", addUserByAdminMiddleware, postUser)
+router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser)
 
 
 
 // ****************************** Packages
 //add package
-router.get("/dashboard/add-package", isAdmin, isAdmin, package)
+router.get("/dashboard/add-package", isAdmin, package)
 router.post('/dashboard/add-package', isAdmin, addPackage)
 // package details
-router.get("/dashboard/package-detail", isAdmin, packagesDetail)
+router.get("/dashboard/package-detail", isAdminorRegulator, packagesDetail)
 router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage)
 router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage)
 // delete package
@@ -129,21 +129,21 @@ router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage)
 
 //  ******************************* Courses
 // for student view only
-router.get("/dashboard/courses", allCourses)
+router.get("/dashboard/courses", isAdmin, allCourses)
 // add course
 // render of course add
-router.get("/dashboard/add-course", course)
+router.get("/dashboard/add-course", isAdmin, course)
 // course-add post
-router.post("/dashboard/add-course", addcourse)
+router.post("/dashboard/add-course", isAdmin, addcourse)
 
 // course-detail
 router.get("/dashboard/course-detail", courseDetails)
 // course-delete
-router.get("/dashboard/course-detail/delete-course", deleteCourse)
+router.get("/dashboard/course-detail/delete-course", isAdmin, deleteCourse)
 // edit-course
-router.get("/dashboard/course-detail/edit-course", editCourse)
+router.get("/dashboard/course-detail/edit-course", isAdmin, editCourse)
 // update-course
-router.post("/dashboard/course-detail/update-course", updateCourse)
+router.post("/dashboard/course-detail/update-course", isAdmin, updateCourse)
 // for student
 router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
 router.get('/dashboard/view-course/:id', viewCourse)
@@ -151,34 +151,34 @@ router.get('/dashboard/view-course/:id', viewCourse)
 // ********************************** Chapter Part
 
 // add chapter 
-router.get("/dashboard/add-chapter", addChapter)
-router.post("/dashboard/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
+router.get("/dashboard/add-chapter", isAdmin, addChapter)
+router.post("/dashboard/add-chapter", upload.single("courseFile"), isAdmin, postChapter, errorMsg)
 // for test below link
 router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // chapter details 
-router.get("/dashboard/chapter-detail", chapterDetail)
+router.get("/dashboard/chapter-detail", isAdminorRegulator, chapterDetail)
 // Edit Chapters 
-router.get("/dashboard/chapter-detail/edit-chapter", editChapter)
+router.get("/dashboard/chapter-detail/edit-chapter", isAdmin, editChapter)
 // Delete Chapters 
-router.get("/dashboard/chapter-detail/delete-chapter", deleteChapter)
+router.get("/dashboard/chapter-detail/delete-chapter", isAdmin, deleteChapter)
 // Update Chapter
-router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), updateChapter)
+router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"),isAdmin, updateChapter)
 //for student 
 router.get('/dashboard/view-chapter', (req, res) => { res.redirect('/dashboard') })
 router.get('/dashboard/view-chapter/:id', viewChapter)
 
 // ******************************* Quiz part **************************
 // add quiz 
-router.get("/dashboard/add-quiz", addQuiz)
-router.post("/dashboard/add-quiz", postQuiz)
+router.get("/dashboard/add-quiz", isAdmin,addQuiz)
+router.post("/dashboard/add-quiz", isAdmin,postQuiz)
 
 // quiz details 
-router.get("/dashboard/quiz-detail", quizDetail)
+router.get("/dashboard/quiz-detail", isAdminorRegulator,quizDetail)
 
 // quiz edit page
-router.get("/dashboard/quiz-detail/edit-quiz", editQuiz)
+router.get("/dashboard/quiz-detail/edit-quiz", isAdmin ,editQuiz)
 // update post quiz
-router.post("/dashboard/quiz-detail/update-quiz", updateQuiz)
+router.post("/dashboard/quiz-detail/update-quiz", isAdmin ,updateQuiz)
 
 // Student(view)
 router.get('/dashboard/view-quiz/:id', viewQuiz)
@@ -209,19 +209,17 @@ router.post('/test-quiz', async (req, res) => {
 
 
 // ***************************** Coupons
-router.get("/dashboard/add-coupon", getCoupon)
-router.post("/dashboard/coupon-generated", postCoupon)
+router.get("/dashboard/add-coupon", isAdmin,getCoupon)
+router.post("/dashboard/coupon-generated", isAdmin,postCoupon)
 
-router.get("/dashboard/coupon-detail", detailsCoupon)
+router.get("/dashboard/coupon-detail", isAdminorRegulator,detailsCoupon)
 // delete
-router.get("/dashboard/coupon-detail/delete-coupon", deleteCoupon)
-router.get("/dashboard/add-coupon", getCoupon)
+router.get("/dashboard/coupon-detail/delete-coupon", isAdmin,deleteCoupon)
 
-router.get("/dashboard/coupon-detail", detailsCoupon)
 
 // ******************************** Orders
-router.get("/dashboard/order", order)
-router.get("/dashboard/order/course/:id", orderCourse)
+router.get("/dashboard/order", isAdminorRegulator,order)
+router.get("/dashboard/order/course/:id", isAdminorRegulator,orderCourse)
 // sort data using jquery..!
 router.post('/sort/data', sortData)
 

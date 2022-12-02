@@ -97,6 +97,60 @@
                                         </tfoot> --}}
                                     </table>
                                     {{/ifEquals}}
+                                    {{!-- regulator --}}
+                                    {{#ifEquals user.role "regulator"}}
+                                    <table id="example2" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Package</th>
+                                                <th>Description</th>
+                                                <th>Status</th>
+                                                <th>Price</th>
+                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each allCourses}}
+                                            <tr>
+                                                <td>{{this.name}}</td>
+                                                <td>
+                                                    {{#each this.package}}
+                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
+                                                    {{/each}}
+                                                </td>
+                                                <td>{{this.description}}</td>
+                                                <td>{{this.status}}</td>
+                                                <td>{{this.price}}</td>
+                                                <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
+                                                    <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-success">
+                                                            <i class="fa-solid fa-pen-to-square"></i>
+                                                        </button>
+                                                    </a>
+                                                    {{!-- <a
+                                                        href="/dashboard/course-detail/delete-course?cId={{this._id}}"
+                                                        type="button">
+                                                        <button class="btn btn-danger">
+                                                            <i class="fa-solid fa-trash"></i>
+                                                        </button>
+                                                    </a> --}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                        {{!-- <tfoot>
+                                            <tr>
+                                                <th>Rendering engine</th>
+                                                <th>Browser</th>
+                                                <th>Platform(s)</th>
+                                                <th>Engine version</th>
+                                                <th>CSS grade</th>
+                                            </tr>
+                                        </tfoot> --}}
+                                    </table>
+                                    {{/ifEquals}}
                                     {{#ifEquals user.role "student"}}
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>

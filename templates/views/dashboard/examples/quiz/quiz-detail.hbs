@@ -48,7 +48,7 @@
                                                 <th style="width: 65px;">S.No</th>
                                                 <th>Name</th>
                                                 <th>Chpater</th>
-                                                <th>Edit</th>
+                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
                                             </tr>
                                         </thead>
                                         {{!-- static --}}
@@ -58,7 +58,7 @@
                                                 <td>{{increment @index}}</td>
                                                 <td class="text-capitalize">{{this.name}}</td>
                                                 <td>{{this.course.name}}</td>
-                                                  <td>
+                                                  <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
                                                     <a href="/dashboard/quiz-detail/edit-quiz?qId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">

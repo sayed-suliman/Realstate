@@ -52,7 +52,7 @@
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
-                                                <th>Edit</th>
+                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -66,7 +66,7 @@
                                                         {{this.fileName}}
                                                     </a>
                                                 </td>
-                                                <td>
+                                                <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
                                                     <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
