@@ -88,7 +88,7 @@ $(document).ready(function () {
         // deleting the user id from the array
         userAnsArr.shift()
         let userAnsObj = {}
-        userAnsArr.forEach((ans, index) => {
+        userAnsArr.forEach(ans => {
             userAnsObj[ans.name] = ans.value
         });
         console.log(userAnsObj)
@@ -98,14 +98,34 @@ $(document).ready(function () {
             type: 'POST',
             data: $(this).serializeArray(),
             dataType: 'json',
-            success: ({correctAns,wrongAns,point}) => {
+            success: ({ correctAns, wrongAns, point }) => {
                 loading(false)
-                // if()
-                userAnsArr.forEach((ans, index) => {
-                    var parent = $(`#quiz [name=${ans.name}]`).parents('.form-group-head').css('border', '1px solid red')
-                    parent.find('.feedback').css('border', '1px solid black')
-                    console.log($(`#quiz [name=${ans.name}]`).closest('.form-group'))
-                });
+                // if point then show the result
+                if (point) {
+                    const percent = Math.floor((point / noOfQuestions) * 100)
+                    const grade = percent >= 60 ? "passed" : "failed"
+                    $('#result').removeClass('d-none')
+                    $('#result .percent').text(`${percent}%`)
+                    $('#result .grade').text(`${grade}`)
+                    grade == "failed" ? $('#result .grade').removeClass('text-success').addClass('text-danger') : $('#result .grade').removeClass('text-danger').addClass('text-success')
+                    $('#result .points').text(`${point}/${noOfQuestions}`)
+                    $('#result .correct').text(`${correctAns.length}`)
+                    $('#result .wrong').text(`${wrongAns.length}`)
+                }
+                if (wrongAns.length != 0) {
+                    wrongAns.forEach(ans => {
+                        var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
+                        parent.find('.feedback').removeClass('d-none').addClass('text-danger')
+                        parent.find('.feedback').text("Your answer is wrong.")
+                    })
+                }
+                if (correctAns.length != 0) {
+                    correctAns.forEach(ans => {
+                        var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
+                        parent.find('.feedback').removeClass('d-none').removeClass('text-danger').addClass('text-success')
+                        parent.find('.feedback').text("Correct.")
+                    })
+                }
             },
             error: (error) => {
                 console.log(error)
