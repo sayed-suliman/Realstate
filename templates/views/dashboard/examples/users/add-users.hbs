@@ -36,7 +36,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-md-6">
-                            <div class="card card-info">
+                            <div class="card card-primary">
                                 <div class="card-header">
                                     <h3 class="card-title">User Data</h3>
                                 </div>
@@ -75,7 +75,7 @@
                                             <label for="selectPackage" class="col-sm-2 col-form-label">Select
                                                 Package</label>
                                             <div class="col-sm-10">
-                                                <select id="selectPackage" name="package"
+                                                <select required id="selectPackage" name="package"
                                                     class="form-control custom-select">
                                                     <option {{returnSelected data.package}} disabled value="">Select one
                                                     </option>
@@ -93,12 +93,12 @@
                                             <div class="col-sm-10">
                                                 <div class="input-group date" id="reservationdate"
                                                     data-target-input="nearest">
-                                                    <input type="date" name="dob" value="{{data.dob}}"
-                                                        class="form-control datetimepicker-input"
+                                                    <input id="dob" required type="date" name="dob" value="{{data.dob}}"
+                                                        class="form-control datetimepicker-input {{#checkError err.dob}}is-invalid{{/checkError}}"
                                                         data-target="#reservationdate">
-                                                    <div class="input-group-append" data-target="#reservationdate"
-                                                        data-toggle="datetimepicker">
-                                                    </div>
+                                                    <span class="dob invalid-feedback">
+                                                        {{err.dob}}
+                                                    </span>
                                                 </div>
                                             </div>
                                         </div>
@@ -106,18 +106,20 @@
                                         <div class="form-group row">
                                             <label for="license" class="col-sm-2 col-form-label">Driver License</label>
                                             <div class="col-sm-10">
-                                                <input type="text" name="driver_license" value="{{data.driver_license}}"
+                                                <input required type="text" name="driver_license"
+                                                    value="{{data.driver_license}}"
                                                     class="form-control {{#checkError err.driver_license}}is-invalid{{/checkError}}"
                                                     id="license" placeholder="Driving License">
-                                                <span
-                                                    class="license-error invalid-feedback">{{err.driver_license}}</span>
+                                                <span class="license-error invalid-feedback">
+                                                    {{err.driver_license}}
+                                                </span>
                                             </div>
                                         </div>
                                         {{!-- email --}}
                                         <div class="form-group row">
                                             <label for="email" class="col-sm-2 col-form-label">Email</label>
                                             <div class="col-sm-10">
-                                                <input type="email" name="email" value="{{data.email}}"
+                                                <input required type="email" name="email" value="{{data.email}}"
                                                     class="form-control {{#checkError err.email}}is-invalid{{/checkError}}"
                                                     id="email" placeholder="Email">
                                                 <span class="email-error invalid-feedback">{{err.email}}</span>
@@ -127,8 +129,12 @@
                                         <div class="form-group row">
                                             <label for="password" class="col-sm-2 col-form-label">Password</label>
                                             <div class="col-sm-10">
-                                                <input type="text" value="{{data.password}}" name="password"
-                                                    class="form-control" id="password" placeholder="Password">
+                                                <input required type="text" value="{{data.password}}" name="password"
+                                                    class="form-control {{#checkError err.password}}is-invalid{{/checkError}}"
+                                                    id="password" placeholder="Password">
+                                                <span class="password invalid-feedback">
+                                                    {{err.password}}
+                                                </span>
                                             </div>
                                         </div>
                                         {{!-- confirm password --}}
@@ -153,8 +159,8 @@
                                     </div>
 
                                     <div class="card-footer">
-                                        <button type="submit" class="btn btn-info">Add User</button>
-                                        <button type="reset" class="btn btn-default float-right">Cancel</button>
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                        <button type="submit" class="btn btn-success float-right">Add User</button>
                                     </div>
 
                                 </form>
@@ -181,6 +187,27 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+    {{!-- custom js for this page --}}
+    <script>
+        $(document).ready(function () {
+            let rolVal = $("#role").val()
+            if (rolVal == 'regulator' || rolVal == 'admin') {
+                $("#selectPackage").attr("disabled", "")
+                $("#selectPackage").val("")
+                $("#selectPackage").removeAttr("required")
+            }
+            $("#role").change(function () {
+                if (this.value == 'regulator' || this.value == 'admin') {
+                    $("#selectPackage").attr("disabled", "")
+                    $("#selectPackage").val("")
+                    $("#selectPackage").removeAttr("required")
+                } else {
+                    $("#selectPackage").attr("required", "")
+                    $("#selectPackage").removeAttr("disabled")
+                }
+            })
+        })
+    </script>
 
 </body>
 

@@ -1,6 +1,13 @@
 const { check, validationResult } = require("express-validator")
 const User = require("../models/users")
- const addUserByAdminMiddleware = [
+Date.prototype.getAge = function () {
+    const date = new Date()
+    const eighteen = date.getFullYear() - 18
+    date.setUTCFullYear(eighteen)
+    return date
+}
+const age = new Date()
+const addUserByAdminMiddleware = [
     check('email').exists().isEmail().withMessage("Please enter a valid email.").custom(async value => {
         const user = await User.findOne({ email: value }).then(user => {
             return user
@@ -17,5 +24,7 @@ const User = require("../models/users")
             return Promise.reject("Personal Id is Already in use")
         }
     }),
+    check("password").isLength({ min: 6 }).withMessage('Password must be at least 6 char long'),
+    check("dob").isBefore(age.getAge().toString()).withMessage("Your Entered an invalid date of birth. User must be 18+")
 ]
 module.exports = addUserByAdminMiddleware

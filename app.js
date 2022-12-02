@@ -193,7 +193,6 @@ hbs.registerHelper("checkError",(arg,option)=>{
 
 // check for role or package when admin are adding new user
 hbs.registerHelper("checkroleorpackage",(arg1,arg2,option)=>{
-    console.log('a',arg1,'b',arg2)
     if(arg1 == arg2) return option.fn(this)
 })
 hbs.registerHelper("returnSelected",(arg1)=>{

@@ -52,8 +52,6 @@ module.exports = {
                 formValidations.errors.forEach(element => {
                     errorObj[element.param] = element.msg
                 });
-                console.log('error', errorObj)
-                console.log('data', data)
                 return res.render("dashboard/examples/users/add-users", {
                     title: "Dashboard | Add-User",
                     err: errorObj,
@@ -62,30 +60,30 @@ module.exports = {
                 })
             }
             const user = await User({
-                name:data.name,
-                email:data.email,
-                role:data.role,
-                package,
-                dob:data.dob,
-                password:data.password,
-                verified:true,
+                name: data.name,
+                email: data.email,
+                role: data.role,
+                package: package || undefined,
+                dob: data.dob,
+                password: data.password,
+                verified: true,
             }).save()
             var msg = encodeMsg("User Added")
-            res.redirect("/dashboard/add-user?msg=" + msg) 
+            res.redirect("/dashboard/add-user?msg=" + msg)
             // const packages = await Package.find({ status: "publish" })
             // res.render("dashboard/examples/users/add-users", {
             //     title: "Dashboard | Add-User",
             //     packages
             // })
         } catch (e) {
-            // res.render("500", {
-            //     title: 'Error 500',
-            //     err: e.message
-            // })
-            res.status(404).json({
-                err: e.message,
-                status: 404
+            res.render("500", {
+                title: 'Error 500',
+                err: e.message
             })
+            // res.status(404).json({
+            //     err: e.message,
+            //     status: 404
+            // })
         }
 
     }

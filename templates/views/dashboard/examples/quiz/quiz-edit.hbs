@@ -92,48 +92,12 @@
                                                                 name="question-{{increment @../index}}-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
-                                                            <input type="radio" required value="{{increment @index}}" {{returnChecked @index ../this.ans}} class="checkBox" name="question-{{increment @../index}}-ans"
+                                                            <input type="radio" required value="{{@index}}" {{returnChecked @index ../this.ans}} class="checkBox" name="question-{{increment @../index}}-ans"
                                                                 id="q-{{increment @../index}}-op{{increment @index}}">
                                                             <label for="q-{{increment @../index}}-op{{increment @index}}" class="m-0 ml-1">Correct Answer</label>
                                                         </div>
                                                     </div>
                                                     {{/each}}
-                                                    {{!-- <div class="d-flex">
-                                                        <div class="options">
-                                                            <label for="opt2-q-{{increment @index}}" class="col-form-label">2</label>
-                                                            <input id="opt2-q-{{increment @index}}" type="text" required class=""
-                                                                name="question-{{increment @index}}-opt">
-                                                        </div>
-                                                        <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="2" class="checkBox" name="question-{{increment @index}}-ans"
-                                                                id="q-{{increment @index}}-op2">
-                                                            <label for="q-{{increment @index}}-op2" class="m-0 ml-1">Correct Answer</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <div class="options">
-                                                            <label for="opt3-q-{{increment @index}}" class="col-form-label">3</label>
-                                                            <input id="opt3-q-{{increment @index}}" type="text" required class=""
-                                                                name="question-{{increment @index}}-opt">
-                                                        </div>
-                                                        <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="3" class="checkBox" name="question-{{increment @index}}-ans"
-                                                                id="q-{{increment @index}}-op3">
-                                                            <label for="q-{{increment @index}}-op3" class="m-0 ml-1">Correct Answer</label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="d-flex">
-                                                        <div class="options">
-                                                            <label for="opt4-q-{{increment @index}}" class="col-form-label">4</label>
-                                                            <input id="opt4-q-{{increment @index}}" type="text" required class=""
-                                                                name="question-{{increment @index}}-opt">
-                                                        </div>
-                                                        <div class="d-flex  align-items-center">
-                                                            <input type="radio" value="4" class="checkBox" name="question-{{increment @index}}-ans"
-                                                                id="q-{{increment @index}}-op4">
-                                                            <label for="q-{{increment @index}}-op4" class="m-0 ml-1">Correct Answer</label>
-                                                        </div>
-                                                    </div> --}}
                                                 </div>
                                             </div>
                                         </div>

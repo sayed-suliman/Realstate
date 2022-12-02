@@ -24,7 +24,7 @@ $(document).ready(function () {
                         <input id="opt1-q-${questionNumber}" type="text" required class="form-control d-inline-block" name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
-                        <input type="radio" required value="1" class="checkBox" name="question-${questionNumber}-ans"
+                        <input type="radio" required value="0" class="checkBox" name="question-${questionNumber}-ans"
                         id="q-${questionNumber}-op1">
                         <label for="q-${questionNumber}-op1" class="m-0 ml-1">Correct Answer</label>
                     </div>
@@ -36,7 +36,7 @@ $(document).ready(function () {
                         name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
-                        <input type="radio" value="2" class="checkBox" name="question-${questionNumber}-ans"
+                        <input type="radio" value="1" class="checkBox" name="question-${questionNumber}-ans"
                             id="q-${questionNumber}-op2">
                         <label for="q-${questionNumber}-op2" class="m-0 ml-1">Correct Answer</label>
                     </div>
@@ -48,7 +48,7 @@ $(document).ready(function () {
                                name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
-                         <input type="radio" value="3" class="checkBox" name="question-${questionNumber}-ans"
+                         <input type="radio" value="2" class="checkBox" name="question-${questionNumber}-ans"
                             id="q-${questionNumber}-op3">
                         <label for="q-${questionNumber}-op3" class="m-0 ml-1">Correct Answer</label>
                     </div>
@@ -60,7 +60,7 @@ $(document).ready(function () {
                         name="question-${questionNumber}-opt">
                     </div>
                     <div class="d-flex  align-items-center">
-                        <input type="radio" value="4" class="checkBox" name="question-${questionNumber}-ans"
+                        <input type="radio" value="3" class="checkBox" name="question-${questionNumber}-ans"
                             id="q-${questionNumber}-op4">
                         <label for="q-${questionNumber}-op4" class="m-0 ml-1">Correct Answer</label>
                     </div>
