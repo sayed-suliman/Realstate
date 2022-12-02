@@ -32,9 +32,38 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Quiz: {{quiz.name}}</h3>
+                                    <h3 class="card-title">Quiz: {{quiz.name}} {{user.role}}</h3>
                                 </div>
                                 <div class="card-body">
+                                    <div class="result text-center mb-5 d-none" id="result">
+                                        <h3 class="mb-0">Your Result</h3>
+                                        <h2 class="percent mb-0">0%</h2>
+                                        <p class="mb-0">Minimum marks required to pass: 60%</p>
+                                        <p>Your grade is <span class="grade">failed</span></p>
+                                        <table class="mx-auto">
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Points</th>
+                                                <td class="text-right points">0/20</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Time Spend</th>
+                                                <td class="text-right time">00:55</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Questions</th>
+                                                <td class="text-right">{{quiz.questions.length}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Correct</th>
+                                                <td class="text-right correct">0</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Wrong</th>
+                                                <td class="text-right wrong">0</td>
+                                            </tr>
+                                        </table>
+                                        <button class="retake btn btn-success">Retake</button>
+                                    </div>
                                     <form id="quiz">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
@@ -42,7 +71,8 @@
                                             <label>{{this.question}}</label>
                                             <div class="ans pl-4">
                                                 {{#each this.options}}
-                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}" id="question">
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
                                                     <div class="icheck-primary d-inline">
                                                         <input type="radio" id="qu-{{@../index}}-op-{{@index}}"
                                                             value="{{@index}}" name="q-{{@../index}}" required>
@@ -54,9 +84,7 @@
                                                 </div>
                                                 {{/each}}
                                             </div>
-                                            <div class="feedback font-weight-bold">
-                                                This is just testing
-                                            </div>
+                                            <div class="feedback font-weight-bold d-none"></div>
                                         </div>
                                         {{/each}}
                                         <button class="btn btn-success mt-2 float-left" type="submit">Submit</button>
@@ -97,6 +125,9 @@
     {{!--
     <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
 
+    <script>
+        const noOfQuestions = `{{{quiz.questions.length}}}`
+    </script>
     <script src="/js/quiz.js"></script>
 </body>
 
