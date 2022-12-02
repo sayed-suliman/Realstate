@@ -22,6 +22,7 @@ const { users, addUsers, postUser } = require("../controllers/users")
 const { order, orderCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
+const Quiz = require("../models/quiz")
 
 
 router.get("/test", (req, res) => {
@@ -109,7 +110,7 @@ router.get("/dashboard/contact-us", isStudent, (req, res) => {
 router.get("/dashboard/users", users)
 router.get("/dashboard/add-user", addUsers)
 // post user by admin
-router.post("/dashboard/add-user", addUserByAdminMiddleware,postUser)
+router.post("/dashboard/add-user", addUserByAdminMiddleware, postUser)
 
 
 
@@ -181,9 +182,27 @@ router.post("/dashboard/quiz-detail/update-quiz", updateQuiz)
 
 // Student(view)
 router.get('/dashboard/view-quiz/:id', viewQuiz)
-router.post('/test-quiz', (req,res)=>{
+router.post('/test-quiz', async (req, res) => {
     console.log(req.body)
-    res.send(req.body)
+    const quiz = await Quiz.findById(req.body.quizId);
+    const questions = quiz.questions;
+    // deleting the quizId so that the req.body only contain answer
+    delete req.body.quizId
+    let answersArr = Object.values(req.body)
+    let point = 0;
+    let wrongAns = []
+    let correctAns = []
+    questions.forEach((question, index) => {
+        if (question.ans == answersArr[index]) {
+            point += 1
+            correctAns.push(`q-${index}`)
+        } else {
+            wrongAns.push(`q-${index}`)
+        }
+    })
+    console.log(correctAns, correctAns.length, "Point:", point)
+    console.log(wrongAns)
+    res.send({ correctAns, wrongAns, point })
 })
 
 

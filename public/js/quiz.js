@@ -84,18 +84,45 @@ $(document).ready(function () {
     })
     $('#quiz').submit(function (e) {
         e.preventDefault()
-        console.log($(this).serializeArray())
+        const userAnsArr = $(this).serializeArray()
+        // deleting the user id from the array
+        userAnsArr.shift()
+        let userAnsObj = {}
+        userAnsArr.forEach((ans, index) => {
+            userAnsObj[ans.name] = ans.value
+        });
+        console.log(userAnsObj)
+        loading(true, 'Submitting you quiz.')
         $.ajax({
             url: '/test-quiz',
             type: 'POST',
             data: $(this).serializeArray(),
             dataType: 'json',
-            success:(data)=>{
-                console.log(data)
+            success: ({correctAns,wrongAns,point}) => {
+                loading(false)
+                // if()
+                userAnsArr.forEach((ans, index) => {
+                    var parent = $(`#quiz [name=${ans.name}]`).parents('.form-group-head').css('border', '1px solid red')
+                    parent.find('.feedback').css('border', '1px solid black')
+                    console.log($(`#quiz [name=${ans.name}]`).closest('.form-group'))
+                });
             },
-            error:(error)=>{
+            error: (error) => {
                 console.log(error)
             }
         })
     })
+    var loading = (isLoading, msg = "Loading") => {
+        var spinnerContainer = document.querySelector('.spinner')
+        var quizContainer = document.querySelector('#quiz')
+        var text = spinnerContainer.querySelector('.text');
+        text.textContent = msg;
+        if (isLoading) {
+            spinnerContainer.classList.replace('d-none', 'd-flex')
+            quizContainer.classList.add('opacity-25', 'event-none')
+        } else {
+            quizContainer.classList.remove('opacity-25', 'event-none')
+            spinnerContainer.classList.replace('d-flex', 'd-none')
+        }
+    }
 })

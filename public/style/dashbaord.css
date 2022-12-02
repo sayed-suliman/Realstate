@@ -29,3 +29,13 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     pointer-events: none;
     background-color: rgba(0, 0, 0, .05);
 }
+
+.opacity-25 {
+    opacity: .25;
+}
+
+.place-center {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
