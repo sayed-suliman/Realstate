@@ -23,6 +23,7 @@ const { order, orderCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const Quiz = require("../models/quiz")
+const Result = require("../models/result")
 
 
 router.get("/test", (req, res) => {
@@ -162,64 +163,87 @@ router.get("/dashboard/chapter-detail/edit-chapter", isAdmin, editChapter)
 // Delete Chapters 
 router.get("/dashboard/chapter-detail/delete-chapter", isAdmin, deleteChapter)
 // Update Chapter
-router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"),isAdmin, updateChapter)
+router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), isAdmin, updateChapter)
 //for student 
 router.get('/dashboard/view-chapter', (req, res) => { res.redirect('/dashboard') })
 router.get('/dashboard/view-chapter/:id', viewChapter)
 
 // ******************************* Quiz part **************************
 // add quiz 
-router.get("/dashboard/add-quiz", isAdmin,addQuiz)
-router.post("/dashboard/add-quiz", isAdmin,postQuiz)
+router.get("/dashboard/add-quiz", isAdmin, addQuiz)
+router.post("/dashboard/add-quiz", isAdmin, postQuiz)
 
 // quiz details 
-router.get("/dashboard/quiz-detail", isAdminorRegulator,quizDetail)
+router.get("/dashboard/quiz-detail", isAdminorRegulator, quizDetail)
 
 // quiz edit page
-router.get("/dashboard/quiz-detail/edit-quiz", isAdmin ,editQuiz)
+router.get("/dashboard/quiz-detail/edit-quiz", isAdmin, editQuiz)
 // update post quiz
-router.post("/dashboard/quiz-detail/update-quiz", isAdmin ,updateQuiz)
+router.post("/dashboard/quiz-detail/update-quiz", isAdmin, updateQuiz)
 
 // Student(view)
 router.get('/dashboard/view-quiz/:id', viewQuiz)
 router.post('/test-quiz', async (req, res) => {
-    console.log(req.body)
-    const quiz = await Quiz.findById(req.body.quizId);
-    const questions = quiz.questions;
-    // deleting the quizId so that the req.body only contain answer
-    delete req.body.quizId
-    let answersArr = Object.values(req.body)
-    let point = 0;
-    let wrongAns = []
-    let correctAns = []
-    questions.forEach((question, index) => {
-        if (question.ans == answersArr[index]) {
-            point += 1
-            correctAns.push(`q-${index}`)
-        } else {
-            wrongAns.push(`q-${index}`)
+    try {
+        console.log(req.body)
+        const time = req.body.time
+        const quiz = await Quiz.findById(req.body.quizId);
+        const questions = quiz.questions;
+        // deleting the quizId & time so that the req.body only contain answer
+        delete req.body.quizId
+        delete req.body.time
+
+        let answersArr = Object.values(req.body)
+        let point = 0;
+        let wrongAns = []
+        let correctAns = []
+        questions.forEach((question, index) => {
+            if (question.ans == answersArr[index]) {
+                point += 1
+                correctAns.push(`q-${index}`)
+            } else {
+                wrongAns.push(`q-${index}`)
+            }
+        })
+        const data = {
+            quiz: quiz._id,
+            user: req.user._id,
+            points: point,
+            correct_ans: correctAns,
+            wrong_ans: wrongAns,
+            totalQuestions: questions.length,
+            time,
+            ans: req.body,
         }
-    })
-    console.log(correctAns, correctAns.length, "Point:", point)
-    console.log(wrongAns)
-    res.send({ correctAns, wrongAns, point })
+        const alreadyTakenQuiz = await Result.findOne({ quiz: quiz._id, user: req.user._id });
+        if (alreadyTakenQuiz) {
+            delete data.quiz
+            delete data.user
+            await alreadyTakenQuiz.updateOne(data)
+        } else {
+            await Result(data).save()
+        }
+        res.send({ correctAns, wrongAns, point })
+    } catch (error) {
+        res.send({ error: error.message })
+    }
 })
 
 
 
 
 // ***************************** Coupons
-router.get("/dashboard/add-coupon", isAdmin,getCoupon)
-router.post("/dashboard/coupon-generated", isAdmin,postCoupon)
+router.get("/dashboard/add-coupon", isAdmin, getCoupon)
+router.post("/dashboard/coupon-generated", isAdmin, postCoupon)
 
-router.get("/dashboard/coupon-detail", isAdminorRegulator,detailsCoupon)
+router.get("/dashboard/coupon-detail", isAdminorRegulator, detailsCoupon)
 // delete
-router.get("/dashboard/coupon-detail/delete-coupon", isAdmin,deleteCoupon)
+router.get("/dashboard/coupon-detail/delete-coupon", isAdmin, deleteCoupon)
 
 
 // ******************************** Orders
-router.get("/dashboard/order", isAdminorRegulator,order)
-router.get("/dashboard/order/course/:id", isAdminorRegulator,orderCourse)
+router.get("/dashboard/order", isAdminorRegulator, order)
+router.get("/dashboard/order/course/:id", isAdminorRegulator, orderCourse)
 // sort data using jquery..!
 router.post('/sort/data', sortData)
 
