@@ -31,18 +31,7 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title text-bold">{{title}}</h3>
-                                    <div class="card-tools">
-                                        <div class="input-group input-group-sm" style="width: 150px;">
-                                            <input type="text" name="table_search" class="form-control float-right"
-                                                placeholder="Search">
-                                            <div class="input-group-append">
-                                                <button type="submit" class="btn btn-default">
-                                                    <i class="fas fa-search"></i>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
+                                    <h3 class="card-title text-bold text-capitalize">{{title}}</h3>
                                 </div>
 
                                 <div class="card-body table-responsive p-0">
@@ -50,9 +39,13 @@
                                         <tbody>
                                             {{#if contents}}
                                             {{#each contents}}
-                                            <tr class="{{#ifEquals this.status 0}}event-none{{/ifEquals}}">
+                                            {{!-- <tr class="{{#ifEquals this.status 0}}event-none{{/ifEquals}}"> --}}
+                                            <tr class="">
+                                                {{!-- <td><a
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
+                                                        class="{{#ifEquals this.status 0}}text-gray{{/ifEquals}}"> --}}
                                                 <td><a href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
-                                                        class="{{#ifEquals this.status 0}}text-gray{{/ifEquals}}">
+                                                        class="">
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
@@ -60,12 +53,14 @@
                                                         {{/ifEquals}} {{this.name}}</a>
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
-                                                    {{#ifEquals this.status 0}}<i
-                                                        class="fas fa-lock ml-2"></i>{{/ifEquals}}
+                                                    {{!-- {{#ifEquals this.status 0}}
+                                                    <i class="fas fa-lock ml-2"></i>{{/ifEquals}} --}}
                                                     {{else}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
-                                                        Questions</span>{{#ifEquals this.status 0}}<i
-                                                        class="fas fa-lock ml-2"></i>{{/ifEquals}}{{/ifEquals}}
+                                                        Questions</span>
+                                                    {{!-- {{#ifEquals this.status 0}}<i
+                                                        class="fas fa-lock ml-2"></i>{{/ifEquals}} --}}
+                                                    {{/ifEquals}}
                                                 </td>
                                             </tr>
                                             {{/each}}
