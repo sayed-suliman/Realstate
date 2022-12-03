@@ -52,21 +52,20 @@
               <div class="card">
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between">
-                    <h3 class="card-title">Online Store Visitors</h3>
-                    <a href="javascript:void(0);">View Report</a>
+                    <h3 class="card-title">Students</h3>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex">
                     <p class="d-flex flex-column">
-                      <span class="text-bold text-lg">820</span>
-                      <span>Visitors Over Time</span>
+                      <span class="text-bold text-lg">{{countStudents}}</span>
+                      <span>Students Over Time</span>
                     </p>
                     <p class="ml-auto d-flex flex-column text-right">
-                      <span class="text-success">
-                        <i class="fas fa-arrow-up"></i> 12.5%
+                      <span class="{{#ifCond perNum '>=' 0}}text-success{{else}}text-danger{{/ifCond}}">
+                        <i class="fas fa-arrow-{{#ifCond perNum '>=' 0}}up{{else}}down{{/ifCond}}"></i> {{perNum}}%
                       </span>
-                      <span class="text-muted">Since last week</span>
+                      <span class="text-muted">Since last Year</span>
                     </p>
                   </div>
                   <!-- /.d-flex -->
@@ -77,11 +76,11 @@
 
                   <div class="d-flex flex-row justify-content-end">
                     <span class="mr-2">
-                      <i class="fas fa-square text-primary"></i> This Week
+                      <i class="fas fa-square text-primary"></i> This Year
                     </span>
 
                     <span>
-                      <i class="fas fa-square text-gray"></i> Last Week
+                      <i class="fas fa-square text-gray"></i> Last Year
                     </span>
                   </div>
                 </div>
@@ -340,7 +339,34 @@
   <!-- ./wrapper -->
 
   <!-- REQUIRED SCRIPTS -->
+  {{!-- this script used for to send data to dashboard3 file to view this data in chart --}}
+  <script>
+    const curJan = `{{{currentYearstdData.[1]}}}`
+    const curFeb = `{{{currentYearstdData.[2]}}}`
+    const curMar = `{{{currentYearstdData.[3]}}}`
+    const curApr = `{{{currentYearstdData.[4]}}}`
+    const curMay = `{{{currentYearstdData.[5]}}}`
+    const curJun = `{{{currentYearstdData.[6]}}}`
+    const curJul = `{{{currentYearstdData.[7]}}}`
+    const curAug = `{{{currentYearstdData.[8]}}}`
+    const curSep = `{{{currentYearstdData.[9]}}}`
+    const curOct = `{{{currentYearstdData.[10]}}}`
+    const curNov = `{{{currentYearstdData.[11]}}}`
+    const curDec = `{{{currentYearstdData.[12]}}}`
 
+    const lastJan = `{{{lastYearStdObj.[1]}}}`
+    const lastFeb = `{{{lastYearStdObj.[2]}}}`
+    const lastMar = `{{{lastYearStdObj.[3]}}}`
+    const lastApr = `{{{lastYearStdObj.[4]}}}`
+    const lastMay = `{{{lastYearStdObj.[5]}}}`
+    const lastJun = `{{{lastYearStdObj.[6]}}}`
+    const lastJul = `{{{lastYearStdObj.[7]}}}`
+    const lastAug = `{{{lastYearStdObj.[8]}}}`
+    const lastSep = `{{{lastYearStdObj.[9]}}}`
+    const lastOct = `{{{lastYearStdObj.[10]}}}`
+    const lastNov = `{{{lastYearStdObj.[11]}}}`
+    const lastDec = `{{{lastYearStdObj.[12]}}}`
+  </script>
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
 
