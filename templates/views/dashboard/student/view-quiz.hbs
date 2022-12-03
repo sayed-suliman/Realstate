@@ -32,22 +32,31 @@
                         <div class="col-12">
                             <div class="card">
                                 <div class="card-header">
-                                    <h3 class="card-title">Quiz: {{quiz.name}} {{user.role}}</h3>
+                                    <h3 class="card-title">{{quiz.name}}</h3>
+                                    <div class="float-right timeHead {{#if takenQuiz}} d-none{{/if}}">
+                                        <h3 class="card-title mr-2">Timer:</h3>
+                                        <h3 class="card-title timer">00:00</h3>
+                                    </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="result text-center mb-5 d-none" id="result">
+                                    <div class="result text-center mb-5{{#unless takenQuiz}} d-none{{/unless}}"
+                                        id="result">
                                         <h3 class="mb-0">Your Result</h3>
-                                        <h2 class="percent mb-0">0%</h2>
+                                        <h2
+                                            class="percent mb-0 font-weight-bold {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">
+                                            {{takenQuiz.percent}}%</h2>
                                         <p class="mb-0">Minimum marks required to pass: 60%</p>
-                                        <p>Your grade is <span class="grade">failed</span></p>
+                                        <p>Your grade is <span
+                                                class="grade {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
+                                                takenQuiz.percent '>=' '60'}}passed{{else}}failed{{/ifCond}}</span></p>
                                         <table class="mx-auto">
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Points</th>
-                                                <td class="text-right points">0/20</td>
+                                                <td class="text-right points">{{takenQuiz.points}}</td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Time Spend</th>
-                                                <td class="text-right time">00:55</td>
+                                                <td class="text-right time">{{takenQuiz.time}}</td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Questions</th>
@@ -55,16 +64,16 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Correct</th>
-                                                <td class="text-right correct">0</td>
+                                                <td class="text-right correct">{{takenQuiz.correct_ans.length}}</td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Wrong</th>
-                                                <td class="text-right wrong">0</td>
+                                                <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
                                             </tr>
                                         </table>
-                                        <button class="retake btn btn-success">Retake</button>
+                                        <button class="retake btn btn-success retake">Retake</button>
                                     </div>
-                                    <form id="quiz">
+                                    <form id="quiz" class="{{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
@@ -87,7 +96,8 @@
                                             <div class="feedback font-weight-bold d-none"></div>
                                         </div>
                                         {{/each}}
-                                        <button class="btn btn-success mt-2 float-left" type="submit">Submit</button>
+                                        <button class="btn btn-success mt-2 float-left submit"
+                                            type="submit">Submit</button>
                                     </form>
                                     <div
                                         class="spinner d-none flex-column align-items-center position-absolute place-center">
@@ -128,7 +138,7 @@
     <script>
         const noOfQuestions = `{{{quiz.questions.length}}}`
     </script>
-    <script src="/js/quiz.js"></script>
+    <script src="/js/quiz-take.js"></script>
 </body>
 
 </html>

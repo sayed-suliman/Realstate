@@ -1,6 +1,7 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg")
 const Course = require("../models/courses")
 const Quiz = require("../models/quiz")
+const Result = require("../models/result")
 
 const quizDetail = async (req, res) => {
     try {
@@ -168,10 +169,15 @@ const viewQuiz = async (req, res) => {
     try {
         const id = req.params.id;
         const quiz = await Quiz.findById(id);
+        const takenQuiz = await Result.findOne({ quiz: quiz._id, user: req.user._id });
+        if (takenQuiz) {
+            takenQuiz['percent'] = Math.floor((Number(takenQuiz.points) / Number(takenQuiz.totalQuestions)) * 100)
+        }
         if (quiz) {
             res.render('dashboard/student/view-quiz', {
                 title: `Quiz | ${quiz.name}`,
-                quiz
+                quiz,
+                takenQuiz
             })
         }
     } catch (error) {
