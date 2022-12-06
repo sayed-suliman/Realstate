@@ -47,8 +47,14 @@
                                         </div>
                                         {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div>
                                         --}}
-                                        <button class="btn btn-success mt-2 float-left" id="completed">Mark as
-                                            completed</button>
+                                        <button class="btn btn-success mt-2 float-left" id="completed"
+                                            style="width: 170px;" {{#if chapter.completed}}disabled{{/if}}>
+                                            <div class="spinner d-none" id="spinner">
+                                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                            </div>
+                                            <span class="text" id="button-text">{{#if
+                                                chapter.completed}}Completed{{else}}Mark as completed{{/if}}</span>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -82,19 +88,43 @@
     <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
     {{!--
     <script src="/js/pdfviewer.js"></script> --}}
+
+    {{!-- if already completed then hide this script from client side --}}
+    {{#unless chapter.completed}}
     <script>
         const complete = document.querySelector('#completed')
         const id = `{{{chapter._id}}}`
         complete.addEventListener('click', async (e) => {
+            setLoading(true)
             const res = await fetch('/mark-completed', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({id})
+                body: JSON.stringify({ id })
             })
             const result = await res.json()
-            console.log(result)
+            if (result.success) {
+                setLoading(false)
+                complete.disabled = true
+                complete.textContent = "Completed"
+            }
+            if (result.error) {
+                setLoading(false)
+                alert(result.error)
+            }
         })
+        function setLoading(isLoading) {
+            if (isLoading) {
+                complete.disabled = true;
+                complete.querySelector('.text').classList.add('d-none');
+                complete.querySelector('.spinner').classList.remove('d-none')
+            } else {
+                complete.disabled = false;
+                complete.querySelector('.text').classList.remove('d-none');
+                complete.querySelector('.spinner').classList.add('d-none')
+            }
+        }
     </script>
+    {{/unless}}
 </body>
 
 </html>

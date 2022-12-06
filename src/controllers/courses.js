@@ -1,5 +1,6 @@
 const Package = require("../models/package")
 const CourseModel = require("../models/courses")
+const Result = require("../models/result")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const url = require('url');
 const course = async (req, res) => {
@@ -225,6 +226,30 @@ var viewCourse = async (req, res) => {
     try {
         const ID = req.params.id
         const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes')
+        // console.log(course.quizzes)
+        // course.quizzes.forEach(async (quiz, index) => {
+        //     const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
+        //     if (takenQuiz) {
+        //         course.quizzes[index]["grade"] = takenQuiz.grade
+        //     }
+        //     console.log(takenQuiz)
+        // })
+        var a = []
+        for await (let [index,quiz] of course.quizzes.entries()) {
+            // console.log(quiz)
+            const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
+            console.log(typeof(takenQuiz))
+            if (takenQuiz) {
+                console.log("********************")
+                console.log(quiz)
+                quiz.grade = takenQuiz.grade
+                a.push(quiz)
+                console.log("********************")
+            }
+            Object.assign(course.quizzes,{'grade':"pass"})
+        }
+        console.log("Taken", course.quizzes[0])
+        // console.log("Taken", course.quizzes)
         if (course) {
             // sorting the chapter by name 
             const contents = [...course.quizzes, ...course.chapters]
