@@ -4,11 +4,11 @@ $(document).ready(function () {
     $('.retake').click(() => {
         timeInSeconds = 0;
         timeInterval = setInterval(timer, 1000)
-        
+
         $('#quiz').removeClass('d-none')
         $('.timeHead').removeClass('d-none')
         $('#result').addClass('d-none')
-        
+
         $('#quiz')[0].reset()
         $('.submit').attr('disabled', false)
         $('.submit').text('Submit')
@@ -56,20 +56,20 @@ $(document).ready(function () {
                     $('#result').removeClass('d-none')
 
                     // if point then show the result
-                    if (point) {
-                        const percent = Math.floor((point / noOfQuestions) * 100)
-                        const grade = percent >= 60 ? "passed" : "failed"
+                    // if (point) {
+                    const percent = Math.floor((point / noOfQuestions) * 100)
+                    const grade = percent >= 60 ? "passed" : "failed"
 
-                        $('#result').removeClass('d-none')
-                        $('#result .percent').text(`${percent}%`)
-                        percent >= 60 ? $('#result .percent').removeClass('text-danger').addClass('text-success') : $('#result .percent').removeClass('text-success').addClass('text-danger')
-                        $('#result .grade').text(`${grade}`)
-                        grade == "failed" ? $('#result .grade').removeClass('text-success').addClass('text-danger') : $('#result .grade').removeClass('text-danger').addClass('text-success')
-                        $('#result .points').text(`${point}/${noOfQuestions}`)
-                        $('#result .time').text(time)
-                        $('#result .correct').text(`${correctAns.length}`)
-                        $('#result .wrong').text(`${wrongAns.length}`)
-                    }
+                    $('#result').removeClass('d-none')
+                    $('#result .percent').text(`${percent}%`)
+                    percent >= 60 ? $('#result .percent').removeClass('text-danger').addClass('text-success') : $('#result .percent').removeClass('text-success').addClass('text-danger')
+                    $('#result .grade').text(`${grade}`)
+                    grade == "failed" ? $('#result .grade').removeClass('text-success').addClass('text-danger') : $('#result .grade').removeClass('text-danger').addClass('text-success')
+                    $('#result .points').text(`${point}/${noOfQuestions}`)
+                    $('#result .time').text(time)
+                    $('#result .correct').text(`${correctAns.length}`)
+                    $('#result .wrong').text(`${wrongAns.length}`)
+                    // }
                     if (wrongAns.length != 0) {
                         wrongAns.forEach(ans => {
                             var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')

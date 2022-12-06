@@ -1,9 +1,46 @@
-const { decodeMsg } = require("../helper/createMsg");
+const { decodeMsg, encodeMsg } = require("../helper/createMsg");
 const Order = require("../models/order");
 const User = require("../models/users");
+const url = require('url');
+const userMeta = require("../models/user-meta");
+const { Result } = require("../models/result");
 module.exports = {
     async dashboard(req, res) {
         try {
+            var msgToken = req.query.msg;
+            var msg = {}
+            // not working
+            if (res.locals.error.length > 0) {
+                msg = decodeMsg(res.locals.error[0])
+            }
+            if (res.locals.success.length > 0) {
+                msg = decodeMsg(res.locals.success[0])
+            }
+            //only used for payment
+            if (msgToken) {
+                msg = decodeMsg(msgToken)
+            }
+
+            if (req.user.role == 'student') {
+                await req.user.populate({ path: 'package', populate: { path: 'courses' } })
+                var userCourses = await req.user.package.courses
+                let completed = 0;
+                for await (let content of userCourses) { 
+                    content.chapters.forEach(async chapter => {
+                        const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                        if (completedChap)
+                            completed += 1
+
+                        // const takenQuiz = await Result.findOne({})
+                    })
+                }
+                return res.render("dashboard/new-dashboard", {
+                    title: "Dashboard",
+                    userCourses,
+                    toast: Object.keys(msg).length == 0 ? undefined : msg,
+                })
+            }
+
             const students = await User.find({ role: "student" })
             const countStudents = await User.find({ role: "student" }).count()
             const orders = await Order.find()
@@ -107,31 +144,6 @@ module.exports = {
             })
             const percentageAmount = ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100
             // end of amounts portions
-
-            var msgToken = req.query.msg;
-            var msg = {}
-            // not working
-            if (res.locals.error.length > 0) {
-                msg = decodeMsg(res.locals.error[0])
-            }
-            if (res.locals.success.length > 0) {
-                msg = decodeMsg(res.locals.success[0])
-            }
-            //only used for payment
-            if (msgToken) {
-                msg = decodeMsg(msgToken)
-            }
-
-            if (req.user.role == 'student') {
-                await req.user.populate({ path: 'package', populate: { path: 'courses' } })
-                var userCourses = await req.user.package.courses
-                return res.render("dashboard/new-dashboard", {
-                    title: "Dashboard",
-                    userCourses,
-                    toast: Object.keys(msg).length == 0 ? undefined : msg,
-                })
-            }
-
             // by default is admin
             res.render("dashboard/new-dashboard", {
                 title: "Dashboard",
@@ -151,8 +163,13 @@ module.exports = {
             })
 
         } catch (error) {
-            console.log(error)
-            res.redirect('/500')
+            console.log(error.message)
+            res.redirect(url.format({
+                pathname: '/dashboard',
+                query: {
+                    msg: encodeMsg(error.message, 'danger')
+                }
+            }))
         }
     }
 }

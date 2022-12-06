@@ -3,6 +3,7 @@ const CourseModel = require("../models/courses")
 const Result = require("../models/result")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const url = require('url');
+const UserMeta = require("../models/user-meta");
 const course = async (req, res) => {
     try {
         // all added packages
@@ -225,31 +226,24 @@ var allCourses = async (req, res) => {
 var viewCourse = async (req, res) => {
     try {
         const ID = req.params.id
-        const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes')
-        // console.log(course.quizzes)
-        // course.quizzes.forEach(async (quiz, index) => {
-        //     const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
-        //     if (takenQuiz) {
-        //         course.quizzes[index]["grade"] = takenQuiz.grade
-        //     }
-        //     console.log(takenQuiz)
-        // })
-        var a = []
-        for await (let [index,quiz] of course.quizzes.entries()) {
-            // console.log(quiz)
+        const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
+
+        for await (let [index, quiz] of course.quizzes.entries()) {
             const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
-            console.log(typeof(takenQuiz))
             if (takenQuiz) {
-                console.log("********************")
-                console.log(quiz)
-                quiz.grade = takenQuiz.grade
-                a.push(quiz)
-                console.log("********************")
+                Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
+                Object.assign(course.quizzes[index], { 'unlock': true })
             }
-            Object.assign(course.quizzes,{'grade':"pass"})
         }
-        console.log("Taken", course.quizzes[0])
-        // console.log("Taken", course.quizzes)
+
+        for await (let [index, chapter] of course.chapters.entries()) {
+            const completedChapter = await UserMeta.findOne({ user_id: req.user._id, chapter_id: chapter, meta_key: "completed" })
+            if (completedChapter) {
+                Object.assign(course.chapters[index], { 'completed': true })
+                Object.assign(course.chapters[index], { 'unlock': true })
+            }
+        }
+
         if (course) {
             // sorting the chapter by name 
             const contents = [...course.quizzes, ...course.chapters]
@@ -258,9 +252,22 @@ var viewCourse = async (req, res) => {
                 if (a.order > b.order) { return 1; }
                 return 0;
             })
-            // unlock the first content of the current chapter
-            // contents[0].status = contents[0].status == 0 ? 1 : contents[0].status
-            // contents[1].status = contents[0].status == 0 ? 1 : contents[0].status
+
+            if (contents.length) {
+                for await (let [index] of contents.entries()) {
+                    if (!contents[index].unlock) {
+                        if (index == 0) continue
+                        if (typeof (contents[index - 1].unlock) != undefined) {
+                            if (contents[index - 1].unlock) {
+                                contents[index].unlock = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                // unlock the first content of the current chapter
+                Object.assign(contents[0], { 'unlock': true })
+            }
             return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
         }
         res.redirect('/dashboard')
