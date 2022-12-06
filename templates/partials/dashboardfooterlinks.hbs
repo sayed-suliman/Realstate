@@ -9,8 +9,10 @@
 <script src="/dashboard/plugins/chart.js/Chart.min.js"></script>
 <!-- AdminLTE for demo purposes -->
 <script src="/dashboard/dist/js/demo.js"></script>
+
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="/dashboard/dist/js/pages/dashboard3.js"></script>
+{{!-- <script src="/dashboard/dist/js/pages/dashboard3.js"></script> --}}
+
 <script>
     $(document).ready(function () {
         const url = $(location).attr('href')
@@ -149,11 +151,11 @@
             $('#users-link').addClass("active")
             $("#users-all-link").addClass("active")
         }
-        //order
-        if (url.includes("order")) {
+        //sort
+        if (url.includes("sort")) {
             $("#dashboard-link").removeClass("active")
            // $('#page-link').addClass("active")
-            $("#order-link").addClass("active")
+            $("#sort-link").addClass("active")
         }
         //contact-us
         if (url.includes("contact-us")) {
@@ -164,9 +166,9 @@
         }
 
         //search
-        if (url.includes("search")) {
+        if (url.includes("order")) {
             $("#dashboard-link").removeClass("active")
-            $('#search-link').addClass("active")
+            $('#order-link').addClass("active")
         }
     })
     //showing alert(toast)

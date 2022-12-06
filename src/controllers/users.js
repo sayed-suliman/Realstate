@@ -2,6 +2,7 @@ const Package = require("../models/package");
 const { validationResult } = require("express-validator")
 const User = require("../models/users");
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
+const Order = require("../models/order");
 
 module.exports = {
     async users(req, res) {
@@ -68,8 +69,19 @@ module.exports = {
                 password: data.password,
                 verified: true,
             }).save()
-            var msg = encodeMsg("User Added")
-            res.redirect("/dashboard/add-user?msg=" + msg)
+            if(user){
+                if(data.role == 'student'){
+                    let order = await Order({
+                        user:user._id,
+                        package: package || undefined,
+                        verified:true,
+                        pay_method:"offline payment",
+                        amount:data.amount,
+                    }).save()
+                }
+                var msg = encodeMsg("User Added")
+                res.redirect("/dashboard/add-user?msg=" + msg)
+            }
             // const packages = await Package.find({ status: "publish" })
             // res.render("dashboard/examples/users/add-users", {
             //     title: "Dashboard | Add-User",

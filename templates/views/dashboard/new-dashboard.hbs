@@ -93,20 +93,20 @@
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between">
                     <h3 class="card-title">Sales</h3>
-                    <a href="javascript:void(0);">View Report</a>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex">
                     <p class="d-flex flex-column">
-                      <span class="text-bold text-lg">$18,230.00</span>
+                      <span class="text-bold text-lg">${{allSale}}</span>
                       <span>Sales Over Time</span>
                     </p>
                     <p class="ml-auto d-flex flex-column text-right">
-                      <span class="text-success">
-                        <i class="fas fa-arrow-up"></i> 33.1%
+                      <span class="{{#ifCond percentageAmount '>=' 0}}text-success{{else}}text-danger{{/ifCond}}">
+                        <i class="fas fas fa-arrow-{{#ifCond percentageAmount '>=' 0}}up{{else}}down{{/ifCond}}"></i>
+                        {{percentageAmount}}%
                       </span>
-                      <span class="text-muted">Since last month</span>
+                      <span class="text-muted">Since last Year</span>
                     </p>
                   </div>
                   <!-- /.d-flex -->
@@ -135,21 +135,20 @@
               <div class="card">
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between">
-                    <h3 class="card-title">Online Store Visitors</h3>
-                    <a href="javascript:void(0);">View Report</a>
+                    <h3 class="card-title">Students</h3>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex">
                     <p class="d-flex flex-column">
-                      <span class="text-bold text-lg">820</span>
-                      <span>Visitors Over Time</span>
+                      <span class="text-bold text-lg">{{countStudents}}</span>
+                      <span>Students Over Time</span>
                     </p>
                     <p class="ml-auto d-flex flex-column text-right">
-                      <span class="text-success">
-                        <i class="fas fa-arrow-up"></i> 12.5%
+                      <span class="{{#ifCond perNum '>=' 0}}text-success{{else}}text-danger{{/ifCond}}">
+                        <i class="fas fa-arrow-{{#ifCond perNum '>=' 0}}up{{else}}down{{/ifCond}}"></i> {{perNum}}%
                       </span>
-                      <span class="text-muted">Since last week</span>
+                      <span class="text-muted">Since last Year</span>
                     </p>
                   </div>
                   <!-- /.d-flex -->
@@ -160,11 +159,11 @@
 
                   <div class="d-flex flex-row justify-content-end">
                     <span class="mr-2">
-                      <i class="fas fa-square text-primary"></i> This Week
+                      <i class="fas fa-square text-primary"></i> This Year
                     </span>
 
                     <span>
-                      <i class="fas fa-square text-gray"></i> Last Week
+                      <i class="fas fa-square text-gray"></i> Last Year
                     </span>
                   </div>
                 </div>
@@ -177,20 +176,20 @@
                 <div class="card-header border-0">
                   <div class="d-flex justify-content-between">
                     <h3 class="card-title">Sales</h3>
-                    <a href="javascript:void(0);">View Report</a>
                   </div>
                 </div>
                 <div class="card-body">
                   <div class="d-flex">
                     <p class="d-flex flex-column">
-                      <span class="text-bold text-lg">$18,230.00</span>
+                      <span class="text-bold text-lg">${{allSale}}</span>
                       <span>Sales Over Time</span>
                     </p>
                     <p class="ml-auto d-flex flex-column text-right">
-                      <span class="text-success">
-                        <i class="fas fa-arrow-up"></i> 33.1%
+                      <span class="{{#ifCond percentageAmount '>=' 0}}text-success{{else}}text-danger{{/ifCond}}">
+                        <i class="fas fas fa-arrow-{{#ifCond percentageAmount '>=' 0}}up{{else}}down{{/ifCond}}"></i>
+                        {{percentageAmount}}%
                       </span>
-                      <span class="text-muted">Since last month</span>
+                      <span class="text-muted">Since last Year</span>
                     </p>
                   </div>
                   <!-- /.d-flex -->
@@ -341,6 +340,7 @@
   <!-- REQUIRED SCRIPTS -->
   {{!-- this script used for to send data to dashboard3 file to view this data in chart --}}
   <script>
+    // current year students registration
     const curJan = `{{{currentYearstdData.[1]}}}`
     const curFeb = `{{{currentYearstdData.[2]}}}`
     const curMar = `{{{currentYearstdData.[3]}}}`
@@ -353,7 +353,7 @@
     const curOct = `{{{currentYearstdData.[10]}}}`
     const curNov = `{{{currentYearstdData.[11]}}}`
     const curDec = `{{{currentYearstdData.[12]}}}`
-
+    // last year students registration
     const lastJan = `{{{lastYearStdObj.[1]}}}`
     const lastFeb = `{{{lastYearStdObj.[2]}}}`
     const lastMar = `{{{lastYearStdObj.[3]}}}`
@@ -366,9 +366,40 @@
     const lastOct = `{{{lastYearStdObj.[10]}}}`
     const lastNov = `{{{lastYearStdObj.[11]}}}`
     const lastDec = `{{{lastYearStdObj.[12]}}}`
+
+    // current year sales rate
+    const cursaleJan = `{{{currentYearAmount.[1]}}}`
+    const cursaleFeb = `{{{currentYearAmount.[2]}}}`
+    const cursaleMar = `{{{currentYearAmount.[3]}}}`
+    const cursaleApr = `{{{currentYearAmount.[4]}}}`
+    const cursaleMay = `{{{currentYearAmount.[5]}}}`
+    const cursaleJun = `{{{currentYearAmount.[6]}}}`
+    const cursaleJul = `{{{currentYearAmount.[7]}}}`
+    const cursaleAug = `{{{currentYearAmount.[8]}}}`
+    const cursaleSep = `{{{currentYearAmount.[9]}}}`
+    const cursaleOct = `{{{currentYearAmount.[10]}}}`
+    const cursaleNov = `{{{currentYearAmount.[11]}}}`
+    const cursaleDec = `{{{currentYearAmount.[12]}}}`
+    //last year sales rate
+    const lastsaleJan = `{{{lastYearAmount.[1]}}}`
+    const lastsaleFeb = `{{{lastYearAmount.[2]}}}`
+    const lastsaleMar = `{{{lastYearAmount.[3]}}}`
+    const lastsaleApr = `{{{lastYearAmount.[4]}}}`
+    const lastsaleMay = `{{{lastYearAmount.[5]}}}`
+    const lastsaleJun = `{{{lastYearAmount.[6]}}}`
+    const lastsaleJul = `{{{lastYearAmount.[7]}}}`
+    const lastsaleAug = `{{{lastYearAmount.[8]}}}`
+    const lastsaleSep = `{{{lastYearAmount.[9]}}}`
+    const lastsaleOct = `{{{lastYearAmount.[10]}}}`
+    const lastsaleNov = `{{{lastYearAmount.[11]}}}`
+    const lastsaleDec = `{{{lastYearAmount.[12]}}}`
+
   </script>
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
+  <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script src="/dashboard/dist/js/pages/dashboard3.js"></script>
+
 
 </body>
 

@@ -35,7 +35,7 @@
             <section class="content">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-8">
                             <div class="card card-primary">
                                 <div class="card-header">
                                     <h3 class="card-title">User Data</h3>
@@ -137,6 +137,23 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        {{!-- Payment Method --}}
+                                        <div class="form-group row">
+                                            <label for="payment" class="col-sm-2 col-form-label">Payment</label>
+                                            <div class="col-sm-4">
+                                                <input min="0" required type="number" value="{{data.amount}}"
+                                                    name="amount" class="form-control" id="amount" placeholder="Amount">
+                                            </div>
+                                            {{!-- <div class="col-sm-6">
+                                                <select id="pay_method" name="pay_method"
+                                                    class="form-control custom-select">
+                                                    <option selected disabled value="">Select one</option>
+                                                    <option value="byHand">By Hand</option>
+                                                    <option value="Paypal">Paypal</option>
+                                                    <option value="Stripe">Stripe</option>
+                                                </select>
+                                            </div> --}}
+                                        </div>
                                         {{!-- confirm password --}}
                                         {{!-- <div class="form-group row">
                                             <label for="c-password" class="col-sm-2 col-form-label">Confirm
@@ -195,15 +212,39 @@
                 $("#selectPackage").attr("disabled", "")
                 $("#selectPackage").val("")
                 $("#selectPackage").removeAttr("required")
+
+                // for amounts
+                $("#amount").removeAttr("required", "")
+                $("#amount").attr("disabled", "")
+                $("#amount").val("")
             }
             $("#role").change(function () {
                 if (this.value == 'regulator' || this.value == 'admin') {
                     $("#selectPackage").attr("disabled", "")
                     $("#selectPackage").val("")
                     $("#selectPackage").removeAttr("required")
+                    //amount
+                    $("#amount").removeAttr("required", "")
+                    $("#amount").attr("disabled", "")
+                    $("#amount").val("")
                 } else {
                     $("#selectPackage").attr("required", "")
                     $("#selectPackage").removeAttr("disabled")
+
+                    //amount
+                    $("#amount").attr("required", "")
+                     $("#amount").removeAttr("disabled")
+                }
+            })
+            // for amount input
+            $("#amount").keyup(function () {
+                if (parseInt(this.value) === 0) {
+                    $("#pay_method").attr("disabled", "")
+                    $("#pay_method").val("")
+                    $("#pay_method").removeAttr("required")
+                } else {
+                    $("#pay_method").attr("required", "")
+                    $("#pay_method").removeAttr("disabled")
                 }
             })
         })

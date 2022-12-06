@@ -1,12 +1,18 @@
 const { decodeMsg } = require("../helper/createMsg");
+const Order = require("../models/order");
 const User = require("../models/users");
 module.exports = {
     async dashboard(req, res) {
         try {
             const students = await User.find({ role: "student" })
             const countStudents = await User.find({ role: "student" }).count()
+            const orders = await Order.find()
+            var allSale = 0
             // 1,2,3 upto 12 used for months that are registered in this year
             const lastYear = new Date().getFullYear() - 1
+            const currentYear = new Date().getFullYear()
+
+            // this portion is for students registration this year and last year
             const currentYearstdData = {
                 1: 0,
                 2: 0,
@@ -39,18 +45,69 @@ module.exports = {
             var currentYearAllStds = 0
 
             students.forEach(std => {
-                const month = std.createdAt.getMonth() + 1
+                let month = std.createdAt.getMonth() + 1
                 const stdYear = std.createdAt.getFullYear()
                 if (stdYear === lastYear) {
                     lastYearStdObj[month] = lastYearStdObj[month] + 1
                     lastYearAllStds++
-                }else{
+                }
+                if (stdYear === currentYear) {
                     currentYearstdData[month] = currentYearstdData[month] + 1
                     currentYearAllStds++
                 }
             })
             // now find percentage of students here which year it growth or downfall
-            const perNum = ((currentYearAllStds-lastYearAllStds)/lastYearAllStds)*100
+            const perNum = ((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100
+            // End of student data portion
+
+
+            // now sum of amounts of all months in this year and in the last year
+            var lastYearAllAmounts = 0
+            var currentYearAllAmounts = 0
+            const currentYearAmount = {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0,
+                7: 0,
+                8: 0,
+                9: 0,
+                10: 0,
+                11: 0,
+                12: 0
+            }
+            const lastYearAmount = {
+                1: 0,
+                2: 0,
+                3: 0,
+                4: 0,
+                5: 0,
+                6: 0,
+                7: 0,
+                8: 0,
+                9: 0,
+                10: 0,
+                11: 0,
+                12: 0
+            }
+            orders.forEach((order) => {
+                let month = order.createdAt.getMonth() + 1
+                const orderYear = order.createdAt.getFullYear()
+                if (orderYear === lastYear) {
+                    lastYearAmount[month] += order.amount
+                    lastYearAllAmounts += order.amount
+                }
+                if (currentYear === orderYear) {
+                    currentYearAmount[month] += order.amount
+                    currentYearAllAmounts += order.amount
+                }
+                allSale += order.amount
+            })
+            const percentageAmount = ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100
+            // end of amounts portions
+
             var msgToken = req.query.msg;
             var msg = {}
             // not working
@@ -82,7 +139,15 @@ module.exports = {
                 lastYearStdObj,
                 currentYearstdData,
                 countStudents,
-                perNum
+                perNum,
+                allSale,
+                lastYearAmount,
+                currentYearAmount,
+                percentageAmount,
+                currentYearAllAmounts,
+                lastYearAllAmounts
+
+
             })
 
         } catch (error) {

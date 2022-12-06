@@ -2,18 +2,18 @@ const Courses = require("../models/courses")
 const Chapter = require("./../models/chapters")
 const Quiz = require("../models/quiz")
 module.exports = {
-    async order (req,res){
+    async sort (req,res){
         const courses = await Courses.find()
         try{
-           res.render("dashboard/examples/order/order",{
-            title:'Dashboard | Order',
+           res.render("dashboard/examples/sort/order",{
+            title:'Dashboard | Sort',
             courses
            })
         }catch (err) {
             res.render('500',{err})
         }
     },
-    async orderCourse(req,res){
+    async sortCourse(req,res){
         try{
             const cId = req.params.id
             const course = await Courses.findById(cId).populate('chapters').populate("quizzes")
@@ -22,13 +22,12 @@ module.exports = {
                 ...course.chapters
             ]
             const contents = mergeContents.sort((p1,p2)=>(p1.order>p2.order)?1:(p1.order<p2.order)?-1:0)
-            res.render("dashboard/examples/order/order-course",{
-             title:'Dashboard | Order-Course',
+            res.render("dashboard/examples/sort/order-course",{
+             title:'Dashboard | Sort-Course',
              contents,
              course
             })
          }catch (err) {
-            console.log(err.message)
              res.render('500',{err:err.message})
          }
     },

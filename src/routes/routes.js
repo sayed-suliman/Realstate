@@ -19,11 +19,12 @@ const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users, addUsers, postUser } = require("../controllers/users")
-const { order, orderCourse, sortData } = require("../controllers/sort")
+const { sort, sortCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const Quiz = require("../models/quiz")
 const Result = require("../models/result")
+const { allOrders } = require("../controllers/orderOrRegisteredStds")
 
 
 router.get("/test", (req, res) => {
@@ -241,11 +242,14 @@ router.get("/dashboard/coupon-detail", isAdminorRegulator, detailsCoupon)
 router.get("/dashboard/coupon-detail/delete-coupon", isAdmin, deleteCoupon)
 
 
-// ******************************** Orders
-router.get("/dashboard/order", isAdminorRegulator, order)
-router.get("/dashboard/order/course/:id", isAdminorRegulator, orderCourse)
+// ******************************** Sort
+router.get("/dashboard/sort", isAdminorRegulator, sort)
+router.get("/dashboard/sort/course/:id", isAdminorRegulator, sortCourse)
 // sort data using jquery..!
 router.post('/sort/data', sortData)
+
+// ************************************ Orders
+router.get("/dashboard/order",allOrders)
 
 
 

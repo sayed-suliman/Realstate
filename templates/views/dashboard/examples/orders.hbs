@@ -1,7 +1,11 @@
 {{>dashboardheader}}
 
+<head>
+
+</head>
+
 <body class="hold-transition sidebar-mini">
-     <!-- toast(alert)-->
+    <!-- toast(alert)-->
     {{>alert}}
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -23,7 +27,7 @@
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                                <li class="breadcrumb-item active">Quiz Detail</li>
+                                <li class="breadcrumb-item active">Orders</li>
                             </ol>
                         </div>
                     </div>
@@ -37,68 +41,36 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                {{!-- <div class="card-header">
+                                <div class="card-header">
                                     <h3 class="card-title">DataTable with minimal features & hover style</h3>
-                                </div> --}}
+                                </div>
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th style="width: 65px;">S.No</th>
-                                                <th>Name</th>
-                                                <th>Chpater</th>
-                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
+                                                <th>#</th>
+                                                <th>Amount</th>
+                                                <th>Package</th>
+                                                {{!-- <th>Teacher</th> --}}
+                                                <th>Payment Mode</th>
+                                                <th>By</th>
+                                                <th>Ordered At</th>
                                             </tr>
                                         </thead>
-                                        {{!-- static --}}
                                         <tbody>
-                                            {{#each quizzes}}
+                                            {{#each orders}}
                                             <tr>
                                                 <td>{{increment @index}}</td>
-                                                <td class="text-capitalize">{{this.name}}</td>
-                                                <td>{{this.course.name}}</td>
-                                                  <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
-                                                    <a href="/dashboard/quiz-detail/edit-quiz?qId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-success">
-                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                        </button>
-                                                    </a>
-                                                    {{!-- <a
-                                                        href="/dashboard/package-detail/delete-package?pId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </a> --}}
-                                                </td>
+                                                <td>{{this.amount}}</td>
+                                                <td>{{this.package.name}}</td>
+                                                {{!-- <td></td> --}}
+                                                <td>{{this.pay_method}}</td>
+                                                <td>{{this.user.name}}</td>
+                                                <td>{{formatDate this.createdAt}}</td>
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                        {{!-- dynamic --}}
-                                        {{!-- <tbody>
-                                            {{#each chapters}}
-                                            <tr>
-                                                <td>{{this.name}}</td>
-                                                <td>{{this.course.name}}</td>
-                                                <td>
-                                                    <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
-                                                    {{this.fileName}}
-
-                                                </td>
-                                            </tr>
-                                            {{/each}}
-                                        </tbody> --}}
-                                        {{!-- <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot> --}}
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -123,9 +95,8 @@
     </div>
     <!-- ./wrapper -->
 
-    <!-- jQuery -->
+{{!-- footer links --}}
     {{>dashboardfooterlinks}}
-    {{!-- table jquery plugins --}}
     <!-- DataTables  & Plugins -->
     <script src="/dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
     <script src="/dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
@@ -139,6 +110,7 @@
     <script src="/dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
     <script src="/dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
     <script src="/dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
     <!-- Page specific script -->
     <script>
         $(function () {
@@ -147,7 +119,7 @@
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
             $('#example2').DataTable({
-                "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
+                "paging": true,
                 "lengthChange": false,
                 "searching": false,
                 "ordering": true,
@@ -157,6 +129,7 @@
             });
         });
     </script>
+
 
 </body>
 

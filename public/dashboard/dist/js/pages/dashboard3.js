@@ -21,12 +21,12 @@ $(function () {
         {
           backgroundColor: '#007bff',
           borderColor: '#007bff',
-          data: [1000, 2000, 3000, 2500, 2700, 2500, 3000]
+          data: [cursaleJan, cursaleFeb, cursaleMar, cursaleApr, cursaleMay, cursaleJun, cursaleJul, cursaleAug, cursaleSep, cursaleOct, cursaleNov, cursaleDec]
         },
         {
           backgroundColor: '#ced4da',
           borderColor: '#ced4da',
-          data: [700, 1700, 2700, 2000, 1800, 1500, 2000]
+          data: [lastsaleJan, lastsaleFeb, lastsaleMar, lastsaleApr, lastsaleMay, lastsaleJun, lastsaleJul, lastsaleAug, lastsaleSep, lastsaleOct, lastsaleNov, lastsaleDec]
         }
       ]
     },
