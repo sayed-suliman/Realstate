@@ -4,10 +4,6 @@ const userMeta = mongoose.model('user-meta', mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'user'
     },
-    quiz_id: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'quiz'
-    },
     chapter_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'chapter'

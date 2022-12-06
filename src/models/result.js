@@ -14,6 +14,7 @@ const Result = mongoose.model('result', new mongoose.Schema({
     points: Number,
     totalQuestions: Number,
     time: String,
+    grade: String,
     ans: {
         type: String,
         // convert database data to Object from string
