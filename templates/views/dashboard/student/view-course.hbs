@@ -38,27 +38,37 @@
                                         <tbody>
                                             {{#if contents}}
                                             {{#each contents}}
-                                            {{!-- <tr class="{{#ifEquals this.status 0}}event-none{{/ifEquals}}"> --}}
-                                            <tr class="">
-                                                {{!-- <td><a
+
+
+
+                                            
+                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
+                                                <td><a {{#if this.unlock}}
                                                         href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
-                                                        class="{{#ifEquals this.status 0}}text-gray{{/ifEquals}}"> --}}
-                                                <td><a href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
-                                                        class="">
+                                                        {{else}} href="#" {{/if}}>
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
                                                         <i class="fa-regular fa-clock"></i>
                                                         {{/ifEquals}} {{this.name}}</a>
+
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
-                                                    {{!-- {{#ifEquals this.status 0}}
-                                                    <i class="fas fa-lock ml-2"></i>{{/ifEquals}} --}}
+                                                    {{#if this.completed}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/if}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
-                                                        Questions</span>
-                                                    {{!-- {{#ifEquals this.status 0}}<i
-                                                        class="fas fa-lock ml-2"></i>{{/ifEquals}} --}}
+                                                        Questions
+                                                    </span>
+                                                    {{#ifEquals this.grade "passed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.grade "failed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
+                                                    {{/ifEquals}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{/ifEquals}}
                                                 </td>
                                             </tr>

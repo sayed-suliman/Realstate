@@ -186,4 +186,55 @@ const viewQuiz = async (req, res) => {
 
 }
 
-module.exports = { quizDetail, addQuiz, postQuiz, editQuiz, updateQuiz, viewQuiz }
+const takeQuiz = async (req, res) => {
+    try {
+        console.log(req.body)
+        const time = req.body.time
+        const quiz = await Quiz.findById(req.body.quizId);
+        const questions = quiz.questions;
+        // deleting the quizId & time so that the req.body only contain answer
+        delete req.body.quizId
+        delete req.body.time
+
+        let answersArr = Object.values(req.body)
+        let point = 0;
+        let wrongAns = []
+        let correctAns = []
+        questions.forEach((question, index) => {
+            if (question.ans == answersArr[index]) {
+                point += 1
+                correctAns.push(`q-${index}`)
+            } else {
+                wrongAns.push(`q-${index}`)
+            }
+        })
+        const percent = Math.floor((point / questions.length) * 100)
+        const grade = percent >= 60 ? "passed" : "failed"
+        const data = {
+            quiz: quiz._id,
+            user: req.user._id,
+            points: point,
+            correct_ans: correctAns,
+            wrong_ans: wrongAns,
+            totalQuestions: questions.length,
+            time,
+            grade,
+            ans: req.body,
+        }
+        const alreadyTakenQuiz = await Result.findOne({ quiz: quiz._id, user: req.user._id });
+        if (alreadyTakenQuiz) {
+            delete data.quiz
+            delete data.user
+            console.log("Taken", data)
+            await alreadyTakenQuiz.updateOne(data)
+        } else {
+            console.log("New", data)
+            await Result(data).save()
+        }
+        res.send({ correctAns, wrongAns, point })
+    } catch (error) {
+        res.send({ error: error.message })
+    }
+}
+
+module.exports = { quizDetail, addQuiz, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz }

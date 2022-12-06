@@ -7,11 +7,12 @@ const quizSchema = new mongoose.Schema({
     course: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Course'
-    },
-    status: {
-        default: 0,
-        type: Number
     }
+    // ,
+    // status: {
+    //     default: 0,
+    //     type: Number
+    // }
 })
 const Quiz = mongoose.model("Quiz", quizSchema)
 module.exports = Quiz

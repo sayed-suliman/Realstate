@@ -39,3 +39,6 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     left: 50%;
     transform: translate(-50%, -50%);
 }
+#tblLocations tr{
+    cursor: move;
+}
