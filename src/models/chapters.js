@@ -13,10 +13,11 @@ const chapterSchema = mongoose.Schema({
     },
     order: {
         type: Number
-    },
-    status: {
-        type: Number,
-        default: 0
     }
+    // ,
+    // status: {
+    //     type: Number,
+    //     default: 0
+    // }
 })
 module.exports = mongoose.model("Chapter", chapterSchema)

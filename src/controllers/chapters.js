@@ -188,6 +188,31 @@ const viewChapter = async (req, res) => {
     console.log(chapter)
     res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
 }
+const markAsCompleted = async (req, res) => {
+    try {
+        const { id: chapterId } = req.body
+        const chapter = await Chapters.findById(chapterId)
+        if (chapter) {
+            const alreadyCompleted = await userMeta.findOne({ chapter_id: chapter._id, user_id: req.user._id })
+            if (!alreadyCompleted) {
+                await userMeta({
+                    user_id: req.user._id,
+                    chapter_id: chapter._id,
+                    meta_key: 'completed',
+                    meta_value: 'true'
+                }).save()
+                return res.send({ success: 'completed' })
+            } else {
+                return res.send({ error: 'already completed' })
+            }
+        }
+        console.log(chapterId)
+        return res.send({ error: "Chapter not found" })
+    } catch (error) {
+        res.send({ error: error.message })
+    }
+}
+
 
 // error msg
 const errorMsg = async (error, req, res, next) => {
@@ -200,4 +225,4 @@ const errorMsg = async (error, req, res, next) => {
 }
 
 
-module.exports = { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter }
+module.exports = { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter, markAsCompleted }
