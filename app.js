@@ -198,6 +198,10 @@ hbs.registerHelper("checkroleorpackage",(arg1,arg2,option)=>{
 hbs.registerHelper("returnSelected",(arg1)=>{
    if(!arg1) return 'selected'
 })
+// increase amount by 20% 
+hbs.registerHelper("increaseAmount",(subtotal)=>{
+    return (subtotal + (subtotal * 0.2))
+})
 
 
 app.use(allRoutes)

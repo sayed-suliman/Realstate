@@ -27,6 +27,7 @@ const Result = require("../models/result")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const Chapters = require("../models/chapters")
 const userMeta = require("../models/user-meta")
+const { contactUs, postContact } = require("../controllers/contact")
 
 
 router.get("/test", (req, res) => {
@@ -37,8 +38,12 @@ router.get("/test", (req, res) => {
 router.get("/", async (req, res) => {
     const msg = req.query.msg;
     const type = req.query.type;
-    const packages = await Package.find({ status: "publish" });
-    res.render("package", { packages, msg: { text: msg, type } })
+    const packages = await Package.find({ status: "publish" }).populate("courses");
+    const packageObj = {}
+    packages.forEach(package=>{
+        packageObj[package.name] = package
+    })
+    res.render("package", { packages, msg: { text: msg, type },title:"Packages Plan",packageObj })
 })
 
 
@@ -128,10 +133,12 @@ router.post('/mark-completed', async (req, res) => {
 
 
 
-// contact-us
-router.get("/dashboard/contact-us", isStudent, (req, res) => {
-    res.render("dashboard/examples/contact-us", { title: "Dashboard | Contact-Us" })
-})
+// ************************************ contact-us
+router.get("/dashboard/contact-us", isStudent, contactUs)
+router.post("/dashboard/contact-us", isStudent, postContact)
+
+
+
 // ********************************************* users
 router.get("/dashboard/users", isAdminorRegulator, users)
 router.get("/dashboard/add-user", isAdmin, addUsers)

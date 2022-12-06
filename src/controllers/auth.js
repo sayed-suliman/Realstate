@@ -26,6 +26,8 @@ const signUp = async (req, res) => {
         package.total = price * ((100 + tax) / 100)//total price with tax
         const formValidations = validationResult(req)
         if (formValidations.errors.length) {
+            res.locals.oldData = req.body
+            console.log(res.locals.oldData)
             const errorObj = {}
             formValidations.errors.forEach(element => {
                 errorObj[element.param] = element.msg

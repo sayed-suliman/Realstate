@@ -103,12 +103,12 @@
                                                     <div class="col-12 mb-3">
                                                         <label for="f-n" class="form-label">Full Name</label>
                                                         <input required type="text" id="f-n"
-                                                            class="form-control shadow-none" name="name"
+                                                            class="form-control shadow-none" value="{{oldData.name}}" name="name"
                                                             placeholder="Full Name">
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <label for="email" class="form-label">Email</label>
-                                                        <input required type="email" id="email"
+                                                        <input required type="email" value="{{oldData.email}}" id="email"
                                                             class="form-control shadow-none" name="email"
                                                             placeholder="Email">
                                                         {{#if err}}

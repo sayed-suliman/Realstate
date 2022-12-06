@@ -138,6 +138,7 @@
     background-color: #1c5999;
     border-color: #1c5999;
 }
+
 .btn-paypal:disabled {
     color: var(--bs-bt-disabled-color);
     background-color: #1c5999;
@@ -319,6 +320,16 @@ verification page
     border-bottom: 1px solid var(--btn-primary) !important;
 }
 
+
+/* ++++++++++++++++++++++++ 
+packages plan page
+
+**************************************** */
+div.package-column{
+    height: 100%;
+    padding: 15px 0;
+    border: 1px solid var(--color-black);
+}
 
 
 

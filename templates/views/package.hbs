@@ -1,7 +1,8 @@
 {{>header}}
 
 <body>
-    <div class="container">
+
+    {{!-- <div class="container">
         <p>Test page for package</p>
         {{#if msg.text}}
         <div class="alert {{#ifEquals msg.type " success"}} alert-success {{else}} alert-danger {{/ifEquals}}
@@ -13,6 +14,124 @@
         {{#each packages}}
         <a href="/checkout?package={{this._id}}" class="btn btn-success">{{this.name}} (${{this.price}})</a>
         {{/each}}
-        {{!-- <a href="/checkout?package=636b7ddbd2dccf7bc0b180de" class="btn btn-info">Silver ($1299)</a> --}}
-    </div>
+    </div> --}}
+    {{!-- <a href="/checkout?package=636b7ddbd2dccf7bc0b180de" class="btn btn-info">Silver ($1299)</a> --}}
+
+    {{!-- first top section with login and signup buttons --}}
+    <main class="py-5">
+        <div class="container">
+            {{!-- plans --}}
+            <div class="row">
+                {{!-- 1st column --}}
+                {{#with packageObj.Basic}}
+                <div class="col-md-3 p-1 text-center">
+                    <div class=" package-column">
+                        <h5>{{name}}</h5>
+                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
+                        <h2>${{price}}</h2>
+                        <div>
+                            <a href="checkout?package={{_id}}">
+                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
+                            </a>
+                        </div>
+                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
+                        <div>
+                            <p>Moderate RE experirence</p>
+                            <p>Want to satisfy state reqs</p>
+                        </div>
+                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
+                        <div>
+                            {{#each courses}}
+                            <p class="text-capitalize">{{this.name}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
+                {{#with packageObj.Silver}}
+                <div class="col-md-3 p-1 text-center">
+                    <div class="package-column">
+                        <h5>{{name}}</h5>
+                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
+                        <h2>${{price}}</h2>
+                        <div>
+                            <a href="checkout?package={{_id}}">
+                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
+                            </a>
+                        </div>
+                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
+                        <div>
+                            <p>Moderate RE experirence</p>
+                            <p>Want to satisfy state reqs</p>
+                        </div>
+                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
+                        <div>
+                            {{#each courses}}
+                            <p class="text-capitalize">{{this.name}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
+                {{#with packageObj.Gold}}
+                <div class="col-md-3 p-1 text-center">
+                    <div class="package-column">
+                        <h5>{{name}}</h5>
+                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
+                        <h2>${{price}}</h2>
+                        <div>
+                            <a href="checkout?package={{_id}}">
+                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
+                            </a>
+                        </div>
+                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
+                        <div>
+                            <p>Moderate RE experirence</p>
+                            <p>Want to satisfy state reqs</p>
+                        </div>
+                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
+                        <div>
+                            {{#each courses}}
+                            <p class="text-capitalize">{{this.name}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
+                {{#with packageObj.Premium}}
+                <div class="col-md-3 p-1 text-center">
+                    <div class="package-column">
+                        <h5>{{name}}</h5>
+                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
+                        <h2>${{price}}</h2>
+                        <div>
+                            <a href="checkout?package={{_id}}">
+                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
+                            </a>
+                        </div>
+                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
+                        <div>
+                            <p>Moderate RE experirence</p>
+                            <p>Want to satisfy state reqs</p>
+                        </div>
+                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
+                        <div>
+                            {{#each courses}}
+                            <p class="text-capitalize">{{this.name}}</p>
+                            {{/each}}
+                        </div>
+                    </div>
+                </div>
+                {{/with}}
+            </div>
+        </div>
+    </main>
+    <nav class="navbar py-5">
+        <div class="container justify-content-end">
+            <span class="me-2">Already Registered ?</span>
+            <a href="/login" class="link-primary fw-bold">Sign In</a>
+        </div>
+    </nav>
+
+
     {{>footer}}
