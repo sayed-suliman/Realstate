@@ -1,7 +1,8 @@
 const Course = require("./../models/courses")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Chapters = require("./../models/chapters")
-const fs = require("fs")
+const fs = require("fs");
+const userMeta = require("../models/user-meta");
 // chpaters detail
 const chapterDetail = async (req, res) => {
     // const allChaptersDetails = Chapters.find()
@@ -54,7 +55,7 @@ const postChapter = async (req, res) => {
             course: courseId._id
         })
         await chapterAdded.save()
-        if(chapterAdded){
+        if (chapterAdded) {
             courseId.chapters.push(chapterAdded._id)
             await courseId.save()
         }
@@ -138,13 +139,13 @@ const updateChapter = async (req, res) => {
             fs.unlink("public/" + oldPath, (err, data) => {
                 console.log("delte", err, data)
             })
-            if(!(afterindex > -1)){
+            if (!(afterindex > -1)) {
                 courseId.chapters.push(cId)
                 await courseId.save()
             }
-            if(!(beforeCoure._id.toString() == courseId._id.toString())){
-                if(beforeindex > -1){
-                    beforeCoure.chapters.splice(beforeindex,1)
+            if (!(beforeCoure._id.toString() == courseId._id.toString())) {
+                if (beforeindex > -1) {
+                    beforeCoure.chapters.splice(beforeindex, 1)
                     await beforeCoure.save()
                 }
             }
@@ -156,13 +157,13 @@ const updateChapter = async (req, res) => {
             name: req.body.name,
             course: courseId._id,
         })
-        if(!(afterindex > -1)){
+        if (!(afterindex > -1)) {
             courseId.chapters.push(cId)
             await courseId.save()
         }
-        if(!(beforeCoure._id.toString() == courseId._id.toString())){
-            if(beforeindex > -1){
-                beforeCoure.chapters.splice(beforeindex,1)
+        if (!(beforeCoure._id.toString() == courseId._id.toString())) {
+            if (beforeindex > -1) {
+                beforeCoure.chapters.splice(beforeindex, 1)
                 await beforeCoure.save()
             }
         }
@@ -179,7 +180,11 @@ const updateChapter = async (req, res) => {
 // for student view
 const viewChapter = async (req, res) => {
     const ID = req.params.id
-    const chapter = await Chapters.findById(ID);
+    const chapter = await Chapters.findById(ID).lean();
+    const completedChap = await userMeta.findOne({ user_id: req.user._id, chapter_id: chapter._id })
+    if (completedChap) {
+        chapter.completed = true
+    }
     console.log(chapter)
     res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
 }

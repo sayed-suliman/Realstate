@@ -25,6 +25,8 @@ const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const Quiz = require("../models/quiz")
 const Result = require("../models/result")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
+const Chapters = require("../models/chapters")
+const userMeta = require("../models/user-meta")
 
 
 router.get("/test", (req, res) => {
@@ -97,9 +99,31 @@ router.post('/paypal', paypalAPI)
 router.get('/success', paymentSuccess)
 router.post('/check-coupon', couponAPI)
 router.post('/register-coupon', couponRegisterAPI)
-router.post('/mark-completed', (req, res) => {
-    console.log(req.body)
-    res.send(req.body)
+
+router.post('/mark-completed', async (req, res) => {
+    try {
+
+        const { id: chapterId } = req.body
+        const chapter = await Chapters.findById(chapterId)
+        if (chapter) {
+            const alreadyCompleted = await userMeta.findOne({ chapter_id: chapter._id, user_id: req.user._id })
+            if (!alreadyCompleted) {
+                await userMeta({
+                    user_id: req.user._id,
+                    chapter_id: chapter._id,
+                    meta_key: 'completed',
+                    meta_value: 'true'
+                }).save()
+                return res.send({ success: 'completed' })
+            } else {
+                return res.send({ error: 'already completed' })
+            }
+        }
+        console.log(chapterId)
+        return res.send({ error: "Chapter not found" })
+    } catch (error) {
+        res.send({ error: error.message })
+    }
 })
 
 
@@ -206,6 +230,8 @@ router.post('/test-quiz', async (req, res) => {
                 wrongAns.push(`q-${index}`)
             }
         })
+        const percent = Math.floor((point / questions.length) * 100)
+        const grade = percent >= 60 ? "passed" : "failed"
         const data = {
             quiz: quiz._id,
             user: req.user._id,
@@ -214,14 +240,17 @@ router.post('/test-quiz', async (req, res) => {
             wrong_ans: wrongAns,
             totalQuestions: questions.length,
             time,
+            grade,
             ans: req.body,
         }
         const alreadyTakenQuiz = await Result.findOne({ quiz: quiz._id, user: req.user._id });
         if (alreadyTakenQuiz) {
             delete data.quiz
             delete data.user
+            console.log("Taken", data)
             await alreadyTakenQuiz.updateOne(data)
         } else {
+            console.log("New", data)
             await Result(data).save()
         }
         res.send({ correctAns, wrongAns, point })
