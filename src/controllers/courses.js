@@ -208,17 +208,51 @@ var allCourses = async (req, res) => {
     try {
         await req.user.populate({ path: 'package', populate: { path: 'courses' } })
         var userCourses = await req.user.package.courses
+        let progress = {};
+        for await (let content of userCourses) {
+            // used for to find the content(chap+quiz) length 
+            let total = 0;
+
+            for await (let chapter of content.chapters) {
+                const completedChap = await UserMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                if (completedChap) {
+                    if (progress[content.name]) {
+                        progress[content.name]++
+                    } else {
+                        progress[content.name] = 1
+                    }
+
+                }
+                total++
+            }
+            for await (let quiz of content.quizzes) {
+                const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz.toString() })
+                if (takenQuiz) {
+                    if (progress[content.name]) {
+                        progress[content.name]++
+                    } else {
+                        progress[content.name] = 1
+                    }
+                }
+                total++
+            }
+            if (progress[content.name]) {
+                progress[content.name] = Math.floor((progress[content.name] / total) * 100)
+            }
+        }
         res.render("dashboard/examples/courses/course-detail",
             {
                 title: "Dashboard | All Courses",
                 userCourses,
+                progress
             })
     } catch (e) {
-        res.status(403).json({
-            Error: e.message,
-            Status: 403,
-            msg: "Courses Not Find"
-        })
+        res.redirect(url.format({
+            pathname: '/dashboard',
+            query: {
+                msg: encodeMsg(e.message, 'danger')
+            }
+        }))
         // res.render("404")
     }
 }

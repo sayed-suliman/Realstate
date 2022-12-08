@@ -26,9 +26,12 @@ app.use(expressSession({
     secret: process.env.SECRET,
     resave: true,
     saveUninitialized: false,
-    maxAge: 60 * 1000,
+    maxAge: 60 * 60 * 24 * 14,
     store: new MongoStore({
-        mongoUrl: process.env.DB_URI
+        mongoUrl: process.env.DB_URI,
+        // remove from the database after 14days(ttl)
+        ttl: 60 * 60 * 24 * 14,
+        touchAfter: 24 * 3600 // update session after 1 day
     })
 }))
 
@@ -122,7 +125,7 @@ hbs.registerHelper("checkStatus", (start, end) => {
 })
 // format date
 hbs.registerHelper("formatDate", (date) => {
-    if(date){
+    if (date) {
         let year = date.getFullYear()
         let month = date.getMonth() + 1
         let day = date.getDate()
@@ -172,34 +175,34 @@ hbs.registerHelper('checkDraftOrPublish', (arg, arg2) => {
 })
 
 // incrementing by 1
-hbs.registerHelper('increment',(arg)=>{
+hbs.registerHelper('increment', (arg) => {
     return ++arg
 })
 
 // return checked from 2 arguments 
-hbs.registerHelper("returnChecked",(arg1,arg2)=>{
-   arg1++
-   if(arg1 == arg2){
-    return 'checked'
-   }
+hbs.registerHelper("returnChecked", (arg1, arg2) => {
+    arg1++
+    if (arg1 == arg2) {
+        return 'checked'
+    }
 })
 
 // check if available then return the body
-hbs.registerHelper("checkError",(arg,option)=>{
-    if(arg){
+hbs.registerHelper("checkError", (arg, option) => {
+    if (arg) {
         return option.fn(this)
     }
 })
 
 // check for role or package when admin are adding new user
-hbs.registerHelper("checkroleorpackage",(arg1,arg2,option)=>{
-    if(arg1 == arg2) return option.fn(this)
+hbs.registerHelper("checkroleorpackage", (arg1, arg2, option) => {
+    if (arg1 == arg2) return option.fn(this)
 })
-hbs.registerHelper("returnSelected",(arg1)=>{
-   if(!arg1) return 'selected'
+hbs.registerHelper("returnSelected", (arg1) => {
+    if (!arg1) return 'selected'
 })
 // increase amount by 20% 
-hbs.registerHelper("increaseAmount",(subtotal)=>{
+hbs.registerHelper("increaseAmount", (subtotal) => {
     return (subtotal + (subtotal * 0.2))
 })
 

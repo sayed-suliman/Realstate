@@ -9,13 +9,13 @@ module.exports = {
         try {
             var msgToken = req.query.msg;
             var msg = {}
-            // not working
-            if (res.locals.error.length > 0) {
-                msg = decodeMsg(res.locals.error[0])
-            }
-            if (res.locals.success.length > 0) {
-                msg = decodeMsg(res.locals.success[0])
-            }
+            // // not working
+            // if (res.locals.error.length > 0) {
+            //     msg = decodeMsg(res.locals.error[0])
+            // }
+            // if (res.locals.success.length > 0) {
+            //     msg = decodeMsg(res.locals.success[0])
+            // }
             //only used for payment
             if (msgToken) {
                 msg = decodeMsg(msgToken)
@@ -42,7 +42,6 @@ module.exports = {
                         total++
                     }
                     for await (let quiz of content.quizzes) {
-                        console.log(quiz)
                         const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz.toString() })
                         if (takenQuiz) {
                             if (progress[content.name]) {
@@ -54,7 +53,6 @@ module.exports = {
                         total++
                     }
                     if (progress[content.name]) {
-                        console.log(total)
                         progress[content.name] = Math.floor((progress[content.name] / total) * 100)
                     }
                 }
@@ -119,7 +117,7 @@ module.exports = {
                 }
             })
             // now find percentage of students here which year it growth or downfall
-            const perNum = ((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100
+            const perNum = Math.round(((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100)
             // End of student data portion
 
 
@@ -167,7 +165,8 @@ module.exports = {
                 }
                 allSale += order.amount
             })
-            const percentageAmount = ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100
+            const percentageAmount = Math.round(((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100)
+
             // end of amounts portions
             // by default is admin
             res.render("dashboard/new-dashboard", {
@@ -183,8 +182,6 @@ module.exports = {
                 percentageAmount,
                 currentYearAllAmounts,
                 lastYearAllAmounts
-
-
             })
 
         } catch (error) {

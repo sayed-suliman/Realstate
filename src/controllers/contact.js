@@ -1,5 +1,5 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg")
-const Contact = require("../models/contact")
+const Message = require("../models/message")
 
 module.exports = {
     contactUs(req, res) {
@@ -18,8 +18,7 @@ module.exports = {
         try {
             let user = res.locals.user
             let formData = req.body
-            console.log("formdata",formData)
-            const contactUs = await Contact({
+            const contactUs = await Message({
                 email: user.email,
                 name: user.name,
                 subject: formData.subject,
@@ -35,5 +34,16 @@ module.exports = {
                 err: e.message
             })
         }
+    },
+    // at admin panel
+    async messages(req, res) {
+        const messages = await Message.find();
+        messages.sort((a, b) => {
+            return (a == b) ? 0 : a ? -1 : 1
+        })
+        res.render('dashboard/examples/message', {
+            title: "Dashboard | Message",
+            messages
+        })
     }
 }
