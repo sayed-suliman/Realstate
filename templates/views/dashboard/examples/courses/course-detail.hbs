@@ -107,7 +107,8 @@
                                                 <th>Description</th>
                                                 <th>Status</th>
                                                 <th>Price</th>
-                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
+                                                <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                    Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -122,7 +123,7 @@
                                                 <td>{{this.description}}</td>
                                                 <td>{{this.status}}</td>
                                                 <td>{{this.price}}</td>
-                                                <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
+                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
@@ -163,15 +164,15 @@
                                         <tbody>
                                             {{#each userCourses}}
                                             <tr>
-                                                <td>
+                                                <td class="text-capitalize">
                                                     <a href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
                                                 </td>
                                                 <td>
                                                     <div class="progress progress-xs">
                                                         <div class="progress-bar progress-bar-danger"
-                                                            style="width: {{progress}}%"></div>
+                                                            style="width: {{lookup ../progress this.name}}%"></div>
                                                     </div>
-                                                    {{progress}}%
+                                                    {{#if (lookup ../progress this.name)}}{{lookup ../progress this.name}}{{else}}0{{/if}}%
                                                 </td>
                                                 <td>
                                                     <a href="/dashboard/view-course/{{this._id}}" class="text-muted">

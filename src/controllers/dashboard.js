@@ -3,19 +3,19 @@ const Order = require("../models/order");
 const User = require("../models/users");
 const url = require('url');
 const userMeta = require("../models/user-meta");
-const { Result } = require("../models/result");
+const Result = require('../models/result')
 module.exports = {
     async dashboard(req, res) {
         try {
             var msgToken = req.query.msg;
             var msg = {}
-            // not working
-            if (res.locals.error.length > 0) {
-                msg = decodeMsg(res.locals.error[0])
-            }
-            if (res.locals.success.length > 0) {
-                msg = decodeMsg(res.locals.success[0])
-            }
+            // // not working
+            // if (res.locals.error.length > 0) {
+            //     msg = decodeMsg(res.locals.error[0])
+            // }
+            // if (res.locals.success.length > 0) {
+            //     msg = decodeMsg(res.locals.success[0])
+            // }
             //only used for payment
             if (msgToken) {
                 msg = decodeMsg(msgToken)
@@ -24,19 +24,42 @@ module.exports = {
             if (req.user.role == 'student') {
                 await req.user.populate({ path: 'package', populate: { path: 'courses' } })
                 var userCourses = await req.user.package.courses
-                let completed = 0;
-                for await (let content of userCourses) { 
-                    content.chapters.forEach(async chapter => {
-                        const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
-                        if (completedChap)
-                            completed += 1
+                let progress = {};
+                for await (let content of userCourses) {
+                    // used for to find the content(chap+quiz) length 
+                    let total = 0;
 
-                        // const takenQuiz = await Result.findOne({})
-                    })
+                    for await (let chapter of content.chapters) {
+                        const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                        if (completedChap) {
+                            if (progress[content.name]) {
+                                progress[content.name]++
+                            } else {
+                                progress[content.name] = 1
+                            }
+
+                        }
+                        total++
+                    }
+                    for await (let quiz of content.quizzes) {
+                        const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz.toString() })
+                        if (takenQuiz) {
+                            if (progress[content.name]) {
+                                progress[content.name]++
+                            } else {
+                                progress[content.name] = 1
+                            }
+                        }
+                        total++
+                    }
+                    if (progress[content.name]) {
+                        progress[content.name] = Math.floor((progress[content.name] / total) * 100)
+                    }
                 }
                 return res.render("dashboard/new-dashboard", {
                     title: "Dashboard",
                     userCourses,
+                    progress,
                     toast: Object.keys(msg).length == 0 ? undefined : msg,
                 })
             }
@@ -94,7 +117,7 @@ module.exports = {
                 }
             })
             // now find percentage of students here which year it growth or downfall
-            const perNum = ((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100
+            const perNum = Math.round(((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100)
             // End of student data portion
 
 
@@ -142,7 +165,8 @@ module.exports = {
                 }
                 allSale += order.amount
             })
-            const percentageAmount = ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100
+            const percentageAmount = Math.round(((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100)
+
             // end of amounts portions
             // by default is admin
             res.render("dashboard/new-dashboard", {
@@ -158,8 +182,6 @@ module.exports = {
                 percentageAmount,
                 currentYearAllAmounts,
                 lastYearAllAmounts
-
-
             })
 
         } catch (error) {

@@ -5,6 +5,7 @@ const OTP = require("../models/otp");
 const { generateCode } = require("../helper/genCode");
 const { sendVerificationCode } = require("../controllers/mailServices");
 const User = require("../models/users");
+const Message = require("../models/message")
 
 // for authenticated user only
 var authenticated = async (req, res, next) => {
@@ -42,6 +43,7 @@ var authenticated = async (req, res, next) => {
             }
         }
 
+        res.locals.unreadMsg = await Message.find({ read: false }).count()
         return next()
     } else {
         req.flash("error", "Please! Login to continue.")
@@ -83,7 +85,7 @@ var isAdminorRegulator = (req, res, next) => {
 var verifiedAndPaid = async (req, res, next) => {
     // check whether user bought a package or not
 
-    const user = await User.findOne({ email:req.body.email });
+    const user = await User.findOne({ email: req.body.email });
     if (user) {
         if (user.role == "student") {
             if (!user.verified) {
@@ -115,4 +117,4 @@ var verifiedAndPaid = async (req, res, next) => {
     next()
 }
 
-module.exports = { authenticated, logged_in, verifiedAndPaid, isStudent, isAdmin ,isAdminorRegulator}
+module.exports = { authenticated, logged_in, verifiedAndPaid, isStudent, isAdmin, isAdminorRegulator }

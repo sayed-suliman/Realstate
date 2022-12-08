@@ -1,0 +1,170 @@
+{{>dashboardheader}}
+
+<head>
+    <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+</head>
+
+<body class="hold-transition sidebar-mini">
+    <!-- toast(alert)-->
+    {{>alert}}
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Messages</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Messages</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="card card-primary card-outline">
+                                <div class="card-header">
+                                    <h3 class="card-title">Messages</h3>
+                                </div>
+
+                                <div class="card-body p-0">
+                                    {{!-- <div class="mailbox-controls">
+                                        <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i
+                                                class="far fa-square"></i>
+                                        </button>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+
+                                        <button type="button" onclick="function hi(){window.location.reload()};hi()"
+                                            class="btn btn-default btn-sm">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div> --}}
+                                    <div class="table-responsive mailbox-messages">
+                                        <table class="table table-hover table-striped">
+                                            <tbody>
+                                                {{#each messages}}
+                                                <tr class="{{#unless this.read}}text-bold{{/unless}}">
+                                                    {{!-- <td>
+                                                        <div class="icheck-primary">
+                                                            <input type="checkbox" value="" id="check-{{@index}}">
+                                                            <label for="check-{{@index}}"></label>
+                                                        </div>
+                                                    </td> --}}
+                                                    <td class="mailbox-name"><a
+                                                            href="/dashboard/read-message/{{this._id}}">{{this.name}}</a>
+                                                    </td>
+                                                    <td class="mailbox-subject"><b>{{this.subject}}</b> - <span
+                                                            class="d-inline-block text-truncate"
+                                                            style="max-width: 200px;margin-bottom:-6px">{{this.message}}</span>
+                                                    </td>
+                                                    <td class="mailbox-attachment"></td>
+                                                    <td class="mailbox-date">{{formatDate this.createdAt}}</td>
+                                                </tr>
+                                                {{/each}}
+                                            </tbody>
+                                        </table>
+
+                                    </div>
+
+                                </div>
+
+                                {{!-- <div class="card-footer p-0">
+                                    <div class="mailbox-controls">
+                                        <button type="button" class="btn btn-default btn-sm checkbox-toggle"><i
+                                                class="far fa-square"></i>
+                                        </button>
+                                        <div class="btn-group">
+                                            <button type="button" class="btn btn-default btn-sm">
+                                                <i class="far fa-trash-alt"></i>
+                                            </button>
+                                        </div>
+
+                                        <button type="button" onclick="function hi(){window.location.reload()};hi()"
+                                            class="btn btn-default btn-sm">
+                                            <i class="fas fa-sync-alt"></i>
+                                        </button>
+                                    </div>
+                                </div> --}}
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    {{!-- footer links --}}
+    {{>dashboardfooterlinks}}
+    <!-- DataTables  & Plugins -->
+    <script src="/dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="/dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="/dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="/dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="/dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="/dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="/dashboard/plugins/jszip/jszip.min.js"></script>
+    <script src="/dashboard/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="/dashboard/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="/dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="/dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="/dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+
+    <!-- Page specific script -->
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
+            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            $('#example2').DataTable({
+                "paging": true,
+                "lengthChange": false,
+                "searching": false,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+
+
+</body>
+
+</html>
