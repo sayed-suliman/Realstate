@@ -23,7 +23,7 @@ const { sort, sortCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
-const { contactUs, postContact, messages } = require("../controllers/contact")
+const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
 
 
 router.get("/test", (req, res) => {
@@ -212,23 +212,7 @@ router.get("/dashboard/order", allOrders)
 
 // ************************************ message
 router.get("/dashboard/messages", isAdmin, messages)
-router.get("/dashboard/read-message/:id", isAdmin, async (req, res) => {
-    try {
-        if (req.params.id) {
-            const Message = require('../models/message')
-            const msg = await Message.findById(req.params.id)
-            await msg.updateOne({ read: true })
-            return res.render('dashboard/examples/read-msg', {
-                title: "Dashboard | Message",
-                msg
-            })
-        }
-        return res.redirect('/dashboard')
-    } catch (error) {
-        const { encodeMsg } = require('../helper/createMsg')
-        res.redirect('/dashboard?msg=' + encodeMsg(error.message, 'danger'))
-    }
-})
+router.get("/dashboard/read-message/:id", isAdminorRegulator, readMessage)
 
 
 
