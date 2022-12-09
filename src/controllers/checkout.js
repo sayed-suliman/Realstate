@@ -6,17 +6,15 @@ const User = require("../models/users");
 
 module.exports = {
     async checkout(req, res) {
-        console.log(req.session)
         // for login only
         req.session.returnURL = req.url
         try {
             const id = req.query.package;
             if (id) {
                 var package = await Package.findById(id).where('status').equals('publish');
-                console.log(package)
                 if (package) {
                     if (req.user) {
-                        await User.findByIdAndUpdate(req.user._id,{package:id})
+                        // await User.findByIdAndUpdate(req.user._id, { package: id })
                         return res.redirect(url.format({
                             pathname: '/payment',
                             query: {
@@ -27,7 +25,7 @@ module.exports = {
                     var { price, tax } = package;
                     package.total = price * ((100 + tax) / 100)//total price with tax
                     return res.render('checkout', { title: "Checkout", package })
-                }else{
+                } else {
                     return res.render('404')
                 }
             }

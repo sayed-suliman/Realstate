@@ -165,10 +165,20 @@
             $("#contact-link").removeClass("active")
         }
 
-        //search
+        //order
         if (url.includes("order")) {
             $("#dashboard-link").removeClass("active")
             $('#order-link').addClass("active")
+        }
+        //message
+        if (url.includes("messages")) {
+            $("#dashboard-link").removeClass("active")
+            $('#messages-link').addClass("active")
+        }
+        //message
+        if (url.includes("read-message")) {
+            $("#dashboard-link").removeClass("active")
+            $('#messages-link').addClass("active")
         }
     })
     //showing alert(toast)
