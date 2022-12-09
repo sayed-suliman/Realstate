@@ -34,11 +34,20 @@ stripeBtn.addEventListener('click', function () {
             showInputMessage(dob, "This field is required")
             return;
         } else if (dob.value) {
-            const now = new Date();
-            const age = new Date(dob.value)
-            console.log('now', now, 'age', age)
-            if (age > now) {
-                showInputMessage(dob, "DOB can't be greater than or equal to Today.")
+            // const now = new Date().underEighteen();
+            const age = getAge(dob.value)
+            function getAge(DOB) {
+                var today = new Date();
+                var birthDate = new Date(DOB);
+                var age = today.getFullYear() - birthDate.getFullYear();
+                var m = today.getMonth() - birthDate.getMonth();
+                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+                    age--;
+                }
+                return age;
+            }
+            if (age > 18) {
+                showInputMessage(dob, "Your age must be 18+.")
                 return;
             }
         }

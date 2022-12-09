@@ -211,7 +211,7 @@ router.post('/sort/data', sortData)
 router.get("/dashboard/order", allOrders)
 
 // ************************************ message
-router.get("/dashboard/messages", isAdmin, messages)
+router.get("/dashboard/messages", isAdminorRegulator, messages)
 router.get("/dashboard/read-message/:id", isAdminorRegulator, readMessage)
 
 

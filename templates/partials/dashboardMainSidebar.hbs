@@ -357,6 +357,18 @@
             <p>Orders</p>
           </a>
         </li>
+        {{!-- message --}}
+        <li class="nav-item">
+          <a href="/dashboard/messages" id="messages-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="far fa-envelope nav-icon"></i>
+            <p>Messages
+              {{#if unreadMsg}}
+              <span class="badge badge-info right">{{unreadMsg}}</span>
+              {{/if}}
+            </p>
+          </a>
+        </li>
 
         {{/ifEquals}}
         {{!-- <li class="nav-item">

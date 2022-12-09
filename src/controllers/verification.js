@@ -8,7 +8,7 @@ module.exports = {
             var { user: userID } = req.query;
             if (userID) {
                 const user = await User.findById(userID).populate('package');
-                // if user is verified already then redirect to payment
+                // if verified user then redirect to payment
                 if (user.verified) {
                     return res.redirect(url.format({
                         pathname: '/payment',
