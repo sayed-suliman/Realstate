@@ -18,7 +18,7 @@ const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz 
 const { sendVerificationCode } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
-const { users, addUsers, postUser } = require("../controllers/users")
+const { users, addUsers, postUser, editUser, updateUser } = require("../controllers/users")
 const { sort, sortCourse, sortData } = require("../controllers/sort")
 const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
@@ -115,6 +115,10 @@ router.get("/dashboard/users", isAdminorRegulator, users)
 router.get("/dashboard/add-user", isAdmin, addUsers)
 // post user by admin
 router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser)
+//edit page to admin
+router.get("/dashboard/user-edit/:id",isAdmin,editUser)
+// update user
+router.post("/dashboard/user-edit/update-user",isAdmin,updateUser)
 
 
 
@@ -148,7 +152,7 @@ router.get("/dashboard/course-detail/delete-course", isAdmin, deleteCourse)
 router.get("/dashboard/course-detail/edit-course", isAdmin, editCourse)
 // update-course
 router.post("/dashboard/course-detail/update-course", isAdmin, updateCourse)
-// for student
+// for student || regulator
 router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
 router.get('/dashboard/view-course/:id', viewCourse)
 

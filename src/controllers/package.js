@@ -43,7 +43,7 @@ module.exports = {
             }).save();
             if (package) {
                 // link added to package
-                package.link = process.env.SERVER_URI + "/checkout?package=" + package._id
+                package.link = "/checkout?package=" + package._id
                 await package.save()
                 if (selectCourses) {
                     if (Array.isArray(selectCourses)) {
@@ -88,6 +88,7 @@ module.exports = {
             option = msg
         }
         const packages = await Package.find().populate('courses');
+        console.log(packages)
         res.render("dashboard/examples/packages/package-detail", {
             title: "Dashboard | Package Detail",
             packages,

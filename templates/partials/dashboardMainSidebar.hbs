@@ -234,139 +234,17 @@
         {{#ifEquals user.role "regulator"}}
         <!-- Package -->
         <li class="nav-item">
-          <a href="#" id="package-link" class="nav-link">
-            <i class="nav-icon fas fa-money-check-alt"></i>
-            <p>
-              Packages
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/package-detail" id="package-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Package Detail</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        {{!-- courses --}}
-        <li class="nav-item">
-          <a href="#" id="course-link" class="nav-link">
+          <a href="/dashboard/courses" id="courses" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="nav-icon fas fa-book"></i>
-            <p>
-              Courses
-              <i class="fas fa-angle-left right"></i>
-            </p>
+            <p>Courses</p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/course-detail" id="course-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Courses Detail</p>
-              </a>
-            </li>
-          </ul>
         </li>
-        {{!-- Chapters --}}
         <li class="nav-item">
-          <a href="#" id="chapter-link" class="nav-link">
-            <i class="nav-icon fas fa-pen"></i>
-            <p>
-              Chapters
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/chapter-detail" id="chapter-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Chapters Detail</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        {{!-- Quiz --}}
-        <li class="nav-item">
-          <a href="#" id="quiz-link" class="nav-link">
-            <i class="nav-icon fas fa-broom-ball"></i>
-            <p>
-              Quizzes
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/quiz-detail" id="quiz-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Quizzes Detail</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        {{!-- sort --}}
-        <li class="nav-item">
-          <a href="/dashboard/sort" id="sort-link" class="nav-link">
+          <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
             {{!-- <i class="far fa-circle nav-icon"></i> --}}
-            <i class="fa-sharp fa-solid fa-sort nav-icon"></i>
-            <p>Order</p>
-          </a>
-        </li>
-        {{!-- coupon or vouchers --}}
-        <li class="nav-item">
-          <a href="#" id="voucher-link" class="nav-link">
-            <i class="nav-icon fas fa-gift"></i>
-            <p>
-              Coupons
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/coupon-detail" id="voucher-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Coupons Detail</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        {{!-- users --}}
-        {{!-- users --}}
-        <li class="nav-item">
-          <a href="#" id="users-link" class="nav-link">
-            <i class="fa-solid fa-users nav-icon"></i>
-            <p>
-              Users
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="/dashboard/users" id="users-all-link" class="nav-link">
-                {{!-- <i class="far fa-circle nav-icon"></i> --}}
-                <i class="far fa-circle nav-icon"></i>
-                <p>Users</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="/dashboard/order" id="order-link" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
-            <i class="fa-sharp fa-solid fa-file-invoice-dollar nav-icon"></i>
-            <p>Orders</p>
-          </a>
-        </li>
-        {{!-- message --}}
-        <li class="nav-item">
-          <a href="/dashboard/messages" id="messages-link" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
-            <i class="far fa-envelope nav-icon"></i>
-            <p>Messages
-              {{#if unreadMsg}}
-              <span class="badge badge-info right">{{unreadMsg}}</span>
-              {{/if}}
-            </p>
+            <i class="fa-solid fa-id-card-clip nav-icon"></i>
+            <p>Contact us</p>
           </a>
         </li>
 

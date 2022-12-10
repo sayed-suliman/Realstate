@@ -1,0 +1,193 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+        <!-- toast(alert)-->
+        {{>alert}}
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Edit User</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Edit User</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">Edit Data</h3>
+                                </div>
+
+                                <form action="update-user?id={{editUser._id}}" method="post" class="form-horizontal">
+                                    <div class="card-body">
+                                        {{!-- fullname --}}
+                                        <div class="form-group row">
+                                            <label for="fullname" class="col-sm-2 col-form-label">Full Name</label>
+                                            <div class="col-sm-10">
+                                                <input required type="text" value="{{editUser.name}}" name="name"
+                                                    class="form-control" id="fullname" placeholder="Full Name">
+                                            </div>
+                                        </div>
+                                        {{!-- package --}}
+                                        <div class="form-group row">
+                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select
+                                                Package</label>
+                                            <div class="col-sm-10">
+                                                <select required id="selectPackage" name="package"
+                                                    class="form-control custom-select">
+                                                    <option disabled value="">Select one</option>
+                                                    {{#each packages}}
+                                                    <option {{#ifCond this.name '==' ../editUser.package.name}}selected{{/ifCond}} value="{{this.name}}">{{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                        </div>
+                                        {{!-- date of birth --}}
+                                        <div class="form-group row">
+                                            <label for="" class="col-sm-2 col-form-label">Date of Birth</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <input id="dob" required type="date" name="dob" value="{{formatDate editUser.dob}}"
+                                                        class="form-control datetimepicker-input {{#checkError err.dob}}is-invalid{{/checkError}}"
+                                                        data-target="#reservationdate">
+                                                    <span class="dob invalid-feedback">
+                                                        {{err.dob}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{!-- license --}}
+                                        <div class="form-group row">
+                                            <label for="license" class="col-sm-2 col-form-label">Driver License</label>
+                                            <div class="col-sm-10">
+                                                <input required type="text" name="driver_license"
+                                                    value="{{editUser.driver_license}}"
+                                                    class="form-control {{#checkError err.driver_license}}is-invalid{{/checkError}}"
+                                                    id="license" placeholder="Driving License">
+                                                <span class="license-error invalid-feedback">
+                                                    {{err.driver_license}}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {{!-- email --}}
+                                        <div class="form-group row">
+                                            <label for="email" class="col-sm-2 col-form-label">Email</label>
+                                            <div class="col-sm-10">
+                                                <input required type="email" name="email" value="{{editUser.email}}"
+                                                    class="form-control {{#checkError err.email}}is-invalid{{/checkError}}"
+                                                    id="email" placeholder="Email">
+                                                <span class="email-error invalid-feedback">{{err.email}}</span>
+                                            </div>
+                                        </div>
+                                        {{!-- Payment Method --}}
+                                        {{!-- <div class="form-group row">
+                                            <label for="payment" class="col-sm-2 col-form-label">Payment</label>
+                                            <div class="col-sm-4">
+                                                <input min="0" required type="number" value="{{editUser.amount}}"
+                                                    name="amount" class="form-control" id="amount" placeholder="Amount">
+                                            </div>
+                                        </div> --}}
+                                    </div>
+
+                                    <div class="card-footer">
+                                        <button type="reset" class="btn btn-default">Cancel</button>
+                                        <button type="submit" class="btn btn-success float-right">Update User</button>
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!-- custom js for this page --}}
+    <script>
+        $(document).ready(function () {
+            let rolVal = $("#role").val()
+            if (rolVal == 'regulator' || rolVal == 'admin') {
+                $("#selectPackage").attr("disabled", "")
+                $("#selectPackage").val("")
+                $("#selectPackage").removeAttr("required")
+
+                // for amounts
+                $("#amount").removeAttr("required", "")
+                $("#amount").attr("disabled", "")
+                $("#amount").val("")
+            }
+            $("#role").change(function () {
+                if (this.value == 'regulator' || this.value == 'admin') {
+                    $("#selectPackage").attr("disabled", "")
+                    $("#selectPackage").val("")
+                    $("#selectPackage").removeAttr("required")
+                    //amount
+                    $("#amount").removeAttr("required", "")
+                    $("#amount").attr("disabled", "")
+                    $("#amount").val("")
+                } else {
+                    $("#selectPackage").attr("required", "")
+                    $("#selectPackage").removeAttr("disabled")
+
+                    //amount
+                    $("#amount").attr("required", "")
+                     $("#amount").removeAttr("disabled")
+                }
+            })
+            // for amount input
+            $("#amount").keyup(function () {
+                if (parseInt(this.value) === 0) {
+                    $("#pay_method").attr("disabled", "")
+                    $("#pay_method").val("")
+                    $("#pay_method").removeAttr("required")
+                } else {
+                    $("#pay_method").attr("required", "")
+                    $("#pay_method").removeAttr("disabled")
+                }
+            })
+        })
+    </script>
+
+</body>
+
+</html>

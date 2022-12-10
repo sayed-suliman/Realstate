@@ -65,7 +65,7 @@
                                                     <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
                                                     {{/each}}
                                                 </td>
-                                                <td>{{this.link}}</td>
+                                                <td><a href="{{this.link}}"><span class="domainName"></span>{{this.link}}</a></td>
                                                 <td>{{this.price}}</td>
                                                 <td>{{this.tax}}%</td>
                                                 <td>{{this.status}}</td>
@@ -143,6 +143,12 @@
                 "autoWidth": false,
                 "responsive": true,
             });
+
+            // get current Url
+            let fullUrl = (new URL(window.location))
+            const domainName = fullUrl.origin
+            $(".domainName").text(domainName)
+            console.log(domainName)
         });
     </script>
 

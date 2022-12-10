@@ -146,6 +146,12 @@
             $('#users-link').addClass("active")
             $("#users-add-link").addClass("active")
         }
+         // user-edit
+         if (url.includes("user-edit")) {
+            $("#dashboard-link").removeClass("active")
+            $('#users-link').addClass("active")
+            $("#users-all-link").addClass("active")
+        }
         if (url.includes("users")) {
             $("#dashboard-link").removeClass("active")
             $('#users-link').addClass("active")

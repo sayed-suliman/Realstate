@@ -98,6 +98,37 @@ module.exports = {
             // })
         }
 
+    },
+    // edit user
+    async editUser(req,res){
+        try{
+            const uId = req.params.id
+            const editUser = await User.findById(uId).populate("package")
+            console.log(editUser)
+            const packages = await Package.find()
+            res.render("dashboard/examples/users/user-edit",{
+                title:"Dashboard | User-Edit",
+                editUser,
+                packages
+            })
+        }catch (e) {
+            res.render("500",{
+                err:e.message
+            })
+        }
+    },
+    // update user
+    async updateUser(req,res){
+        try{
+            res.json({
+                data:req.body
+            })
+        }catch (e) {
+            res.status(404).json({
+                status:404,
+                err:e.message
+            })
+        }
     }
 }
 // router.get("/getTask", auth, async (req, res) => {

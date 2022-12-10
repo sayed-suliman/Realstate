@@ -3,7 +3,8 @@ const Order = require("../models/order");
 const User = require("../models/users");
 const url = require('url');
 const userMeta = require("../models/user-meta");
-const Result = require('../models/result')
+const Result = require('../models/result');
+const Course = require("../models/courses");
 module.exports = {
     async dashboard(req, res) {
         try {
@@ -63,6 +64,53 @@ module.exports = {
                     toast: Object.keys(msg).length == 0 ? undefined : msg,
                 })
             }
+            // regulator part start
+            
+            if (req.user.role == 'regulator') {
+                // await req.user.populate({ path: 'package', populate: { path: 'courses' } })
+                var userCourses = await Course.find({status:'publish'})
+                console.log('courses',userCourses)
+                let progress = {};
+                // for await (let content of userCourses) {
+                //     // used for to find the content(chap+quiz) length 
+                //     let total = 0;
+
+                //     // for await (let chapter of content.chapters) {
+                //     //     const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                //     //     if (completedChap) {
+                //     //         if (progress[content.name]) {
+                //     //             progress[content.name]++
+                //     //         } else {
+                //     //             progress[content.name] = 1
+                //     //         }
+
+                //     //     }
+                //     //     total++
+                //     // }
+                //     for await (let quiz of content.quizzes) {
+                //         const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz.toString() })
+                //         if (takenQuiz) {
+                //             if (progress[content.name]) {
+                //                 progress[content.name]++
+                //             } else {
+                //                 progress[content.name] = 1
+                //             }
+                //         }
+                //         total++
+                //     }
+                //     if (progress[content.name]) {
+                //         progress[content.name] = Math.floor((progress[content.name] / total) * 100)
+                //     }
+                // }
+                return res.render("dashboard/new-dashboard", {
+                    title: "Dashboard",
+                    userCourses,
+                    // progress,
+                    toast: Object.keys(msg).length == 0 ? undefined : msg,
+                })
+            }
+
+            // regulator part end
 
             const students = await User.find({ role: "student" })
             const countStudents = await User.find({ role: "student" }).count()

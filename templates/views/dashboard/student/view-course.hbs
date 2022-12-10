@@ -36,12 +36,40 @@
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
                                         <tbody>
+                                            {{!-- regulator --}}
+                                            {{#ifEquals user.role "regulator"}}
                                             {{#if contents}}
                                             {{#each contents}}
+                                            <tr>
+                                                <td><a
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}">
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{else}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                            {{/ifEquals}}
 
 
-
-                                            
+                                            {{!-- stduents --}}
+                                            {{#ifEquals user.role "student"}}
+                                            {{#if contents}}
+                                            {{#each contents}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td><a {{#if this.unlock}}
                                                         href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
@@ -78,6 +106,7 @@
                                                 <td colspan="2">No Contents for this Course.</td>
                                             </tr>
                                             {{/if}}
+                                            {{/ifEquals}}
                                         </tbody>
                                     </table>
                                 </div>
