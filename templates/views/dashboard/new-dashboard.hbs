@@ -213,6 +213,7 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {{#if userCourses}}
                       {{#each userCourses}}
                       <tr>
                         <td>
@@ -220,7 +221,8 @@
                         </td>
                         <td>
                           <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger" style="width: {{lookup ../progress this.name}}%"></div>
+                            <div class="progress-bar progress-bar-danger"
+                              style="width: {{lookup ../progress this.name}}%"></div>
                           </div>
                         </td>
                         <td class="text-right">
@@ -229,7 +231,11 @@
                           </a>
                         </td>
                       </tr>
-                      {{/each}}
+                      {{/each}}{{else}}
+                      <tr>
+                        <td colspan="3">You haven't purchased any course yet.</td>
+                      </tr>
+                      {{/if}}
                     </tbody>
                   </table>
                 </div>
@@ -251,9 +257,24 @@
                       </tr>
                     </thead>
                     <tbody>
+                      {{#if completedCourses}}
+                      {{#each completedCourses as |value property|}}
+                      <tr>
+                        <td>
+                          <a class="text-capitalize" href="/dashboard/view-course/{{value}}">{{property}}</a>
+                        </td>
+                        <td class="">
+                          <a href="/dashboard/view-course/{{value}}" class="text-muted">
+                            <i class="fas fa-book"></i>
+                          </a>
+                        </td>
+                      </tr>
+                      {{/each }}
+                      {{else}}
                       <tr>
                         <td colspan="2">You haven't complete any course yet.</td>
                       </tr>
+                      {{/if}}
                       {{!-- <tr>
                         <td>
                           Course

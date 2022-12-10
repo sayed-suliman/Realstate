@@ -119,8 +119,7 @@ module.exports = {
                     user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
                         if (error) {
                             if (error.message.indexOf('duplicate key error') != -1) {
-                                console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
-                                return res.send({ error: "Driver License is already taken.",id:true })
+                                return res.send({ error: "Driver License is already taken.", id: true })
                             }
                         }
                         if (result) {
@@ -139,17 +138,17 @@ module.exports = {
                                     url: url.format({
                                         pathname: '/dashboard',
                                         query: {
-                                            msg: encodeMsg('Welcome to Real Estate')
+                                            msg: encodeMsg(`Welcome to ${process.env.SITE_NAME}`)
                                         }
                                     })
                                 });
                             });
                         }
                     })
-                }else{
+                } else {
                     return res.send({ error: "Coupon Code doesn't exist." })
                 }
-            }else{
+            } else {
                 return res.send({ error: "Coupon code is required." })
             }
         } catch (error) {

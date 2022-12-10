@@ -5,6 +5,7 @@ const url = require('url')
 const OTP = require('../models/otp')
 const { generateCode } = require("../helper/genCode")
 const { sendVerificationCode } = require("./mailServices")
+const bcrypt = require("bcrypt")
 
 
 const login = (req, res) => {
@@ -36,11 +37,20 @@ const signUp = async (req, res) => {
             formValidations.errors.forEach(element => {
                 errorObj[element.param] = element.msg
             });
-            res.render("checkout", {
-                title: "Checkout",
-                err: errorObj,
-                package
-            })
+            if (errorObj.email.includes("redirect to verification")) {
+                const userId = errorObj.email.split(",")[1]
+                const password = await bcrypt.hash(data.password, 10)
+                await User.findByIdAndUpdate(userId,
+                    { name: data.name, package: data.package, password }
+                )
+                res.redirect('/verification?user=' + userId)
+            } else {
+                res.render("checkout", {
+                    title: "Checkout",
+                    err: errorObj,
+                    package
+                })
+            }
         } else {
             console.log(data)
             const otpCode = generateCode();
