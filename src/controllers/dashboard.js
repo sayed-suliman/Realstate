@@ -24,11 +24,11 @@ module.exports = {
             if (req.user.role == 'student') {
                 await req.user.populate({ path: 'package', populate: { path: 'courses' } })
                 var userCourses = await req.user.package.courses
+                var completedCourses = {}
                 let progress = {};
                 for await (let content of userCourses) {
                     // used for to find the content(chap+quiz) length 
                     let total = 0;
-
                     for await (let chapter of content.chapters) {
                         const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
                         if (completedChap) {
@@ -53,12 +53,23 @@ module.exports = {
                         total++
                     }
                     if (progress[content.name]) {
-                        progress[content.name] = Math.floor((progress[content.name] / total) * 100)
+                        const value = Math.floor((progress[content.name] / total) * 100);
+                        progress[content.name] = value
+                        if (value == 100) {
+                            completedCourses[content.name] = content._id.toString()
+                        }
                     }
                 }
+                for await (let [index, content] of userCourses.entries()) {
+                    if (completedCourses[content.name]) {
+                        userCourses.splice(index, 1)
+                    }
+                }
+                // console.log(userCourses)
                 return res.render("dashboard/new-dashboard", {
                     title: "Dashboard",
                     userCourses,
+                    completedCourses,
                     progress,
                     toast: Object.keys(msg).length == 0 ? undefined : msg,
                 })

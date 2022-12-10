@@ -18,6 +18,12 @@ const showInputMessage = (element, msg) => {
     }, 4000)
 
 }
+function getAge(dob) {
+    var diff_ms = Date.now() - dob.getTime();
+    var age_dt = new Date(diff_ms);
+
+    return Math.abs(age_dt.getUTCFullYear() - 1970);
+}
 
 stripeBtn.addEventListener('click', function () {
     // This is your publishable API key.
@@ -34,19 +40,8 @@ stripeBtn.addEventListener('click', function () {
             showInputMessage(dob, "This field is required")
             return;
         } else if (dob.value) {
-            // const now = new Date().underEighteen();
-            const age = getAge(dob.value)
-            function getAge(DOB) {
-                var today = new Date();
-                var birthDate = new Date(DOB);
-                var age = today.getFullYear() - birthDate.getFullYear();
-                var m = today.getMonth() - birthDate.getMonth();
-                if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-                    age--;
-                }
-                return age;
-            }
-            if (age > 18) {
+            const age = getAge(new Date(dob.value))
+            if (age < 18) {
                 showInputMessage(dob, "Your age must be 18+.")
                 return;
             }
@@ -222,11 +217,9 @@ paypalBtn.addEventListener('click', async function () {
             showInputMessage(dob, "This field is required")
             return;
         } else if (dob.value) {
-            const now = new Date();
-            const age = new Date(dob.value)
-
-            if (age.getDate() >= now.getDate()) {
-                showInputMessage(dob, "DOB can't be greater than or equal to Today.")
+            const age = getAge(new Date(dob.value))
+            if (age < 18) {
+                showInputMessage(dob, "Your age must be 18+.")
                 return;
             }
         }
