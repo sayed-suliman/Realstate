@@ -69,14 +69,14 @@ module.exports = {
                 password: data.password,
                 verified: true,
             }).save()
-            if(user){
-                if(data.role == 'student'){
+            if (user) {
+                if (data.role == 'student') {
                     let order = await Order({
-                        user:user._id,
+                        user: user._id,
                         package: package || undefined,
-                        verified:true,
-                        pay_method:"offline payment",
-                        amount:data.amount,
+                        verified: true,
+                        pay_method: "offline payment",
+                        amount: data.amount,
                     }).save()
                 }
                 var msg = encodeMsg("User Added")
@@ -100,33 +100,103 @@ module.exports = {
 
     },
     // edit user
-    async editUser(req,res){
-        try{
+    async editUser(req, res) {
+        try {
+            var msgToken = req.query.msg;
+            var option = {}
+            if (msgToken) {
+                var msg = decodeMsg(msgToken)
+                option = msg
+            }
             const uId = req.params.id
             const editUser = await User.findById(uId).populate("package")
-            console.log(editUser)
+            const order = await Order.findOne({ user: uId }).select("amount")
+            console.log(order)
             const packages = await Package.find()
-            res.render("dashboard/examples/users/user-edit",{
-                title:"Dashboard | User-Edit",
+            res.render("dashboard/examples/users/user-edit", {
+                title: "Dashboard | User-Edit",
                 editUser,
-                packages
+                packages,
+                order,
+                toast: Object.keys(option).length == 0 ? undefined : option
             })
-        }catch (e) {
-            res.render("500",{
-                err:e.message
+        } catch (e) {
+            res.render("500", {
+                err: e.message
             })
         }
     },
     // update user
-    async updateUser(req,res){
-        try{
-            res.json({
-                data:req.body
+    async updateUser(req, res) {
+        try {
+            const uId = req.query.uId
+            const editUser = req.body
+            const order = await Order.findOne({ user: uId }).select("amount")
+            // editUser["package"] = {
+            //     name:editUser.package
+            // }
+            const packages = await Package.find({ status: "publish" })
+            // const formValidators = validationResult(req)
+            // if(formValidators.errors.length){
+            //     const errorObj = {}
+            //     formValidators.errors.forEach(element => {
+            //         errorObj[element.param] = element.msg
+            //     });
+            //     return res.render("dashboard/examples/users/user-edit", {
+            //         title: "Dashboard | Add-User",
+            //         err: errorObj,
+            //         editUser,
+            //         packages,
+            //         order:{
+            //             amount:editUser.amount
+            //         }
+            //     })
+            // }
+            const user = await User.findById(uId)
+            const packageId = await Package.findOne({ name: editUser.package })
+            delete editUser.package
+            await user.updateOne({
+                ...editUser,
+                package: packageId._id
+            }, { runValidators: true }, async (error, result) => {
+                if (error) {
+                    const err = {}
+                    editUser["package"] = {
+                        name: packageId.name
+                    }
+                    console.log(editUser)
+                    if (error.message.includes("driver_license")) {
+                        err.driver_license = "This driver license Already in Use please try another!"
+                    }
+                    if (error.message.includes("email")) {
+                        err.email = "This Email Id is Already in Use please try another!"
+                    }
+                    editUser._id = uId
+                    return res.render("dashboard/examples/users/user-edit", {
+                        title: "Dashboard | Add-User",
+                        err,
+                        editUser,
+                        packages,
+                        order: {
+                            amount: editUser.amount
+                        }
+                    })
+                }
+                if (result) {
+                    var msg = encodeMsg("User Updated")
+                    await order.updateOne({ amount: editUser.amount }, { runValidators: true })
+                    res.redirect(`/dashboard/users?` + msg)
+                }
             })
-        }catch (e) {
+            // res.json({
+            //     data:req.body,
+            //     U:uId
+            // })
+            console.log('here in the end')
+        } catch (e) {
             res.status(404).json({
-                status:404,
-                err:e.message
+                status: 404,
+                err: e.message
             })
         }
     }

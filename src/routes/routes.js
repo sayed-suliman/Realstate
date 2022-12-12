@@ -3,7 +3,7 @@ const router = new express.Router()
 const { login, postLogin, signUp } = require("../controllers/auth")
 const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
 const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid, isAdminorRegulator } = require("../middleware/authentication")
+const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid, isRegulatororStudent } = require("../middleware/authentication")
 const signUpMiddleware = require("../middleware/authValidation")
 const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse, allCourses } = require("../controllers/courses")
 const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
@@ -24,6 +24,7 @@ const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
+const authMiddlewareUpdateByAdmin = require("../middleware/updateUserAuth")
 
 
 router.get("/test", (req, res) => {
@@ -111,7 +112,7 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 
 
 // ********************************************* users
-router.get("/dashboard/users", isAdminorRegulator, users)
+router.get("/dashboard/users", isAdmin, users)
 router.get("/dashboard/add-user", isAdmin, addUsers)
 // post user by admin
 router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser)
@@ -127,7 +128,7 @@ router.post("/dashboard/user-edit/update-user",isAdmin,updateUser)
 router.get("/dashboard/add-package", isAdmin, package)
 router.post('/dashboard/add-package', isAdmin, addPackage)
 // package details
-router.get("/dashboard/package-detail", isAdminorRegulator, packagesDetail)
+router.get("/dashboard/package-detail", isAdmin, packagesDetail)
 router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage)
 router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage)
 // delete package
@@ -164,7 +165,7 @@ router.post("/dashboard/add-chapter", upload.single("courseFile"), isAdmin, post
 // for test below link
 router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
 // chapter details 
-router.get("/dashboard/chapter-detail", isAdminorRegulator, chapterDetail)
+router.get("/dashboard/chapter-detail", isAdmin, chapterDetail)
 // Edit Chapters 
 router.get("/dashboard/chapter-detail/edit-chapter", isAdmin, editChapter)
 // Delete Chapters 
@@ -182,7 +183,7 @@ router.get("/dashboard/add-quiz", isAdmin, addQuiz)
 router.post("/dashboard/add-quiz", isAdmin, postQuiz)
 
 // quiz details 
-router.get("/dashboard/quiz-detail", isAdminorRegulator, quizDetail)
+router.get("/dashboard/quiz-detail", isAdmin, quizDetail)
 
 // quiz edit page
 router.get("/dashboard/quiz-detail/edit-quiz", isAdmin, editQuiz)
@@ -200,14 +201,14 @@ router.post('/test-quiz', takeQuiz)
 router.get("/dashboard/add-coupon", isAdmin, getCoupon)
 router.post("/dashboard/coupon-generated", isAdmin, postCoupon)
 
-router.get("/dashboard/coupon-detail", isAdminorRegulator, detailsCoupon)
+router.get("/dashboard/coupon-detail", isAdmin, detailsCoupon)
 // delete
 router.get("/dashboard/coupon-detail/delete-coupon", isAdmin, deleteCoupon)
 
 
 // ******************************** Sort
-router.get("/dashboard/sort", isAdminorRegulator, sort)
-router.get("/dashboard/sort/course/:id", isAdminorRegulator, sortCourse)
+router.get("/dashboard/sort", isAdmin, sort)
+router.get("/dashboard/sort/course/:id", isAdmin, sortCourse)
 // sort data using jquery..!
 router.post('/sort/data', sortData)
 
@@ -215,8 +216,8 @@ router.post('/sort/data', sortData)
 router.get("/dashboard/order", allOrders)
 
 // ************************************ message
-router.get("/dashboard/messages", isAdminorRegulator, messages)
-router.get("/dashboard/read-message/:id", isAdminorRegulator, readMessage)
+router.get("/dashboard/messages", isAdmin, messages)
+router.get("/dashboard/read-message/:id", isAdmin, readMessage)
 
 
 

@@ -125,12 +125,14 @@ hbs.registerHelper("checkStatus", (start, end) => {
 })
 // format date
 hbs.registerHelper("formatDate", (date) => {
-    if (date) {
-        let year = date.getFullYear()
-        let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth()+1}`: date.getMonth() + 1 
-        let day =  (date.getDate()) < 10 ? `0${date.getDate()}`: date.getDate()
-        console.log(`${year}-${day}-${month}`)
-        return `${year}-${month}-${day}`
+    if(date){
+        if (typeof(date) === "object") {
+            let year = date.getFullYear()
+            let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth()+1}`: date.getMonth() + 1 
+            let day =  (date.getDate()) < 10 ? `0${date.getDate()}`: date.getDate()
+            return `${year}-${month}-${day}`
+        }
+        if(typeof(date) === "string") return date
     }
     return ""
 })

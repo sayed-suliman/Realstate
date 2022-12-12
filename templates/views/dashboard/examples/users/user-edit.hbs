@@ -41,7 +41,7 @@
                                     <h3 class="card-title">Edit Data</h3>
                                 </div>
 
-                                <form action="update-user?id={{editUser._id}}" method="post" class="form-horizontal">
+                                <form action="update-user?uId={{editUser._id}}" method="post" class="form-horizontal">
                                     <div class="card-body">
                                         {{!-- fullname --}}
                                         <div class="form-group row">
@@ -104,13 +104,13 @@
                                             </div>
                                         </div>
                                         {{!-- Payment Method --}}
-                                        {{!-- <div class="form-group row">
+                                        <div class="form-group row">
                                             <label for="payment" class="col-sm-2 col-form-label">Payment</label>
                                             <div class="col-sm-4">
-                                                <input min="0" required type="number" value="{{editUser.amount}}"
+                                                <input min="0" required type="number" value="{{order.amount}}"
                                                     name="amount" class="form-control" id="amount" placeholder="Amount">
                                             </div>
-                                        </div> --}}
+                                        </div>
                                     </div>
 
                                     <div class="card-footer">

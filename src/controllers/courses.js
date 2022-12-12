@@ -207,14 +207,21 @@ const deleteCourse = async (req, res) => {
 var allCourses = async (req, res) => {
     try {
         await req.user.populate({ path: 'package', populate: { path: 'courses' } })
-        var userCourses = await req.user.package.courses
+        var userCourses 
+        if(req.user.role === "student"){
+            userCourses = await req.user.package.courses
+        }
+        if(req.user.role === "regulator"){
+            userCourses = await CourseModel.find({status:'publish'})
+            console.log(userCourses)
+        }
         let progress = {};
         for await (let content of userCourses) {
             // used for to find the content(chap+quiz) length 
             let total = 0;
 
             for await (let chapter of content.chapters) {
-                const completedChap = await UserMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                const completedChap = await UserMeta.findOne({ chapter_id: chapter.toString(), user_id: req.user._id, meta_key: "completed" })
                 if (completedChap) {
                     if (progress[content.name]) {
                         progress[content.name]++
@@ -260,43 +267,43 @@ var allCourses = async (req, res) => {
 var viewCourse = async (req, res) => {
     try {
         // for regulator 
-        if(req.user.role === 'role'){
+        if (req.user.role === 'role') {
             const ID = req.params.id
-        const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
+            const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
 
-        for await (let [index, quiz] of course.quizzes.entries()) {
-            const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
-            if (takenQuiz) {
-                Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
-                Object.assign(course.quizzes[index], { 'unlock': true })
+            for await (let [index, quiz] of course.quizzes.entries()) {
+                const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
+                if (takenQuiz) {
+                    Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
+                    Object.assign(course.quizzes[index], { 'unlock': true })
+                }
             }
-        }
-        if (course) {
-            // sorting the chapter by name 
-            const contents = [...course.quizzes, ...course.chapters]
-            contents.sort((a, b) => {
-                if (a.order < b.order) { return -1; }
-                if (a.order > b.order) { return 1; }
-                return 0;
-            })
+            if (course) {
+                // sorting the chapter by name 
+                const contents = [...course.quizzes, ...course.chapters]
+                contents.sort((a, b) => {
+                    if (a.order < b.order) { return -1; }
+                    if (a.order > b.order) { return 1; }
+                    return 0;
+                })
 
-            if (contents.length) {
-                for await (let [index] of contents.entries()) {
-                    if (!contents[index].unlock) {
-                        if (index == 0) continue
-                        if (typeof (contents[index - 1].unlock) != undefined) {
-                            if (contents[index - 1].unlock) {
-                                contents[index].unlock = true;
-                                break;
+                if (contents.length) {
+                    for await (let [index] of contents.entries()) {
+                        if (!contents[index].unlock) {
+                            if (index == 0) continue
+                            if (typeof (contents[index - 1].unlock) != undefined) {
+                                if (contents[index - 1].unlock) {
+                                    contents[index].unlock = true;
+                                    break;
+                                }
                             }
                         }
                     }
+                    // unlock the first content of the current chapter
+                    Object.assign(contents[0], { 'unlock': true })
                 }
-                // unlock the first content of the current chapter
-                Object.assign(contents[0], { 'unlock': true })
+                return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
             }
-            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
-        }
         }
 
         // regulator end

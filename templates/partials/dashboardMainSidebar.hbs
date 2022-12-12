@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<aside class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column">
   <!-- Brand Logo -->
   <a href="/dashboard" class="brand-link">
     <img src="/dashboard/dist/img/AdminLTELogo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3"
@@ -7,7 +7,7 @@
   </a>
 
   <!-- Sidebar -->
-  <div class="sidebar">
+  <div class="sidebar flex-grow-1">
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
@@ -23,8 +23,6 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-        <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
         <!-- dashboard -->
         <li class="nav-item">
           <a href="/dashboard" id='dashboard-link' class="nav-link">
@@ -34,6 +32,7 @@
             </p>
           </a>
         </li>
+        {{!-- for student --}}
         {{#ifEquals user.role "student"}}
         <li class="nav-item">
           <a href="/dashboard/courses" id="courses" class="nav-link">
@@ -50,6 +49,7 @@
           </a>
         </li>
         {{/ifEquals}}
+        {{!-- for admin --}}
         {{#ifEquals user.role "admin"}}
         <!-- Package -->
         <li class="nav-item">
@@ -240,24 +240,13 @@
             <p>Courses</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="/dashboard/contact-us" id="contact-us-link" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
-            <i class="fa-solid fa-id-card-clip nav-icon"></i>
-            <p>Contact us</p>
-          </a>
-        </li>
-
         {{/ifEquals}}
-        {{!-- <li class="nav-item">
-          <a href="/dashboard/search" id="search-link" class="nav-link">
-            <i class="nav-icon fas fa-search"></i>
-            <p>
-              Search
-            </p>
-          </a>
-        </li> --}}
-        <!--Logout -->
+      </ul>
+    </nav>
+  </div>
+  <div class="sidebar" style="margin-bottom:10px">
+    <nav>
+      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
         <li class="nav-item">
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>
@@ -268,7 +257,7 @@
         </li>
       </ul>
     </nav>
-    <!-- /.sidebar-menu -->
   </div>
+  <!-- /.sidebar-menu -->
   <!-- /.sidebar -->
 </aside>

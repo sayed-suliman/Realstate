@@ -96,7 +96,7 @@
                                             <div class="feedback font-weight-bold d-none"></div>
                                         </div>
                                         {{/each}}
-                                        <button class="btn btn-success mt-2 float-left submit"
+                                        <button class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
                                             type="submit">Submit</button>
                                     </form>
                                     <div

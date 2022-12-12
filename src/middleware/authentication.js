@@ -75,8 +75,8 @@ var isAdmin = (req, res, next) => {
         res.redirect("/dashboard")
     }
 }
-var isAdminorRegulator = (req, res, next) => {
-    if (req.user.role === "regulator" || req.user.role === "admin") {
+var isRegulatororStudent = (req, res, next) => {
+    if (req.user.role === "regulator" || req.user.role === "student") {
         next()
     } else {
         res.redirect("/dashboard")
@@ -117,4 +117,4 @@ var verifiedAndPaid = async (req, res, next) => {
     next()
 }
 
-module.exports = { authenticated, logged_in, verifiedAndPaid, isStudent, isAdmin, isAdminorRegulator }
+module.exports = { authenticated, logged_in, verifiedAndPaid, isStudent, isAdmin, isRegulatororStudent }

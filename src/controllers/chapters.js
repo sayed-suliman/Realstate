@@ -216,6 +216,7 @@ const markAsCompleted = async (req, res) => {
 
 // error msg
 const errorMsg = async (error, req, res, next) => {
+    console.log('here is ovvur')
     var msg = await encodeMsg(error.message, "danger", 500)
     res.redirect('/dashboard/add-chapter?msg=' + msg)
     // for postman

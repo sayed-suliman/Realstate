@@ -47,7 +47,7 @@
                                         </div>
                                         {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div>
                                         --}}
-                                        <button class="btn btn-success mt-2 float-left" id="completed"
+                                        <button class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-left" id="completed"
                                             style="width: 170px;" {{#if chapter.completed}}disabled{{/if}}>
                                             <div class="spinner d-none" id="spinner">
                                                 <i class="fa-solid fa-circle-notch fa-spin"></i>

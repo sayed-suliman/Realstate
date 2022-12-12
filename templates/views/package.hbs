@@ -21,10 +21,10 @@
     <main class="py-5">
         <div class="container">
             {{!-- plans --}}
-            <div class="row">
+            <div class="row justify-content-evenly">
                 {{!-- 1st column --}}
                 {{#with packageObj.Basic}}
-                <div class="col-md-3 p-1 text-center">
+                <div class="col-lg-3 col-md-5 p-1 text-center">
                     <div class=" package-column">
                         <h5>{{name}}</h5>
                         <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
@@ -48,8 +48,9 @@
                     </div>
                 </div>
                 {{/with}}
+                {{!-- 2nd column --}}
                 {{#with packageObj.Silver}}
-                <div class="col-md-3 p-1 text-center">
+                <div class="col-lg-3 col-md-5 p-1 text-center">
                     <div class="package-column">
                         <h5>{{name}}</h5>
                         <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
@@ -73,8 +74,9 @@
                     </div>
                 </div>
                 {{/with}}
+                {{!-- 3rd column --}}
                 {{#with packageObj.Gold}}
-                <div class="col-md-3 p-1 text-center">
+                <div class="col-lg-3 col-md-5 p-1 text-center">
                     <div class="package-column">
                         <h5>{{name}}</h5>
                         <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
@@ -98,8 +100,9 @@
                     </div>
                 </div>
                 {{/with}}
+                {{!-- 4th column --}}
                 {{#with packageObj.Premium}}
-                <div class="col-md-3 p-1 text-center">
+                <div class="col-lg-3 col-md-5 p-1 text-center">
                     <div class="package-column">
                         <h5>{{name}}</h5>
                         <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>

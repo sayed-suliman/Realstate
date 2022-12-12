@@ -102,41 +102,22 @@
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
+                                                <th style="width: 65px;">S.No</th>
                                                 <th>Name</th>
-                                                <th>Package</th>
-                                                <th>Description</th>
-                                                <th>Status</th>
-                                                <th>Price</th>
-                                                <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
-                                                    Edit</th>
+                                                <th>View</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each allCourses}}
+                                            {{#each userCourses}}
                                             <tr>
-                                                <td>{{this.name}}</td>
-                                                <td>
-                                                    {{#each this.package}}
-                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
-                                                    {{/each}}
+                                                <td>{{increment @index}}</td>
+                                                <td class="text-capitalize">
+                                                    <a href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
                                                 </td>
-                                                <td>{{this.description}}</td>
-                                                <td>{{this.status}}</td>
-                                                <td>{{this.price}}</td>
-                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
-                                                    <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-success">
-                                                            <i class="fa-solid fa-pen-to-square"></i>
-                                                        </button>
+                                                <td>
+                                                    <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
+                                                        <i class="fas fa-book"></i> View Course
                                                     </a>
-                                                    {{!-- <a
-                                                        href="/dashboard/course-detail/delete-course?cId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </a> --}}
                                                 </td>
                                             </tr>
                                             {{/each}}
@@ -151,7 +132,9 @@
                                             </tr>
                                         </tfoot> --}}
                                     </table>
+
                                     {{/ifEquals}}
+                                    {{!-- student --}}
                                     {{#ifEquals user.role "student"}}
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
@@ -172,7 +155,8 @@
                                                         <div class="progress-bar progress-bar-danger"
                                                             style="width: {{lookup ../progress this.name}}%"></div>
                                                     </div>
-                                                    {{#if (lookup ../progress this.name)}}{{lookup ../progress this.name}}{{else}}0{{/if}}%
+                                                    {{#if (lookup ../progress this.name)}}{{lookup ../progress
+                                                    this.name}}{{else}}0{{/if}}%
                                                 </td>
                                                 <td>
                                                     <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
