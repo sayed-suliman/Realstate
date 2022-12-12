@@ -31,7 +31,7 @@ module.exports = {
                     // used for to find the content(chap+quiz) length 
                     let total = 0;
                     for await (let chapter of content.chapters) {
-                        const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                        const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_id: req.user._id.toString(), meta_key: "completed" })
                         if (completedChap) {
                             if (progress[content.name]) {
                                 progress[content.name]++
@@ -66,7 +66,7 @@ module.exports = {
                         userCourses.splice(index, 1)
                     }
                 }
-                // console.log(userCourses)
+                completedCourses = Object.keys(completedCourses).length ? completedCourses : undefined
                 return res.render("dashboard/new-dashboard", {
                     title: "Dashboard",
                     userCourses,
@@ -76,47 +76,12 @@ module.exports = {
                 })
             }
             // regulator part start
-            
+
             if (req.user.role == 'regulator') {
-                // await req.user.populate({ path: 'package', populate: { path: 'courses' } })
-                var userCourses = await Course.find({status:'publish'})
-                console.log('courses',userCourses)
-                let progress = {};
-                // for await (let content of userCourses) {
-                //     // used for to find the content(chap+quiz) length 
-                //     let total = 0;
-
-                //     // for await (let chapter of content.chapters) {
-                //     //     const completedChap = await userMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
-                //     //     if (completedChap) {
-                //     //         if (progress[content.name]) {
-                //     //             progress[content.name]++
-                //     //         } else {
-                //     //             progress[content.name] = 1
-                //     //         }
-
-                //     //     }
-                //     //     total++
-                //     // }
-                //     for await (let quiz of content.quizzes) {
-                //         const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz.toString() })
-                //         if (takenQuiz) {
-                //             if (progress[content.name]) {
-                //                 progress[content.name]++
-                //             } else {
-                //                 progress[content.name] = 1
-                //             }
-                //         }
-                //         total++
-                //     }
-                //     if (progress[content.name]) {
-                //         progress[content.name] = Math.floor((progress[content.name] / total) * 100)
-                //     }
-                // }
+                var userCourses = await Course.find({ status: 'publish' })
                 return res.render("dashboard/new-dashboard", {
                     title: "Dashboard",
                     userCourses,
-                    // progress,
                     toast: Object.keys(msg).length == 0 ? undefined : msg,
                 })
             }

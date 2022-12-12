@@ -214,7 +214,7 @@ var allCourses = async (req, res) => {
             let total = 0;
 
             for await (let chapter of content.chapters) {
-                const completedChap = await UserMeta.findOne({ chapter_id: chapter.toString(), user_Id: req.user._id, meta_key: "completed" })
+                const completedChap = await UserMeta.findOne({ chapter_id: chapter.toString(), user_id: req.user._id, meta_key: "completed" })
                 if (completedChap) {
                     if (progress[content.name]) {
                         progress[content.name]++
@@ -260,7 +260,7 @@ var allCourses = async (req, res) => {
 var viewCourse = async (req, res) => {
     try {
         // for regulator 
-        if(req.user.role === 'role'){
+        if(req.user.role === 'regulator'){
             const ID = req.params.id
         const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
 
@@ -314,7 +314,7 @@ var viewCourse = async (req, res) => {
         }
 
         for await (let [index, chapter] of course.chapters.entries()) {
-            const completedChapter = await UserMeta.findOne({ user_id: req.user._id, chapter_id: chapter, meta_key: "completed" })
+            const completedChapter = await UserMeta.findOne({ user_id: req.user._id.toString(), chapter_id: chapter, meta_key: "completed" })
             if (completedChapter) {
                 Object.assign(course.chapters[index], { 'completed': true })
                 Object.assign(course.chapters[index], { 'unlock': true })
