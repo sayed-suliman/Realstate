@@ -41,8 +41,8 @@ stripeBtn.addEventListener('click', function () {
             return;
         } else if (dob.value) {
             const age = getAge(new Date(dob.value))
-            if (age < 18) {
-                showInputMessage(dob, "Your age must be 18+.")
+            if (age <= 16) {
+                showInputMessage(dob, "Your age must be 16+.")
                 return;
             }
         }
@@ -218,8 +218,8 @@ paypalBtn.addEventListener('click', async function () {
             return;
         } else if (dob.value) {
             const age = getAge(new Date(dob.value))
-            if (age < 18) {
-                showInputMessage(dob, "Your age must be 18+.")
+            if (age <= 16) {
+                showInputMessage(dob, "Your age must be 16+.")
                 return;
             }
         }
