@@ -7,17 +7,24 @@ const Order = require("../models/order");
 module.exports = {
     async users(req, res) {
         var { page } = req.query;
+        var msgToken = req.query.msg;
+        var option = {}
+        if (msgToken) {
+            var msg = decodeMsg(msgToken)
+            option = msg
+        }
+        console.log(option)
         if (!page) page = 1
         var limit = 6 //number of user per page
         var noOfPages = Math.ceil(await User.find({ role: "student" }).count() / limit);
         if (page > noOfPages) {
             const users = await User.find({ role: "student" }).populate('package');
-            return res.render("dashboard/examples/users", { title: "Dashboard | Users", users })
+            return res.render("dashboard/examples/users", { title: "Dashboard | Users", users, toast: Object.keys(option).length == 0 ? undefined : option })
         }
         const users = await User.find({ role: "student" }).populate('package').limit(parseInt(limit)).skip(parseInt((page - 1) * limit));
         users.currentPage = page;
         users.pages = noOfPages;
-        res.render("dashboard/examples/users/users", { title: "Dashboard | Users", users })
+        res.render("dashboard/examples/users/users", { title: "Dashboard | Users", users, toast: Object.keys(option).length == 0 ? undefined : option })
     },
     async addUsers(req, res) {
         try {
@@ -185,7 +192,7 @@ module.exports = {
                 if (result) {
                     var msg = encodeMsg("User Updated")
                     await order.updateOne({ amount: editUser.amount }, { runValidators: true })
-                    res.redirect(`/dashboard/users?` + msg)
+                    res.redirect(`/dashboard/users?msg=` + msg)
                 }
             })
             // res.json({

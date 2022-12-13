@@ -142,7 +142,6 @@
                     <thead>
                       <tr>
                         <th>Course Name</th>
-                        <th>Progress</th>
                         <th class="text-right">View</th>
                       </tr>
                     </thead>
@@ -151,11 +150,6 @@
                       <tr>
                         <td>
                           <a class="text-capitalize" href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
-                        </td>
-                        <td>
-                          <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger" style="width: {{lookup ../progress this.name}}%"></div>
-                          </div>
                         </td>
                         <td class="text-right">
                           <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
@@ -195,6 +189,9 @@
             </div> --}}
             <!-- /.col-md-6 -->
             {{/ifEquals}}
+
+
+            {{!-- Student  --}}
             <!-- /.col-md-6 -->
             {{#ifEquals user.role "student"}}
             <!-- Purchased Course -->
