@@ -16,10 +16,18 @@
         {{/each}}
     </div> --}}
     {{!-- <a href="/checkout?package=636b7ddbd2dccf7bc0b180de" class="btn btn-info">Silver ($1299)</a> --}}
-
     {{!-- first top section with login and signup buttons --}}
     <main class="py-5">
         <div class="container">
+            <div class="row">
+                {{#if msg.text}}
+                <div class="alert {{#ifEquals msg.type " success"}} alert-success {{else}} alert-danger {{/ifEquals}}
+                    alert-dismissible fade show w-50" role="alert">
+                    {{{msg.text}}}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+                {{/if}}
+            </div>
             {{!-- plans --}}
             <div class="row justify-content-evenly">
                 {{!-- 1st column --}}
