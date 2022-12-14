@@ -186,6 +186,11 @@
             $("#dashboard-link").removeClass("active")
             $('#messages-link').addClass("active")
         }
+        //setting
+        if (url.includes("setting")) {
+            $("#dashboard-link").removeClass("active")
+            $('#setting-link').addClass("active")
+        }
     })
     //showing alert(toast)
     {{#if toast }}

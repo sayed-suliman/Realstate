@@ -25,6 +25,7 @@ const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
 const authMiddlewareUpdateByAdmin = require("../middleware/updateUserAuth")
+const { settingView } = require("../controllers/setting")
 
 
 router.get("/test", (req, res) => {
@@ -108,6 +109,10 @@ router.post('/register-coupon', couponRegisterAPI)
 // ************************************ contact-us
 router.get("/dashboard/contact-us", isStudent, contactUs)
 router.post("/dashboard/contact-us", isStudent, postContact)
+
+//  ************************************ Setting
+
+router.get("/dashboard/setting",isAdmin,settingView)
 
 
 

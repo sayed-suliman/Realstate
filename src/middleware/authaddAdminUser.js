@@ -2,8 +2,8 @@ const { check, validationResult } = require("express-validator")
 const User = require("../models/users")
 Date.prototype.getAge = function () {
     const date = new Date()
-    const eighteen = date.getFullYear() - 18
-    date.setUTCFullYear(eighteen)
+    const sixteen = date.getFullYear() - 16
+    date.setUTCFullYear(sixteen)
     return date
 }
 const age = new Date()
@@ -25,6 +25,6 @@ const addUserByAdminMiddleware = [
         }
     }),
     check("password").isLength({ min: 6 }).withMessage('Password must be at least 6 char long'),
-    check("dob").isBefore(age.getAge().toString()).withMessage("Your Entered an invalid date of birth. User must be 18+")
+    check("dob").isBefore(age.getAge().toString()).withMessage("Your Entered an invalid date of birth. User must be 16 or 16+")
 ]
 module.exports = addUserByAdminMiddleware

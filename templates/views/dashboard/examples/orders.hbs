@@ -1,7 +1,15 @@
 {{>dashboardheader}}
 
 <head>
-
+<style>
+    #example2_filter label{
+        display: flex;
+        float: right;
+    }
+    #example2_filter label input{
+        margin-left: 10px;
+    }
+</style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -22,7 +30,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>Quiz Detail</h1>
+                            <h1>Orders</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -41,20 +49,29 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
+                                {{!-- <div class="card-header">
                                     <h3 class="card-title">DataTable with minimal features & hover style</h3>
-                                </div>
+                                </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
+                                    {{!-- <div class="row">
+                                        <div class="col-sm-12 col-md-6">
+                                            <div id="example1_filter" class="dataTables_filter"><label>Search:
+                                                    <input type="search" class="form-control form-control-sm"
+                                                        placeholder="" aria-controls="example1"></label>
+                                            </div>
+                                        </div>
+                                    </div> --}}
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
-                                                <th>#</th>
+                                                <th style="width: 65px;">#</th>
                                                 <th>Amount</th>
                                                 <th>Package</th>
                                                 {{!-- <th>Teacher</th> --}}
                                                 <th>Payment Mode</th>
                                                 <th>By</th>
+                                                <th>email</th>
                                                 <th>Ordered At</th>
                                             </tr>
                                         </thead>
@@ -64,9 +81,9 @@
                                                 <td>{{increment @index}}</td>
                                                 <td>{{this.amount}}</td>
                                                 <td>{{this.package.name}}</td>
-                                                {{!-- <td></td> --}}
                                                 <td>{{this.pay_method}}</td>
                                                 <td>{{this.user.name}}</td>
+                                                <td>{{this.user.email}}</td>
                                                 <td>{{formatDate this.createdAt}}</td>
                                             </tr>
                                             {{/each}}
@@ -95,7 +112,7 @@
     </div>
     <!-- ./wrapper -->
 
-{{!-- footer links --}}
+    {{!-- footer links --}}
     {{>dashboardfooterlinks}}
     <!-- DataTables  & Plugins -->
     <script src="/dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
@@ -114,10 +131,9 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example1").DataTable({
+            $("#example2").DataTable({
                 "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
+            }).container().appendTo('#example2_wrapper');
             $('#example2').DataTable({
                 "paging": true,
                 "lengthChange": false,
