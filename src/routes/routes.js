@@ -36,7 +36,12 @@ router.get("/test", (req, res) => {
 router.get("/", async (req, res) => {
     const msg = req.query.msg;
     const type = req.query.type;
-    const packages = await Package.find({ status: "publish" }).populate("courses");
+    const packages = await Package.find({ status: "publish" }).populate({
+        path:"courses",
+        select:{
+            status:"publish"
+        }
+    });
     const packageObj = {}
     packages.forEach(package => {
         packageObj[package.name] = package
