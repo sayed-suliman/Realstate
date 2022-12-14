@@ -3,7 +3,8 @@ const Coupon = require("../models/coupons")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Order = require('../models/order')
 const User = require('../models/users')
-const url = require('url')
+const url = require('url');
+const { welcomeEmail } = require("./mailServices");
 
 module.exports = {
     async getCoupon(req, res) {
@@ -123,7 +124,7 @@ module.exports = {
                             }
                         }
                         if (result) {
-                            await Order({
+                            const order = await Order({
                                 user: user._id,
                                 package: user.package._id,
                                 amount: 0,
@@ -132,6 +133,14 @@ module.exports = {
                                 verified: true
                             }).save()
                             await Coupon.findOneAndUpdate({ _id: coupon._id, length: { $gt: 0 } }, { $inc: { length: -1 } })
+                            welcomeEmail(user.email, {
+                                username: user.name,
+                                orderDate: order.createdAt,
+                                packageName: user.package.name,
+                                totalPrice: 0,
+                                siteName: process.env.SITE_NAME,
+                                siteURL: "https://members.realestateinstruct.com"
+                            })
                             return req.login(user, function (err) {
                                 if (err) { return next(err); }
                                 return res.send({

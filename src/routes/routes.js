@@ -15,7 +15,7 @@ const { upload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter, markAsCompleted } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz } = require("./../controllers/quiz")
-const { sendVerificationCode } = require("../controllers/mailServices")
+const { sendVerificationCode, welcomeEmail } = require("../controllers/mailServices")
 const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
 const { dashboard } = require("../controllers/dashboard")
 const { users, addUsers, postUser, editUser, updateUser } = require("../controllers/users")
@@ -31,6 +31,27 @@ const { settingView } = require("../controllers/setting")
 router.get("/test", (req, res) => {
     sendVerificationCode('sulimank418@gmail.com', '1234')
     res.render("package")
+})
+router.get("/email", (req, res) => {
+    const testUser = {
+        username: "Suliman Khan",
+        orderDate: "24 Dec 2022",
+        packageName: "Basic",
+        packageCourses: ["Course 1", "Course 2", "Course 3"],
+        totalPrice: "200",
+        siteName: process.env.SITE_NAME,
+        siteURL: "https://members.realestateinstruct.com"
+    }
+    welcomeEmail('sulimank418@gmail.com', testUser)
+    res.render("mail/welcome", {
+        username: "Suliman Khan",
+        orderDate: "24 Dec 2022",
+        packageName: "Basic",
+        packageCourses: ["Course 1", "Course 2", "Course 3"],
+        totalPrice: "200",
+        siteName: "Real estate Instruct",
+        siteURL: "#"
+    })
 })
 // default route
 router.get("/", async (req, res) => {
@@ -112,7 +133,7 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 
 //  ************************************ Setting
 
-router.get("/dashboard/setting",isAdmin,settingView)
+router.get("/dashboard/setting", isAdmin, settingView)
 
 
 
@@ -122,9 +143,9 @@ router.get("/dashboard/add-user", isAdmin, addUsers)
 // post user by admin
 router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser)
 //edit page to admin
-router.get("/dashboard/user-edit/:id",isAdmin,editUser)
+router.get("/dashboard/user-edit/:id", isAdmin, editUser)
 // update user
-router.post("/dashboard/user-edit/update-user",isAdmin,updateUser)
+router.post("/dashboard/user-edit/update-user", isAdmin, updateUser)
 
 
 

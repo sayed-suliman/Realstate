@@ -30,5 +30,7 @@ const Result = mongoose.model('result', new mongoose.Schema({
             return JSON.stringify(data)
         }
     }
+}, {
+    timestamps: true
 }))
 module.exports = Result

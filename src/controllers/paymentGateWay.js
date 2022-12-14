@@ -7,6 +7,7 @@ const Package = require("../models/package")
 const url = require('url');
 const { encodeMsg } = require('../helper/createMsg');
 const Coupon = require('../models/coupons');
+const { welcomeEmail } = require('./mailServices');
 
 paypal.configure({
     mode: process.env.SITE_DEBUG ? 'sandbox' : 'live',
@@ -181,6 +182,14 @@ module.exports = {
                     verified: true
                 }).save()
                 if (order) {
+                    welcomeEmail(user.email,{
+                        username: user.name,
+                        orderDate: order.createdAt,
+                        packageName: user.package.name,
+                        totalPrice: price - discount,
+                        siteName: process.env.SITE_NAME,
+                        siteURL: "https://members.realestateinstruct.com"
+                    })
                     return req.login(user, function (err) {
                         if (err) { return next(err); }
                         return res.redirect(url.format({

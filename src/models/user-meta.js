@@ -10,6 +10,8 @@ const userMeta = mongoose.model('user-meta', mongoose.Schema({
     },
     meta_key: String,
     meta_value: String,
+}, {
+    timestamps: true
 }))
 
 module.exports = userMeta
