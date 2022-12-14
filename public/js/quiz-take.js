@@ -18,7 +18,7 @@ $(document).ready(function () {
     let minutes;
     let time;
 
-    timeInterval = setInterval(timer, 1000)
+    timeInterval = setInterval(()=>timer(), 1000)
     var timer = () => {
         timeInSeconds++
         setQuizTimer()

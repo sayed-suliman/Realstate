@@ -3,6 +3,7 @@ require('dotenv').config()
 const hbs = require("nodemailer-express-handlebars")
 const path = require('path')
 
+// format date
 var transport = nodemailer.createTransport({
     host: process.env.host,
     port: process.env.mail_port,
@@ -70,6 +71,38 @@ module.exports = {
         } catch (error) {
             console.log(error)
             console.log('Error while send reset email')
+        }
+    },
+    async welcomeEmail(email, data) {
+        try {
+            var formatDate = (date) => {
+                if (date) {
+                    if (typeof (date) === "object") {
+                        let year = date.getFullYear()
+                        let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+                        let day = (date.getDate()) < 10 ? `0${date.getDate()}` : date.getDate()
+                        return `${year}-${month}-${day}`
+                    }
+                    if (typeof (date) === "string") return date
+                }
+                return ""
+            }
+            data.orderDate = formatDate(data.orderDate)
+            var send = await transport.sendMail({
+                from: process.env.email,
+                to: email,
+                subject: `Welcome to ${data.siteName}`,
+                template: 'welcome',
+                context: data
+            })
+            if (send) {
+                console.log("Welcome mail send successfully.")
+            } else {
+                console.log("Welcome mail sending failed.")
+            }
+        } catch (error) {
+            console.log(error)
+            console.log('Welcome email sending error')
         }
     }
 }
