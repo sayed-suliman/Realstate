@@ -59,9 +59,6 @@ router.get("/", async (req, res) => {
     const type = req.query.type;
     const packages = await Package.find({ status: "publish" }).populate({
         path:"courses",
-        select:{
-            status:"publish"
-        }
     });
     const packageObj = {}
     packages.forEach(package => {
