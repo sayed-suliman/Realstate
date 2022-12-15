@@ -7,7 +7,8 @@ const packageSchema = new mongoose.Schema({
     tax: Number,
     link:String,
     courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
-    price: Number
+    price: Number,
+    whoFor:Array
 }, {
     timestamps: true
 })
