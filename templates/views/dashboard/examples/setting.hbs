@@ -41,176 +41,278 @@
             <section class="content">
 
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <div class="card card-primary">
-                                <div class="card-header">
-                                    <h3 class="card-title">Setting</h3>
-                                </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-12">
-                                        <form action="">
-                                            {{!-- quiz part --}}
-
-                                            {{!-- range for quiz --}}
-                                            <div class="form-group">
-                                                <label>Quiz Exam Active Date Range:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">
-                                                            <i class="far fa-calendar-alt"></i>
-                                                        </span>
+                    <form action="">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Application Setting</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                {{!-- quiz percenteage --}}
+                                                <div class="form-group">
+                                                    <label for="quizmarks">Passing Marks<small>(Default passing
+                                                            percent
+                                                            is 60)</small></label>
+                                                    <div class="input-group">
+                                                        <input type="number" min="0" max="100" id="quizmarks"
+                                                            placeholder="Example: 60" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
                                                     </div>
-                                                    {{!-- demo value="01/01/2018 - 01/15/2018" --}}
-                                                    <input type="text" class="form-control float-right"
-                                                        id="reservation">
+
+                                                </div>
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for mid exam?</label>
+                                                    <select class="custom-select">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="-1">unlimited</option>
+                                                    </select>
+                                                </div>
+                                                {{!-- final part --}}
+                                                {{!-- final percenteage --}}
+                                                {{!-- <div class="form-group">
+                                                    <label for="finalMarks">Final Passing Marks <small>(Default passing
+                                                            percent
+                                                            is 60)</small></label>
+                                                    <div class="input-group">
+                                                        <input type="number" min="0" max="100" id="finalMarks"
+                                                            placeholder="Example: 60" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+
+                                                </div> --}}
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for Final exam?</label>
+                                                    <select class="custom-select">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="-1">unlimited</option>
+                                                    </select>
+                                                </div>
+
+
+                                                {{!-- quizzes policy --}}
+                                                <div>
+                                                    <p class="font-weight-bold">Quizzes Attempt policy</p>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy1" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy1">Keep all
+                                                                quizzes
+                                                                open to be accessed at any
+                                                                time
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy2" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy2">Allow access
+                                                                only if previous quiz has been
+                                                                passed
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy3" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy3">Separate
+                                                                activation period for each quiz.
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="policyMul1">
+                                                            <label class="font-weight-normal" for="policyMul1">
+                                                                Can student review their quiz?
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
 
                                             </div>
-                                            {{!-- quiz percenteage --}}
-                                            <div class="form-group">
-                                                <label for="quizmarks">Quiz Passing Marks <small>(Default passing
-                                                        percent
-                                                        is 60)</small></label>
-                                                <div class="input-group">
-                                                    <input type="number" min="0" max="100" id="quizmarks"
-                                                        placeholder="Example: 60" class="form-control">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text">%</span>
-                                                    </div>
-                                                </div>
+                                            {{!-- <div class="col-sm-6">
 
-                                            </div>
-                                            {{!-- time retake of quiz --}}
-                                            <div class="form-group">
-                                                <label>How many retakes can a student have for mid exam?</label>
-                                                <select class="custom-select">
-                                                    <option selected="" disabled="" value="">Select one</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                    <option value="-1">unlimited</option>
-                                                </select>
-                                            </div>
-
-
-                                            {{!-- final part --}}
-
-                                            {{!-- range for final --}}
-                                            <div class="form-group">
-                                                <label>Final Exam Active Date Range:</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text">
-                                                            <i class="far fa-calendar-alt"></i>
-                                                        </span>
-                                                    </div>
-                                                    <input type="text" class="form-control float-right"
-                                                        id="finalexamreservation">
-                                                </div>
-                                            </div>
-                                            {{!-- final percenteage --}}
-                                            <div class="form-group">
-                                                <label for="finalMarks">Final Passing Marks <small>(Default passing
-                                                        percent
-                                                        is 60)</small></label>
-                                                <div class="input-group">
-                                                    <input type="number" min="0" max="100" id="finalMarks"
-                                                        placeholder="Example: 60" class="form-control">
-                                                    <div class="input-group-append">
-                                                        <span class="input-group-text">%</span>
-                                                    </div>
-                                                </div>
-
-                                            </div>
-                                            {{!-- time retake of quiz --}}
-                                            <div class="form-group">
-                                                <label>How many retakes can a student have for mid exam?</label>
-                                                <select class="custom-select">
-                                                    <option selected="" disabled="" value="">Select one</option>
-                                                    <option value="1">1</option>
-                                                    <option value="2">2</option>
-                                                    <option value="3">3</option>
-                                                    <option value="4">4</option>
-                                                    <option value="5">5</option>
-                                                    <option value="-1">unlimited</option>
-                                                </select>
-                                            </div>
-
-
-                                            {{!-- quizzes policy --}}
-                                            <div>
-                                                <p class="font-weight-bold">Quizzes Attempt policy</p>
                                                 <div class="form-group clearfix">
                                                     <div class="icheck-primary d-inline">
-                                                        <input type="radio" id="policy1" name="quizPolicy">
-                                                        <label class="font-weight-normal" for="policy1">Keep all quizzes
-                                                            open to be accessed at any
-                                                            time
+                                                        <input type="radio" id="radioPrimary1" name="r1" checked="">
+                                                        <label for="radioPrimary1">
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="radioPrimary2" name="r1">
+                                                        <label for="radioPrimary2">
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="radioPrimary3" name="r1" disabled="">
+                                                        <label for="radioPrimary3">
+                                                            Primary radio
                                                         </label>
                                                     </div>
                                                 </div>
-                                                <div class="form-group clearfix">
-                                                    <div class="icheck-primary d-inline">
-                                                        <input type="radio" id="policy2" name="quizPolicy">
-                                                        <label class="font-weight-normal" for="policy2">Allow access
-                                                            only if previous quiz has been
-                                                            passed
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <div class="icheck-primary d-inline">
-                                                        <input type="radio" id="policy3" name="quizPolicy">
-                                                        <label class="font-weight-normal" for="policy3">Separate
-                                                            activation period for each quiz.
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                <div class="form-group clearfix">
-                                                    <div class="icheck-primary d-inline">
-                                                        <input type="checkbox" id="policyMul1">
-                                                        <label class="font-weight-normal" for="policyMul1">
-                                                            Can student review their quiz?
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                        </form>
+                                            </div> --}}
                                         </div>
-                                        {{!-- <div class="col-sm-6">
-
-                                            <div class="form-group clearfix">
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="radioPrimary1" name="r1" checked="">
-                                                    <label for="radioPrimary1">
-                                                    </label>
-                                                </div>
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="radioPrimary2" name="r1">
-                                                    <label for="radioPrimary2">
-                                                    </label>
-                                                </div>
-                                                <div class="icheck-primary d-inline">
-                                                    <input type="radio" id="radioPrimary3" name="r1" disabled="">
-                                                    <label for="radioPrimary3">
-                                                        Primary radio
-                                                    </label>
-                                                </div>
-                                            </div>
-                                        </div> --}}
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">Save</button>
                                     </div>
                                 </div>
-                                <div class="card-footer">
-                                    <button type="submit" class="btn btn-primary">Save</button>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card card-cyan">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Application Setting</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                {{!-- quiz percenteage --}}
+                                                <div class="form-group">
+                                                    <label for="quizmarks">Passing Marks<small>(Default passing
+                                                            percent
+                                                            is 60)</small></label>
+                                                    <div class="input-group">
+                                                        <input type="number" min="0" max="100" id="quizmarks"
+                                                            placeholder="Example: 60" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for mid exam?</label>
+                                                    <select class="custom-select">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="-1">unlimited</option>
+                                                    </select>
+                                                </div>
+                                                {{!-- final part --}}
+                                                {{!-- final percenteage --}}
+                                                {{!-- <div class="form-group">
+                                                    <label for="finalMarks">Final Passing Marks <small>(Default passing
+                                                            percent
+                                                            is 60)</small></label>
+                                                    <div class="input-group">
+                                                        <input type="number" min="0" max="100" id="finalMarks"
+                                                            placeholder="Example: 60" class="form-control">
+                                                        <div class="input-group-append">
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    </div>
+
+                                                </div> --}}
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for Final exam?</label>
+                                                    <select class="custom-select">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1">1</option>
+                                                        <option value="2">2</option>
+                                                        <option value="3">3</option>
+                                                        <option value="4">4</option>
+                                                        <option value="5">5</option>
+                                                        <option value="-1">unlimited</option>
+                                                    </select>
+                                                </div>
+
+
+                                                {{!-- quizzes policy --}}
+                                                <div>
+                                                    <p class="font-weight-bold">Quizzes Attempt policy</p>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy1" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy1">Keep all
+                                                                quizzes
+                                                                open to be accessed at any
+                                                                time
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy2" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy2">Allow access
+                                                                only if previous quiz has been
+                                                                passed
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="radio" id="policy3" name="quizPolicy">
+                                                            <label class="font-weight-normal" for="policy3">Separate
+                                                                activation period for each quiz.
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group clearfix">
+                                                        <div class="icheck-primary d-inline">
+                                                            <input type="checkbox" id="policyMul1">
+                                                            <label class="font-weight-normal" for="policyMul1">
+                                                                Can student review their quiz?
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                            {{!-- <div class="col-sm-6">
+
+                                                <div class="form-group clearfix">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="radioPrimary1" name="r1" checked="">
+                                                        <label for="radioPrimary1">
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="radioPrimary2" name="r1">
+                                                        <label for="radioPrimary2">
+                                                        </label>
+                                                    </div>
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="radioPrimary3" name="r1" disabled="">
+                                                        <label for="radioPrimary3">
+                                                            Primary radio
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div> --}}
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary">Save</button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </form>
                 </div>
                 <!-- /.card -->
 
