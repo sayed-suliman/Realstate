@@ -23,7 +23,7 @@ module.exports = {
             }
 
             if (req.user.role == 'student') {
-                await req.user.populate({ path: 'package', populate: { path: 'courses' } })
+                await req.user.populate({ path: 'package', populate: { path: 'courses',match:{status:"publish"} } })
                 var userCourses = await req.user.package.courses
                 var completedCourses = {}
                 let progress = {};

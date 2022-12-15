@@ -28,15 +28,13 @@
                 </div>
                 {{/if}}
             </div>
-            {{!-- plans --}}
-            <div class="row justify-content-evenly">
-                {{!-- 1st column --}}
-                {{#with packageObj.Basic}}
+            <div class="row">
+                {{#each packages}}
                 <div class="col-lg-3 col-md-5 p-1 text-center">
                     <div class=" package-column">
-                        <h5>{{name}}</h5>
-                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
-                        <h2>${{price}}</h2>
+                        <h5>{{this.name}}</h5>
+                        <h1 class="text-decoration-line-through">${{increaseAmount this.price}}</h1>
+                        <h2>${{this.price}}</h2>
                         <div>
                             <a href="checkout?package={{_id}}">
                                 <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
@@ -44,96 +42,19 @@
                         </div>
                         <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
                         <div>
-                            <p>Moderate RE experirence</p>
-                            <p>Want to satisfy state reqs</p>
+                            {{#each whoFor}}
+                            <p>{{this}}</p>
+                            {{/each}}
                         </div>
                         <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
                         <div>
-                            {{#each courses}}
+                            {{#each this.courses}}
                             <p class="text-capitalize">{{this.name}}</p>
                             {{/each}}
                         </div>
                     </div>
                 </div>
-                {{/with}}
-                {{!-- 2nd column --}}
-                {{#with packageObj.Silver}}
-                <div class="col-lg-3 col-md-5 p-1 text-center">
-                    <div class="package-column">
-                        <h5>{{name}}</h5>
-                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
-                        <h2>${{price}}</h2>
-                        <div>
-                            <a href="checkout?package={{_id}}">
-                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
-                            </a>
-                        </div>
-                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
-                        <div>
-                            <p>Moderate RE experirence</p>
-                            <p>Want to satisfy state reqs</p>
-                        </div>
-                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
-                        <div>
-                            {{#each courses}}
-                            <p class="text-capitalize">{{this.name}}</p>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
-                {{/with}}
-                {{!-- 3rd column --}}
-                {{#with packageObj.Gold}}
-                <div class="col-lg-3 col-md-5 p-1 text-center">
-                    <div class="package-column">
-                        <h5>{{name}}</h5>
-                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
-                        <h2>${{price}}</h2>
-                        <div>
-                            <a href="checkout?package={{_id}}">
-                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
-                            </a>
-                        </div>
-                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
-                        <div>
-                            <p>Moderate RE experirence</p>
-                            <p>Want to satisfy state reqs</p>
-                        </div>
-                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
-                        <div>
-                            {{#each courses}}
-                            <p class="text-capitalize">{{this.name}}</p>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
-                {{/with}}
-                {{!-- 4th column --}}
-                {{#with packageObj.Premium}}
-                <div class="col-lg-3 col-md-5 p-1 text-center">
-                    <div class="package-column">
-                        <h5>{{name}}</h5>
-                        <h1 class="text-decoration-line-through">${{increaseAmount price}}</h1>
-                        <h2>${{price}}</h2>
-                        <div>
-                            <a href="checkout?package={{_id}}">
-                                <button class="btn btn-primary border-0 rounded-0 px-5 py-2">Enroll</button>
-                            </a>
-                        </div>
-                        <p class="bg-primary text-white py-2 mt-2">WHO IT'S FOR</p>
-                        <div>
-                            <p>Moderate RE experirence</p>
-                            <p>Want to satisfy state reqs</p>
-                        </div>
-                        <p class="bg-primary text-white py-2">WHAT'S INCLUDED</p>
-                        <div>
-                            {{#each courses}}
-                            <p class="text-capitalize">{{this.name}}</p>
-                            {{/each}}
-                        </div>
-                    </div>
-                </div>
-                {{/with}}
+                {{/each}}
             </div>
         </div>
     </main>

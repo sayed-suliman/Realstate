@@ -59,14 +59,15 @@ router.get("/", async (req, res) => {
     const type = req.query.type;
     const packages = await Package.find({ status: "publish" }).populate({
         path:"courses",
-        select:{
+        match:{
             status:"publish"
         }
-    });
+    }).sort('price');
     const packageObj = {}
     packages.forEach(package => {
         packageObj[package.name] = package
     })
+    console.log(packageObj)
     res.render("package", { packages, msg: { text: msg, type }, title: "Packages Plan", packageObj })
 })
 

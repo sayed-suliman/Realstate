@@ -17,12 +17,12 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Add Package</h1>
+              <h1>Edit Package</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
                 <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                <li class="breadcrumb-item active">Project Add</li>
+                <li class="breadcrumb-item active">Pacakge Edit</li>
               </ol>
             </div>
           </div>
@@ -33,7 +33,7 @@
       <section class="content">
         <form action="update-package?pId={{package._id}}" method="post">
           <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-10">
               <div class="card card-primary">
                 <div class="card-header">
                   <h3 class="card-title">General</h3>
@@ -54,8 +54,9 @@
                     {{#each courses}}
                     <div class="custom-control custom-checkbox">
                       <input class="custom-control-input custom-control-input-success custom-control-input-outline"
-                       {{checkData this.name ../package.courses}} value="{{this.name}}" type="checkbox" name="coursename" id="{{this.name}}" >
-                      <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
+                        {{checkData this.name ../package.courses}} value="{{this.name}}" type="checkbox"
+                        name="coursename" id="{{this.name}}">
+                      <label for="{{this.name}}" class="custom-control-label text-capitalize">{{this.name}}</label>
                     </div>
                     {{/each}}
                   </div>
@@ -63,23 +64,52 @@
                     <label for="inputStatus">Status</label>
                     <select id="inputStatus" name="status" class="form-control custom-select">
                       <option disabled value="">Select one</option>
-                      <option {{checkDraftOrPublish package.status 'draft'}} value="draft">Draft</option>
-                      <option {{checkDraftOrPublish package.status 'publish'}} value="publish">Publish</option>
+                      <option {{checkDraftOrPublish package.status 'draft' }} value="draft">Draft</option>
+                      <option {{checkDraftOrPublish package.status 'publish' }} value="publish">Publish</option>
                     </select>
                   </div>
                   <div class="row">
-                  <div class="form-group col">
-                    <label for="price">Package Price</label>
-                    <input type="number" id="price" value="{{package.price}}" name="price" class="form-control">
+                    <div class="form-group col">
+                      <label for="price">Package Price</label>
+                      <input type="number" id="price" value="{{package.price}}" name="price" class="form-control">
+                    </div>
+                    <div class="form-group col">
+                      <label for="price">Package Tax(%)</label>
+                      <input type="number" min="0" max="100" id="price" name="tax" value="{{package.tax}}"
+                        class="form-control">
+                    </div>
                   </div>
-                  <div class="form-group col">
-                    <label for="price">Package Tax(%)</label>
-                    <input type="number" min="0" max="100" id="price" name="tax" value="{{package.tax}}" class="form-control">
+                  {{!-- todo part start here --}}
+                  <div class="form-group row">
+
+                    <label for="todos" class="w-100 pl-2">Who is it for</label>
+                    <div class="col-sm-10">
+                      <input type="text" id="todoInput" class="form-control" id="todos" placeholder="Add who is it for">
+                    </div>
+                    <div class="col-sm-2">
+                      <button type="button" id="todoBtn" class="btn btn-info w-100">Add</button>
+                    </div>
+                    {{!-- todos list --}}
+                    <div class="col-12 mt-2">
+                      <ul class="todo-list ui-sortable" id="todoList" data-widget="todo-list">
+                        {{#each package.whoFor}}
+                        <li>
+                          <div class="d-none">
+                            <input type="checkbox" checked value="{{this}}" name="todo">
+                          </div>
+                          <span>{{this}}</span>
+                          <div class="tools">
+                            <i class="fas fa-trash"></i>
+                          </div>
+                        </li>
+                        {{/each}}
+                      </ul>
+                    </div>
                   </div>
-                  </div>
+
                 </div>
                 <div class="card-footer">
-                 <button type="submit" class="btn btn-success float-right">Update Package</button>
+                  <button type="submit" class="btn btn-success float-right">Update Package</button>
                 </div>
                 <!-- /.card-body -->
               </div>
@@ -104,6 +134,48 @@
 
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
+  {{!-- custom script for this page --}}
+  <script>
+    $(document).ready(function () {
+      $(".fa-trash").click(function (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        $(this).parents()[1].remove()
+      })
+      console.log("jquery working")
+      $("#todoBtn").click(function () {
+        const text = $("#todoInput").val()
+        if (!(text === "")) {
+          const listElement = `
+                <li>
+                  <div class="d-none">
+                    <input type="checkbox" checked value="${text}" name="todo">
+                  </div>
+                  <span>${text}</span>
+                  <div class="tools">
+                    <i class="fas fa-trash"></i>
+                  </div>
+                </li>
+        `
+          $("#todoList").append(listElement)
+          $("#todoInput").val("")
+        }
+        $(".fa-trash").click(function (event) {
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          $(this).parents()[1].remove()
+        })
+      })
+
+      //for enter 
+      $("#todoInput").keydown(function (event) {
+        if (event.keyCode == 13) {
+          event.preventDefault()
+          $("#todoBtn").click()
+        }
+      })
+    })
+  </script>
 </body>
 
 </html>

@@ -30,15 +30,12 @@ module.exports = {
             const course = await Course.find({ name: req.body.coursename }).select("_id")
             const packageData = await req.body
             let selectCourses = req.body.coursename
-            // const coursesName = []
-            // course.forEach(course => {
-            //     coursesName.push(course.name)
-            // })
             const package = await Package({
                 name: packageData.name,
                 status: packageData.status,
                 tax: packageData.tax,
                 courses: course,
+                whoFor: packageData.todo,
                 price: packageData.price,
             }).save();
             if (package) {
@@ -63,21 +60,20 @@ module.exports = {
             }
             // testing
             // res.json({
-            //     data: req.body.coursename,
-            //     courses:course,
-            //     package
+            //     msg:"success",
+            //     data: req.body,
             // })
         } catch (error) {
             // for testing
-            // res.status(404).json({
-            //     err: error.message,
-            //     status: 404
-            // })
+            res.status(404).json({
+                err: error.message,
+                status: 404
+            })
 
 
             // for production mode
-            var msg = encodeMsg('Some error while creating package.', 'danger', '500')
-            return res.redirect('/dashboard?msg=' + msg)
+            // var msg = encodeMsg('Some error while creating package.', 'danger', '500')
+            // return res.redirect('/dashboard?msg=' + msg)
         }
     },
     async packagesDetail(req, res) {
@@ -87,8 +83,11 @@ module.exports = {
             var msg = decodeMsg(msgToken)
             option = msg
         }
-        const packages = await Package.find().populate('courses');
-        console.log(packages)
+        const packages = await Package.find().populate({
+            path: 'courses', match: {
+                status: 'publish'
+            }
+        });
         res.render("dashboard/examples/packages/package-detail", {
             title: "Dashboard | Package Detail",
             packages,
@@ -99,8 +98,12 @@ module.exports = {
 
         try {
             let packageId = req.query.pId
-            const courses = await Course.find();
-            const package = await Package.findById(packageId).populate('courses');
+            const courses = await Course.find({status:'publish'});
+            const package = await Package.findById(packageId).populate({
+                path: 'courses', match: {
+                    status: "publish"
+                }
+            });
             if (package) {
                 // const packages = await Package.find({ status: "publish" })
                 return res.render("dashboard/examples/packages/package-edit",
@@ -112,7 +115,6 @@ module.exports = {
             if (e.message.includes('Cast to ObjectId')) {
                 return res.redirect('/dashboard/package-detail')
             }
-            console.log(e.message)
             res.render("500")
         }
     },
@@ -124,9 +126,9 @@ module.exports = {
             const course = await Course.find({ name: req.body.coursename }).select("_id")
             // get all courses to update their packages
             let courses = await Course.find()
-            // const packageId = await Package.findOne({ name: data.package })
             await package.updateOne({
                 ...data,
+                whoFor:data.todo,
                 courses: course
             })
             if (package) {
@@ -175,16 +177,6 @@ module.exports = {
                     }
                 }
             }
-            // res.json({
-            //     data:package
-            // })
-            // await course.updateOne({
-            //     name: data.name,
-            //     description: data.description,
-            //     status: data.status,
-            //     package: packageId._id,
-            //     price: data.price
-            // })
             var msg = encodeMsg("Package Updated")
             return res.redirect("/dashboard/package-detail?msg=" + msg)
         } catch (e) {
