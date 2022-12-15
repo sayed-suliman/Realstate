@@ -11,6 +11,17 @@ module.exports = {
             if (userID) {
                 const user = await User.findById(userID).populate('package');
                 if (user.verified) {
+                    // admin and regulator redirect to dashboard with msg
+                    // they can't buy a package
+                    if (user.role == "admin" || user.role == "regulator") {
+                        return res.redirect(url.format({
+                            pathname: '/dashboard',
+                            query: {
+                                msg: encodeMsg(`${user.role} can't buy a package.`,'danger')
+                            }
+                        }));
+                    }
+                    // if user has not select a package
                     if (user.package == undefined) {
                         const msg = encodeURIComponent("Please! Select a Package to continue.")
                         const type = encodeURIComponent("danger")

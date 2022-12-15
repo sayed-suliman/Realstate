@@ -179,14 +179,18 @@ const updateChapter = async (req, res) => {
 
 // for student view
 const viewChapter = async (req, res) => {
-    const ID = req.params.id
-    const chapter = await Chapters.findById(ID).lean();
-    const completedChap = await userMeta.findOne({ user_id: req.user._id, chapter_id: chapter._id })
-    if (completedChap) {
-        chapter.completed = true
+    try {
+        const ID = req.params.id
+        const chapter = await Chapters.findById(ID).lean();
+        const completedChap = await userMeta.findOne({ user_id: req.user._id, chapter_id: chapter._id })
+        if (completedChap) {
+            chapter.completed = true
+        }
+        console.log(chapter)
+        res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
+    } catch (error) {
+        res.redirect('/dashboard?msg=' + encodeMsg(error.message, "danger"))
     }
-    console.log(chapter)
-    res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
 }
 const markAsCompleted = async (req, res) => {
     try {
