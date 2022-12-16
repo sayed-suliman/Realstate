@@ -74,7 +74,7 @@ const postChapter = async (req, res) => {
         //     status:chapterAdded
         // })
     } catch (e) {
-        var msg = encodeMsg("Your course has been added")
+        var msg = encodeMsg(e.message)
         return res.redirect('/dashboard?msg=' + msg)
         // postman
         // res.status(501).json({
