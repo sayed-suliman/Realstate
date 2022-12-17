@@ -4,6 +4,7 @@ const expressSession = require('express-session')
 const express = require("express")
 const app = express()
 const hbs = require("hbs")
+const asyncHelpers = require('handlebars-async-helpers')
 const passport = require("passport")
 const path = require("path")
 const flash = require('connect-flash')
@@ -11,6 +12,7 @@ const flash = require('connect-flash')
 // Routes
 const allRoutes = require("./src/routes/routes")
 const Course = require("./src/models/courses")
+const Setting = require("./src/models/setting")
 require("dotenv").config()
 // database connection
 require("./src/db/conn")
@@ -34,6 +36,9 @@ app.use(expressSession({
         touchAfter: 24 * 3600 // update session after 1 day
     })
 }))
+// site title
+let title;
+let logo;
 
 // passport js
 app.use(passport.initialize())
@@ -41,12 +46,17 @@ app.use(passport.session())
 
 // flash initialized
 app.use(flash())
-app.use((req, res, next) => {
+app.use(async (req, res, next) => {
     res.locals.success = req.flash('success')
     res.locals.toast_success = req.flash('alert_success')
     res.locals.toast_error = req.flash('alert_error')
     res.locals.error = req.flash('error')
     res.locals.user = req.user
+
+    // site title and logo
+    const setting = await Setting.findOne()
+    title = setting.collegeName
+    logo = setting.logoPath
     next()
 })
 
@@ -69,9 +79,22 @@ hbs.registerHelper('ifEquals', function (arg1, arg2, block) {
     }
     return block.inverse(this);
 });
-// title on allpages
+
+// title on allPages
 hbs.registerHelper("site_Title", function () {
-    return process.env.SITE_NAME
+    if (title) {
+        return title
+    } else {
+        return process.env.SITE_NAME
+    }
+})
+// logo on allPage
+hbs.registerHelper("site_logo", function () {
+    if (logo) {
+        return logo
+    } else {
+        return "/dashboard/dist/img/AdminLTELogo.png"
+    }
 })
 
 // managing routes.
@@ -125,14 +148,14 @@ hbs.registerHelper("checkStatus", (start, end) => {
 })
 // format date
 hbs.registerHelper("formatDate", (date) => {
-    if(date){
-        if (typeof(date) === "object") {
+    if (date) {
+        if (typeof (date) === "object") {
             let year = date.getFullYear()
-            let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth()+1}`: date.getMonth() + 1 
-            let day =  (date.getDate()) < 10 ? `0${date.getDate()}`: date.getDate()
+            let month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1
+            let day = (date.getDate()) < 10 ? `0${date.getDate()}` : date.getDate()
             return `${year}-${month}-${day}`
         }
-        if(typeof(date) === "string") return date
+        if (typeof (date) === "string") return date
     }
     return ""
 })

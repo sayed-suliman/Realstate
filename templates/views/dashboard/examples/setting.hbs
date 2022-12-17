@@ -41,7 +41,8 @@
             <section class="content">
 
                 <div class="container-fluid">
-                    <form enctype="multipart/form-data" action="setting" method="post">
+                    <form action="setting" enctype="multipart/form-data" method="post">
+                        <input type="hidden" name="id" value="{{setting._id}}">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="card card-cyan h-100 mb-0">
@@ -58,8 +59,8 @@
                                                             is 60)</small></label>
                                                     <div class="input-group">
                                                         <input type="number" min="0" max="100" name="quizMarks"
-                                                            id="quizMarks" placeholder="Example: 60"
-                                                            class="form-control">
+                                                            id="quizMarks" value="{{setting.passingMark}}"
+                                                            placeholder="Example: 60" class="form-control">
                                                         <div class="input-group-append">
                                                             <span class="input-group-text">%</span>
                                                         </div>
@@ -71,12 +72,18 @@
                                                     <label>How many retakes can a student have for mid exam?</label>
                                                     <select class="custom-select" name="midRetake">
                                                         <option selected="" disabled="" value="">Select one</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="-1">unlimited</option>
+                                                        <option value="1" {{#ifEquals setting.midRetake
+                                                            1}}selected{{/ifEquals}}>1</option>
+                                                        <option value="2" {{#ifEquals setting.midRetake
+                                                            2}}selected{{/ifEquals}}>2</option>
+                                                        <option value="3" {{#ifEquals setting.midRetake
+                                                            3}}selected{{/ifEquals}}>3</option>
+                                                        <option value="4" {{#ifEquals setting.midRetake
+                                                            4}}selected{{/ifEquals}}>4</option>
+                                                        <option value="5" {{#ifEquals setting.midRetake
+                                                            5}}selected{{/ifEquals}}>5</option>
+                                                        <option value="-1" {{#ifEquals setting.midRetake
+                                                            -1}}selected{{/ifEquals}}>unlimited</option>
                                                     </select>
                                                 </div>
                                                 {{!-- final part --}}
@@ -85,12 +92,18 @@
                                                     <label>How many retakes can a student have for Final exam?</label>
                                                     <select class="custom-select" name="finalRetake">
                                                         <option selected="" disabled="" value="">Select one</option>
-                                                        <option value="1">1</option>
-                                                        <option value="2">2</option>
-                                                        <option value="3">3</option>
-                                                        <option value="4">4</option>
-                                                        <option value="5">5</option>
-                                                        <option value="-1">unlimited</option>
+                                                        <option value="1" {{#ifEquals setting.finalRetake
+                                                            1}}selected{{/ifEquals}}>1</option>
+                                                        <option value="2" {{#ifEquals setting.finalRetake
+                                                            2}}selected{{/ifEquals}}>2</option>
+                                                        <option value="3" {{#ifEquals setting.finalRetake
+                                                            3}}selected{{/ifEquals}}>3</option>
+                                                        <option value="4" {{#ifEquals setting.finalRetake
+                                                            4}}selected{{/ifEquals}}>4</option>
+                                                        <option value="5" {{#ifEquals setting.finalRetake
+                                                            5}}selected{{/ifEquals}}>5</option>
+                                                        <option value="-1" {{#ifEquals setting.finalRetake
+                                                            -1}}selected{{/ifEquals}}>unlimited</option>
                                                     </select>
                                                 </div>
 
@@ -98,40 +111,37 @@
                                                 {{!-- quizzes policy --}}
                                                 <div>
                                                     <p class="font-weight-bold">Quizzes Attempt policy</p>
-                                                    <div class="form-group clearfix">
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="radio" id="policy1" name="quizPolicy">
-                                                            <label class="font-weight-normal" for="policy1">Keep all
-                                                                quizzes
-                                                                open to be accessed at any
-                                                                time
-                                                            </label>
-                                                        </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input custom-control-input-primary"
+                                                            type="radio" id="policy1" {{#ifEquals
+                                                            setting.quizPolicy "accessAllTime" }}checked{{/ifEquals}}
+                                                            value="accessAllTime" name="quizPolicy">
+                                                        <label class="font-weight-normal custom-control-label"
+                                                            for="policy1">Keep all
+                                                            quizzes
+                                                            open to be accessed at any
+                                                            time
+                                                        </label>
                                                     </div>
-                                                    <div class="form-group clearfix">
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="radio" id="policy2" name="quizPolicy">
-                                                            <label class="font-weight-normal" for="policy2">Allow access
-                                                                only if previous quiz has been
-                                                                passed
-                                                            </label>
-                                                        </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input custom-control-input-primary"
+                                                            type="radio" id="policy2" value="accessPassedPrevious"
+                                                            {{#ifEquals setting.quizPolicy "accessPassedPrevious"
+                                                            }}checked{{/ifEquals}} name="quizPolicy">
+                                                        <label class="font-weight-normal custom-control-label"
+                                                            for="policy2">Allow access
+                                                            only if previous quiz has been
+                                                            passed
+                                                        </label>
                                                     </div>
-                                                    <div class="form-group clearfix">
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="radio" id="policy3" name="quizPolicy">
-                                                            <label class="font-weight-normal" for="policy3">Separate
-                                                                activation period for each quiz.
-                                                            </label>
-                                                        </div>
-                                                    </div>
-                                                    <div class="form-group clearfix">
-                                                        <div class="icheck-primary d-inline">
-                                                            <input type="checkbox" id="studentReview" name="quizReview">
-                                                            <label class="font-weight-normal" for="studentReview">
-                                                                Can student review their quiz?
-                                                            </label>
-                                                        </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="reviewQuiz" id="customCheckbox5" {{#if
+                                                            setting.reviewQuiz }}checked{{/if}}>
+                                                        <label for="customCheckbox5"
+                                                            class="custom-control-label font-weight-normal">Can
+                                                            student review their quiz?</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -151,21 +161,34 @@
                                                 <div class="form-group">
                                                     <label for="logo">Logo <small>(<b>Size=</b> 1:1)</small></label>
                                                     <div class="input-group">
-                                                        <input type="file" name="logo" id="exampleInputFile">
+                                                        <input type="file" name="logo" accept="image/*" id="exampleInputFile">
                                                     </div>
+                                                    {{#if setting}}
+                                                    <p class="mb-0 mt-2">
+                                                        <b>
+                                                            <a href="{{setting.logoPath}}" class="font-weight-normal"
+                                                                target="_blank">Already
+                                                                Uploaded logo
+                                                                <i class="fa-solid fa-image mr-1"></i>
+                                                            </a>
+                                                        </b>
+                                                    </p>
+                                                    {{/if}}
                                                 </div>
                                                 <!--- College name  -->
                                                 <div class="form-group">
                                                     <label for="collegeName">College Name</label>
                                                     <input type="text" class="form-control" id="collegeName"
-                                                        placeholder="College Name" name="name">
+                                                        placeholder="College Name" value="{{setting.collegeName}}"
+                                                        name="name">
                                                 </div>
                                                 <!--- College address  -->
                                                 <div class="form-group">
                                                     <label for="collegeAdd">College Address</label>
                                                     <textarea id="collegeAdd" class="form-control" rows="3"
                                                         placeholder="College Address" spellcheck="false"
-                                                        style="height: 102px;" name="address"></textarea>
+                                                        style="height: 102px;"
+                                                        name="address">{{setting.collegeAddress}}</textarea>
                                                 </div>
                                                 <div class="form-group">
                                                     <label>Phone No</label>
@@ -174,7 +197,8 @@
                                                             <span class="input-group-text"><i
                                                                     class="fas fa-phone"></i></span>
                                                         </div>
-                                                        <input type="text" class="form-control"
+                                                        <input type="text" value="{{setting.collegePhone}}"
+                                                            class="form-control"
                                                             data-inputmask='"mask": "(999) 999-9999"' name="phone"
                                                             data-mask>
                                                     </div>
@@ -183,7 +207,8 @@
                                         </div>
                                     </div>
                                     <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary float-right">Save</button>
+                                        <button type="submit" class="btn btn-primary float-right">{{#if
+                                            setting}}Update{{else}}Save{{/if}}</button>
                                     </div>
                                 </div>
                             </div>
