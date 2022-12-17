@@ -11,7 +11,7 @@ const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
-const { upload } = require("./../controllers/fileUpload")
+const { upload, logoUpload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter, markAsCompleted } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz } = require("./../controllers/quiz")
@@ -25,7 +25,7 @@ const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
 const authMiddlewareUpdateByAdmin = require("../middleware/updateUserAuth")
-const { settingView } = require("../controllers/setting")
+const { settingView, doSetting, settingError } = require("../controllers/setting")
 
 
 router.get("/test", (req, res) => {
@@ -58,9 +58,9 @@ router.get("/", async (req, res) => {
     const msg = req.query.msg;
     const type = req.query.type;
     const packages = await Package.find({ status: "publish" }).populate({
-        path:"courses",
-        match:{
-            status:"publish"
+        path: "courses",
+        match: {
+            status: "publish"
         }
     }).sort('price');
     const packageObj = {}
@@ -140,6 +140,7 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 //  ************************************ Setting
 
 router.get("/dashboard/setting", isAdmin, settingView)
+router.post("/dashboard/setting", logoUpload.single("logo"), doSetting, settingError)
 
 
 
