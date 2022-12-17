@@ -24,26 +24,29 @@ const upload = multer({
         cb(undefined, true)
     }
 })
-const imageUpload = multer({
-    storage: multer.diskStorage({
-        destination: 'public/images/',
-        filename: function (req, file, cb) {
-            var name = `logo${path.extname(file.originalname)}`
-            cb(null, name)
-        }
-    }),
+const logoStorage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'public/images/')
+    },
+    filename: function (req, file, cb) {
+        var name = `logo${path.extname(file.originalname)}`
+        cb(null, name)
+    }
+})
+const logoUpload = multer({
+    storage: logoStorage,
     limits: {
-        fileSize: 5242880
+        fileSize: 10485760
     },
     fileFilter(req, file, cb) {
         console.log(file)
         if (file.mimetype === "image/png" ||
             file.mimetype === "image/jpg" ||
             file.mimetype === "image/jpeg") {
-            return cb(null, true)
+            return cb(undefined, true)
         }
         return cb(new Error("File should be image. Try again!"))
     }
 })
 
-module.exports = { upload, imageUpload } 
+module.exports = { upload, logoUpload } 

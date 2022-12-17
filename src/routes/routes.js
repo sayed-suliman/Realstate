@@ -11,7 +11,7 @@ const { checkout, doCheckout } = require("../controllers/checkout")
 const { verification, doVerification } = require("../controllers/verification")
 const { resendCode } = require("../controllers/resendVerificationCode")
 const { payment } = require("../controllers/payment")
-const { upload, imageUpload } = require("./../controllers/fileUpload")
+const { upload, logoUpload } = require("./../controllers/fileUpload")
 const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter, markAsCompleted } = require("../controllers/chapters")
 const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
 const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz } = require("./../controllers/quiz")
@@ -140,7 +140,7 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 //  ************************************ Setting
 
 router.get("/dashboard/setting", isAdmin, settingView)
-router.post("/dashboard/setting", imageUpload.single("logo"), doSetting, settingError)
+router.post("/dashboard/setting", logoUpload.single("logo"), doSetting, settingError)
 
 
 
