@@ -45,7 +45,7 @@ const logoUpload = multer({
             file.mimetype === "image/jpeg") {
             return cb(undefined, true)
         }
-        return cb(new Error("File should be image. Try again!"))
+        cb(new Error("File should be image. Try again!"))
     }
 })
 
