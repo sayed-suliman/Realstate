@@ -48,5 +48,18 @@ const logoUpload = multer({
         cb(new Error("File should be image. Try again!"))
     }
 })
+const userAvatar = multer({
+    limits: {
+        fileSize: 2056000 
+    },
+    fileFilter(req, file, cb) {
+        if (file.mimetype === "image/png" ||
+        file.mimetype === "image/jpg" ||
+        file.mimetype === "image/jpeg") {
+        return cb(undefined, true)
+    }
+    cb(new Error("File should be image. Try again!"))
+    }
+})
 
-module.exports = { upload, logoUpload } 
+module.exports = { upload, logoUpload, userAvatar } 

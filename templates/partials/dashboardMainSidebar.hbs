@@ -10,8 +10,12 @@
     <!-- Sidebar user panel (optional) -->
     <div class="user-panel mt-3 pb-3 mb-3 d-flex">
       <div class="image">
+        {{#if user.avatar}}
+        <img src="data:image/jpg;base64,{{user.avatar}}" class="img-circle elevation-2" alt="User Image">
+        {{else}}
         <img src="https://ui-avatars.com/api/?name={{user.name}}&rounded=true" class="img-circle elevation-2"
           alt="User Image">
+        {{/if}}
       </div>
       <div class="info">
         <a href="#" class="d-block">{{user.name}}</a>
@@ -47,7 +51,7 @@
             <p>Contact us</p>
           </a>
         </li>
-          {{!-- Setting --}}
+        {{!-- Setting --}}
         <li class="nav-item">
           <a href="/dashboard/setting" id="setting-link" class="nav-link">
             {{!-- <i class="far fa-circle nav-icon"></i> --}}

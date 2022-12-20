@@ -1,6 +1,7 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg")
 const Setting = require('../models/setting');
 const User = require("../models/users");
+const sharp = require("sharp")
 const bcrypt = require("bcrypt")
 
 module.exports = {
@@ -10,7 +11,6 @@ module.exports = {
         if (msgToken) {
             msg = decodeMsg(msgToken)
         }
-        console.log(req.user)
         if (req.user.role === "student") {
             return res.render("dashboard/examples/setting", {
                 title: "Dashboard | Setting",
@@ -86,40 +86,70 @@ module.exports = {
                             return res.render("dashboard/examples/setting", {
                                 editUser, err
                             })
-                        } 
+                        }
                         // check if both pass are equal
                         else if (editUser.newPass != editUser.newPassConfirm) {
                             err.newPassConfirm = "Please try both password should be equal."
                             return res.render("dashboard/examples/setting", {
                                 editUser, err
                             })
-                        }else{
+                        } else {
                             // now if everything is working then should be this if running
                             const isMatch = await bcrypt.compare(editUser.currentPassword, student.password)
                             if (isMatch) {
                                 const hashPass = await bcrypt.hash(editUser.newPass, 10)
-                                console.log("matched",hashPass)
-                                await student.updateOne({
-                                    name: editUser.name,
-                                    driver_license: editUser.driver_license,
-                                    dob: editUser.dob,
-                                    password: hashPass
-                                }, { runValidators: true }, (error, result) => {
-                                    console.log("confirmed")
-                                    if (error) {
-                                        err.driver_license = "This driver license Already in Use please try another!"
-                                        console.log(err)
-                                        return res.render("dashboard/examples/setting", {
-                                            editUser, err
-                                        })
+                                // if student uploaded his picture then do this
+                                if (req.file) {
+                                    let buffer = await sharp(req.file.buffer).resize({ width: 256, height: 256 }).jpeg({ mozjpeg: true }).toBuffer()
+                                    await student.updateOne({
+                                        name: editUser.name,
+                                        driver_license: editUser.driver_license,
+                                        dob: editUser.dob,
+                                        password: hashPass,
+                                        avatar: buffer
+                                    }, { runValidators: true }, (error, result) => {
+                                        console.log("confirmed")
+                                        if (error) {
+                                            err.driver_license = "This driver license Already in Use please try another!"
+                                            console.log(err)
+                                            return res.render("dashboard/examples/setting", {
+                                                editUser, err
+                                            })
+                                        }
+                                        if (result) {
+                                            console.log("reasult")
+                                            var msg = encodeMsg(`Setting saved successfully`)
+                                            return res.redirect("/dashboard/setting?msg=" + msg)
+                                        }
+                                    })
+                                } else {
+                                    // withoout avatar upload student
+                                    if (editUser.hiddenImg == "") {
+                                        student.avatar = undefined
+                                        await student.save()
                                     }
-                                    if (result) {
-                                        console.log("reasult")
-                                        var msg = encodeMsg(`Setting saved successfully`)
-                                       return res.redirect("/dashboard/setting?msg=" + msg)
-                                    }
-                                })
-    
+                                    await student.updateOne({
+                                        name: editUser.name,
+                                        driver_license: editUser.driver_license,
+                                        dob: editUser.dob,
+                                        password: hashPass,
+                                    }, { runValidators: true }, (error, result) => {
+                                        console.log("confirmed")
+                                        if (error) {
+                                            err.driver_license = "This driver license Already in Use please try another!"
+                                            console.log(err)
+                                            return res.render("dashboard/examples/setting", {
+                                                editUser, err
+                                            })
+                                        }
+                                        if (result) {
+                                            console.log("reasult")
+                                            var msg = encodeMsg(`Setting saved successfully`)
+                                            return res.redirect("/dashboard/setting?msg=" + msg)
+                                        }
+                                    })
+                                }
+
                             } else {
                                 console.log("wrong password")
                                 err.currentPassword = "Your current password is wrong. Please try Correct Password."
@@ -128,30 +158,63 @@ module.exports = {
                                 })
                             }
                         }
-                    }else{
+                    } else {
                         // updating without password
-                        await student.updateOne({
-                            name: editUser.name,
-                            driver_license: editUser.driver_license,
-                            dob: editUser.dob
-                        }, { runValidators: true }, (error, result) => {
-                            const err = {}
-                            if (error) {
-                                err.driver_license = "This driver license Already in Use please try another!"
-                                console.log(err)
-                                return res.render("dashboard/examples/setting", {
-                                    editUser, err
-                                })
+
+                        // update Student with image
+                        if (req.file) {
+                            let buffer = await sharp(req.file.buffer).resize({ width: 250, height: 250 }).jpeg({ mozjpeg: true }).toBuffer()
+                            await student.updateOne({
+                                name: editUser.name,
+                                driver_license: editUser.driver_license,
+                                dob: editUser.dob,
+                                avatar: buffer
+                            }, { runValidators: true }, (error, result) => {
+                                const err = {}
+                                if (error) {
+                                    err.driver_license = "This driver license Already in Use please try another!"
+                                    console.log(err)
+                                    return res.render("dashboard/examples/setting", {
+                                        editUser, err
+                                    })
+                                }
+                                if (result) {
+                                    var msg = encodeMsg(`Setting saved successfully`)
+                                    res.redirect("/dashboard/setting?msg=" + msg)
+                                }
+                            })
+                        } else {
+                            // update student without image
+
+                            // if user remove his image then avatar should be undefined that removed image 
+                            if (editUser.hiddenImg == "") {
+                                student.avatar = undefined
+                                await student.save()
                             }
-                            if (result) {
-                                var msg = encodeMsg(`Setting saved successfully`)
-                                res.redirect("/dashboard/setting?msg=" + msg)
-                            }
-                        })
+                            await student.updateOne({
+                                name: editUser.name,
+                                driver_license: editUser.driver_license,
+                                dob: editUser.dob,
+                            }, { runValidators: true }, (error, result) => {
+                                const err = {}
+                                if (error) {
+                                    err.driver_license = "This driver license Already in Use please try another!"
+                                    console.log(err)
+                                    return res.render("dashboard/examples/setting", {
+                                        editUser, err
+                                    })
+                                }
+                                if (result) {
+                                    var msg = encodeMsg(`Setting saved successfully`)
+                                    res.redirect("/dashboard/setting?msg=" + msg)
+                                }
+                            })
+                        }
+
                     }
-
-
                 }
+
+
             }
         } catch (error) {
             console.log("crash")

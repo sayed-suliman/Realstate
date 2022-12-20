@@ -13,6 +13,9 @@ var authenticated = async (req, res, next) => {
         //this used for to avoid going back when user logged out 
         res.set('Cache-Control', 'no-cache,private,no-store,must-revalidate,post-check=0,pre-check=0')
         // pass auth user to all view when used this middleware
+        if(req.user.avatar){
+            req.user.avatar = req.user.avatar.toString("base64")
+        }
         res.locals.user = req.user
 
         // check whether user bought a package or not

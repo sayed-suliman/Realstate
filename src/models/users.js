@@ -60,6 +60,9 @@ const userSchema = new mongoose.Schema({
     package: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Package"
+    },
+    avatar:{
+        type:Buffer
     }
 }, {
     timestamps: true
@@ -82,6 +85,7 @@ userSchema.methods.toJSON = function () {
     const user = this;
     const userObj = user.toObject()
     delete userObj.password;
+    delete userObj.avatar;
     return userObj
 }
 
