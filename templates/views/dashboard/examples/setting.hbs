@@ -41,9 +41,11 @@
             <section class="content">
 
                 <div class="container-fluid">
-                    <form action="setting" enctype="multipart/form-data" method="post">
+                    <form action="{{#ifEquals user.role " admin"}}setting{{/ifEquals}} {{#ifEquals user.role "student"
+                        }}userSetting{{/ifEquals}} " enctype=" multipart/form-data" method="post" id="validFrom">
                         <input type="hidden" name="id" value="{{setting._id}}">
                         <div class="row">
+                            {{#ifEquals user.role "admin"}}
                             <div class="col-md-6">
                                 <div class="card card-cyan h-100 mb-0">
                                     <div class="card-header">
@@ -161,7 +163,8 @@
                                                 <div class="form-group">
                                                     <label for="logo">Logo <small>(<b>Size=</b> 1:1)</small></label>
                                                     <div class="input-group">
-                                                        <input type="file" name="logo" accept="image/*" id="exampleInputFile">
+                                                        <input type="file" name="logo" accept="image/*"
+                                                            id="exampleInputFile">
                                                     </div>
                                                     {{#if setting}}
                                                     <p class="mb-0 mt-2">
@@ -212,6 +215,100 @@
                                     </div>
                                 </div>
                             </div>
+                            {{/ifEquals}}
+                            {{!-- for student --}}
+                            {{#ifEquals user.role "student"}}
+                            <div class="col-md-6">
+                                <div class="card card-primary h-100 mb-0">
+                                    <div class="card-header">
+                                        <h3 class="card-title">General Setting</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!--- Logo  -->
+                                                <div class="form-group">
+                                                    <label for="logo">Avatar <small>(<b>Size=</b> 1:1)</small></label>
+                                                    <div class="input-group">
+                                                        <input type="file" name="logo" accept="image/*"
+                                                            id="exampleInputFile">
+                                                    </div>
+                                                    {{#if setting}}
+                                                    <p class="mb-0 mt-2">
+                                                        <b>
+                                                            <a href="{{setting.logoPath}}" class="font-weight-normal"
+                                                                target="_blank">Already
+                                                                Uploaded logo
+                                                                <i class="fa-solid fa-image mr-1"></i>
+                                                            </a>
+                                                        </b>
+                                                    </p>
+                                                    {{/if}}
+                                                </div>
+                                                <!--- name  -->
+                                                <div class="form-group">
+                                                    <label for="name">Full Name</label>
+                                                    <input type="text" class="form-control" id="name"
+                                                        placeholder="College Name"
+                                                        value="{{editUser.name}}" name="name">
+                                                </div>
+                                                <!--- driver license  -->
+                                                <div class="form-group">
+                                                    <label for="collegeName">Driver License / CA ID Number</label>
+                                                    <input type="text" class="form-control {{#checkError err.driver_license}}is-invalid{{/checkError}}" id="collegeName"
+                                                        placeholder="Enter License"
+                                                        value="{{editUser.driver_license}}"
+                                                        name="driver_license">
+                                                    <span class="license-error invalid-feedback">
+                                                        {{err.driver_license}}
+                                                    </span>
+                                                </div>
+                                                <!--- dob  -->
+                                                <div class="form-group">
+                                                    <label for="dob">Date of Birth</label>
+                                                    <input type="date" class="form-control {{#checkError err.dob}}is-invalid{{/checkError}}" id="dob"
+                                                        value="{{formatDate editUser.dob}}" name="dob">
+                                                    <span class="license-error invalid-feedback">
+                                                        {{err.dob}}
+                                                    </span>
+                                                </div>
+                                                {{!-- password --}}
+                                                <div class="form-group">
+                                                    <label for="currentPassword">Current Password</label>
+                                                    <input type="password" class="form-control {{#checkError err.currentPassword}}is-invalid{{/checkError}}" id="currentPassword"
+                                                        placeholder="Enter Current Password" name="currentPassword">
+                                                          <span class="license-error invalid-feedback">
+                                                        {{err.currentPassword}}
+                                                    </span>
+                                                </div>
+                                                {{!-- new password --}}
+                                                <div class="form-group">
+                                                    <label for="password">New Password</label>
+                                                    <input type="password" class="form-control pass {{#checkError err.newPass}}is-invalid{{/checkError}}" id="password"
+                                                        placeholder="Enter New Password" name="newPass">
+                                                          <span class="license-error invalid-feedback">
+                                                        {{err.newPass}}
+                                                    </span>
+                                                </div>
+                                                {{!-- confirm new password --}}
+                                                <div class="form-group">
+                                                    <label for="c_password">Confirm new Password</label>
+                                                    <input type="password" class="form-control pass {{#checkError err.newPassConfirm}}is-invalid{{/checkError}}" id="c_password"
+                                                        placeholder="Confirm your new Password" name="newPassConfirm">
+                                                          <span class="license-error invalid-feedback">
+                                                        {{err.newPassConfirm}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary float-right">{{#if
+                                            setting}}Update{{else}}Save{{/if}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/ifEquals}}
                         </div>
                     </form>
                 </div>
@@ -234,81 +331,9 @@
 
     {{!-- footer links --}}
     {{>dashboardfooterlinks}}
-    <!-- Select2 -->
-    <script src="/dashboard/plugins/select2/js/select2.full.min.js"></script>
-    <!-- Bootstrap4 Duallistbox -->
-    <script src="/dashboard/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js"></script>
-    <!-- InputMask -->
-    <script src="/dashboard/plugins/moment/moment.min.js"></script>
-    <script src="/dashboard/plugins/inputmask/jquery.inputmask.min.js"></script>
-    <!-- Tempusdominus Bootstrap 4 -->
-    <!-- date-range-picker -->
-    <script src="/dashboard/plugins/daterangepicker/daterangepicker.js"></script>
-    <script src="/dashboard/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-    <!-- Bootstrap Switch -->
-    <script src="/dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
-    <!-- dropzonejs -->
-    <script src="/dashboard/plugins/dropzone/min/dropzone.min.js"></script>
-    <!-- Page specific script -->
-    <script>
-        $(function () {
-            //Initialize Select2 Elements
-            $('.select2').select2()
-
-            //Initialize Select2 Elements
-            $('.select2bs4').select2({
-            })
-
-            //Money Euro
-            $('[data-mask]').inputmask()
-
-            // quiz picker
-            $('#finalexamreservation').daterangepicker()
-            //Date range picker with time picker
-            $('#reservationtime').daterangepicker({
-                timePicker: true,
-                timePickerIncrement: 30,
-                locale: {
-                    format: 'MM/DD/YYYY hh:mm A'
-                }
-            })
-            //Date range as a button
-            $('#daterange-btn').daterangepicker(
-                {
-                    ranges: {
-                        'Today': [moment(), moment()],
-                        'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                        'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                        'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                        'This Month': [moment().startOf('month'), moment().endOf('month')],
-                        'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')]
-                    },
-                    startDate: moment().subtract(29, 'days'),
-                    endDate: moment()
-                },
-                function (start, end) {
-                    $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'))
-                }
-            )
-
-            //Timepicker
-            $('#timepicker').datetimepicker({
-                format: 'LT'
-            })
-
-            //Bootstrap Duallistbox
-            $('.duallistbox').bootstrapDualListbox()
-
-            $('input[data-bootstrap-switch]').each(function () {
-                $(this).bootstrapSwitch('state', $(this).prop('checked'))
-            })
-
-
-
-        })
-
-
-    </script>
+   {{!--for form validations --}}
+    <script src="/js/form-validations.js"></script>
+    
 
 </body>
 

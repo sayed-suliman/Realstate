@@ -139,8 +139,9 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 
 //  ************************************ Setting
 
-router.get("/dashboard/setting", isAdmin, settingView)
+router.get("/dashboard/setting", settingView)
 router.post("/dashboard/setting", logoUpload.single("logo"), doSetting, settingError)
+router.post("/dashboard/userSetting",logoUpload.single("logo"), doSetting, settingError)
 
 
 

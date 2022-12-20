@@ -1,5 +1,7 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg")
-const Setting = require('../models/setting')
+const Setting = require('../models/setting');
+const User = require("../models/users");
+const bcrypt = require("bcrypt")
 
 module.exports = {
     async settingView(req, res) {
@@ -8,6 +10,14 @@ module.exports = {
         if (msgToken) {
             msg = decodeMsg(msgToken)
         }
+        console.log(req.user)
+        if (req.user.role === "student") {
+            return res.render("dashboard/examples/setting", {
+                title: "Dashboard | Setting",
+                toast: Object.keys(msg).length == 0 ? undefined : msg,
+                editUser: req.user
+            })
+        }
         res.render("dashboard/examples/setting", {
             title: "Dashboard | Setting",
             toast: Object.keys(msg).length == 0 ? undefined : msg,
@@ -15,39 +25,136 @@ module.exports = {
         })
     },
     async doSetting(req, res) {
+        Date.prototype.getAge = function () {
+            const date = new Date()
+            const eighteen = date.getFullYear() - 16
+            date.setUTCFullYear(eighteen)
+            return date
+        }
+        const age = new Date()
         try {
-            const {
-                name,
-                address,
-                phone,
-                quizMarks,
-                midRetake,
-                finalRetake,
-                quizPolicy,
-                reviewQuiz,
-                id
-            } = req.body
-            const settingData = {
-                collegeName: name,
-                collegeAddress: address,
-                collegePhone: phone,
-                passingMark: quizMarks,
-                midRetake,
-                finalRetake,
-                quizPolicy,
-                reviewQuiz: !!reviewQuiz
+            if (req.user.role == 'admin') {
+                const {
+                    name,
+                    address,
+                    phone,
+                    quizMarks,
+                    midRetake,
+                    finalRetake,
+                    quizPolicy,
+                    reviewQuiz,
+                    id
+                } = req.body
+                const settingData = {
+                    collegeName: name,
+                    collegeAddress: address,
+                    collegePhone: phone,
+                    passingMark: quizMarks,
+                    midRetake,
+                    finalRetake,
+                    quizPolicy,
+                    reviewQuiz: !!reviewQuiz
+                }
+                if (req.file) {
+                    settingData.logoPath = req.file.filename
+                }
+                const setting = id ? await Setting.findByIdAndUpdate(id, settingData)
+                    : await Setting(settingData).save()
+                if (setting) {
+                    var msg = encodeMsg(`Setting successfully ${id ? `updated.` : 'saved.'}`)
+                    return res.redirect('/dashboard/setting?msg=' + msg)
+                }
             }
-            if (req.file) {
-                settingData.logoPath = req.file.filename
+            if (req.user.role == 'student') {
+                const err = {}
+                const user = req.user
+                const editUser = req.body
+                const student = await User.findById(user._id)
+                if (age.getAge() <= new Date(editUser.dob)) {
+                    console.log("here")
+                    err.dob = "Age should be 16+"
+                    console.log(err)
+                    return res.render("dashboard/examples/setting", {
+                        editUser, err
+                    })
+                } else {
+                    // if user want to edit with password then this if statement will be running
+                    if (editUser.currentPassword) {
+                        // checking here both password new and new confirm
+                        if (editUser.newPass == "" || editUser.newPass < 6) {
+                            err.newPass = "Password should be greater than or equal to 6."
+                            return res.render("dashboard/examples/setting", {
+                                editUser, err
+                            })
+                        } 
+                        // check if both pass are equal
+                        else if (editUser.newPass != editUser.newPassConfirm) {
+                            err.newPassConfirm = "Please try both password should be equal."
+                            return res.render("dashboard/examples/setting", {
+                                editUser, err
+                            })
+                        }else{
+                            // now if everything is working then should be this if running
+                            const isMatch = await bcrypt.compare(editUser.currentPassword, student.password)
+                            if (isMatch) {
+                                const hashPass = await bcrypt.hash(editUser.newPass, 10)
+                                console.log("matched",hashPass)
+                                await student.updateOne({
+                                    name: editUser.name,
+                                    driver_license: editUser.driver_license,
+                                    dob: editUser.dob,
+                                    password: hashPass
+                                }, { runValidators: true }, (error, result) => {
+                                    console.log("confirmed")
+                                    if (error) {
+                                        err.driver_license = "This driver license Already in Use please try another!"
+                                        console.log(err)
+                                        return res.render("dashboard/examples/setting", {
+                                            editUser, err
+                                        })
+                                    }
+                                    if (result) {
+                                        console.log("reasult")
+                                        var msg = encodeMsg(`Setting saved successfully`)
+                                       return res.redirect("/dashboard/setting?msg=" + msg)
+                                    }
+                                })
+    
+                            } else {
+                                console.log("wrong password")
+                                err.currentPassword = "Your current password is wrong. Please try Correct Password."
+                                return res.render("dashboard/examples/setting", {
+                                    editUser, err
+                                })
+                            }
+                        }
+                    }else{
+                        // updating without password
+                        await student.updateOne({
+                            name: editUser.name,
+                            driver_license: editUser.driver_license,
+                            dob: editUser.dob
+                        }, { runValidators: true }, (error, result) => {
+                            const err = {}
+                            if (error) {
+                                err.driver_license = "This driver license Already in Use please try another!"
+                                console.log(err)
+                                return res.render("dashboard/examples/setting", {
+                                    editUser, err
+                                })
+                            }
+                            if (result) {
+                                var msg = encodeMsg(`Setting saved successfully`)
+                                res.redirect("/dashboard/setting?msg=" + msg)
+                            }
+                        })
+                    }
+
+
+                }
             }
-            const setting = id ? await Setting.findByIdAndUpdate(id, settingData)
-                : await Setting(settingData).save()
-            if (setting) {
-                var msg = encodeMsg(`Setting successfully ${id ? `updated.` : 'saved.'}`)
-                return res.redirect('/dashboard/setting?msg=' + msg)
-            }
-            res.send(req.body)
         } catch (error) {
+            console.log("crash")
             res.send(error.message)
         }
     },
