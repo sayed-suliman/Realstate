@@ -1,16 +1,19 @@
 const { encodeMsg, decodeMsg } = require("../helper/createMsg")
 const Message = require("../models/message")
+const Setting = require('../models/setting')
 
 module.exports = {
-    contactUs(req, res) {
+    async contactUs(req, res) {
         var msgToken = req.query.msg;
         var option = {}
         if (msgToken) {
             var msg = decodeMsg(msgToken)
             option = msg
         }
+        const setting = await Setting.findOne()
         res.render("dashboard/examples/contact-us", {
             title: "Dashboard | Contact-Us",
+            setting,
             toast: Object.keys(option).length == 0 ? undefined : option
         })
     },

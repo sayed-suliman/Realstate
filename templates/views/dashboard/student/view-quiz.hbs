@@ -45,7 +45,7 @@
                                         <h2
                                             class="percent mb-0 font-weight-bold {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">
                                             {{takenQuiz.percent}}%</h2>
-                                        <p class="mb-0">Minimum marks required to pass: 60%</p>
+                                        <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
                                         <p>Your grade is <span
                                                 class="grade {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
                                                 takenQuiz.percent '>=' '60'}}passed{{else}}failed{{/ifCond}}</span></p>
@@ -96,7 +96,8 @@
                                             <div class="feedback font-weight-bold d-none"></div>
                                         </div>
                                         {{/each}}
-                                        <button class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
+                                        <button
+                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
                                             type="submit">Submit</button>
                                     </form>
                                     <div
@@ -137,6 +138,8 @@
 
     <script>
         const noOfQuestions = `{{{quiz.questions.length}}}`
+        const passingPercent = `{{{passingPercent}}}`
+        const reviewQuiz = `{{{reviewQuiz}}}`
     </script>
     <script src="/js/quiz-take.js"></script>
 </body>

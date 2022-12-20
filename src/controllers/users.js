@@ -19,11 +19,23 @@ module.exports = {
         var noOfPages = Math.ceil(await User.find({ role: "student" }).count() / limit);
         if (page > noOfPages) {
             const users = await User.find({ role: "student" }).populate('package');
+            for await (let [index] of users.entries()) {
+                if (users[index].avatar) {
+                    users[index].avatar = users[index].avatar.toString('base64')
+                    console.log("Tis",users[index].avatar)
+                }
+            }
             return res.render("dashboard/examples/users", { title: "Dashboard | Users", users, toast: Object.keys(option).length == 0 ? undefined : option })
         }
         const users = await User.find({ role: "student" }).populate('package').limit(parseInt(limit)).skip(parseInt((page - 1) * limit));
         users.currentPage = page;
         users.pages = noOfPages;
+        for await (let [index] of users.entries()) {
+            console.log("Tis",users[index].avatar)
+            if (users[index].avatar) {
+                users[index].avatar = users[index].avatar.toString('base64')
+            }
+        }
         res.render("dashboard/examples/users/users", { title: "Dashboard | Users", users, toast: Object.keys(option).length == 0 ? undefined : option })
     },
     async addUsers(req, res) {
