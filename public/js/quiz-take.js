@@ -18,7 +18,7 @@ $(document).ready(function () {
     let minutes;
     let time;
 
-    timeInterval = setInterval(()=>timer(), 1000)
+    timeInterval = setInterval(() => timer(), 1000)
     var timer = () => {
         timeInSeconds++
         setQuizTimer()
@@ -57,12 +57,12 @@ $(document).ready(function () {
 
                     // if point then show the result
                     // if (point) {
-                    const percent = Math.floor((point / noOfQuestions) * 100)
-                    const grade = percent >= 60 ? "passed" : "failed"
+                    const percent = Math.round((point / noOfQuestions) * 100)
+                    const grade = percent >= passingPercent ? "passed" : "failed"
 
                     $('#result').removeClass('d-none')
                     $('#result .percent').text(`${percent}%`)
-                    percent >= 60 ? $('#result .percent').removeClass('text-danger').addClass('text-success') : $('#result .percent').removeClass('text-success').addClass('text-danger')
+                    percent >= passingPercent ? $('#result .percent').removeClass('text-danger').addClass('text-success') : $('#result .percent').removeClass('text-success').addClass('text-danger')
                     $('#result .grade').text(`${grade}`)
                     grade == "failed" ? $('#result .grade').removeClass('text-success').addClass('text-danger') : $('#result .grade').removeClass('text-danger').addClass('text-success')
                     $('#result .points').text(`${point}/${noOfQuestions}`)
@@ -70,19 +70,21 @@ $(document).ready(function () {
                     $('#result .correct').text(`${correctAns.length}`)
                     $('#result .wrong').text(`${wrongAns.length}`)
                     // }
-                    if (wrongAns.length != 0) {
-                        wrongAns.forEach(ans => {
-                            var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
-                            parent.find('.feedback').removeClass('d-none').addClass('text-danger')
-                            parent.find('.feedback').text("Your answer is wrong.")
-                        })
-                    }
-                    if (correctAns.length != 0) {
-                        correctAns.forEach(ans => {
-                            var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
-                            parent.find('.feedback').removeClass('d-none').removeClass('text-danger').addClass('text-success')
-                            parent.find('.feedback').text("Correct.")
-                        })
+                    if (reviewQuiz) {
+                        if (wrongAns.length != 0) {
+                            wrongAns.forEach(ans => {
+                                var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
+                                parent.find('.feedback').removeClass('d-none').addClass('text-danger')
+                                parent.find('.feedback').text("Your answer is wrong.")
+                            })
+                        }
+                        if (correctAns.length != 0) {
+                            correctAns.forEach(ans => {
+                                var parent = $(`#quiz [name=${ans}]`).parents('.form-group-head')
+                                parent.find('.feedback').removeClass('d-none').removeClass('text-danger').addClass('text-success')
+                                parent.find('.feedback').text("Correct.")
+                            })
+                        }
                     }
                 } else {
                     alert(error)

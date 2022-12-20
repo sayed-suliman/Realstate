@@ -62,8 +62,14 @@
                         </ul>
                       </div>
                       <div class="col-5 text-center">
+                        {{this.avatar}}
+                        {{#if this.avatar}}
+                        <img src="data:image/jpg;base64,{{this.avatar}}" alt="user-avatar" id="user-avatar"
+                          class="img-circle img-fluid">
+                        {{else}}
                         <img src="https://ui-avatars.com/api/?name={{this.name}}&size=256" alt="user-avatar"
                           class="img-circle img-fluid">
+                        {{/if}}
                       </div>
                     </div>
                   </div>
