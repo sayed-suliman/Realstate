@@ -4,6 +4,8 @@ const Result = require("../models/result")
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const url = require('url');
 const UserMeta = require("../models/user-meta");
+const Setting = require('../models/setting')
+
 const course = async (req, res) => {
     try {
         // all added packages
@@ -207,12 +209,12 @@ const deleteCourse = async (req, res) => {
 var allCourses = async (req, res) => {
     try {
         await req.user.populate({ path: 'package', populate: { path: 'courses' } })
-        var userCourses 
-        if(req.user.role === "student"){
+        var userCourses
+        if (req.user.role === "student") {
             userCourses = await req.user.package.courses
         }
-        if(req.user.role === "regulator"){
-            userCourses = await CourseModel.find({status:'publish'})
+        if (req.user.role === "regulator") {
+            userCourses = await CourseModel.find({ status: 'publish' })
             console.log(userCourses)
         }
         let progress = {};
@@ -267,7 +269,7 @@ var allCourses = async (req, res) => {
 var viewCourse = async (req, res) => {
     try {
         // for regulator 
-        if(req.user.role === 'regulator'){
+        if (req.user.role === 'regulator') {
             const ID = req.params.id
             const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
 
@@ -305,30 +307,28 @@ var viewCourse = async (req, res) => {
                 return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
             }
         }
-
         // regulator end
 
         // student start
         const ID = req.params.id
         const course = await CourseModel.findById(ID).populate('chapters').populate('quizzes').lean()
-
-        for await (let [index, quiz] of course.quizzes.entries()) {
-            const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
-            if (takenQuiz) {
-                Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
-                Object.assign(course.quizzes[index], { 'unlock': true })
-            }
-        }
-
-        for await (let [index, chapter] of course.chapters.entries()) {
-            const completedChapter = await UserMeta.findOne({ user_id: req.user._id.toString(), chapter_id: chapter, meta_key: "completed" })
-            if (completedChapter) {
-                Object.assign(course.chapters[index], { 'completed': true })
-                Object.assign(course.chapters[index], { 'unlock': true })
-            }
-        }
-
         if (course) {
+            for await (let [index, quiz] of course.quizzes.entries()) {
+                const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
+                if (takenQuiz) {
+                    Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
+                    Object.assign(course.quizzes[index], { 'unlock': true })
+                }
+            }
+
+            for await (let [index, chapter] of course.chapters.entries()) {
+                const completedChapter = await UserMeta.findOne({ user_id: req.user._id.toString(), chapter_id: chapter, meta_key: "completed" })
+                if (completedChapter) {
+                    Object.assign(course.chapters[index], { 'completed': true })
+                    Object.assign(course.chapters[index], { 'unlock': true })
+                }
+            }
+
             // sorting the chapter by name 
             const contents = [...course.quizzes, ...course.chapters]
             contents.sort((a, b) => {
@@ -336,21 +336,36 @@ var viewCourse = async (req, res) => {
                 if (a.order > b.order) { return 1; }
                 return 0;
             })
-
-            if (contents.length) {
-                for await (let [index] of contents.entries()) {
-                    if (!contents[index].unlock) {
-                        if (index == 0) continue
-                        if (typeof (contents[index - 1].unlock) != undefined) {
-                            if (contents[index - 1].unlock) {
-                                contents[index].unlock = true;
-                                break;
+            const setting = await Setting.findOne()
+            // quiz policy when completed the the previous
+            if (setting.quizPolicy == 'accessPassedPrevious') {
+                // unlocking the next content when the previous is completed
+                if (contents.length) {
+                    for await (let [index] of contents.entries()) {
+                        if (!contents[index].unlock) {
+                            if (index == 0) continue
+                            if (typeof (contents[index - 1].unlock) != undefined) {
+                                if (contents[index - 1].type == 'quiz') {
+                                    if (contents[index - 1].grade == 'failed') {
+                                        break;
+                                    }
+                                }
+                                if (contents[index - 1].unlock) {
+                                    contents[index].unlock = true;
+                                    break;
+                                }
                             }
                         }
                     }
+                    // unlock the first content of the current chapter
+                    Object.assign(contents[0], { 'unlock': true })
                 }
-                // unlock the first content of the current chapter
-                Object.assign(contents[0], { 'unlock': true })
+            } else if (setting.quizPolicy == 'accessAllTime') {
+                for await (let [index] of contents.entries()) {
+                    if (!contents[index].unlock) {
+                        contents[index].unlock = true;
+                    }
+                }
             }
             return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
         }

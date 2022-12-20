@@ -2,6 +2,7 @@ const { encodeMsg, decodeMsg } = require("../helper/createMsg")
 const Course = require("../models/courses")
 const Quiz = require("../models/quiz")
 const Result = require("../models/result")
+const Setting = require('../models/setting')
 
 const quizDetail = async (req, res) => {
     try {
@@ -170,6 +171,7 @@ const viewQuiz = async (req, res) => {
         const id = req.params.id;
         const quiz = await Quiz.findById(id);
         const takenQuiz = await Result.findOne({ quiz: quiz._id, user: req.user._id });
+        const setting = await Setting.findOne()
         if (takenQuiz) {
             takenQuiz['percent'] = Math.floor((Number(takenQuiz.points) / Number(takenQuiz.totalQuestions)) * 100)
         }
@@ -177,7 +179,9 @@ const viewQuiz = async (req, res) => {
             res.render('dashboard/student/view-quiz', {
                 title: `Quiz | ${quiz.name}`,
                 quiz,
-                takenQuiz
+                takenQuiz,
+                passingPercent: setting.passingMark,
+                reviewQuiz: setting.reviewQuiz
             })
         }
     } catch (error) {
@@ -188,10 +192,11 @@ const viewQuiz = async (req, res) => {
 
 const takeQuiz = async (req, res) => {
     try {
-        console.log(req.body)
         const time = req.body.time
         const quiz = await Quiz.findById(req.body.quizId);
         const questions = quiz.questions;
+        const setting = await Setting.findOne()
+
         // deleting the quizId & time so that the req.body only contain answer
         delete req.body.quizId
         delete req.body.time
@@ -200,16 +205,18 @@ const takeQuiz = async (req, res) => {
         let point = 0;
         let wrongAns = []
         let correctAns = []
-        questions.forEach((question, index) => {
-            if (question.ans == answersArr[index]) {
-                point += 1
-                correctAns.push(`q-${index}`)
-            } else {
-                wrongAns.push(`q-${index}`)
-            }
-        })
+        if (setting.reviewQuiz) {
+            questions.forEach((question, index) => {
+                if (question.ans == answersArr[index]) {
+                    point += 1
+                    correctAns.push(`q-${index}`)
+                } else {
+                    wrongAns.push(`q-${index}`)
+                }
+            })
+        }
         const percent = Math.floor((point / questions.length) * 100)
-        const grade = percent >= 60 ? "passed" : "failed"
+        const grade = percent >= setting.passingMark ? "passed" : "failed"
         const data = {
             quiz: quiz._id,
             user: req.user._id,
@@ -225,10 +232,8 @@ const takeQuiz = async (req, res) => {
         if (alreadyTakenQuiz) {
             delete data.quiz
             delete data.user
-            console.log("Taken", data)
             await alreadyTakenQuiz.updateOne(data)
         } else {
-            console.log("New", data)
             await Result(data).save()
         }
         res.send({ correctAns, wrongAns, point })

@@ -148,7 +148,6 @@ hbs.registerHelper("checkStatus", (start, end) => {
 })
 // format date
 hbs.registerHelper("formatDate", (date) => {
-    console.log(date)
     if (date) {
         if (typeof (date) === "object") {
             let year = date.getFullYear()
