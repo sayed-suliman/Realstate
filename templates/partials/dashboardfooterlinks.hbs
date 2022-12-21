@@ -191,6 +191,13 @@
             $("#dashboard-link").removeClass("active")
             $('#setting-link').addClass("active")
         }
+
+        $(".nav-item").click(function(){
+            if($(this).attr("class").includes('menu-is-opening menu-open')){
+                $(this).attr("class","nav-item")
+            }
+        })
+    
     })
     //showing alert(toast)
     {{#if toast }}
