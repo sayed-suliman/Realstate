@@ -1,4 +1,4 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column">
+<aside class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column overflow-hidden">
   <!-- Brand Logo -->
   <a href="/dashboard" class="brand-link">
     <img src="{{site_logo}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -270,7 +270,7 @@
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>
             <p>
-              Logout
+              {{#if user.loginAsStudent}}Logout as student{{else}} Logout{{/if}}
             </p>
           </a>
         </li>
