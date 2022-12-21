@@ -53,7 +53,8 @@
                                                 <th>Valid From</th>
                                                 <th>Expire Date</th>
                                                 <th>Status</th>
-                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Delete</th>
+                                                <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                    Delete</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -61,23 +62,24 @@
                                             <tr>
                                                 <td style="max-width: 350px;">{{this.code}}</td>
                                                 <td>{{this.discount}}%</td>
-                                                <td>{{#ifEquals this.length "-1"}}Unlimited{{else}}{{this.length}}{{/ifEquals}}</td>
+                                                <td>{{#ifEquals this.length
+                                                    "-1"}}Unlimited{{else}}{{this.length}}{{/ifEquals}}</td>
                                                 <td>{{formatDate this.validFrom}}</td>
                                                 <td>{{formatDate this.validTill}}</td>
                                                 <td>{{checkStatus this.validFrom this.validTill}}</td>
-                                                <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
-                                                    {{!-- <a href="/dashboard/package-detail/edit-package?pId={{this._id}}"
+                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                    {{!-- <a
+                                                        href="/dashboard/package-detail/edit-package?pId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a> --}}
-                                                    <a href="/dashboard/coupon-detail/delete-coupon?vId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </a>
+                                                    <button type="button" class="btn btn-danger delete" id="delete"
+                                                        data-toggle="modal" data-target="#modal-default"
+                                                        data-id="{{this._id}}">
+                                                        <i class="fa-solid fa-trash"></i>
+                                                    </button>
                                                 </td>
                                             </tr>
                                             {{/each}}
@@ -105,7 +107,19 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+    <div class="modal fade" id="modal-default" style="display: none;" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>Do you really want to delete this coupon?</p>
+                    <a id="deleteBtn" href="#" class="btn btn-danger">Yes</a>
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+                </div>
+            </div>
 
+        </div>
+
+    </div>
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
     {{!-- table jquery plugins --}}
@@ -138,6 +152,9 @@
                 "autoWidth": false,
                 "responsive": true,
             });
+            $('.delete').click(function (e) {
+                $('#deleteBtn').attr('href', `/dashboard/coupon-detail/delete-coupon?vId=${$(this).data('id')}`)
+            })
         });
     </script>
 

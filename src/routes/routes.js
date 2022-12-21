@@ -26,6 +26,9 @@ const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
 const authMiddlewareUpdateByAdmin = require("../middleware/updateUserAuth")
 const { settingView, doSetting, settingError } = require("../controllers/setting")
+const User = require('../models/users')
+const url = require('url')
+const { encodeMsg } = require('../helper/createMsg')
 
 
 router.get("/test", (req, res) => {
@@ -67,20 +70,49 @@ router.get("/", async (req, res) => {
     packages.forEach(package => {
         packageObj[package.name] = package
     })
-    console.log(packageObj)
     res.render("package", { packages, msg: { text: msg, type }, title: "Packages Plan", packageObj })
 })
 
 
 // login route
 router.get("/login", logged_in, login)
+router.get('/loginAsStudent', isAdmin, async (req, res) => {
+    if (req.query.uid) {
+        console.log(req.user)
+        let adminId = req.user._id.toString()
+        const user = await User.findById(req.query.uid)
+        req.login(user, function (err) {
+            if (err) { return next(err); }
+            req.session.admin = adminId
+            return res.redirect(url.format({
+                pathname: '/dashboard',
+                query: {
+                    msg: encodeMsg('You\'re login as a ' + user.name)
+                }
+            }));
+        });
+    } else {
+        res.redirect('/dashboard/user')
+    }
+})
 // router.post('/login',postLogin)
 router.post('/login', verifiedAndPaid, authLocal, postLogin)
-router.post('/login-ajax', (req, res) => {
-    console.log()
-})
 // Logout
-router.get("/logout", (req, res) => {
+router.get("/logout", async (req, res) => {
+    // if admin login as student 
+    if (req.session.admin) {
+        const user = await User.findById(req.session.admin)
+        return req.login(user, function (err) {
+            if (err) { return next(err); }
+            return res.redirect(url.format({
+                pathname: '/dashboard',
+                query: {
+                    msg: encodeMsg('Login back as admin')
+                }
+            }));
+        });
+        // delete req.session.admin;
+    }
     req.logout(function (err) {
         if (err) { return next(err); }
         res.redirect('/');
@@ -142,7 +174,7 @@ router.post("/dashboard/contact-us", isStudent, postContact)
 router.get("/dashboard/setting", settingView)
 router.post("/dashboard/setting", logoUpload.single("logo"), doSetting, settingError)
 // setting post for student
-router.post("/dashboard/userSetting",userAvatar.single("avatar"), doSetting, settingError)
+router.post("/dashboard/userSetting", userAvatar.single("avatar"), doSetting, settingError)
 
 
 

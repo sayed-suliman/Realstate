@@ -19,6 +19,12 @@
     {{!-- first top section with login and signup buttons --}}
     <main class="py-5">
         <div class="container">
+            <nav class="navbar">
+                <div class="container justify-content-end">
+                    <span class="me-2">Already Registered ?</span>
+                    <a href="/login" class="link-primary fw-bold">Sign In</a>
+                </div>
+            </nav>
             <div class="row">
                 {{#if msg.text}}
                 <div class="alert {{#ifEquals msg.type " success"}} alert-success {{else}} alert-danger {{/ifEquals}}
@@ -58,12 +64,5 @@
             </div>
         </div>
     </main>
-    <nav class="navbar py-5">
-        <div class="container justify-content-end">
-            <span class="me-2">Already Registered ?</span>
-            <a href="/login" class="link-primary fw-bold">Sign In</a>
-        </div>
-    </nav>
-
 
     {{>footer}}
