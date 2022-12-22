@@ -24,7 +24,6 @@ const Package = require("../models/package")
 const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
 const { allOrders } = require("../controllers/orderOrRegisteredStds")
 const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
-const authMiddlewareUpdateByAdmin = require("../middleware/updateUserAuth")
 const { settingView, doSetting, settingError } = require("../controllers/setting")
 const User = require('../models/users')
 const url = require('url')
@@ -241,7 +240,7 @@ router.get("/dashboard/chapter-detail/delete-chapter", isAdmin, deleteChapter)
 router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), isAdmin, updateChapter)
 //for student 
 router.get('/dashboard/view-chapter', (req, res) => { res.redirect('/dashboard') })
-router.get('/dashboard/view-chapter/:id', viewChapter)
+router.get('/dashboard/view-chapter/:courseId/:id', viewChapter)
 router.post('/mark-completed', markAsCompleted)
 
 // ******************************* Quiz part **************************

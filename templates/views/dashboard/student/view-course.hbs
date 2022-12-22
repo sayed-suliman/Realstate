@@ -30,8 +30,8 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                <div class="card-header">
-                                    <h3 class="card-title text-bold text-capitalize">{{title}}</h3>
+                                <div class="card-header border-bottom-0">
+                                    <h3 class="card-title text-bold text-capitalize">{{course.name}}</h3>
                                 </div>
                                 <div class="card-body table-responsive p-0">
                                     <table class="table table-hover text-nowrap">
@@ -42,7 +42,7 @@
                                             {{#each contents}}
                                             <tr>
                                                 <td><a
-                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}">
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{course._id}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}">
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
@@ -64,7 +64,7 @@
                                             </tr>
                                             {{/if}}
                                             {{/ifEquals}}
-
+                                            {{!--End of Regulator --}}
 
                                             {{!-- students --}}
                                             {{#ifEquals user.role "student"}}
@@ -72,7 +72,7 @@
                                             {{#each contents}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td><a {{#if this.unlock}}
-                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{course._id}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
                                                         {{else}} href="#" {{/if}}>
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>

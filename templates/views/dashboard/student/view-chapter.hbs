@@ -28,8 +28,93 @@
             <div class="content pt-3">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12">
-                            <div class="card">
+                        <div class="col-12 col-lg-4 mb-2">
+                            <div class="card h-100">
+                                <div class="card-header border-bottom-0">
+                                    <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
+                                </div>
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <tbody>
+                                            {{!-- regulator --}}
+                                            {{#ifEquals user.role "regulator"}}
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr>
+                                                <td><a
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}">
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{else}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                            {{/ifEquals}}
+
+
+                                            {{!-- students --}}
+                                            {{#ifEquals user.role "student"}}
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
+                                                <td><a {{#if this.unlock}}
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
+                                                        {{else}} href="#" {{/if}}>
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{#if this.completed}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/if}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{else}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{#ifEquals this.grade "passed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.grade "failed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
+                                                    {{/ifEquals}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                            {{/ifEquals}}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8 mb-2">
+                            <div class="card h-100">
                                 <div class="card-header">
                                     <h3 class="card-title">Chapter: {{chapter.name}}</h3>
                                 </div>
@@ -48,10 +133,6 @@
                                         </div>
                                         {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div>
                                         --}}
-                                        <button class="btn btn-success mt-2 mr-2 float-left"
-                                            onclick="(function(){ window.history.back();}())" style="width: 170px;">
-                                            <span class="text" id="button-text">Go back</span>
-                                        </button>
                                         {{#unless chapter.completed}}
                                         <button
                                             class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-left"
@@ -134,6 +215,18 @@
         }
     </script>
     {{/unless}}
+    <script>
+        if (window.outerWidth >= 993 && window.outerWidth <= 1200) {
+            $('body').addClass('sidebar-collapse')
+        }
+        window.addEventListener('resize', () => {
+            if (window.outerWidth >= 993 && window.outerWidth <= 1200) {
+                $('body').addClass('sidebar-collapse')
+            } else if (window.outerWidth >= 1200) {
+                $('body').removeClass('sidebar-collapse')
+            }
+        })
+    </script>
 </body>
 
 </html>
