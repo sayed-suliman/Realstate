@@ -49,6 +49,7 @@
                                     <table id="example2" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
+                                                <th style="width: 65px;">S.no</th>
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
@@ -58,6 +59,7 @@
                                         <tbody>
                                             {{#each chapters}}
                                             <tr>
+                                                <td>{{increment @index}}</td>
                                                 <td>{{this.name}}</td>
                                                 <td>{{this.course.name}}</td>
                                                 <td>
