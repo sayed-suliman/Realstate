@@ -54,18 +54,52 @@
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-12">
-                                                {{!-- quiz percenteage --}}
-                                                <div class="form-group">
-                                                    <label for="quizMarks">Passing Marks</label>
-                                                    <div class="input-group">
-                                                        <input type="number" min="0" max="100" name="quizMarks"
-                                                            id="quizMarks" value="{{setting.passingMark}}"
-                                                            placeholder="Example: 60" class="form-control">
-                                                        <div class="input-group-append">
-                                                            <span class="input-group-text">%</span>
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        {{!-- quiz percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Quiz Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="quizMarks"
+                                                                    id="quizMarks" value="{{setting.quizPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+
                                                         </div>
                                                     </div>
+                                                    <div class="col-lg-4">
+                                                        {{!-- mid percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Mid Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="midMarks"
+                                                                    id="quizMarks" value="{{setting.midPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
 
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{!-- final percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Final Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="finalMarks"
+                                                                    id="quizMarks" value="{{setting.finalPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
                                                 </div>
                                                 {{!-- time retake of quiz --}}
                                                 <div class="form-group">
@@ -373,19 +407,19 @@
             })
             if ($("#reviewQuiz").prop("checked")) {
                 $("#showAnsCheckbox").prop("disabled", false)
-                $("#showAnsCheckbox").parent().animate({opacity: "1"})
+                $("#showAnsCheckbox").parent().animate({ opacity: "1" })
             } else {
                 $("#showAnsCheckbox").prop("disabled", true)
-                 $("#showAnsCheckbox").parent().animate({opacity: "0"})
+                $("#showAnsCheckbox").parent().animate({ opacity: "0" })
             }
             $("#reviewQuiz").change(function () {
                 if ($(this).prop("checked")) {
                     $("#showAnsCheckbox").prop("disabled", false)
-                 $("#showAnsCheckbox").parent().animate({opacity: "1"})
+                    $("#showAnsCheckbox").parent().animate({ opacity: "1" })
                 } else {
                     $("#showAnsCheckbox").prop("disabled", true)
                     $("#showAnsCheckbox").prop("checked", false)
-                 $("#showAnsCheckbox").parent().animate({opacity: "0"})
+                    $("#showAnsCheckbox").parent().animate({ opacity: "0" })
                 }
             })
         })
