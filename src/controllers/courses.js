@@ -367,7 +367,7 @@ var viewCourse = async (req, res) => {
                     }
                 }
             }
-            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, title: course.name, contents })
+            return res.render('dashboard/student/view-course', { title: `Course | ${course.name}`, course, contents })
         }
         res.redirect('/dashboard')
     } catch (err) {
