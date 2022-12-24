@@ -137,11 +137,20 @@
                                                     <div class="custom-control custom-checkbox">
                                                         <input
                                                             class="custom-control-input custom-control-input-primary custom-control-input"
-                                                            type="checkbox" name="reviewQuiz" id="customCheckbox5" {{#if
+                                                            type="checkbox" name="reviewQuiz" id="reviewQuiz" {{#if
                                                             setting.reviewQuiz }}checked{{/if}}>
-                                                        <label for="customCheckbox5"
+                                                        <label for="reviewQuiz"
                                                             class="custom-control-label font-weight-normal">Can
                                                             student review their quiz?</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="showAnswer" id="showAnsCheckbox" {{#if
+                                                            setting.showAnswer }}checked{{/if}}>
+                                                        <label for="showAnsCheckbox"
+                                                            class="custom-control-label font-weight-normal">Show Correct
+                                                            answers?</label>
                                                     </div>
                                                 </div>
                                             </div>
@@ -361,6 +370,23 @@
             $("#removeBtn").click(function () {
                 $("#rmImg").attr("src", "")
                 $("#hiddenField").attr("value", "")
+            })
+            if ($("#reviewQuiz").prop("checked")) {
+                $("#showAnsCheckbox").prop("disabled", false)
+                $("#showAnsCheckbox").parent().animate({opacity: "1"})
+            } else {
+                $("#showAnsCheckbox").prop("disabled", true)
+                 $("#showAnsCheckbox").parent().animate({opacity: "0"})
+            }
+            $("#reviewQuiz").change(function () {
+                if ($(this).prop("checked")) {
+                    $("#showAnsCheckbox").prop("disabled", false)
+                 $("#showAnsCheckbox").parent().animate({opacity: "1"})
+                } else {
+                    $("#showAnsCheckbox").prop("disabled", true)
+                    $("#showAnsCheckbox").prop("checked", false)
+                 $("#showAnsCheckbox").parent().animate({opacity: "0"})
+                }
             })
         })
     </script>

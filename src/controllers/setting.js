@@ -43,6 +43,7 @@ module.exports = {
                     finalRetake,
                     quizPolicy,
                     reviewQuiz,
+                    showAnswer,
                     id
                 } = req.body
                 const settingData = {
@@ -53,7 +54,8 @@ module.exports = {
                     midRetake,
                     finalRetake,
                     quizPolicy,
-                    reviewQuiz: !!reviewQuiz
+                    reviewQuiz: !!reviewQuiz,
+                    showAnswer: !!showAnswer,
                 }
                 if (req.file) {
                     settingData.logoPath = req.file.filename

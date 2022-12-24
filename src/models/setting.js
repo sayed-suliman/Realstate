@@ -15,6 +15,7 @@ const Setting = mongoose.model('setting', mongoose.Schema({
     finalRetake: Number,
     quizPolicy: String,
     reviewQuiz: Boolean,
+    showAnswer:Boolean
 
 }))
 

@@ -143,7 +143,7 @@ module.exports = {
             // now find percentage of students here which year it growth or downfall
             const perNum = Math.round(((currentYearAllStds - lastYearAllStds) / lastYearAllStds) * 100)
             // End of student data portion
-
+            
 
             // now sum of amounts of all months in this year and in the last year
             var lastYearAllAmounts = 0
@@ -189,8 +189,10 @@ module.exports = {
                 }
                 allSale += order.amount
             })
-            const percentageAmount = Math.round(((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100)
-
+            let percentageAmount = Math.round(((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) * 100)
+            if(isNaN(percentageAmount)){
+                percentageAmount = 0
+            }
             // end of amounts portions
             // by default is admin
             res.render("dashboard/new-dashboard", {
