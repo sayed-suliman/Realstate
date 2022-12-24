@@ -3,6 +3,11 @@ const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Chapters = require("./../models/chapters")
 const fs = require("fs");
 const userMeta = require("../models/user-meta");
+const CourseModel = require("../models/courses")
+const UserMeta = require("../models/user-meta");
+const Setting = require('../models/setting')
+const Result = require("../models/result")
+
 // chpaters detail
 const chapterDetail = async (req, res) => {
     // const allChaptersDetails = Chapters.find()
@@ -180,14 +185,77 @@ const updateChapter = async (req, res) => {
 // for student view
 const viewChapter = async (req, res) => {
     try {
-        const ID = req.params.id
-        const chapter = await Chapters.findById(ID).lean();
-        const completedChap = await userMeta.findOne({ user_id: req.user._id, chapter_id: chapter._id })
-        if (completedChap) {
-            chapter.completed = true
+        const courseId = req.params.courseId
+        const course = await CourseModel.findById(courseId).populate('chapters').populate('quizzes').lean()
+        if (course) {
+            for await (let [index, quiz] of course.quizzes.entries()) {
+                const takenQuiz = await Result.findOne({ user: req.user._id, quiz: quiz._id })
+                if (takenQuiz) {
+                    Object.assign(course.quizzes[index], { 'grade': takenQuiz.grade })
+                    Object.assign(course.quizzes[index], { 'unlock': true })
+                }
+            }
+
+            for await (let [index, chapter] of course.chapters.entries()) {
+                const completedChapter = await UserMeta.findOne({ user_id: req.user._id.toString(), chapter_id: chapter, meta_key: "completed" })
+                if (completedChapter) {
+                    Object.assign(course.chapters[index], { 'completed': true })
+                    Object.assign(course.chapters[index], { 'unlock': true })
+                }
+            }
+
+            // sorting the chapter by name 
+            const contents = [...course.quizzes, ...course.chapters]
+            contents.sort((a, b) => {
+                if (a.order < b.order) { return -1; }
+                if (a.order > b.order) { return 1; }
+                return 0;
+            })
+            const setting = await Setting.findOne()
+            // quiz policy when completed the the previous
+            if (setting.quizPolicy == 'accessPassedPrevious') {
+                // unlocking the next content when the previous is completed
+                if (contents.length) {
+                    for await (let [index] of contents.entries()) {
+                        if (!contents[index].unlock) {
+                            if (index == 0) continue
+                            if (typeof (contents[index - 1].unlock) != undefined) {
+                                if (contents[index - 1].type == 'quiz') {
+                                    if (contents[index - 1].grade == 'failed') {
+                                        break;
+                                    }
+                                }
+                                if (contents[index - 1].unlock) {
+                                    contents[index].unlock = true;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                    // unlock the first content of the current chapter
+                    Object.assign(contents[0], { 'unlock': true })
+                }
+            } else if (setting.quizPolicy == 'accessAllTime') {
+                for await (let [index] of contents.entries()) {
+                    if (!contents[index].unlock) {
+                        contents[index].unlock = true;
+                    }
+                }
+            }
+            // pdf view (right side)
+            const ID = req.params.id
+            const chapter = await Chapters.findById(ID).lean();
+            const completedChap = await userMeta.findOne({ user_id: req.user._id, chapter_id: chapter._id })
+            if (completedChap) {
+                chapter.completed = true
+            }
+            return res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter, courseId: course._id, contents })
         }
-        console.log(chapter)
-        res.render('dashboard/student/view-chapter', { title: `Chapter | ${chapter.name}`, chapter })
+
+
+
+        res.redirect('/dashboard')
+
     } catch (error) {
         res.redirect('/dashboard?msg=' + encodeMsg(error.message, "danger"))
     }
