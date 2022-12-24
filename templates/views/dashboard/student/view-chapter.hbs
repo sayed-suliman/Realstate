@@ -42,7 +42,7 @@
                                             {{#each contents}}
                                             <tr>
                                                 <td><a
-                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}">
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{../courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}">
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
@@ -72,7 +72,7 @@
                                             {{#each contents}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td><a {{#if this.unlock}}
-                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{this._id}}{{/ifEquals}}"
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{../courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
                                                         {{else}} href="#" {{/if}}>
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
@@ -120,8 +120,8 @@
                                 </div>
 
                                 <div class="card-body">
-                                    <div class="row">
-                                        <div class="w-100" style="height: calc(100vh - 278px);">
+                                    <div class="row h-100">
+                                        <div class="w-100" style="min-height: calc(100vh - 278px);">
                                             <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=0'
                                                 type="application/pdf" width="100%" height="100%">
 
@@ -131,11 +131,12 @@
                                                 </iframe>
                                             </object>
                                         </div>
-                                        {{!-- <div id='viewer' class="w-100" style="height: calc(100vh - 180px);"></div>
-                                        --}}
-                                        {{#unless chapter.completed}}
+                                    </div>
+                                </div>
+                                <div class="card-footer">
+                                    {{#unless chapter.completed}}
                                         <button
-                                            class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-left"
+                                            class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right"
                                             id="completed" style="width: 170px;" {{#if
                                             chapter.completed}}disabled{{/if}}>
                                             <div class="spinner d-none" id="spinner">
@@ -144,7 +145,6 @@
                                             <span class="text" id="button-text">Mark as completed</span>
                                         </button>
                                         {{/unless}}
-                                    </div>
                                 </div>
 
                             </div>

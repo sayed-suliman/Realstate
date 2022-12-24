@@ -1,298 +1,402 @@
-const express = require("express")
-const router = new express.Router()
-const { login, postLogin, signUp } = require("../controllers/auth")
-const { forgotPassword, doForgotPassword, doResetPassword, resetPassword } = require("../controllers/reset-password")
-const authLocal = require("../middleware/auth-strategy")
-const { authenticated, logged_in, isStudent, isAdmin, verifiedAndPaid, isRegulatororStudent } = require("../middleware/authentication")
-const signUpMiddleware = require("../middleware/authValidation")
-const { course, addcourse, courseDetails, deleteCourse, editCourse, updateCourse, viewCourse, allCourses } = require("../controllers/courses")
-const { package, addPackage, packagesDetail, editPackage, updatePackage, deletePackage } = require("../controllers/package")
-const { checkout, doCheckout } = require("../controllers/checkout")
-const { verification, doVerification } = require("../controllers/verification")
-const { resendCode } = require("../controllers/resendVerificationCode")
-const { payment } = require("../controllers/payment")
-const { upload, logoUpload, userAvatar } = require("./../controllers/fileUpload")
-const { addChapter, chapterDetail, postChapter, errorMsg, deleteChapter, editChapter, updateChapter, viewChapter, markAsCompleted } = require("../controllers/chapters")
-const { paypalAPI, paymentSuccess, stripeIntent, stripeIntentCancel } = require("../controllers/paymentGateWay")
-const { addQuiz, quizDetail, postQuiz, editQuiz, updateQuiz, viewQuiz, takeQuiz } = require("./../controllers/quiz")
-const { sendVerificationCode, welcomeEmail } = require("../controllers/mailServices")
-const { getCoupon, detailsCoupon, postCoupon, deleteCoupon, couponAPI, couponRegisterAPI } = require("../controllers/coupons")
-const { dashboard } = require("../controllers/dashboard")
-const { users, addUsers, postUser, editUser, updateUser } = require("../controllers/users")
-const { sort, sortCourse, sortData } = require("../controllers/sort")
-const Package = require("../models/package")
-const addUserByAdminMiddleware = require("../middleware/authaddAdminUser")
-const { allOrders } = require("../controllers/orderOrRegisteredStds")
-const { contactUs, postContact, messages, readMessage } = require("../controllers/contact")
-const { settingView, doSetting, settingError } = require("../controllers/setting")
-const User = require('../models/users')
-const url = require('url')
-const { encodeMsg } = require('../helper/createMsg')
-
+const express = require("express");
+const router = new express.Router();
+const { login, postLogin, signUp } = require("../controllers/auth");
+const {
+  forgotPassword,
+  doForgotPassword,
+  doResetPassword,
+  resetPassword,
+} = require("../controllers/reset-password");
+const authLocal = require("../middleware/auth-strategy");
+const {
+  authenticated,
+  logged_in,
+  isStudent,
+  isAdmin,
+  verifiedAndPaid,
+  isRegulatororStudent,
+} = require("../middleware/authentication");
+const signUpMiddleware = require("../middleware/authValidation");
+const {
+  course,
+  addcourse,
+  courseDetails,
+  deleteCourse,
+  editCourse,
+  updateCourse,
+  viewCourse,
+  allCourses,
+} = require("../controllers/courses");
+const {
+  package,
+  addPackage,
+  packagesDetail,
+  editPackage,
+  updatePackage,
+  deletePackage,
+} = require("../controllers/package");
+const { checkout, doCheckout } = require("../controllers/checkout");
+const { verification, doVerification } = require("../controllers/verification");
+const { resendCode } = require("../controllers/resendVerificationCode");
+const { payment } = require("../controllers/payment");
+const {
+  upload,
+  logoUpload,
+  userAvatar,
+} = require("./../controllers/fileUpload");
+const {
+  addChapter,
+  chapterDetail,
+  postChapter,
+  errorMsg,
+  deleteChapter,
+  editChapter,
+  updateChapter,
+  viewChapter,
+  markAsCompleted,
+} = require("../controllers/chapters");
+const {
+  paypalAPI,
+  paymentSuccess,
+  stripeIntent,
+  stripeIntentCancel,
+} = require("../controllers/paymentGateWay");
+const {
+  addQuiz,
+  quizDetail,
+  postQuiz,
+  editQuiz,
+  updateQuiz,
+  viewQuiz,
+  takeQuiz,
+} = require("./../controllers/quiz");
+const {
+  sendVerificationCode,
+  welcomeEmail,
+} = require("../controllers/mailServices");
+const {
+  getCoupon,
+  detailsCoupon,
+  postCoupon,
+  deleteCoupon,
+  couponAPI,
+  couponRegisterAPI,
+} = require("../controllers/coupons");
+const { dashboard } = require("../controllers/dashboard");
+const {
+  users,
+  addUsers,
+  postUser,
+  editUser,
+  updateUser,
+} = require("../controllers/users");
+const { sort, sortCourse, sortData } = require("../controllers/sort");
+const Package = require("../models/package");
+const addUserByAdminMiddleware = require("../middleware/authaddAdminUser");
+const { allOrders } = require("../controllers/orderOrRegisteredStds");
+const {
+  contactUs,
+  postContact,
+  messages,
+  readMessage,
+} = require("../controllers/contact");
+const {
+  settingView,
+  doSetting,
+  settingError,
+} = require("../controllers/setting");
+const User = require("../models/users");
+const url = require("url");
+const { encodeMsg } = require("../helper/createMsg");
 
 router.get("/test", (req, res) => {
-    sendVerificationCode('sulimank418@gmail.com', '1234')
-    res.render("package")
-})
+  sendVerificationCode("sulimank418@gmail.com", "1234");
+  res.render("package");
+});
 router.get("/email", (req, res) => {
-    const testUser = {
-        username: "Suliman Khan",
-        orderDate: "24 Dec 2022",
-        packageName: "Basic",
-        packageCourses: ["Course 1", "Course 2", "Course 3"],
-        totalPrice: "200",
-        siteName: process.env.SITE_NAME,
-        siteURL: "https://members.realestateinstruct.com"
-    }
-    welcomeEmail('sulimank418@gmail.com', testUser)
-    res.render("mail/welcome", {
-        username: "Suliman Khan",
-        orderDate: "24 Dec 2022",
-        packageName: "Basic",
-        packageCourses: ["Course 1", "Course 2", "Course 3"],
-        totalPrice: "200",
-        siteName: "Real estate Instruct",
-        siteURL: "#"
-    })
-})
+  const testUser = {
+    username: "Suliman Khan",
+    orderDate: "24 Dec 2022",
+    packageName: "Basic",
+    packageCourses: ["Course 1", "Course 2", "Course 3"],
+    totalPrice: "200",
+    siteName: process.env.SITE_NAME,
+    siteURL: "https://members.realestateinstruct.com",
+  };
+  welcomeEmail("sulimank418@gmail.com", testUser);
+  res.render("mail/welcome", {
+    username: "Suliman Khan",
+    orderDate: "24 Dec 2022",
+    packageName: "Basic",
+    packageCourses: ["Course 1", "Course 2", "Course 3"],
+    totalPrice: "200",
+    siteName: "Real estate Instruct",
+    siteURL: "#",
+  });
+});
 // default route
 router.get("/", async (req, res) => {
-    const msg = req.query.msg;
-    const type = req.query.type;
-    const packages = await Package.find({ status: "publish" }).populate({
-        path: "courses",
-        match: {
-            status: "publish"
-        }
-    }).sort('price');
-    const packageObj = {}
-    packages.forEach(package => {
-        packageObj[package.name] = package
+  const msg = req.query.msg;
+  const type = req.query.type;
+  const packages = await Package.find({ status: "publish" })
+    .populate({
+      path: "courses",
+      match: {
+        status: "publish",
+      },
     })
-    res.render("package", { packages, msg: { text: msg, type }, title: "Packages Plan", packageObj })
-})
-
+    .sort("price");
+  const packageObj = {};
+  packages.forEach((package) => {
+    packageObj[package.name] = package;
+  });
+  res.render("package", {
+    packages,
+    msg: { text: msg, type },
+    title: "Packages Plan",
+    packageObj,
+  });
+});
 
 // login route
-router.get("/login", logged_in, login)
-router.get('/loginAsStudent', isAdmin, async (req, res) => {
-    if (req.query.uid) {
-        console.log(req.user)
-        let adminId = req.user._id.toString()
-        const user = await User.findById(req.query.uid)
-        req.login(user, function (err) {
-            if (err) { return next(err); }
-            req.session.admin = adminId
-            return res.redirect(url.format({
-                pathname: '/dashboard',
-                query: {
-                    msg: encodeMsg('You\'re login as a ' + user.name)
-                }
-            }));
-        });
-    } else {
-        res.redirect('/dashboard/user')
-    }
-})
+router.get("/login", logged_in, login);
+router.get("/loginAsStudent", isAdmin, async (req, res) => {
+  if (req.query.uid) {
+    let adminId = req.user._id.toString();
+    const user = await User.findById(req.query.uid);
+    req.login(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      req.session.admin = adminId;
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg: encodeMsg("You're login as a " + user.name),
+          },
+        })
+      );
+    });
+  } else {
+    res.redirect("/dashboard/user");
+  }
+});
 // router.post('/login',postLogin)
-router.post('/login', verifiedAndPaid, authLocal, postLogin)
+router.post("/login", verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
-    // if admin login as student 
-    if (req.session.admin) {
-        const user = await User.findById(req.session.admin)
-        return req.login(user, function (err) {
-            if (err) { return next(err); }
-            return res.redirect(url.format({
-                pathname: '/dashboard',
-                query: {
-                    msg: encodeMsg('Login back as admin')
-                }
-            }));
-        });
-        // delete req.session.admin;
+  // if admin login as student
+  if (req.session.admin) {
+    const user = await User.findById(req.session.admin);
+    let msg = encodeMsg("Login back as admin");
+    if (req.session.adminMsg) {
+      msg = encodeMsg(req.session.adminMsg, "danger");
     }
-    req.logout(function (err) {
-        if (err) { return next(err); }
-        res.redirect('/');
-    })
-})
+    return req.login(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      console.log(req.session);
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg,
+          },
+        })
+      );
+    });
+    // delete req.session.admin;
+  }
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+});
 
 // forgot password
-router.get('/reset-password', forgotPassword)
-router.get('/forgot-password', (req, res) => res.redirect('/reset-password'))
-router.post('/forgot-password', doForgotPassword)
-// Used in email 
-router.get('/user/reset-password', resetPassword)
-router.post('/reset-password', doResetPassword)
+router.get("/reset-password", forgotPassword);
+router.get("/forgot-password", (req, res) => res.redirect("/reset-password"));
+router.post("/forgot-password", doForgotPassword);
+// Used in email
+router.get("/user/reset-password", resetPassword);
+router.post("/reset-password", doResetPassword);
 
-
-// checkout post 
-router.get('/checkout', checkout)
-router.get("/register", (req, res) => res.redirect('/'))
-router.post("/register", signUpMiddleware, signUp)
+// checkout post
+router.get("/checkout", checkout);
+router.get("/register", (req, res) => res.redirect("/"));
+router.post("/register", signUpMiddleware, signUp);
 // sign up used because their is registration on checkout
 // router.post("/checkout", signUpMiddleware, signUp)
-router.get('/checkout2', doCheckout)
+router.get("/checkout2", doCheckout);
 
-// for testing checkout 
+// for testing checkout
 router.get("/check", (req, res) => {
-    res.render("check", { title: "Checkout" })
-})
-
+  res.render("check", { title: "Checkout" });
+});
 
 // middleware for all dashboard route
-router.use('/dashboard', authenticated)
+router.use("/dashboard", authenticated);
 
 // main-dashboard
-router.get("/dashboard", dashboard)
+router.get("/dashboard", dashboard);
 
 // verification route
-router.get("/verification", verification)
-router.post("/verifying", doVerification)
-router.get('/resend', resendCode)
+router.get("/verification", verification);
+router.post("/verifying", doVerification);
+router.get("/resend", resendCode);
 
 // payment routes
-router.get('/payment', payment)
-router.post('/create-payment-intent', stripeIntent)
-router.post('/cancel-payment-intent', stripeIntentCancel)
-router.post('/paypal', paypalAPI)
-router.get('/success', paymentSuccess)
-router.post('/check-coupon', couponAPI)
-router.post('/register-coupon', couponRegisterAPI)
-
-
-
+router.get("/payment", payment);
+router.post("/create-payment-intent", stripeIntent);
+router.post("/cancel-payment-intent", stripeIntentCancel);
+router.post("/paypal", paypalAPI);
+router.get("/success", paymentSuccess);
+router.post("/check-coupon", couponAPI);
+router.post("/register-coupon", couponRegisterAPI);
 
 // ************************************ contact-us
-router.get("/dashboard/contact-us", isStudent, contactUs)
-router.post("/dashboard/contact-us", isStudent, postContact)
+router.get("/dashboard/contact-us", isStudent, contactUs);
+router.post("/dashboard/contact-us", isStudent, postContact);
 
 //  ************************************ Setting
 
-router.get("/dashboard/setting", settingView)
-router.post("/dashboard/setting", logoUpload.single("logo"), doSetting, settingError)
+router.get("/dashboard/setting", settingView);
+router.post(
+  "/dashboard/setting",
+  logoUpload.single("logo"),
+  doSetting,
+  settingError
+);
 // setting post for student
-router.post("/dashboard/userSetting", userAvatar.single("avatar"), doSetting, settingError)
-
-
+router.post(
+  "/dashboard/userSetting",
+  userAvatar.single("avatar"),
+  doSetting,
+  settingError
+);
 
 // ********************************************* users
-router.get("/dashboard/users", isAdmin, users)
-router.get("/dashboard/add-user", isAdmin, addUsers)
+router.get("/dashboard/users", isAdmin, users);
+router.get("/dashboard/add-user", isAdmin, addUsers);
 // post user by admin
-router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser)
+router.post("/dashboard/add-user", isAdmin, addUserByAdminMiddleware, postUser);
 //edit page to admin
-router.get("/dashboard/user-edit/:id", isAdmin, editUser)
+router.get("/dashboard/user-edit/:id", isAdmin, editUser);
 // update user
-router.post("/dashboard/user-edit/update-user", isAdmin, updateUser)
-
-
+router.post("/dashboard/user-edit/update-user", isAdmin, updateUser);
 
 // ****************************** Packages
 //add package
-router.get("/dashboard/add-package", isAdmin, package)
-router.post('/dashboard/add-package', isAdmin, addPackage)
+router.get("/dashboard/add-package", isAdmin, package);
+router.post("/dashboard/add-package", isAdmin, addPackage);
 // package details
-router.get("/dashboard/package-detail", isAdmin, packagesDetail)
-router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage)
-router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage)
+router.get("/dashboard/package-detail", isAdmin, packagesDetail);
+router.get("/dashboard/package-detail/edit-package", isAdmin, editPackage);
+router.post("/dashboard/package-detail/update-package", isAdmin, updatePackage);
 // delete package
-router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage)
-
-
+router.get("/dashboard/package-detail/delete-package", isAdmin, deletePackage);
 
 //  ******************************* Courses
 // for student view only
-router.get("/dashboard/courses", allCourses)
+router.get("/dashboard/courses", allCourses);
 // add course
 // render of course add
-router.get("/dashboard/add-course", isAdmin, course)
+router.get("/dashboard/add-course", isAdmin, course);
 // course-add post
-router.post("/dashboard/add-course", isAdmin, addcourse)
+router.post("/dashboard/add-course", isAdmin, addcourse);
 
 // course-detail
-router.get("/dashboard/course-detail", courseDetails)
+router.get("/dashboard/course-detail", courseDetails);
 // course-delete
-router.get("/dashboard/course-detail/delete-course", isAdmin, deleteCourse)
+router.get("/dashboard/course-detail/delete-course", isAdmin, deleteCourse);
 // edit-course
-router.get("/dashboard/course-detail/edit-course", isAdmin, editCourse)
+router.get("/dashboard/course-detail/edit-course", isAdmin, editCourse);
 // update-course
-router.post("/dashboard/course-detail/update-course", isAdmin, updateCourse)
+router.post("/dashboard/course-detail/update-course", isAdmin, updateCourse);
 // for student || regulator
-router.get('/dashboard/view-course/', (req, res) => res.redirect('/dashboard'))
-router.get('/dashboard/view-course/:id', viewCourse)
+router.get("/dashboard/view-course/", (req, res) => res.redirect("/dashboard"));
+router.get("/dashboard/view-course/:id", viewCourse);
 
 // ********************************** Chapter Part
 
-// add chapter 
-router.get("/dashboard/add-chapter", isAdmin, addChapter)
-router.post("/dashboard/add-chapter", upload.single("courseFile"), isAdmin, postChapter, errorMsg)
+// add chapter
+router.get("/dashboard/add-chapter", isAdmin, addChapter);
+router.post(
+  "/dashboard/add-chapter",
+  upload.single("courseFile"),
+  isAdmin,
+  postChapter,
+  errorMsg
+);
 // for test below link
-router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg)
-// chapter details 
-router.get("/dashboard/chapter-detail", isAdmin, chapterDetail)
-// Edit Chapters 
-router.get("/dashboard/chapter-detail/edit-chapter", isAdmin, editChapter)
-// Delete Chapters 
-router.get("/dashboard/chapter-detail/delete-chapter", isAdmin, deleteChapter)
+router.post("/add-chapter", upload.single("courseFile"), postChapter, errorMsg);
+// chapter details
+router.get("/dashboard/chapter-detail", isAdmin, chapterDetail);
+// Edit Chapters
+router.get("/dashboard/chapter-detail/edit-chapter", isAdmin, editChapter);
+// Delete Chapters
+router.get("/dashboard/chapter-detail/delete-chapter", isAdmin, deleteChapter);
 // Update Chapter
-router.post("/dashboard/chapter-detail/update-chapter", upload.single("courseFile"), isAdmin, updateChapter)
-//for student 
-router.get('/dashboard/view-chapter', (req, res) => { res.redirect('/dashboard') })
-router.get('/dashboard/view-chapter/:courseId/:id', viewChapter)
-router.post('/mark-completed', markAsCompleted)
+router.post(
+  "/dashboard/chapter-detail/update-chapter",
+  upload.single("courseFile"),
+  isAdmin,
+  updateChapter
+);
+//for student
+router.get("/dashboard/view-chapter", (req, res) => {
+  res.redirect("/dashboard");
+});
+router.get("/dashboard/view-chapter/:courseId/:id", viewChapter);
+router.post("/mark-completed", markAsCompleted);
 
 // ******************************* Quiz part **************************
-// add quiz 
-router.get("/dashboard/add-quiz", isAdmin, addQuiz)
-router.post("/dashboard/add-quiz", isAdmin, postQuiz)
+// add quiz
+router.get("/dashboard/add-quiz", isAdmin, addQuiz);
+router.post("/dashboard/add-quiz", isAdmin, postQuiz);
 
-// quiz details 
-router.get("/dashboard/quiz-detail", isAdmin, quizDetail)
+// quiz details
+router.get("/dashboard/quiz-detail", isAdmin, quizDetail);
 
 // quiz edit page
-router.get("/dashboard/quiz-detail/edit-quiz", isAdmin, editQuiz)
+router.get("/dashboard/quiz-detail/edit-quiz", isAdmin, editQuiz);
 // update post quiz
-router.post("/dashboard/quiz-detail/update-quiz", isAdmin, updateQuiz)
+router.post("/dashboard/quiz-detail/update-quiz", isAdmin, updateQuiz);
 
 // Student(view)
-router.get('/dashboard/view-quiz/:id', viewQuiz)
-router.post('/test-quiz', takeQuiz)
-
-
-
+router.get("/dashboard/view-quiz/:courseId/:id", viewQuiz);
+router.post("/test-quiz", takeQuiz);
 
 // ***************************** Coupons
-router.get("/dashboard/add-coupon", isAdmin, getCoupon)
-router.post("/dashboard/coupon-generated", isAdmin, postCoupon)
+router.get("/dashboard/add-coupon", isAdmin, getCoupon);
+router.post("/dashboard/coupon-generated", isAdmin, postCoupon);
 
-router.get("/dashboard/coupon-detail", isAdmin, detailsCoupon)
+router.get("/dashboard/coupon-detail", isAdmin, detailsCoupon);
 // delete
-router.get("/dashboard/coupon-detail/delete-coupon", isAdmin, deleteCoupon)
-
+router.get("/dashboard/coupon-detail/delete-coupon", isAdmin, deleteCoupon);
 
 // ******************************** Sort
-router.get("/dashboard/sort", isAdmin, sort)
-router.get("/dashboard/sort/course/:id", isAdmin, sortCourse)
+router.get("/dashboard/sort", isAdmin, sort);
+router.get("/dashboard/sort/course/:id", isAdmin, sortCourse);
 // sort data using jquery..!
-router.post('/sort/data', sortData)
+router.post("/sort/data", sortData);
 
 // ************************************ Orders
-router.get("/dashboard/order", allOrders)
+router.get("/dashboard/order", allOrders);
 
 // ************************************ message
-router.get("/dashboard/messages", isAdmin, messages)
-router.get("/dashboard/read-message/:id", isAdmin, readMessage)
-
-
+router.get("/dashboard/messages", isAdmin, messages);
+router.get("/dashboard/read-message/:id", isAdmin, readMessage);
 
 // eroor 500 page
-router.get('/500', (req, res) => res.render('500'))
+router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
-    res.render("404", { title: "404 Error", err: "Page not Found Go back" })
-})
-
+  res.render("404", { title: "404 Error", err: "Page not Found Go back" });
+});
 
 // export all routes
-module.exports = router
+module.exports = router;
