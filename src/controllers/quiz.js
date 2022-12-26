@@ -216,6 +216,7 @@ const viewQuiz = async (req, res) => {
         }
         return 0;
       });
+
       // quiz policy when completed the the previous
       if (setting.quizPolicy == "accessPassedPrevious") {
         // unlocking the next content when the previous is completed
@@ -248,6 +249,20 @@ const viewQuiz = async (req, res) => {
           }
         }
       }
+
+      // add serial no to question
+      for await (let [index, question] of quiz.questions.entries()) {
+        quiz.questions[index].qno = `q-${index}`;
+      }
+      // randomizing the question
+      if (setting.randomizeQuestions) {
+        quiz.questions.sort(() => {
+          return Math.random() - 0.5;
+        });
+      }
+
+      console.log(quiz.questions);
+
       let passingPercent;
       if (quiz.type == "quiz") {
         passingPercent = setting.quizPassingMark;
@@ -283,7 +298,6 @@ const takeQuiz = async (req, res) => {
     delete req.body.time;
 
     let answersArr = Object.values(req.body);
-    console.log(answersArr);
     let point = 0;
     let wrongAns = [];
     let correctAns = [];
@@ -294,6 +308,7 @@ const takeQuiz = async (req, res) => {
         correctAns.push(`q-${index}`);
       } else {
         wrongAns.push(`q-${index}`);
+        showAns.push(`q-${index}-op-${question.ans}`);
       }
     });
     const percent = Math.floor((point / questions.length) * 100);
@@ -326,7 +341,6 @@ const takeQuiz = async (req, res) => {
     // 2) if reviewQuiz and showAnswer both are enable
     //      send correct and wrong answer of the user and correctAns of the question
     // 3) other wise send only marks(points) + correct and wrong counts
-
     sendObj = setting.reviewQuiz
       ? setting.showAnswer
         ? { showAns, correctAns, wrongAns, point }

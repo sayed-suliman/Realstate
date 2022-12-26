@@ -20,6 +20,7 @@ const Setting = mongoose.model(
     quizPolicy: String,
     reviewQuiz: Boolean,
     showAnswer: Boolean,
+    randomizeQuestions: Boolean,
   })
 );
 

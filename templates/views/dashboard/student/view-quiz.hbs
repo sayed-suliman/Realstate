@@ -172,10 +172,10 @@
                                                 <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
                                                     id="question">
                                                     <div class="icheck-primary d-inline">
-                                                        <input type="radio" id="qu-{{@../index}}-op-{{@index}}"
-                                                            value="{{@index}}" name="q-{{@../index}}" required>
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this.qno}}" required>
                                                         <label class="font-weight-normal"
-                                                            for="qu-{{@../index}}-op-{{@index}}">
+                                                            for="{{../this.qno}}-op-{{@index}}">
                                                             {{this}}
                                                         </label>
                                                     </div>

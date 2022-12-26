@@ -171,6 +171,15 @@
                                                     <div class="custom-control custom-checkbox">
                                                         <input
                                                             class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="randomizeQuestions" id="randomize" {{#if
+                                                            setting.randomizeQuestions }}checked{{/if}}>
+                                                        <label for="randomize"
+                                                            class="custom-control-label font-weight-normal">Randomize
+                                                            the questions of Exam(Quiz,Mid & Final)</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
                                                             type="checkbox" name="reviewQuiz" id="reviewQuiz" {{#if
                                                             setting.reviewQuiz }}checked{{/if}}>
                                                         <label for="reviewQuiz"

@@ -51,6 +51,7 @@ $(document).ready(function () {
         point,
         correctCount,
         wrongCount,
+        showAns,
       }) => {
         loading(false);
         if (!error) {
@@ -103,6 +104,13 @@ $(document).ready(function () {
                   .removeClass("d-none")
                   .addClass("text-danger");
                 parent.find(".feedback").text("Your answer is wrong.");
+              });
+            }
+            if (wrongAns && showAns) {
+              showAns.forEach((correct) => {
+                $(`#quiz [for=${correct}]`)
+                  .addClass("text-success font-weight-bold")
+                  .append("<span>(Correct)</span>");
               });
             }
             if (correctAns.length != 0) {

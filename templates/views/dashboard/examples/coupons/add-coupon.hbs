@@ -1,5 +1,7 @@
 {{>dashboardheader}}
-
+<head>
+    <link rel="stylesheet" href="/dashboard/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+</head>
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -99,16 +101,15 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label>Valid From</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i
-                                                                class="far fa-calendar-alt"></i>
-                                                        </span>
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                        data-target="#reservationdate" name="validFrom" required />
+                                                    <div class="input-group-append" data-target="#reservationdate"
+                                                        data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
                                                     </div>
-                                                    <input required type="text" class="form-control"
-                                                        data-inputmask-alias="datetime"
-                                                        data-inputmask-inputformat="mm/dd/yyyy" data-mask=""
-                                                        inputmode="numeric" name="validFrom">
                                                 </div>
 
                                             </div>
@@ -116,16 +117,15 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label>Valid Till</label>
-                                                <div class="input-group">
-                                                    <div class="input-group-prepend">
-                                                        <span class="input-group-text"><i
-                                                                class="far fa-calendar-alt"></i>
-                                                        </span>
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <input type="text" class="form-control datetimepicker-input"
+                                                        data-target="#reservationdate" name="validTill" required />
+                                                    <div class="input-group-append" data-target="#reservationdate"
+                                                        data-toggle="datetimepicker">
+                                                        <div class="input-group-text"><i class="fa fa-calendar"></i>
+                                                        </div>
                                                     </div>
-                                                    <input required type="text" class="form-control"
-                                                        data-inputmask-alias="datetime"
-                                                        data-inputmask-inputformat="mm/dd/yyyy" data-mask=""
-                                                        inputmode="numeric" name="validTill">
                                                 </div>
                                             </div>
                                         </div>
@@ -174,8 +174,12 @@
 
 
 
+    <script src="/dashboard/plugins/moment/moment.min.js"></script>
     <script src="/dashboard/plugins/inputmask/jquery.inputmask.min.js"></script>
     <script src="/dashboard/plugins/daterangepicker/daterangepicker.js"></script>
+    <script src="/dashboard/plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
+
+
 
     {{!-- custom js or jquery --}}
     <script>
@@ -199,7 +203,7 @@
             });
         })
     </script>
-    
+
 </body>
 
 </html>
