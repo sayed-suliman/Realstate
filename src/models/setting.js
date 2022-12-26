@@ -1,22 +1,27 @@
-const mongoose = require('mongoose')
+const mongoose = require("mongoose");
 
-const Setting = mongoose.model('setting', mongoose.Schema({
+const Setting = mongoose.model(
+  "setting",
+  mongoose.Schema({
     logoPath: {
-        type: String,
-        get: function (logo) {
-            return `/images/${logo}`
-        }
+      type: String,
+      get: function (logo) {
+        return `/images/${logo}`;
+      },
     },
     collegeName: String,
     collegeAddress: String,
     collegePhone: String,
-    passingMark: Number,
+    quizPassingMark: Number,
+    midPassingMark: Number,
+    finalPassingMark: Number,
     midRetake: Number,
     finalRetake: Number,
     quizPolicy: String,
     reviewQuiz: Boolean,
-    showAnswer:Boolean
+    showAnswer: Boolean,
+    randomizeQuestions: Boolean,
+  })
+);
 
-}))
-
-module.exports = Setting
+module.exports = Setting;

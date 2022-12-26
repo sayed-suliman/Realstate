@@ -180,6 +180,7 @@ const viewQuiz = async (req, res) => {
       );
     }
     if (quiz && course) {
+      // unlocking already taken quiz
       for await (let [index, quiz] of course.quizzes.entries()) {
         const takenQuiz = await Result.findOne({
           user: req.user._id,
@@ -191,6 +192,7 @@ const viewQuiz = async (req, res) => {
         }
       }
 
+      // unlocking completed course
       for await (let [index, chapter] of course.chapters.entries()) {
         const completedChapter = await UserMeta.findOne({
           user_id: req.user._id.toString(),
@@ -203,7 +205,7 @@ const viewQuiz = async (req, res) => {
         }
       }
 
-      // sorting the chapter by name
+      // sorting the contents
       const contents = [...course.quizzes, ...course.chapters];
       contents.sort((a, b) => {
         if (a.order < b.order) {
@@ -214,6 +216,7 @@ const viewQuiz = async (req, res) => {
         }
         return 0;
       });
+
       // quiz policy when completed the the previous
       if (setting.quizPolicy == "accessPassedPrevious") {
         // unlocking the next content when the previous is completed
@@ -222,6 +225,7 @@ const viewQuiz = async (req, res) => {
             if (!contents[index].unlock) {
               if (index == 0) continue;
               if (typeof contents[index - 1].unlock != undefined) {
+                //  locking chapter followed by the failed quiz
                 if (contents[index - 1].type == "quiz") {
                   if (contents[index - 1].grade == "failed") {
                     break;
@@ -239,17 +243,39 @@ const viewQuiz = async (req, res) => {
         }
       } else if (setting.quizPolicy == "accessAllTime") {
         for await (let [index] of contents.entries()) {
+          // unlocking all contents
           if (!contents[index].unlock) {
             contents[index].unlock = true;
           }
         }
       }
-      console.log(course._id.toString());
+
+      // add serial no to question
+      for await (let [index, question] of quiz.questions.entries()) {
+        quiz.questions[index].qno = `q-${index}`;
+      }
+      // randomizing the question
+      if (setting.randomizeQuestions) {
+        quiz.questions.sort(() => {
+          return Math.random() - 0.5;
+        });
+      }
+
+      console.log(quiz.questions);
+
+      let passingPercent;
+      if (quiz.type == "quiz") {
+        passingPercent = setting.quizPassingMark;
+      } else if (quiz.type == "mid") {
+        passingPercent = setting.midPassingMark;
+      } else if (quiz.type == "final") {
+        passingPercent = setting.finalPassingMark;
+      }
       res.render("dashboard/student/view-quiz", {
         title: `Quiz | ${quiz.name}`,
         quiz,
         takenQuiz,
-        passingPercent: setting.passingMark,
+        passingPercent,
         reviewQuiz: setting.reviewQuiz,
         courseId: course._id.toString(),
         contents,
@@ -275,16 +301,16 @@ const takeQuiz = async (req, res) => {
     let point = 0;
     let wrongAns = [];
     let correctAns = [];
-    if (setting.reviewQuiz) {
-      questions.forEach((question, index) => {
-        if (question.ans == answersArr[index]) {
-          point += 1;
-          correctAns.push(`q-${index}`);
-        } else {
-          wrongAns.push(`q-${index}`);
-        }
-      });
-    }
+    let showAns = [];
+    questions.forEach((question, index) => {
+      if (question.ans == answersArr[index]) {
+        point += 1;
+        correctAns.push(`q-${index}`);
+      } else {
+        wrongAns.push(`q-${index}`);
+        showAns.push(`q-${index}-op-${question.ans}`);
+      }
+    });
     const percent = Math.floor((point / questions.length) * 100);
     const grade = percent >= setting.passingMark ? "passed" : "failed";
     const data = {
@@ -309,7 +335,19 @@ const takeQuiz = async (req, res) => {
     } else {
       await Result(data).save();
     }
-    res.send({ correctAns, wrongAns, point });
+    // sending object to client side javascript
+    // 1) if reviewQuiz is enable
+    //      send both correct and wrong answer of the user
+    // 2) if reviewQuiz and showAnswer both are enable
+    //      send correct and wrong answer of the user and correctAns of the question
+    // 3) other wise send only marks(points) + correct and wrong counts
+    sendObj = setting.reviewQuiz
+      ? setting.showAnswer
+        ? { showAns, correctAns, wrongAns, point }
+        : { correctAns, wrongAns, point }
+      : { point, correctCount: correctAns.length, wrongCount: wrongAns.length };
+
+    res.send(sendObj);
   } catch (error) {
     res.send({ error: error.message });
   }
