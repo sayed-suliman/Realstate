@@ -202,6 +202,11 @@ hero section in all pages
     margin: 0;
 }
 
+.login-page .form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
 .login-page .card {
     border: none;
     height: fit-content;
@@ -211,10 +216,11 @@ hero section in all pages
     padding-bottom: 32px;
 }
 
+/* 
 .login-page .card label::after {
     content: " *";
     color: red;
-}
+} */
 
 .login-page .login-image-div {
     height: 110px;
@@ -325,7 +331,7 @@ verification page
 packages plan page
 
 **************************************** */
-div.package-column{
+div.package-column {
     height: 100%;
     padding: 15px 0;
     border: 1px solid var(--color-black);
