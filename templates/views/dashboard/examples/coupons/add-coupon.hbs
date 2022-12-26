@@ -1,7 +1,9 @@
 {{>dashboardheader}}
+
 <head>
     <link rel="stylesheet" href="/dashboard/plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
 </head>
+
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -52,28 +54,6 @@
                                 </div>
                                 <div class="card-body">
                                     <div class="row">
-                                        {{!-- <div class="col-4">
-                                            <div class="form-group">
-                                                <label for="counts">Counts of Vouchers</label>
-                                                <input required type="text" id="counts" name="counts"
-                                                    class="form-control" placeholder="Generate number of codes">
-                                            </div>
-                                        </div> --}}
-                                        {{!-- <div class="col-6">
-                                            <div class="form-group">
-                                                <label for="pattern">Pattern <span
-                                                        class="small">(optional)</span></label>
-                                                <input type="text" id="pattern" name="pattern" class="form-control"
-                                                    placeholder="##-##-##">
-                                            </div>
-                                        </div> --}}
-                                        {{!-- <div class="col-4 align-self-end">
-                                            <div class="form-group">
-                                                <button class="btn btn-danger">
-                                                    Generate Code
-                                                </button>
-                                            </div>
-                                        </div> --}}
                                     </div>
                                     {{!-- 2nd row --}}
                                     <div class="row">
@@ -101,11 +81,11 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label>Valid From</label>
-                                                <div class="input-group date" id="reservationdate"
+                                                <div class="input-group date" id="validForm"
                                                     data-target-input="nearest">
                                                     <input type="text" class="form-control datetimepicker-input"
-                                                        data-target="#reservationdate" name="validFrom" required />
-                                                    <div class="input-group-append" data-target="#reservationdate"
+                                                        data-target="#validForm" name="validFrom" required />
+                                                    <div class="input-group-append" data-target="#validForm"
                                                         data-toggle="datetimepicker">
                                                         <div class="input-group-text"><i class="fa fa-calendar"></i>
                                                         </div>
@@ -117,11 +97,11 @@
                                         <div class="col-6">
                                             <div class="form-group">
                                                 <label>Valid Till</label>
-                                                <div class="input-group date" id="reservationdate"
+                                                <div class="input-group date" id="validTill"
                                                     data-target-input="nearest">
                                                     <input type="text" class="form-control datetimepicker-input"
-                                                        data-target="#reservationdate" name="validTill" required />
-                                                    <div class="input-group-append" data-target="#reservationdate"
+                                                        data-target="#validTill" name="validTill" required />
+                                                    <div class="input-group-append" data-target="#validTill"
                                                         data-toggle="datetimepicker">
                                                         <div class="input-group-text"><i class="fa fa-calendar"></i>
                                                         </div>
@@ -198,9 +178,8 @@
             $('[data-mask]').inputmask()
 
             //Date picker
-            $('#reservationdate').datetimepicker({
-                format: 'L'
-            });
+            $('#validForm').datetimepicker({ format: 'L' })
+            $('#validTill').datetimepicker({ format: 'L' })
         })
     </script>
 
