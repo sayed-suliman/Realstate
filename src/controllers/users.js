@@ -6,38 +6,13 @@ const Order = require("../models/order");
 
 module.exports = {
   async users(req, res) {
-    var { page } = req.query;
     var msgToken = req.query.msg;
     var option = {};
     if (msgToken) {
       var msg = decodeMsg(msgToken);
       option = msg;
     }
-    if (!page) page = 1;
-    var limit = 6; //number of user per page
-    var noOfPages = Math.ceil(
-      (await User.find({ role: "student" }).count()) / limit
-    );
-    if (page > noOfPages) {
-      const users = await User.find({ role: "student" }).populate("package");
-      // binary to base64
-      for await (let [index] of users.entries()) {
-        if (users[index].avatar) {
-          users[index].avatar = users[index].avatar.toString("base64");
-        }
-      }
-      return res.render("dashboard/examples/users", {
-        title: "Dashboard | Users",
-        users,
-        toast: Object.keys(option).length == 0 ? undefined : option,
-      });
-    }
-    const users = await User.find({ role: "student" })
-      .populate("package")
-      .limit(parseInt(limit))
-      .skip(parseInt((page - 1) * limit));
-    users.currentPage = page;
-    users.pages = noOfPages;
+    const users = await User.find({ role: "student" }).populate("package");
     // binary to base64
     for await (let [index] of users.entries()) {
       if (users[index].avatar) {

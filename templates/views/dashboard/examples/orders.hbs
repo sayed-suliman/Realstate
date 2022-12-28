@@ -1,15 +1,16 @@
 {{>dashboardheader}}
 
 <head>
-<style>
-    #example2_filter label{
-        display: flex;
-        float: right;
-    }
-    #example2_filter label input{
-        margin-left: 10px;
-    }
-</style>
+    <style>
+        #example2_filter label {
+            display: flex;
+            float: right;
+        }
+
+        #example2_filter label input {
+            margin-left: 10px;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
@@ -131,17 +132,56 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example2").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-            }).container().appendTo('#example2_wrapper');
             $('#example2').DataTable({
                 "paging": true,
                 "lengthChange": false,
-                "searching": false,
+                "searching": true,
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
+                initComplete: function () {
+                    this.api()
+                        .column(2)
+                        .every(function () {
+                            var column = this;
+                            var select = $('<select class="form-control w-auto d-inline ml-xl-2"><option value="">Select By</option></select>')
+                                .appendTo($(column.header()))
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                            select.on('click', function (e) {
+                                e.stopPropagation()
+                            })
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(`<option value="${d}">${d}</option>`);
+                                });
+                        }).column(3)
+                        .every(function () {
+                            var column = this;
+                            var select = $('<select class="form-control w-auto d-inline ml-xl-2"><option value="">Select By</option></select>')
+                                .appendTo($(column.header()))
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                            select.on('click', function (e) {
+                                e.stopPropagation()
+                            })
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(`<option value="${d}">${d}</option>`);
+                                });
+                        });
+                }
             });
         });
     </script>

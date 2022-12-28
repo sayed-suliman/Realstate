@@ -1,4 +1,14 @@
 {{>dashboardheader}}
+<style>
+  #example2_filter label {
+    display: flex;
+    float: right;
+  }
+
+  #example2_filter label input {
+    margin-left: 10px;
+  }
+</style>
 
 <body class="hold-transition sidebar-mini">
   <!-- Site wrapper -->
@@ -37,75 +47,95 @@
 
         <!-- Default box -->
         <div class="card card-solid">
-          <div class="card-body pb-0">
-            <div class="row">
-              {{#each users}}
-              <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
-                <div class="card bg-light d-flex flex-fill">
-                  <div class="card-header text-muted border-bottom-0">
-                    Student
-                  </div>
-                  <div class="card-body pt-0">
-                    <div class="row">
-                      <div class="col-7">
-                        <h2 class="lead"><b>{{this.name}}</b></h2>
-                        <p class="text-muted text-sm"><b>Package: </b> {{this.package.name}}
-                        </p>
-                        <ul class="ml-4 mb-0 fa-ul text-muted">
-                          <li class="small"><span class="fa-li"><i class="fas fa-lg fa-envelope"></i></span> Email: <a
-                              href="mailto:{{{this.email}}}" class="text-muted">{{{this.email}}}</a>
-                          </li>
-                          <li class="small"><span class="fa-li"><i class="fas fa-lg fa-id-card-alt"></i></span> Driver
-                            License / CA ID: {{this.driver_license}}</li>
-                          <li class="small"><span class="fa-li"><i class="fas fa-lg fa-calendar-alt"></i></span> DOB:
-                            {{formatDate this.dob}}</li>
-                        </ul>
-                      </div>
-                      <div class="col-5 text-center">
-                        {{#if this.avatar}}
-                        <img src="data:image/jpg;base64,{{this.avatar}}" alt="user-avatar" id="user-avatar"
-                          class="img-circle img-fluid">
-                        {{else}}
-                        <img src="https://ui-avatars.com/api/?name={{this.name}}&size=256" alt="user-avatar"
-                          class="img-circle img-fluid">
-                        {{/if}}
-                      </div>
+          <div class="card-body">
+            {{!-- {{#each users}}
+            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
+              <div class="card bg-light d-flex flex-fill">
+                <div class="card-header text-muted border-bottom-0">
+                  Student
+                </div>
+                <div class="card-body pt-0">
+                  <div class="row">
+                    <div class="col-7">
+                      <h2 class="lead"><b>{{this.name}}</b></h2>
+                      <p class="text-muted text-sm"><b>Package: </b> {{this.package.name}}
+                      </p>
+                      <ul class="ml-4 mb-0 fa-ul text-muted">
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-envelope"></i></span> Email: <a
+                            href="mailto:{{{this.email}}}" class="text-muted">{{{this.email}}}</a>
+                        </li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-id-card-alt"></i></span> Driver
+                          License / CA ID: {{this.driver_license}}</li>
+                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-calendar-alt"></i></span> DOB:
+                          {{formatDate this.dob}}</li>
+                      </ul>
                     </div>
-                  </div>
-                  <div class="card-footer">
-                    <div class="text-right">
-                      <a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal">
-                        <i class="fas fa-edit"></i>
-                      </a>
-                      <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary">
-                        <i class="fas fa-user"></i> View</a>
+                    <div class="col-5 text-center">
+                      {{#if this.avatar}}
+                      <img src="data:image/jpg;base64,{{this.avatar}}" alt="user-avatar" id="user-avatar"
+                        class="img-circle img-fluid">
+                      {{else}}
+                      <img src="https://ui-avatars.com/api/?name={{this.name}}&size=256" alt="user-avatar"
+                        class="img-circle img-fluid">
+                      {{/if}}
                     </div>
                   </div>
                 </div>
+                <div class="card-footer">
+                  <div class="text-right">
+                    <a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary">
+                      <i class="fas fa-user"></i> View</a>
+                  </div>
+                </div>
               </div>
-              {{/each}}
             </div>
+            {{/each}} --}}
+            <table id="example2" class="table table-bordered table-hover">
+              <thead>
+                <tr>
+                  <th style="width: 20px;">#</th>
+                  <th>User</th>
+                  <th>Email</th>
+                  <th>Package</th>
+                  <th>Driver License/CA ID</th>
+                  <th>DOB</th>
+                  <th style="width: 50px;">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each users}}
+                <tr>
+                  <td>{{increment @index}}</td>
+                  <td>
+                    <span>{{#if this.avatar}}
+                      <img src="data:image/jpg;base64,{{this.avatar}}" alt="user-avatar" id="user-avatar"
+                        class="img-circle img-fluid" width="25px">
+                      {{else}}
+                      <img src="https://ui-avatars.com/api/?name={{this.name}}&size=256" alt="user-avatar"
+                        class="img-circle img-fluid" width="25px">
+                      {{/if}}
+                    </span>
+                    {{this.name}}
+                  </td>
+                  <td>{{this.email}}</td>
+                  <td>{{this.package.name}}</td>
+                  <td>{{this.driver_license}}</td>
+                  <td>{{formatDate this.dob}}</td>
+                  <td><a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal" title="Edit User">
+                      <i class="fas fa-edit"></i>
+                    </a>
+                    <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary" title="View User">
+                      <i class="fas fa-user"></i></a>
+                  </td>
+                </tr>
+                {{/each}}
+              </tbody>
+            </table>
           </div>
           <!-- /.card-body -->
-          <div class="card-footer">
-            {{#ifCond users.pages ">" 1 }}
-            <nav aria-label="Contacts Page Navigation">
-              <ul class="pagination justify-content-center m-0">
-                {{#forLoop users.pages}}
-                <li class="page-item {{#ifEquals this ../users.currentPage}}active{{/ifEquals}}"><a class="page-link"
-                    href="/dashboard/users?page={{this}}">{{this}}</a></li>
-                {{/forLoop}}
-                {{!-- <li class="page-item"><a class="page-link" href="#">3</a></li>
-                <li class="page-item"><a class="page-link" href="#">4</a></li>
-                <li class="page-item"><a class="page-link" href="#">5</a></li>
-                <li class="page-item"><a class="page-link" href="#">6</a></li>
-                <li class="page-item"><a class="page-link" href="#">7</a></li>
-                <li class="page-item"><a class="page-link" href="#">8</a></li> --}}
-              </ul>
-            </nav>
-            {{/ifCond}}
-          </div>
-          <!-- /.card-footer -->
         </div>
         <!-- /.card -->
 
@@ -126,6 +156,56 @@
 
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
+
+  <!-- DataTables  & Plugins -->
+  <script src="/dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
+  <script src="/dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+  <script src="/dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+  <script src="/dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+  <script src="/dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+  <script src="/dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+  <script src="/dashboard/plugins/jszip/jszip.min.js"></script>
+  <script src="/dashboard/plugins/pdfmake/pdfmake.min.js"></script>
+  <script src="/dashboard/plugins/pdfmake/vfs_fonts.js"></script>
+  <script src="/dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+  <script src="/dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+  <script src="/dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+  <script>
+    $(function () {
+      $('#example2').DataTable({
+        "paging": true,
+        "lengthChange": false,
+        "searching": true,
+        "ordering": true,
+        "info": true,
+        "autoWidth": false,
+        "responsive": true,
+        initComplete: function () {
+          this.api()
+            .column(3)
+            .every(function () {
+              var column = this;
+              var select = $('<select class="form-control w-auto d-inline ml-xl-2"><option value="">Select By</option></select>')
+                .appendTo($(column.header()))
+                .on('change', function () {
+                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                  column.search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+              select.on('click', function (e) {
+                e.stopPropagation()
+              })
+              column
+                .data()
+                .unique()
+                .sort()
+                .each(function (d, j) {
+                  select.append(`<option value="${d}">${d}</option>`);
+                });
+            });
+        }
+      });
+    });
+  </script>
 </body>
 
 </html>
