@@ -112,14 +112,19 @@ const updateQuiz = async (req, res) => {
     const data = req.body;
     const qId = req.query.qId;
     const quiz = await Quiz.findById(qId).populate("course");
+    // console.log(quiz)
 
     // before and after courses to remove id of quiz from old course and add to updated one
     const oldCourse = await Course.findOne({ name: quiz.course.name });
     // for index of quiz in course
     const oldCourseindex = oldCourse.quizzes.indexOf(qId);
+    console.log("oldcourseIndex",oldCourseindex)
+
     const afterCourse = await Course.findOne({ name: data.course });
+    console.log(afterCourse)
     // for index of quiz in after course
     const afterCourseindex = afterCourse.quizzes.indexOf(qId);
+    console.log("afterCourseindex",afterCourseindex)
 
     const name = data.name;
     const type = data.type;
@@ -140,7 +145,8 @@ const updateQuiz = async (req, res) => {
       type,
       course: afterCourse._id,
     });
-    if (!(oldCourse.name == afterCourse)) {
+    if (!(oldCourse.name == afterCourse.name)) {
+      // here
       if (oldCourseindex > -1) {
         oldCourse.quizzes.splice(oldCourseindex, 1);
         await oldCourse.save();
