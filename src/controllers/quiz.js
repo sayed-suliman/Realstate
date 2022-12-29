@@ -261,8 +261,6 @@ const viewQuiz = async (req, res) => {
         });
       }
 
-      console.log(quiz.questions);
-
       let passingPercent;
       if (quiz.type == "quiz") {
         passingPercent = setting.quizPassingMark;
@@ -270,6 +268,15 @@ const viewQuiz = async (req, res) => {
         passingPercent = setting.midPassingMark;
       } else if (quiz.type == "final") {
         passingPercent = setting.finalPassingMark;
+      }
+
+      let retake = true;
+      if (takenQuiz) {
+        if (quiz.type == "mid") {
+          retake = !(setting.midRetake == takenQuiz.take);
+        } else if (quiz.type == "final") {
+          retake = !(setting.finalRetake == takenQuiz.take);
+        }
       }
       res.render("dashboard/student/view-quiz", {
         title: `Quiz | ${quiz.name}`,
@@ -279,6 +286,7 @@ const viewQuiz = async (req, res) => {
         reviewQuiz: setting.reviewQuiz,
         courseId: course._id.toString(),
         contents,
+        retake,
       });
     }
   } catch (error) {
@@ -311,8 +319,18 @@ const takeQuiz = async (req, res) => {
         showAns.push(`q-${index}-op-${question.ans}`);
       }
     });
+    // passing for marks from database
+    let passingMark;
+    if (quiz.type == "quiz") {
+      passingMark = setting.quizPassingMark;
+    } else if (quiz.type == "mid") {
+      passingMark = setting.midPassingMark;
+    } else if (quiz.type == "final") {
+      passingMark = setting.finalPassingMark;
+    }
     const percent = Math.floor((point / questions.length) * 100);
-    const grade = percent >= setting.passingMark ? "passed" : "failed";
+    const grade = percent >= passingMark ? "passed" : "failed";
+
     const data = {
       quiz: quiz._id,
       user: req.user._id,
@@ -328,13 +346,40 @@ const takeQuiz = async (req, res) => {
       quiz: quiz._id,
       user: req.user._id,
     });
+    // -1 is for unlimited
+    let noOfRetake = -1;
+    if (quiz.type == "mid") {
+      noOfRetake = setting.midRetake;
+    } else if (quiz.type == "final") {
+      noOfRetake = setting.finalRetake;
+    }
+    let retake = true;
     if (alreadyTakenQuiz) {
       delete data.quiz;
       delete data.user;
-      await alreadyTakenQuiz.updateOne(data);
+      const updatedQuiz = await Result.findOneAndUpdate(
+        {
+          quiz: quiz._id,
+          user: req.user._id,
+        },
+        {
+          ...data,
+          take: alreadyTakenQuiz.take + 1,
+        },
+        { new: true }
+      );
+      // only for mid and final term
+      if (quiz.type != "quiz") {
+        retake = !(updatedQuiz.take >= noOfRetake);
+      }
     } else {
-      await Result(data).save();
+      const newQuiz = await Result({ ...data, take: 1 }).save();
+      // only for mid and final term
+      if (quiz.type != "quiz") {
+        retake = !(newQuiz.take >= noOfRetake);
+      }
     }
+    console.log("Retake", retake, noOfRetake);
     // sending object to client side javascript
     // 1) if reviewQuiz is enable
     //      send both correct and wrong answer of the user
@@ -343,9 +388,14 @@ const takeQuiz = async (req, res) => {
     // 3) other wise send only marks(points) + correct and wrong counts
     sendObj = setting.reviewQuiz
       ? setting.showAnswer
-        ? { showAns, correctAns, wrongAns, point }
-        : { correctAns, wrongAns, point }
-      : { point, correctCount: correctAns.length, wrongCount: wrongAns.length };
+        ? { showAns, correctAns, wrongAns, point, retake }
+        : { correctAns, wrongAns, point, retake }
+      : {
+          point,
+          correctCount: correctAns.length,
+          wrongCount: wrongAns.length,
+          retake,
+        };
 
     res.send(sendObj);
   } catch (error) {

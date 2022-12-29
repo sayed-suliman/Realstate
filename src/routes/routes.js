@@ -197,7 +197,6 @@ router.get("/logout", async (req, res) => {
       if (err) {
         return next(err);
       }
-      console.log(req.session);
       return res.redirect(
         url.format({
           pathname: "/dashboard",

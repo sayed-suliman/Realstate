@@ -1,12 +1,20 @@
 {{>dashboardheader}}
 <style>
-  #example2_filter label {
+  #userTable_filter label {
     display: flex;
     float: right;
   }
 
-  #example2_filter label input {
+  #userTable_filter label input {
     margin-left: 10px;
+  }
+
+  #userTable_length {
+    margin: 0;
+  }
+
+  #userTable_length label {
+    margin: 0;
   }
 </style>
 
@@ -93,7 +101,7 @@
               </div>
             </div>
             {{/each}} --}}
-            <table id="example2" class="table table-bordered table-hover">
+            <table id="userTable" class="table table-bordered table-hover">
               <thead>
                 <tr>
                   <th style="width: 20px;">#</th>
@@ -172,21 +180,32 @@
   <script src="/dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
   <script>
     $(function () {
-      $('#example2').DataTable({
+      let table = $('#userTable').DataTable({
+        "dom": "<'row'<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto pl-0'l><'col-sm-12 col-md'f>>" +
+          "<'row'<'col-sm-12'tr>>" +
+          "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
         "paging": true,
-        "lengthChange": false,
+        "lengthChange": true,
+        "language": {
+          "lengthMenu": "_MENU_"
+        },
+        "lengthMenu": [
+          [10, 25, 50, -1],
+          ["10 Users", "25 Users", "50 Users", 'All Users'],
+        ],
         "searching": true,
         "ordering": true,
         "info": true,
-        "autoWidth": false,
+        "autoWidth": true,
         "responsive": true,
         initComplete: function () {
           this.api()
             .column(3)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline ml-xl-2"><option value="">Select By</option></select>')
-                .appendTo($(column.header()))
+              var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Package</option></select>')
+                .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
+                //.appendTo($(colum.header()))
                 .on('change', function () {
                   var val = $.fn.dataTable.util.escapeRegex($(this).val());
                   column.search(val ? '^' + val + '$' : '', true, false).draw();
@@ -204,6 +223,7 @@
             });
         }
       });
+      $(table.table().container()).find('[name="userTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
     });
   </script>
 </body>

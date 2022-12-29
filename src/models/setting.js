@@ -21,6 +21,7 @@ const Setting = mongoose.model(
     reviewQuiz: Boolean,
     showAnswer: Boolean,
     randomizeQuestions: Boolean,
+    finalDay: Number,
   })
 );
 

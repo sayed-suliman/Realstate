@@ -1,7 +1,7 @@
 {{>dashboardheader}}
 
 <body class="hold-transition sidebar-mini">
-     <!-- toast(alert)-->
+    <!-- toast(alert)-->
     {{>alert}}
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -42,13 +42,14 @@
                                 </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="quizTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th style="width: 65px;">S.No</th>
                                                 <th>Name</th>
                                                 <th>Chpater</th>
-                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
+                                                <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                    Edit</th>
                                             </tr>
                                         </thead>
                                         {{!-- static --}}
@@ -58,7 +59,7 @@
                                                 <td>{{increment @index}}</td>
                                                 <td class="text-capitalize">{{this.name}}</td>
                                                 <td>{{this.course.name}}</td>
-                                                  <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
+                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     <a href="/dashboard/quiz-detail/edit-quiz?qId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
@@ -142,20 +143,41 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
+            $('#quizTable_wrapper').children('')
+            $('#quizTable').DataTable({
                 "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
-                "lengthChange": false,
-                "searching": false,
+                "lengthChange": true,
+                "searching": true,
                 "ordering": true,
                 "info": true,
-                "autoWidth": false,
+                "autoWidth": true,
                 "responsive": true,
+                initComplete: function () {
+                    this.api()
+                        .column(2)
+                        .every(function () {
+                            var column = this;
+                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Chapter</option></select>')
+                                .appendTo($('#quizTable_wrapper').children('.row:first').children('div:first'))
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                            select.on('click', function (e) {
+                                e.stopPropagation()
+                            })
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(`<option value="${d}">${d}</option>`);
+                                });
+                        });
+                }
             });
         });
+        
     </script>
 
 </body>
