@@ -269,8 +269,8 @@
         <li class="nav-item">
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>
-            <p>
-              {{#if user.loginAsStudent}}Logout As Student{{else}} Logout{{/if}}
+            <p class="text-capitalize">
+              {{#if user.loginAsStudent}}Logout As {{user.role}}{{else}} Logout{{/if}}
             </p>
           </a>
         </li>

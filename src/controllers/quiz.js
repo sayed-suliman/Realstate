@@ -162,9 +162,9 @@ const updateQuiz = async (req, res) => {
 // Student view
 const viewQuiz = async (req, res) => {
   try {
-    const id = req.params.id;
+    const QuizId = req.params.id;
     const courseId = req.params.courseId;
-    const quiz = await Quiz.findById(id);
+    const quiz = await Quiz.findById(QuizId);
     const takenQuiz = await Result.findOne({
       quiz: quiz._id,
       user: req.user._id,
@@ -180,6 +180,11 @@ const viewQuiz = async (req, res) => {
       );
     }
     if (quiz && course) {
+      const courseMeta = await UserMeta.findOne({
+        user_id: req.user._id,
+        course: courseId,
+      });
+
       // unlocking already taken quiz
       for await (let [index, quiz] of course.quizzes.entries()) {
         const takenQuiz = await Result.findOne({
@@ -225,7 +230,6 @@ const viewQuiz = async (req, res) => {
             if (!contents[index].unlock) {
               if (index == 0) continue;
               if (typeof contents[index - 1].unlock != undefined) {
-                //  locking chapter followed by the failed quiz
                 if (contents[index - 1].type == "quiz") {
                   if (contents[index - 1].grade == "failed") {
                     break;
@@ -233,6 +237,32 @@ const viewQuiz = async (req, res) => {
                 }
                 if (contents[index - 1].unlock) {
                   contents[index].unlock = true;
+
+                  // lock system for final term when days are in database
+                  if (
+                    contents[index].type == "final" &&
+                    setting.finalDay != -1 &&
+                    courseMeta
+                  ) {
+                    // date of agreement
+                    let agreementDate = new Date(courseMeta.createdAt);
+
+                    // Day and Minute from database
+                    let unlockAfterDay = setting.finalDay;
+                    let unlockAfterTime = setting.finalTime;
+
+                    // adding day and minute to the agreement date
+                    let final = new Date(
+                      agreementDate.getFullYear(),
+                      agreementDate.getMonth(),
+                      agreementDate.getDate() + unlockAfterDay,
+                      agreementDate.getHours(),
+                      agreementDate.getMinutes() + unlockAfterTime
+                    );
+                    let now = new Date();
+                    let unlock = now > final;
+                    contents[index].unlock = unlock;
+                  }
                   break;
                 }
               }
@@ -243,9 +273,33 @@ const viewQuiz = async (req, res) => {
         }
       } else if (setting.quizPolicy == "accessAllTime") {
         for await (let [index] of contents.entries()) {
-          // unlocking all contents
           if (!contents[index].unlock) {
             contents[index].unlock = true;
+          }
+          // lock system for final term when days are in database
+          if (
+            setting.finalDay != -1 &&
+            contents[index].type == "final" &&
+            courseMeta
+          ) {
+            // date of agreement
+            let agreementDate = new Date(courseMeta.createdAt);
+
+            // Day and Minute from database
+            let unlockAfterDay = setting.finalDay;
+            let unlockAfterTime = setting.finalTime;
+
+            // adding day and minute to the agreement date
+            let final = new Date(
+              agreementDate.getFullYear(),
+              agreementDate.getMonth(),
+              agreementDate.getDate() + unlockAfterDay,
+              agreementDate.getHours(),
+              agreementDate.getMinutes() + unlockAfterTime
+            );
+            let now = new Date();
+            let unlock = now > final;
+            contents[index].unlock = unlock;
           }
         }
       }

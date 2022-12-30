@@ -106,6 +106,7 @@
                 <tr>
                   <th style="width: 20px;">#</th>
                   <th>User</th>
+                  <th>Role</th>
                   <th>Email</th>
                   <th>Package</th>
                   <th>Driver License/CA ID</th>
@@ -128,6 +129,7 @@
                     </span>
                     {{this.name}}
                   </td>
+                  <td class="text-capitalize">{{this.role}}</td>
                   <td>{{this.email}}</td>
                   <td>{{this.package.name}}</td>
                   <td>{{this.driver_license}}</td>
@@ -200,10 +202,30 @@
         "responsive": true,
         initComplete: function () {
           this.api()
-            .column(3)
+            .column(4)
             .every(function () {
               var column = this;
               var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Package</option></select>')
+                .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
+                //.appendTo($(colum.header()))
+                .on('change', function () {
+                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                  column.search(val ? '^' + val + '$' : '', true, false).draw();
+                });
+              select.on('click', function (e) {
+                e.stopPropagation()
+              })
+              column
+                .data()
+                .unique()
+                .sort()
+                .each(function (d, j) {
+                  select.append(`<option value="${d}">${d}</option>`);
+                });
+            }).column(2)
+            .every(function () {
+              var column = this;
+              var select = $('<select class="form-control w-auto d-inline ml-2"><option value="">Filter By Role</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {

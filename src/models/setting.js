@@ -22,6 +22,7 @@ const Setting = mongoose.model(
     showAnswer: Boolean,
     randomizeQuestions: Boolean,
     finalDay: Number,
+    finalTime: Number,
   })
 );
 

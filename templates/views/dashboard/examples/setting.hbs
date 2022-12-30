@@ -198,8 +198,8 @@
                                                     <div class="custom-control custom-checkbox">
                                                         <input
                                                             class="custom-control-input custom-control-input-primary custom-control-input"
-                                                            type="checkbox" name="showFinalDay" id="showFinalTerm" {{#if
-                                                            setting.finalDay }}checked{{/if}}>
+                                                            type="checkbox" name="showFinalDay" id="showFinalTerm"
+                                                            {{#ifCond setting.finalDay '>' '-1' }}checked{{/ifCond}}>
                                                         <label for="showFinalTerm"
                                                             class="custom-control-label font-weight-normal">Unlock Final
                                                             Term after days?</label>
@@ -208,6 +208,9 @@
                                                         <input type="number" min="0" name="finalDay" id="finalTermDay"
                                                             value="{{setting.finalDay}}" placeholder="Enter No of days"
                                                             class="form-control">
+                                                        <input type="number" min="0" name="finalTime"
+                                                            value="{{setting.finalTime}}" placeholder="Time in minutes"
+                                                            class="form-control mt-2">
                                                     </div>
                                                 </div>
                                             </div>
@@ -447,7 +450,7 @@
             })
             if ($("#showFinalTerm").prop("checked")) {
                 $("#finalTermDay").prop("required", true)
-                $("#finalTermDay").parent().animate({ opacity: "1"})
+                $("#finalTermDay").parent().animate({ opacity: "1" })
             } else {
                 finalInput(false)
             }

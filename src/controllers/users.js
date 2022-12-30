@@ -12,7 +12,7 @@ module.exports = {
       var msg = decodeMsg(msgToken);
       option = msg;
     }
-    const users = await User.find({ role: "student" }).populate("package");
+    const users = await User.find().populate("package");
     // binary to base64
     for await (let [index] of users.entries()) {
       if (users[index].avatar) {

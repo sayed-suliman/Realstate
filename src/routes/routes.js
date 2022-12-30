@@ -163,6 +163,16 @@ router.get("/login", logged_in, login);
 router.get("/loginAsStudent", isAdmin, async (req, res) => {
   if (req.query.uid) {
     let adminId = req.user._id.toString();
+    if (adminId == req.query.uid) {
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg: encodeMsg("You can't login as yourself", "danger"),
+          },
+        })
+      );
+    }
     const user = await User.findById(req.query.uid);
     req.login(user, function (err) {
       if (err) {

@@ -50,6 +50,7 @@ module.exports = {
           randomizeQuestions,
           showFinalDay,
           finalDay,
+          finalTime,
         } = req.body;
         const settingData = {
           collegeName: name,
@@ -64,7 +65,8 @@ module.exports = {
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,
           randomizeQuestions: !!randomizeQuestions,
-          finalDay: !!showFinalDay ? finalDay : 0,
+          finalDay: !!showFinalDay ? finalDay : -1,
+          finalTime: !!showFinalDay ? finalTime : -1,
         };
         if (req.file) {
           settingData.logoPath = req.file.filename;

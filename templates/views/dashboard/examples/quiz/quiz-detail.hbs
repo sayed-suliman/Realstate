@@ -47,7 +47,7 @@
                                             <tr>
                                                 <th style="width: 65px;">S.No</th>
                                                 <th>Name</th>
-                                                <th>Chpater</th>
+                                                <th>Course</th>
                                                 <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     Edit</th>
                                             </tr>
@@ -157,7 +157,7 @@
                         .column(2)
                         .every(function () {
                             var column = this;
-                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Chapter</option></select>')
+                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Course</option></select>')
                                 .appendTo($('#quizTable_wrapper').children('.row:first').children('div:first'))
                                 .on('change', function () {
                                     var val = $.fn.dataTable.util.escapeRegex($(this).val());
