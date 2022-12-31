@@ -39,6 +39,25 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     left: 50%;
     transform: translate(-50%, -50%);
 }
-#tblLocations tr{
+
+#tblLocations tr {
     cursor: move;
+}
+
+@media screen and (max-width:575px) {
+
+    .dataTables_wrapper .row:first-child div select,
+    .dataTables_wrapper .row:first-child div label {
+        width: 100% !important;
+    }
+
+    .dataTables_wrapper .row:first-child div:last-child label {
+        display: flex;
+        align-items: center;
+    }
+
+    .dataTables_wrapper .row:first-child div:last-child label input {
+        width: 100%;
+    }
+
 }

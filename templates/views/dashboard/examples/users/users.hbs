@@ -183,7 +183,7 @@
   <script>
     $(function () {
       let table = $('#userTable').DataTable({
-        "dom": "<'row'<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto pl-0'l><'col-sm-12 col-md'f>>" +
+        "dom": "<'row'<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto pl-md-0 mt-md-0 mt-2'l><'col-sm-12 col-md mt-md-0 mt-2'f>>" +
           "<'row'<'col-sm-12'tr>>" +
           "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
         "paging": true,
@@ -198,14 +198,14 @@
         "searching": true,
         "ordering": true,
         "info": true,
-        "autoWidth": true,
+        "autoWidth": false,
         "responsive": true,
         initComplete: function () {
           this.api()
             .column(4)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Package</option></select>')
+              var select = $('<select class="form-control w-auto d-inline mb-2 mb-md-0"><option value="">Filter By Package</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {
@@ -225,7 +225,7 @@
             }).column(2)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline ml-2"><option value="">Filter By Role</option></select>')
+              var select = $('<select class="form-control w-auto d-inline ml-md-2"><option value="">Filter By Role</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {

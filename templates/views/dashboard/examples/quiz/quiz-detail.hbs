@@ -143,21 +143,30 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $('#quizTable_wrapper').children('')
-            $('#quizTable').DataTable({
-                "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
+            let table = $('#quizTable').DataTable({
+                "dom": "<'row'<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto pl-md-0 mt-md-0 mt-2'l><'col-sm-12 col-md'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
+                "paging": true,
                 "lengthChange": true,
+                "language": {
+                    "lengthMenu": "_MENU_"
+                },
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    ["10 Quizzes", "25 Quizzes", "50 Quizzes", 'All Quizzes'],
+                ],
                 "searching": true,
                 "ordering": true,
                 "info": true,
-                "autoWidth": true,
+                "autoWidth": false,
                 "responsive": true,
                 initComplete: function () {
                     this.api()
                         .column(2)
                         .every(function () {
                             var column = this;
-                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter By Course</option></select>')
+                            var select = $('<select class="form-control w-auto d-inline mb-2 mb-md-0"><option value="">Filter By Course</option></select>')
                                 .appendTo($('#quizTable_wrapper').children('.row:first').children('div:first'))
                                 .on('change', function () {
                                     var val = $.fn.dataTable.util.escapeRegex($(this).val());
@@ -176,8 +185,9 @@
                         });
                 }
             });
+            $(table.table().container()).find('[name="quizTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
         });
-        
+
     </script>
 
 </body>
