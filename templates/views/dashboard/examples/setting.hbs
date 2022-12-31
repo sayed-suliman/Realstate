@@ -144,7 +144,7 @@
 
                                                 {{!-- quizzes policy --}}
                                                 <div>
-                                                    <p class="font-weight-bold">Quizzes Attempt policy</p>
+                                                    <p class="font-weight-bold mb-0">Quizzes Attempt policy</p>
                                                     <div class="custom-control custom-radio">
                                                         <input class="custom-control-input custom-control-input-primary"
                                                             type="radio" id="policy1" {{#ifEquals
@@ -167,6 +167,15 @@
                                                             only if previous quiz has been
                                                             passed
                                                         </label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="unlockCourse" id="unlockCourse" {{#if
+                                                            setting.unlockCourse }}checked{{/if}}>
+                                                        <label for="unlockCourse"
+                                                            class="custom-control-label font-weight-normal">Unlock
+                                                            Course when previous is completed.</label>
                                                     </div>
                                                     <div class="custom-control custom-checkbox">
                                                         <input
@@ -306,7 +315,7 @@
                                                         <p class="mb-0 mt-2">
                                                             <b>
                                                                 <a href="{{setting.logoPath}}"
-                                                                    class="font-weight-normal" target="_blank">Already
+                                                                    class="font-weight-normal" target="_blank">Current
                                                                     Uploaded logo
                                                                     <i class="fa-solid fa-image mr-1"></i>
                                                                 </a>

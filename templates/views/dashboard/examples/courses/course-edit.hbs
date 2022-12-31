@@ -31,7 +31,7 @@
 
       <!-- Main content -->
       <section class="content">
-        <form action="update-course?cId={{course._id}}" class="mb-3" method="post">
+        <form action="update-course?cId={{course._id}}" class="mb-3" method="post" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-6">
               <div class="card card-primary">
@@ -50,29 +50,40 @@
                     <input required type="text" id="inputName" value="{{course.name}}" name="name" class="form-control">
                   </div>
                   <div class="form-group">
-                    <label for="inputDescription">Course Description</label>
-                    <textarea id="inputDescription" name="description" class="form-control"
-                      rows="4">{{course.description}}</textarea>
+                    <label for="banner">Banner <small>(Showing to User at start of course)</small></label>
+                    <div class="input-group">
+                      <input type="file" name="banner" accept="image/*" id="banner" />
+                    </div>
+                    {{#if course.banner}}
+                    <p class="mb-0 mt-2">
+                      <b>
+                        <a href="{{course.banner}}" class="font-weight-normal" target="_blank">Already
+                          Uploaded banner
+                          <i class="fa-solid fa-image mr-1"></i>
+                        </a>
+                      </b>
+                    </p>
+                    {{/if}}
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
                     <select required id="inputStatus" name="status" class="form-control custom-select">
                       <option disabled value="">Select one</option>
-                      <option {{checkDraftOrPublish course.status 'draft'}} value="draft">Draft</option>
-                      <option {{checkDraftOrPublish course.status 'publish'}} value="publish">Publish</option>
+                      <option {{checkDraftOrPublish course.status 'draft' }} value="draft">Draft</option>
+                      <option {{checkDraftOrPublish course.status 'publish' }} value="publish">Publish</option>
                     </select>
                   </div>
                   <div class="form-group">
                     <label for="price">Price</label>
                     <input required type="number" id="price" value="{{course.price}}" name="price" class="form-control">
                   </div>
-                   <div class="form-group">
+                  <div class="form-group">
                     <label>Add to Package</label>
                     {{#each packages}}
                     <div class="custom-control custom-checkbox">
                       <input class="custom-control-input custom-control-input-success custom-control-input-outline"
-                       {{!-- {{checkData this.name ../package}} --}} {{checkData this.name ../course.package}}
-                       value="{{this.name}}" type="checkbox" name="package" id="{{this.name}}">
+                        {{!-- {{checkData this.name ../package}} --}} {{checkData this.name ../course.package}}
+                        value="{{this.name}}" type="checkbox" name="package" id="{{this.name}}">
                       <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
                     </div>
                     {{/each}}

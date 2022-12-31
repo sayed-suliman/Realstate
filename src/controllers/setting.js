@@ -49,6 +49,7 @@ module.exports = {
           id,
           randomizeQuestions,
           showFinalDay,
+          unlockCourse,
           finalDay,
           finalTime,
         } = req.body;
@@ -62,6 +63,7 @@ module.exports = {
           midRetake,
           finalRetake,
           quizPolicy,
+          unlockCourse: !!unlockCourse,
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,
           randomizeQuestions: !!randomizeQuestions,

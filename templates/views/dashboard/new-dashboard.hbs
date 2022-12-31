@@ -201,7 +201,7 @@
                   <h3 class="card-title">Purchased Courses</h3>
                 </div>
                 <div class="card-body table-responsive p-0">
-                  <table class="table table-striped table-valign-middle">
+                  <table class="table table-valign-middle">
                     <thead>
                       <tr>
                         <th>Course Name</th>
@@ -212,9 +212,18 @@
                     <tbody>
                       {{#if userCourses}}
                       {{#each userCourses}}
-                      <tr>
+                      <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                         <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                          {{#unless started}}
+                          <button type="button" class="btn p-0 text-blue" id="start" {{#if
+                            this.unlock}}data-toggle="modal" data-target="#modal-default" data-banner="{{this.banner}}"
+                            data-link="/dashboard/view-course/{{this._id}}" {{/if}}>
+                            {{this.name}}
+                          </button>
+                          {{else}}
+                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                            {{else}} href="#" {{/if}}>{{this.name}}</a>
+                          {{/unless}}
                         </td>
                         <td>
                           <div class="progress progress-xs">
@@ -223,13 +232,26 @@
                           </div>
                         </td>
                         <td class="text-right">
-                          <button type="button" class="btn p-0 text-muted" id="start" data-toggle="modal"
-                            data-target="#modal-default" data-link="/dashboard/view-course/{{this._id}}">
+                          {{#unless started}}
+                          <button type="button" class="btn p-0 text-muted" id="start" {{#if
+                            this.unlock}}data-toggle="modal" data-target="#modal-default"
+                            data-link="/dashboard/view-course/{{this._id}}" data-banner="{{this.banner}}" {{/if}}>
+                            {{#unless this.unlock}}
+                            <i class="fa-solid fa-lock"></i>
+                            {{else}}
                             <i class="fas fa-book"></i>
+                            {{/unless}}
                           </button>
-                          {{!-- <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
-                            <i class="fa-solid fa-trash"></i>
-                          </a> --}}
+                          {{else}}
+                          <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}} href="#" {{/if}}
+                            class="text-muted">
+                            {{#unless this.unlock}}
+                            <i class="fa-solid fa-lock"></i>
+                            {{else}}
+                            <i class="fa-solid fa-book"></i>
+                            {{/unless}}
+                          </a>
+                          {{/unless}}
                         </td>
                       </tr>
                       {{/each}}{{else}}
@@ -250,7 +272,7 @@
                   <h3 class="card-title">Completed Courses</h3>
                 </div>
                 <div class="card-body table-responsive p-0">
-                  <table class="table table-striped table-valign-middle">
+                  <table class="table table-valign-middle">
                     <thead>
                       <tr>
                         <th>Course Name</th>
@@ -335,7 +357,7 @@
               }
 
               .courseModal .btn {
-                width: 60px;
+                width: 90px;
               }
             </style>
             <div class="modal fade courseModal" id="modal-default" style="display: none;" aria-hidden="true">
@@ -343,8 +365,8 @@
                 <div class="modal-content h-100 shadow-none bg-transparent border-0">
                   <div class="modal-body d-flex justify-content-center align-items-center">
                     <button id="yes-start" href="#" class="btn btn-primary" data-toggle="modal"
-                      data-target="#agreement">Yes</button>
-                    <button type="button" class="btn btn-danger ml-2" data-dismiss="modal">No</button>
+                      data-target="#agreement">Begin</button>
+                    <button type="button" class="btn btn-danger ml-2" data-dismiss="modal">Cancel</button>
                   </div>
                 </div>
               </div>
@@ -394,7 +416,6 @@
       <!-- Control sidebar content goes here -->
     </aside>
     <!-- /.control-sidebar -->
-
     <!-- Main Footer -->
     {{>dashboardfooter}}
   </div>
@@ -465,8 +486,9 @@
 
   <script>
     $("#modal-default").on("show.bs.modal", function (e) {
-      var link = $(e.relatedTarget).data('link')
-      console.log(link)
+      let link = $(e.relatedTarget).data('link')
+      let banner = $(e.relatedTarget).data('banner')
+      $(this).find('.modal-body').css('background', `url('${banner}') no-repeat center`)
       $(this).find('#yes-start').data('link', link)
     });
     $("#agreement").on('show.bs.modal', function (e) {

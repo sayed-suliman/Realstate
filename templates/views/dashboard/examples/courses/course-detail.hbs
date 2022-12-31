@@ -45,7 +45,7 @@
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     {{#ifEquals user.role "admin"}}
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="courseTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
@@ -99,7 +99,7 @@
                                     {{/ifEquals}}
                                     {{!-- regulator --}}
                                     {{#ifEquals user.role "regulator"}}
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="courseTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th style="width: 65px;">S.No</th>
@@ -136,7 +136,7 @@
                                     {{/ifEquals}}
                                     {{!-- student --}}
                                     {{#ifEquals user.role "student"}}
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="courseTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
@@ -148,7 +148,17 @@
                                             {{#each userCourses}}
                                             <tr>
                                                 <td class="text-capitalize">
-                                                    <a href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                                                    {{#unless started}}
+                                                    <button type="button" class="btn p-0 text-blue" id="start"
+                                                        data-toggle="modal" data-target="#modal-default"
+                                                        data-banner="{{this.banner}}"
+                                                        data-link="/dashboard/view-course/{{this._id}}">
+                                                        {{this.name}}
+                                                    </button>
+                                                    {{else}}
+                                                    <a class="text-capitalize"
+                                                        href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                                                    {{/unless}}
                                                 </td>
                                                 <td>
                                                     <div class="progress progress-xs">
@@ -159,24 +169,96 @@
                                                     this.name}}{{else}}0{{/if}}%
                                                 </td>
                                                 <td>
+                                                    {{#unless started}}
+                                                    <button type="button" class="btn p-0 text-muted" id="start"
+                                                        data-toggle="modal" data-target="#modal-default"
+                                                        data-link="/dashboard/view-course/{{this._id}}"
+                                                        data-banner="{{this.banner}}">
+                                                        <i class="fas fa-book"></i> View Course
+                                                    </button>
+                                                    {{else}}
                                                     <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
                                                         <i class="fas fa-book"></i> View Course
                                                     </a>
+                                                    {{/unless}}
                                                 </td>
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                        {{!-- <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot> --}}
                                     </table>
+                                    {{!-- Agreement Modal --}}
+                                    <style>
+                                        .courseModal .modal-dialog {
+                                            height: calc(100vh - 80px);
+                                            max-width: 100%;
+                                        }
 
+                                        .courseModal .modal-body {
+                                            background: url('/images/real_estate_principles.jpg') no-repeat center;
+                                            background-size: contain;
+                                        }
+
+                                        .courseModal .btn {
+                                            width: 90px;
+                                        }
+                                    </style>
+                                    <div class="modal fade courseModal" id="modal-default" style="display: none;"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content h-100 shadow-none bg-transparent border-0">
+                                                <div
+                                                    class="modal-body d-flex justify-content-center align-items-center">
+                                                    <button id="yes-start" href="#" class="btn btn-primary"
+                                                        data-toggle="modal" data-target="#agreement">Begin</button>
+                                                    <button type="button" class="btn btn-danger ml-2"
+                                                        data-dismiss="modal">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="modal fade agreement" id="agreement" style="display: none;"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog modal-lg">
+                                            <div class="modal-content h-100">
+                                                <div class="modal-body">
+                                                    <h5 class="m-0 mb-4">Student Agreement</h5>
+                                                    <p class="m-0">Name: <span class="text-bold">{{user.name}}</span>
+                                                    </p>
+                                                    <p class="m-0 mb-4">Email: <span
+                                                            class="text-bold">{{user.email}}</span></p>
+                                                    <p>You must complete and submit the following student agreement form
+                                                        before you can proceed with
+                                                        your course(s).</p>
+                                                    <p>I, {{user.name}}, under penalty of perjury, do hereby affirm and
+                                                        agree that I am registered
+                                                        student
+                                                        of {{site_Title}}, and that I will personally complete each
+                                                        reading assignment, quiz and the
+                                                        final examination of the course(s). I understand that my failure
+                                                        to comply with this agreement
+                                                        will result in revocation of completion certificate, and that
+                                                        such violation will be reported to
+                                                        my local estate industry regulatory authorities.</p>
+                                                    <p>Furthermore, I understand that the contents of the course(s) may
+                                                        not be copied, reproduced,
+                                                        resold or used by any other person. Unauthorized copying of this
+                                                        course is prohibited by U.S
+                                                        copyright laws which provide substantial penalties for copyright
+                                                        infringement.</p>
+                                                    <p>By submitting this form I agree to comply with the terms,
+                                                        conditions and copyright restrictions
+                                                        as stated herein.</p>
+                                                    <p class="text-center">
+
+                                                        <a id="accept" href="#" class="btn btn-primary">Accept</a>
+                                                    </p>
+                                                    <p class="mt-5 text-center">Sponsor ID: S0665, 8505 Crenshaw Blvd
+                                                        Inglewood CA 91305</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     {{/ifEquals}}
                                 </div>
                                 <!-- /.card-body -->
@@ -220,21 +302,32 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
-                "lengthChange": false,
-                "searching": false,
+            $('#courseTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
                 "ordering": true,
                 "info": true,
-                "autoWidth": false,
+                "autoWidth": true,
                 "responsive": true,
             });
         });
     </script>
+    {{#ifEquals user.role "student"}}
+    <script>
+        $("#modal-default").on("show.bs.modal", function (e) {
+            let link = $(e.relatedTarget).data('link')
+            let banner = $(e.relatedTarget).data('banner')
+            $(this).find('.modal-body').css('background', `url('${banner}') no-repeat center`)
+            $(this).find('#yes-start').data('link', link)
+        });
+        $("#agreement").on('show.bs.modal', function (e) {
+            $("#modal-default").modal("hide");
+            let link = $(e.relatedTarget).data('link')
+            $(this).find('#accept').prop('href', link + "?agree=true")
+        });
+    </script>
+    {{/ifEquals}}
 
 </body>
 

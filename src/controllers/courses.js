@@ -5,21 +5,25 @@ const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const url = require("url");
 const UserMeta = require("../models/user-meta");
 const Setting = require("../models/setting");
+const fs = require("fs");
 
 const course = async (req, res) => {
   try {
+    var msgToken = req.query.msg;
+    var msg = {};
+    if (msgToken) {
+      msg = decodeMsg(msgToken);
+    }
     // all added packages
     const packages = await Package.find({ status: "publish" });
     res.render("dashboard/examples/courses/add-course", {
       title: "Dashboard | Add Course",
       packages,
+      toast: Object.keys(msg).length == 0 ? undefined : msg,
     });
   } catch (e) {
-    // res.status(404).json({
-    //     Error: e,
-    //     Status: 404
-    // })
-    res.render("404");
+    let msg = encodeMsg(e.message, "danger");
+    res.redirect("/dashboard/add-course?msg=" + msg);
   }
 };
 // Add Course or post
@@ -30,37 +34,34 @@ const addcourse = async (req, res) => {
     const package = await Package.find({ name: req.body.package }).select(
       "_id"
     );
-    const addCourse = CourseModel({
+    let courseData = {
       name: data.name,
       description: data.description,
       status: data.status,
       package: package,
       price: data.price,
-    });
-    await addCourse.save();
+    };
+    if (req.file) {
+      courseData.banner = req.file.filename;
+    }
+    const addCourse = await CourseModel(courseData).save();
     if (addCourse) {
       if (data.package) {
         if (Array.isArray(data.package)) {
-          data.package.forEach(async (element) => {
-            let packageCourse = await Package.findOne({ name: element });
+          data.package.forEach(async (packageName) => {
+            let packageCourse = await Package.findOne({ name: packageName });
             let courseId = await CourseModel.findOne({
               name: data.name,
             }).select("_id");
             packageCourse.courses = packageCourse.courses.concat(courseId);
             await packageCourse.save();
-            // packageCourse.courses.push(courseId)
-            // await packageCourse.save()
             return;
           });
         } else {
-          // console.log(data.package)
-          // console.log(package)
           let packageCourse = await Package.findOne({ name: data.package });
           let courseId = await CourseModel.findOne({ name: data.name }).select(
             "_id"
           );
-          //     // packageCourse.courses.push(courseId)
-          //     // await packageCourse.save()
           packageCourse.courses = packageCourse.courses.concat(courseId);
           await packageCourse.save();
         }
@@ -68,20 +69,10 @@ const addcourse = async (req, res) => {
       var msg = encodeMsg("The Course has been created");
       return res.redirect("/dashboard?msg=" + msg);
     }
-    // req.flash("alert_success", "Course Added Successfully.!")
-    // res.redirect('/dashboard')
   } catch (e) {
     var msg = encodeMsg("Some error while creating Course.", "danger", "500");
     return res.redirect("/dashboard?msg=" + msg);
-
-    // testing purpose
-    // res.status(403).json({
-    //     Error: e.message,
-    //     Status: 403,
-    //     msg: "Course Not Added"
-    // })
   }
-  // const courseAdded =await new AddCourse()
 };
 
 // course details
@@ -100,12 +91,8 @@ const courseDetails = async (req, res) => {
       toast: Object.keys(option).length == 0 ? undefined : option,
     });
   } catch (e) {
-    res.status(403).json({
-      Error: e.message,
-      Status: 403,
-      msg: "Courses Not Find",
-    });
-    // res.render("404")
+    let msg = encodeMsg(e.message, "danger");
+    res.redirect("/dashboard/course-detail?msg=" + msg);
   }
 };
 // editCourse
@@ -135,10 +122,16 @@ const updateCourse = async (req, res) => {
     );
     const packageId = await Package.findOne({ name: data.package });
     const allPackages = await Package.find();
-
+    const oldPath = course.banner;
+    if (req.file) {
+      data.banner = req.file.filename;
+    }
     await course.updateOne({
       ...data,
       package: packages,
+    });
+    fs.unlink("public/images/course" + oldPath, (err, data) => {
+      console.log("delte", err, data);
     });
     if (course) {
       if (!data.package) {
@@ -219,10 +212,23 @@ var allCourses = async (req, res) => {
     var userCourses;
     if (req.user.role === "student") {
       userCourses = await req.user.package.courses;
+      let courseMeta = await UserMeta.find({
+        user_id: req.user._id,
+      });
+      // filtering only courses meta
+      courseMeta = courseMeta.filter((el) => el.course != undefined);
+
+      //   check that user accept the agreement or not
+      userCourses.forEach((course, index) => {
+        courseMeta.forEach((startedCourse) => {
+          if (course._id.toString() == startedCourse.course.toString()) {
+            userCourses[index].started = true;
+          }
+        });
+      });
     }
     if (req.user.role === "regulator") {
       userCourses = await CourseModel.find({ status: "publish" });
-      console.log(userCourses);
     }
     let progress = {};
     for await (let content of userCourses) {
@@ -351,7 +357,7 @@ var viewCourse = async (req, res) => {
         course: ID,
       });
       if (req.query.agree) {
-        if (!courseMeta.meta_key == "Course Start Agreement") {
+        if (!courseMeta) {
           await UserMeta({
             user_id: req.user._id,
             course: ID,
@@ -505,6 +511,12 @@ var viewCourse = async (req, res) => {
     );
   }
 };
+var courseError = (error, req, res, next) => {
+  console.log(error.message);
+  var msg = encodeMsg(error.message, "danger", 500);
+  res.redirect("/dashboard/add-course?msg=" + msg);
+};
+
 module.exports = {
   course,
   addcourse,
@@ -514,4 +526,5 @@ module.exports = {
   updateCourse,
   allCourses,
   viewCourse,
+  courseError,
 };

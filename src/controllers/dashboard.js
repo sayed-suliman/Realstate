@@ -5,19 +5,12 @@ const url = require("url");
 const UserMeta = require("../models/user-meta");
 const Result = require("../models/result");
 const Course = require("../models/courses");
+const Setting = require("../models/setting");
 module.exports = {
   async dashboard(req, res) {
     try {
       var msgToken = req.query.msg;
       var msg = {};
-      // // not working
-      // if (res.locals.error.length > 0) {
-      //     msg = decodeMsg(res.locals.error[0])
-      // }
-      // if (res.locals.success.length > 0) {
-      //     msg = decodeMsg(res.locals.success[0])
-      // }
-      //only used for payment
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
@@ -30,11 +23,12 @@ module.exports = {
         var userCourses = await req.user.package.courses;
         var completedCourses = {};
         let progress = {};
-        let allMeta = await UserMeta.find({
+        let setting = await Setting.findOne();
+        let courseMeta = await UserMeta.find({
           user_id: req.user._id,
         });
         // filtering only courses meta
-        allMeta = allMeta.filter((el) => el.course != undefined);
+        courseMeta = courseMeta.filter((el) => el.course != undefined);
 
         for await (let content of userCourses) {
           // used for to find the content(chap+quiz) length
@@ -82,13 +76,27 @@ module.exports = {
           if (completedCourses[content.name]) {
             userCourses.splice(index, 1);
           }
+          // add unlock because unlock is used below
+          userCourses[index].unlock = true;
         }
 
         //   check that user accept the agreement or not
-        // let a = allMeta.find(el=>{
-        //     console.log(el.course)
-        // })
-
+        userCourses.forEach((course, index) => {
+          courseMeta.forEach((startedCourse) => {
+            if (course._id.toString() == startedCourse.course.toString()) {
+              userCourses[index].started = true;
+            }
+          });
+        });
+        // unlock course when previous is completed
+        if (setting.unlockCourse) {
+          // lock all the courses
+          userCourses.forEach((course, index) => {
+            userCourses[index].unlock = false;
+          });
+          // unlock only the first one
+          userCourses[0].unlock = true;
+        }
         // assign undefined when completedCourses obj is empty
         completedCourses = Object.keys(completedCourses).length
           ? completedCourses
