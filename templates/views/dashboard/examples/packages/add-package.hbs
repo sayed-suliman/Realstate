@@ -47,7 +47,7 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Package Name</label>
-                    <input type="text" id="inputName" name="name" class="form-control">
+                    <input type="text" id="inputName" required name="name" class="form-control">
                   </div>
                   {{!-- <div class="form-group">
                     <label for="inputDescription">Package Description</label>
@@ -65,7 +65,7 @@
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
-                    <select id="inputStatus" name="status" class="form-control custom-select">
+                    <select id="inputStatus" required name="status" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
                       <option value="draft">Draft</option>
                       <option value="publish">Publish</option>
@@ -74,27 +74,46 @@
                   <div class="row">
                     <div class="form-group col">
                       <label for="price">Package Price</label>
-                      <input type="number" id="price" name="price" class="form-control">
+                      <input type="number" id="price" required name="price" class="form-control">
                     </div>
                     <div class="form-group col">
-                      <label for="price">Package Tax(%)</label>
-                      <input type="number" min="0" max="100" id="price" name="tax" class="form-control">
+                      <label for="percentage">Package Tax(%)</label>
+                      <input type="number" min="0" max="100" id="percentage" name="tax" class="form-control">
                     </div>
                   </div>
 
                   {{!-- todo part start here --}}
+                  {{!-- who is it for --}}
                   <div class="form-group row">
 
-                    <label for="todos" class="w-100 pl-2">Who is it for</label>
-                    <div class="col-sm-10">
-                      <input type="text" id="todoInput" class="form-control" id="todos" placeholder="Add who is it for">
+                    <label for="whoFor" class="w-100 pl-2">Who is it for</label>
+                    <div class="col-sm-10 inputMsgParent">
+                      <input type="text" id="whoFor" class="form-control todoInput" placeholder="Add who is it for">
                     </div>
                     <div class="col-sm-2">
-                      <button type="button" id="todoBtn" class="btn btn-info w-100">Add</button>
+                      <button type="button" id="" class="btn btn-info w-100 todoBtn">Add</button>
                     </div>
                     {{!-- todos list --}}
-                    <div class="col-12 mt-2">
-                      <ul class="todo-list ui-sortable" id="todoList" data-widget="todo-list">
+                    <div class="col-12 mt-2 todoList">
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
+                      </ul>
+                    </div>
+                  </div>
+
+                  {{!-- what's included --}}
+                  <div class="form-group row">
+
+                    <label for="whatsIncluded" class="w-100 pl-2">What's Included</label>
+                    <div class="col-sm-10 inputMsgParent">
+                      <input type="text" id="whatsIncluded" class="form-control todoInput"
+                        placeholder="Add What's Included">
+                    </div>
+                    <div class="col-sm-2">
+                      <button type="button" id="" class="btn btn-info w-100 todoBtn">Add</button>
+                    </div>
+                    {{!-- todos list --}}
+                    <div class="col-12 mt-2 todoList">
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
                       </ul>
                     </div>
                   </div>
@@ -130,7 +149,7 @@
   <script>
     $(document).ready(function () {
       console.log("jquery working")
-      $("#todoBtn").click(function () {
+      /*$("#todoBtn").click(function () {
         const text = $("#todoInput").val()
         if (!(text === "")) {
           const listElement = `
@@ -152,14 +171,48 @@
           event.stopImmediatePropagation();
           $(this).parents()[1].remove()
         })
+      })*/
+
+      //todolisting
+      $(".todoBtn").click(function () {
+        //input value from specific
+        const specificMsgFromTodoInput = $($(this).parent().siblings(".inputMsgParent")[0]).children("input")
+        //specific list to assign todo item
+        const specificTodoList = $($(this).parent().siblings(".todoList")[0]).children("ul")[0]
+        // get an id of this to assign to specific name
+        const name = $(specificMsgFromTodoInput).attr("id")
+        console.log(name)
+        const text = specificMsgFromTodoInput.val()
+        if (!(text === "")) {
+
+          const listElement = `
+                <li>
+                  <div class="d-none">
+                    <input type="checkbox" checked value="${text}" name="${name}">
+                  </div>
+                  <span>${text}</span>
+                  <div class="tools">
+                    <i class="fas fa-trash"></i>
+                  </div>
+                </li>
+        `
+          $(specificTodoList).append(listElement)
+          $(specificMsgFromTodoInput).val("")
+        }
+        $(".fa-trash").click(function (event) {
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+          $(this).parents()[1].remove()
+        })
       })
       //for enter 
-      $("#todoInput").keydown(function (event) {
+      $(".todoInput").keydown(function (event) {
         if (event.keyCode == 13) {
           event.preventDefault()
-          $("#todoBtn").click()
+          $(".todoBtn").click()
         }
       })
+
     })
   </script>
 </body>
