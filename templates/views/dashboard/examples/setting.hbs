@@ -144,7 +144,7 @@
 
                                                 {{!-- quizzes policy --}}
                                                 <div>
-                                                    <p class="font-weight-bold">Quizzes Attempt policy</p>
+                                                    <p class="font-weight-bold mb-0">Quizzes Attempt policy</p>
                                                     <div class="custom-control custom-radio">
                                                         <input class="custom-control-input custom-control-input-primary"
                                                             type="radio" id="policy1" {{#ifEquals
@@ -167,6 +167,15 @@
                                                             only if previous quiz has been
                                                             passed
                                                         </label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="unlockCourse" id="unlockCourse" {{#if
+                                                            setting.unlockCourse }}checked{{/if}}>
+                                                        <label for="unlockCourse"
+                                                            class="custom-control-label font-weight-normal">Unlock
+                                                            Course when previous is completed.</label>
                                                     </div>
                                                     <div class="custom-control custom-checkbox">
                                                         <input
@@ -194,6 +203,23 @@
                                                         <label for="showAnsCheckbox"
                                                             class="custom-control-label font-weight-normal">Show Correct
                                                             answers?</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="showFinalDay" id="showFinalTerm"
+                                                            {{#ifCond setting.finalDay '>' '-1' }}checked{{/ifCond}}>
+                                                        <label for="showFinalTerm"
+                                                            class="custom-control-label font-weight-normal">Unlock Final
+                                                            Term after days?</label>
+                                                    </div>
+                                                    <div class="form-group finalDay mt-1">
+                                                        <input type="number" min="0" name="finalDay" id="finalTermDay"
+                                                            value="{{setting.finalDay}}" placeholder="Enter No of days"
+                                                            class="form-control">
+                                                        <input type="number" min="0" name="finalTime"
+                                                            value="{{setting.finalTime}}" placeholder="Time in minutes"
+                                                            class="form-control mt-2">
                                                     </div>
                                                 </div>
                                             </div>
@@ -289,7 +315,7 @@
                                                         <p class="mb-0 mt-2">
                                                             <b>
                                                                 <a href="{{setting.logoPath}}"
-                                                                    class="font-weight-normal" target="_blank">Already
+                                                                    class="font-weight-normal" target="_blank">Current
                                                                     Uploaded logo
                                                                     <i class="fa-solid fa-image mr-1"></i>
                                                                 </a>
@@ -419,18 +445,38 @@
                 $("#showAnsCheckbox").parent().animate({ opacity: "1" })
             } else {
                 $("#showAnsCheckbox").prop("disabled", true)
-                $("#showAnsCheckbox").parent().animate({ opacity: "0" })
+                $("#showAnsCheckbox").parent().animate({ opacity: "0", height: 'toggle' })
             }
             $("#reviewQuiz").change(function () {
                 if ($(this).prop("checked")) {
                     $("#showAnsCheckbox").prop("disabled", false)
-                    $("#showAnsCheckbox").parent().animate({ opacity: "1" })
+                    $("#showAnsCheckbox").parent().animate({ opacity: "1", height: "toggle" })
                 } else {
                     $("#showAnsCheckbox").prop("disabled", true)
                     $("#showAnsCheckbox").prop("checked", false)
-                    $("#showAnsCheckbox").parent().animate({ opacity: "0" })
+                    $("#showAnsCheckbox").parent().animate({ opacity: "0", height: 'toggle' })
                 }
             })
+            if ($("#showFinalTerm").prop("checked")) {
+                $("#finalTermDay").prop("required", true)
+                $("#finalTermDay").parent().animate({ opacity: "1" })
+            } else {
+                finalInput(false)
+            }
+            $("#showFinalTerm").change(function () {
+                finalInput($(this).prop("checked"))
+            })
+            function finalInput(show) {
+                if (show) {
+                    $("#finalTermDay").prop("required", true)
+                    $("#finalTermDay").parent().animate({ opacity: "1", height: "toggle" })
+                } else {
+                    $("#finalTermDay").prop("required", false)
+                    $("#finalTermDay").prop("checked", false)
+                    $("#finalTermDay").parent().animate({ opacity: "0", height: 'toggle' })
+                }
+            }
+
         })
     </script>
 

@@ -1,5 +1,4 @@
 {{>dashboardheader}}
-
 <body class="hold-transition sidebar-mini">
 
     <!-- Site wrapper -->
@@ -46,14 +45,15 @@
                                 </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="chapterTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th style="width: 65px;">S.no</th>
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
-                                                <th {{#ifEquals user.role "regulator"}}class="d-none"{{/ifEquals}}>Edit</th>
+                                                <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                    Edit</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -68,14 +68,15 @@
                                                         {{this.fileName}}
                                                     </a>
                                                 </td>
-                                                <td {{#ifEquals ../user.role "regulator"}}class="d-none"{{/ifEquals}}>
+                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    {{!-- <a href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}"
+                                                    {{!-- <a
+                                                        href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-danger">
                                                             <i class="fa-solid fa-trash"></i>
@@ -137,19 +138,49 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
-                "paging": "{{#ifEquals allCourses.length 10}}true{{/ifEquals}}",
-                "lengthChange": false,
-                "searching": false,
+            let table = $('#chapterTable').DataTable({
+                "dom": "<'row'<'col-sm-12 col-md-auto'><'col-sm-12 col-md-auto pl-md-0 mt-md-0 mt-2'l><'col-sm-12 col-md'f>>" +
+                    "<'row'<'col-sm-12'tr>>" +
+                    "<'row'<'col-sm-12 col-md-6'i><'col-sm-12 col-md-6'p>>",
+                "paging": true,
+                "lengthChange": true,
+                "language": {
+                    "lengthMenu": "_MENU_"
+                },
+                "lengthMenu": [
+                    [10, 25, 50, -1],
+                    ["10 Chapters", "25 Chapters", "50 Chapters", 'All Chapters'],
+                ],
+                "searching": true,
                 "ordering": true,
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
+                initComplete: function () {
+                    this.api()
+                        .column(2)
+                        .every(function () {
+                            var column = this;
+                            var select = $('<select class="form-control w-auto d-inline "><option value="">Filter By Course</option></select>')
+                                .appendTo($('#chapterTable_wrapper').children('.row:first').children('div:first'))
+                                .on('change', function () {
+                                    var val = $.fn.dataTable.util.escapeRegex($(this).val());
+                                    column.search(val ? '^' + val + '$' : '', true, false).draw();
+                                });
+                            select.on('click', function (e) {
+                                e.stopPropagation()
+                            })
+                            column
+                                .data()
+                                .unique()
+                                .sort()
+                                .each(function (d, j) {
+                                    select.append(`<option value="${d}">${d}</option>`);
+                                });
+                        });
+                }
             });
+            $(table.table().container()).find('[name="chapterTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
         });
     </script>
 

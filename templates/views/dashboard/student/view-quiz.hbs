@@ -124,6 +124,14 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    <div class="alert-section">
+                                        {{#unless retake}}
+                                        <div class="alert alert-danger mx-auto w-75" role="alert">
+                                            Your {{quiz.type}}-term retakes are
+                                            over. You can't retake {{quiz.type}}-term.
+                                        </div>
+                                        {{/unless}}
+                                    </div>
                                     <div class="result text-center mb-5{{#unless takenQuiz}} d-none{{/unless}}"
                                         id="result">
                                         <h3 class="mb-0">Your Result</h3>
@@ -156,17 +164,20 @@
                                                 <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
                                             </tr>
                                         </table>
-                                        <button class="retake btn btn-success retake mt-2">Retake</button>
+                                        <button class="retake btn btn-success retake mt-2" {{#unless
+                                            retake}}disabled{{/unless}}>Retake</button>
                                         <button class="btn btn-primary mt-2 ml-2 "
                                             onclick="(function(){ window.history.back();}())">
                                             <span class="text" id="button-text">Go Back</span>
                                         </button>
                                     </div>
+                                    {{#ifCond user.role '==' 'student'}}
+                                    {{#if retake}}
                                     <form id="quiz" class="{{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
-                                            <label>{{this.question}}</label>
+                                            <label>{{increment @index}}). {{this.question}}</label>
                                             <div class="ans pl-4">
                                                 {{#each this.options}}
                                                 <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
@@ -176,7 +187,7 @@
                                                             value="{{@index}}" name="{{../this.qno}}" required>
                                                         <label class="font-weight-normal"
                                                             for="{{../this.qno}}-op-{{@index}}">
-                                                            {{this}}
+                                                            {{this}} <span></span>
                                                         </label>
                                                     </div>
                                                 </div>
@@ -189,6 +200,34 @@
                                             class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
                                             type="submit">Submit</button>
                                     </form>
+                                    {{/if}}
+                                    {{/ifCond}}
+                                    {{#ifCond user.role '==' 'regulator'}}
+                                    <form id="quiz" class="{{#if takenQuiz}} d-none{{/if}}">
+                                        <input type="hidden" name="quizId" value="{{quiz._id}}">
+                                        {{#each quiz.questions}}
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{increment @index}}). {{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this.qno}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="{{../this.qno}}-op-{{@index}}">
+                                                            {{this}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="feedback font-weight-bold d-none"></div>
+                                        </div>
+                                        {{/each}}
+                                    </form>
+                                    {{/ifCond}}
                                     <div
                                         class="spinner d-none flex-column align-items-center position-absolute place-center">
                                         <span class="loader ">
@@ -229,6 +268,7 @@
         const noOfQuestions = `{{{quiz.questions.length}}}`
         const passingPercent = `{{{passingPercent}}}`
         const reviewQuiz = `{{{reviewQuiz}}}`
+        const quizType = `{{{quiz.type}}}`
     </script>
     <script src="/js/quiz-take.js"></script>
 </body>

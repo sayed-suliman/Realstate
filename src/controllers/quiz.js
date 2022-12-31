@@ -168,9 +168,9 @@ const updateQuiz = async (req, res) => {
 // Student view
 const viewQuiz = async (req, res) => {
   try {
-    const id = req.params.id;
+    const QuizId = req.params.id;
     const courseId = req.params.courseId;
-    const quiz = await Quiz.findById(id);
+    const quiz = await Quiz.findById(QuizId);
     const takenQuiz = await Result.findOne({
       quiz: quiz._id,
       user: req.user._id,
@@ -186,6 +186,11 @@ const viewQuiz = async (req, res) => {
       );
     }
     if (quiz && course) {
+      const courseMeta = await UserMeta.findOne({
+        user_id: req.user._id,
+        course: courseId,
+      });
+
       // unlocking already taken quiz
       for await (let [index, quiz] of course.quizzes.entries()) {
         const takenQuiz = await Result.findOne({
@@ -231,7 +236,6 @@ const viewQuiz = async (req, res) => {
             if (!contents[index].unlock) {
               if (index == 0) continue;
               if (typeof contents[index - 1].unlock != undefined) {
-                //  locking chapter followed by the failed quiz
                 if (contents[index - 1].type == "quiz") {
                   if (contents[index - 1].grade == "failed") {
                     break;
@@ -239,6 +243,32 @@ const viewQuiz = async (req, res) => {
                 }
                 if (contents[index - 1].unlock) {
                   contents[index].unlock = true;
+
+                  // lock system for final term when days are in database
+                  if (
+                    contents[index].type == "final" &&
+                    setting.finalDay != -1 &&
+                    courseMeta
+                  ) {
+                    // date of agreement
+                    let agreementDate = new Date(courseMeta.createdAt);
+
+                    // Day and Minute from database
+                    let unlockAfterDay = setting.finalDay;
+                    let unlockAfterTime = setting.finalTime;
+
+                    // adding day and minute to the agreement date
+                    let final = new Date(
+                      agreementDate.getFullYear(),
+                      agreementDate.getMonth(),
+                      agreementDate.getDate() + unlockAfterDay,
+                      agreementDate.getHours(),
+                      agreementDate.getMinutes() + unlockAfterTime
+                    );
+                    let now = new Date();
+                    let unlock = now > final;
+                    contents[index].unlock = unlock;
+                  }
                   break;
                 }
               }
@@ -249,9 +279,33 @@ const viewQuiz = async (req, res) => {
         }
       } else if (setting.quizPolicy == "accessAllTime") {
         for await (let [index] of contents.entries()) {
-          // unlocking all contents
           if (!contents[index].unlock) {
             contents[index].unlock = true;
+          }
+          // lock system for final term when days are in database
+          if (
+            setting.finalDay != -1 &&
+            contents[index].type == "final" &&
+            courseMeta
+          ) {
+            // date of agreement
+            let agreementDate = new Date(courseMeta.createdAt);
+
+            // Day and Minute from database
+            let unlockAfterDay = setting.finalDay;
+            let unlockAfterTime = setting.finalTime;
+
+            // adding day and minute to the agreement date
+            let final = new Date(
+              agreementDate.getFullYear(),
+              agreementDate.getMonth(),
+              agreementDate.getDate() + unlockAfterDay,
+              agreementDate.getHours(),
+              agreementDate.getMinutes() + unlockAfterTime
+            );
+            let now = new Date();
+            let unlock = now > final;
+            contents[index].unlock = unlock;
           }
         }
       }
@@ -267,8 +321,6 @@ const viewQuiz = async (req, res) => {
         });
       }
 
-      console.log(quiz.questions);
-
       let passingPercent;
       if (quiz.type == "quiz") {
         passingPercent = setting.quizPassingMark;
@@ -276,6 +328,15 @@ const viewQuiz = async (req, res) => {
         passingPercent = setting.midPassingMark;
       } else if (quiz.type == "final") {
         passingPercent = setting.finalPassingMark;
+      }
+
+      let retake = true;
+      if (takenQuiz) {
+        if (quiz.type == "mid") {
+          retake = !(setting.midRetake == takenQuiz.take);
+        } else if (quiz.type == "final") {
+          retake = !(setting.finalRetake == takenQuiz.take);
+        }
       }
       res.render("dashboard/student/view-quiz", {
         title: `Quiz | ${quiz.name}`,
@@ -285,6 +346,7 @@ const viewQuiz = async (req, res) => {
         reviewQuiz: setting.reviewQuiz,
         courseId: course._id.toString(),
         contents,
+        retake,
       });
     }
   } catch (error) {
@@ -317,8 +379,18 @@ const takeQuiz = async (req, res) => {
         showAns.push(`q-${index}-op-${question.ans}`);
       }
     });
+    // passing for marks from database
+    let passingMark;
+    if (quiz.type == "quiz") {
+      passingMark = setting.quizPassingMark;
+    } else if (quiz.type == "mid") {
+      passingMark = setting.midPassingMark;
+    } else if (quiz.type == "final") {
+      passingMark = setting.finalPassingMark;
+    }
     const percent = Math.floor((point / questions.length) * 100);
-    const grade = percent >= setting.passingMark ? "passed" : "failed";
+    const grade = percent >= passingMark ? "passed" : "failed";
+
     const data = {
       quiz: quiz._id,
       user: req.user._id,
@@ -334,13 +406,40 @@ const takeQuiz = async (req, res) => {
       quiz: quiz._id,
       user: req.user._id,
     });
+    // -1 is for unlimited
+    let noOfRetake = -1;
+    if (quiz.type == "mid") {
+      noOfRetake = setting.midRetake;
+    } else if (quiz.type == "final") {
+      noOfRetake = setting.finalRetake;
+    }
+    let retake = true;
     if (alreadyTakenQuiz) {
       delete data.quiz;
       delete data.user;
-      await alreadyTakenQuiz.updateOne(data);
+      const updatedQuiz = await Result.findOneAndUpdate(
+        {
+          quiz: quiz._id,
+          user: req.user._id,
+        },
+        {
+          ...data,
+          take: alreadyTakenQuiz.take + 1,
+        },
+        { new: true }
+      );
+      // only for mid and final term
+      if (quiz.type != "quiz") {
+        retake = !(updatedQuiz.take >= noOfRetake);
+      }
     } else {
-      await Result(data).save();
+      const newQuiz = await Result({ ...data, take: 1 }).save();
+      // only for mid and final term
+      if (quiz.type != "quiz") {
+        retake = !(newQuiz.take >= noOfRetake);
+      }
     }
+    console.log("Retake", retake, noOfRetake);
     // sending object to client side javascript
     // 1) if reviewQuiz is enable
     //      send both correct and wrong answer of the user
@@ -349,9 +448,14 @@ const takeQuiz = async (req, res) => {
     // 3) other wise send only marks(points) + correct and wrong counts
     sendObj = setting.reviewQuiz
       ? setting.showAnswer
-        ? { showAns, correctAns, wrongAns, point }
-        : { correctAns, wrongAns, point }
-      : { point, correctCount: correctAns.length, wrongCount: wrongAns.length };
+        ? { showAns, correctAns, wrongAns, point, retake }
+        : { correctAns, wrongAns, point, retake }
+      : {
+          point,
+          correctCount: correctAns.length,
+          wrongCount: wrongAns.length,
+          retake,
+        };
 
     res.send(sendObj);
   } catch (error) {

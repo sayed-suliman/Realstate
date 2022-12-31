@@ -44,7 +44,7 @@
                                 </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                    <table id="example2" class="table table-bordered table-hover">
+                                    <table id="couponTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Coupon</th>
@@ -139,11 +139,7 @@
     <!-- Page specific script -->
     <script>
         $(function () {
-            $("#example1").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#example1_wrapper .col-md-6:eq(0)');
-            $('#example2').DataTable({
+            $('#couponTable').DataTable({
                 "paging": "{{#ifEquals packages.length 10}}true{{/ifEquals}}",
                 "lengthChange": false,
                 "searching": false,

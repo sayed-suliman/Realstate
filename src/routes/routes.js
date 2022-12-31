@@ -26,6 +26,7 @@ const {
   updateCourse,
   viewCourse,
   allCourses,
+  courseError,
 } = require("../controllers/courses");
 const {
   package,
@@ -43,6 +44,7 @@ const {
   upload,
   logoUpload,
   userAvatar,
+  courseBanner,
 } = require("./../controllers/fileUpload");
 const {
   addChapter,
@@ -163,6 +165,16 @@ router.get("/login", logged_in, login);
 router.get("/loginAsStudent", isAdmin, async (req, res) => {
   if (req.query.uid) {
     let adminId = req.user._id.toString();
+    if (adminId == req.query.uid) {
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg: encodeMsg("You can't login as yourself", "danger"),
+          },
+        })
+      );
+    }
     const user = await User.findById(req.query.uid);
     req.login(user, function (err) {
       if (err) {
@@ -197,7 +209,6 @@ router.get("/logout", async (req, res) => {
       if (err) {
         return next(err);
       }
-      console.log(req.session);
       return res.redirect(
         url.format({
           pathname: "/dashboard",
@@ -307,7 +318,13 @@ router.get("/dashboard/courses", allCourses);
 // render of course add
 router.get("/dashboard/add-course", isAdmin, course);
 // course-add post
-router.post("/dashboard/add-course", isAdmin, addcourse);
+router.post(
+  "/dashboard/add-course",
+  courseBanner.single("banner"),
+  isAdmin,
+  addcourse,
+  courseError
+);
 
 // course-detail
 router.get("/dashboard/course-detail", courseDetails);
@@ -316,7 +333,12 @@ router.get("/dashboard/course-detail/delete-course", isAdmin, deleteCourse);
 // edit-course
 router.get("/dashboard/course-detail/edit-course", isAdmin, editCourse);
 // update-course
-router.post("/dashboard/course-detail/update-course", isAdmin, updateCourse);
+router.post(
+  "/dashboard/course-detail/update-course",
+  courseBanner.single("banner"),
+  isAdmin,
+  updateCourse
+);
 // for student || regulator
 router.get("/dashboard/view-course/", (req, res) => res.redirect("/dashboard"));
 router.get("/dashboard/view-course/:id", viewCourse);

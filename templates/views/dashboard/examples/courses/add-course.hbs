@@ -9,6 +9,7 @@
 
     <!-- Main Sidebar Container -->
     {{>dashboardMainSidebar}}
+    {{>alert}}
 
     <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
@@ -31,7 +32,7 @@
 
       <!-- Main content -->
       <section class="content">
-        <form action="add-course" method="post">
+        <form action="add-course" method="post" enctype="multipart/form-data">
           <div class="row">
             <div class="col-md-6">
               <div class="card card-primary">
@@ -47,15 +48,17 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Course Name</label>
-                    <input type="text" id="inputName" name="name" class="form-control">
+                    <input type="text" id="inputName" name="name" class="form-control" required>
                   </div>
                   <div class="form-group">
-                    <label for="inputDescription">Course Description</label>
-                    <textarea id="inputDescription" name="description" class="form-control" rows="4"></textarea>
+                    <label for="banner">Banner <small>(Showing to User at start of course)</small></label>
+                    <div class="input-group">
+                      <input type="file" name="banner" accept="image/*" id="banner" />
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
-                    <select id="inputStatus" name="status" class="form-control custom-select">
+                    <select id="inputStatus" name="status" class="form-control custom-select" required>
                       <option selected disabled value="">Select one</option>
                       <option value="draft">Draft</option>
                       <option value="publish">Publish</option>
@@ -63,18 +66,9 @@
                   </div>
                   <div class="form-group">
                     <label for="price">Price</label>
-                    <input type="number" min="0" id="price" name="price" class="form-control">
+                    <input type="number" min="0" id="price" name="price" class="form-control" required>
                   </div>
-                  {{!-- <div class="form-group">
-                    <label for="inputStatus">Add Packages</label>
-                    <select required id="inputStatus" name="package" class="form-control custom-select">
-                      <option selected disabled value="">Select one</option>
-                      {{#each packages}}
-                      <option value="{{this.name}}">{{this.name}}</option>
-                      {{/each}}
-                    </select>
-                  </div> --}}
-                   <div class="form-group">
+                  <div class="form-group">
                     <label>Add to Package</label>
                     {{#each packages}}
                     <div class="custom-control custom-checkbox">
@@ -84,15 +78,10 @@
                     </div>
                     {{/each}}
                   </div>
-                  {{!-- price --}}
-                  {{!-- <div class="form-group">
-                    <label for="price">Package Price</label>
-                    <input type="number" id="price" name="price" class="form-control">
-                  </div> --}}
                 </div>
                 <div class="card-footer">
-                 <button type="reset" class="btn btn-secondary">Cancel</button>
-              <button type="submit" class="btn btn-success float-right">Create Course</button>
+                  <button type="reset" class="btn btn-secondary">Cancel</button>
+                  <button type="submit" class="btn btn-success float-right">Create Course</button>
                 </div>
                 <!-- /.card-body -->
               </div>

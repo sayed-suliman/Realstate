@@ -4,7 +4,11 @@ $(document).ready(function () {
   $(".retake").click(() => {
     timeInSeconds = 0;
     timeInterval = setInterval(timer, 1000);
-
+    // remove correct option
+    $("label")
+      .removeClass("text-success font-weight-bold")
+      .children("span")
+      .text("");
     $("#quiz").removeClass("d-none");
     $(".timeHead").removeClass("d-none");
     $("#result").addClass("d-none");
@@ -18,7 +22,7 @@ $(document).ready(function () {
   let minutes;
   let time;
 
-  timeInterval = setInterval(timer, 1000);
+  timeInterval = setInterval(() => timer(), 1000);
   var timer = () => {
     timeInSeconds += 1;
     setQuizTimer();
@@ -52,9 +56,18 @@ $(document).ready(function () {
         correctCount,
         wrongCount,
         showAns,
+        retake,
       }) => {
         loading(false);
         if (!error) {
+          if (!retake) {
+            $("#quiz").remove();
+            $("button.retake").prop("disabled", true);
+            $(".alert-section").html(`
+            <div class="alert alert-danger mx-auto w-75" role="alert">
+            Your ${quizType}-term retakes are over. You can't retake ${quizType}-term.
+            </div>`);
+          }
           $(".submit").attr("disabled", true);
           $(".submit").text("Submitted");
 
@@ -110,7 +123,8 @@ $(document).ready(function () {
               showAns.forEach((correct) => {
                 $(`#quiz [for=${correct}]`)
                   .addClass("text-success font-weight-bold")
-                  .append("<span>(Correct)</span>");
+                  .children("span")
+                  .text("(Correct)");
               });
             }
             if (correctAns.length != 0) {
