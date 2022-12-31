@@ -47,7 +47,7 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Package Name</label>
-                    <input type="text" id="inputName" value="{{package.name}}" name="name" class="form-control">
+                    <input type="text" id="inputName" value="{{package.name}}" required name="name" class="form-control">
                   </div>
                   <div class="form-group">
                     <label>Select Courses to Add in Package</label>
@@ -62,7 +62,7 @@
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Status</label>
-                    <select id="inputStatus" name="status" class="form-control custom-select">
+                    <select id="inputStatus" name="status" required class="form-control custom-select">
                       <option disabled value="">Select one</option>
                       <option {{checkDraftOrPublish package.status 'draft' }} value="draft">Draft</option>
                       <option {{checkDraftOrPublish package.status 'publish' }} value="publish">Publish</option>
@@ -71,31 +71,59 @@
                   <div class="row">
                     <div class="form-group col">
                       <label for="price">Package Price</label>
-                      <input type="number" id="price" value="{{package.price}}" name="price" class="form-control">
+                      <input type="number" id="price" required value="{{package.price}}" name="price" class="form-control">
                     </div>
                     <div class="form-group col">
-                      <label for="price">Package Tax(%)</label>
-                      <input type="number" min="0" max="100" id="price" name="tax" value="{{package.tax}}"
+                      <label for="percentage">Package Tax(%)</label>
+                      <input type="number" min="0" max="100" id="percentage" name="tax" value="{{package.tax}}"
                         class="form-control">
                     </div>
                   </div>
                   {{!-- todo part start here --}}
                   <div class="form-group row">
 
-                    <label for="todos" class="w-100 pl-2">Who is it for</label>
-                    <div class="col-sm-10">
-                      <input type="text" id="todoInput" class="form-control" id="todos" placeholder="Add who is it for">
+                    <label for="whoFor" class="w-100 pl-2">Who is it for</label>
+                    <div class="col-sm-10 inputMsgParent">
+                      <input type="text" id="whoFor" class="form-control todoInput" placeholder="Add who is it for">
                     </div>
                     <div class="col-sm-2">
-                      <button type="button" id="todoBtn" class="btn btn-info w-100">Add</button>
+                      <button type="button" class="btn btn-info w-100 todoBtn">Add</button>
                     </div>
                     {{!-- todos list --}}
-                    <div class="col-12 mt-2">
-                      <ul class="todo-list ui-sortable" id="todoList" data-widget="todo-list">
+                    <div class="col-12 mt-2 todoList">
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
                         {{#each package.whoFor}}
                         <li>
                           <div class="d-none">
-                            <input type="checkbox" checked value="{{this}}" name="todo">
+                            <input type="checkbox" checked value="{{this}}" name="whoFor">
+                          </div>
+                          <span>{{this}}</span>
+                          <div class="tools">
+                            <i class="fas fa-trash"></i>
+                          </div>
+                        </li>
+                        {{/each}}
+                      </ul>
+                    </div>
+                  </div>
+                  {{!-- what's included --}}
+                  <div class="form-group row">
+
+                    <label for="whatsIncluded" class="w-100 pl-2">Who is it for</label>
+                    <div class="col-sm-10 inputMsgParent">
+                      <input type="text" id="whatsIncluded" class="form-control todoInput"
+                        placeholder="Add What's Included">
+                    </div>
+                    <div class="col-sm-2">
+                      <button type="button" class="btn btn-info w-100 todoBtn">Add</button>
+                    </div>
+                    {{!-- todos list --}}
+                    <div class="col-12 mt-2 todoList">
+                      <ul class="todo-list ui-sortable" data-widget="todo-list">
+                        {{#each package.whatsIncluded}}
+                        <li>
+                          <div class="d-none">
+                            <input type="checkbox" checked value="{{this}}" name="whatsIncluded">
                           </div>
                           <span>{{this}}</span>
                           <div class="tools">
@@ -143,13 +171,20 @@
         $(this).parents()[1].remove()
       })
       console.log("jquery working")
-      $("#todoBtn").click(function () {
-        const text = $("#todoInput").val()
+      $(".todoBtn").click(function () {
+        //input value from specific
+        const specificMsgFromTodoInput = $($(this).parent().siblings(".inputMsgParent")[0]).children("input")
+        //specific list to assign todo item
+        const specificTodoList = $($(this).parent().siblings(".todoList")[0]).children("ul")[0]
+        // get an id of this to assign to specific name
+        const name = $(specificMsgFromTodoInput).attr("id")
+        console.log(name)
+        const text = specificMsgFromTodoInput.val()
         if (!(text === "")) {
           const listElement = `
                 <li>
                   <div class="d-none">
-                    <input type="checkbox" checked value="${text}" name="todo">
+                    <input type="checkbox" checked value="${text}" name="${name}">
                   </div>
                   <span>${text}</span>
                   <div class="tools">
@@ -157,8 +192,8 @@
                   </div>
                 </li>
         `
-          $("#todoList").append(listElement)
-          $("#todoInput").val("")
+          $(specificTodoList).append(listElement)
+          $(specificMsgFromTodoInput).val("")
         }
         $(".fa-trash").click(function (event) {
           event.stopPropagation();
@@ -168,10 +203,10 @@
       })
 
       //for enter 
-      $("#todoInput").keydown(function (event) {
+      $(".todoInput").keydown(function (event) {
         if (event.keyCode == 13) {
           event.preventDefault()
-          $("#todoBtn").click()
+          $(".todoBtn").click()
         }
       })
     })

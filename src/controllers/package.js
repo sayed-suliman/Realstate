@@ -35,7 +35,8 @@ module.exports = {
                 status: packageData.status,
                 tax: packageData.tax,
                 courses: course,
-                whoFor: packageData.todo,
+                whoFor: packageData.whoFor,
+                whatsIncluded: packageData.whatsIncluded,
                 price: packageData.price,
             }).save();
             if (package) {
@@ -128,7 +129,6 @@ module.exports = {
             let courses = await Course.find()
             await package.updateOne({
                 ...data,
-                whoFor:data.todo,
                 courses: course
             })
             if (package) {
