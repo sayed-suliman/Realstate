@@ -6,6 +6,7 @@ const url = require("url");
 const UserMeta = require("../models/user-meta");
 const Setting = require("../models/setting");
 const fs = require("fs");
+const { sendAgreement } = require("./mailServices");
 
 const course = async (req, res) => {
   try {
@@ -364,6 +365,7 @@ var viewCourse = async (req, res) => {
             meta_key: "Course Start Agreement",
             meta_value: "Accepted",
           }).save();
+          sendAgreement(req.user.email, req.user.name);
         }
       }
       for await (let [index, quiz] of course.quizzes.entries()) {

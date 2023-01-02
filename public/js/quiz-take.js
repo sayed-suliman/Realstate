@@ -1,7 +1,9 @@
+document.addEventListener("contextmenu", (event) => event.preventDefault());
 $(document).ready(function () {
   let timeInSeconds = 0;
   let timeInterval;
   $(".retake").click(() => {
+    clearInterval(timeInterval);
     timeInSeconds = 0;
     timeInterval = setInterval(timer, 1000);
     // remove correct option
@@ -22,7 +24,7 @@ $(document).ready(function () {
   let minutes;
   let time;
 
-  timeInterval = setInterval(() => timer(), 1000);
+  timeInterval = setInterval(()=>timer(), 1000);
   var timer = () => {
     timeInSeconds += 1;
     setQuizTimer();
@@ -105,6 +107,9 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
+          document
+            .getElementById("result")
+            .scrollIntoView({ behavior: "smooth" });
           // }
           if (reviewQuiz == "true") {
             if (wrongAns.length != 0) {

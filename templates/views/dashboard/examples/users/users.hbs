@@ -205,7 +205,7 @@
             .column(4)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline mb-2 mb-md-0"><option value="">Filter By Package</option></select>')
+              var select = $('<select class="form-control w-auto d-inline mb-2 mb-md-0 text-capitalize"><option value="">Filter By Package</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {
@@ -225,7 +225,7 @@
             }).column(2)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline ml-md-2"><option value="">Filter By Role</option></select>')
+              var select = $('<select class="form-control w-auto d-inline ml-md-2 text-capitalize"><option value="">Filter By Role</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {

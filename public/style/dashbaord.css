@@ -44,6 +44,15 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     cursor: move;
 }
 
+.quiz {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
 @media screen and (max-width:575px) {
 
     .dataTables_wrapper .row:first-child div select,

@@ -82,4 +82,15 @@ $(document).ready(function () {
             }
         })
     })
+    $(".cross").click(function (event) {
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+        if (!($($(this).parents()[2]).next()[0])) {
+            $(this).parents()[2].remove()
+        } else {
+            alert("Remove the last question plz")
+            return
+        }
+    })
+    
 })

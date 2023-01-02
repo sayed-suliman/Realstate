@@ -29,16 +29,16 @@
                                     <a href="{{url}}" target="_blank"
                                         style="Margin:0;color:#2a79ff;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.43;margin:0;padding:0;text-align:left;text-decoration:none">
                                         <h1
-                                            style="font-size: 22px;font-weight:500;font-family:Helvetica,Arial,sans-serif">
+                                            style="font-size: 22px;font-weight:500;line-height:1;font-family:Helvetica,Arial,sans-serif;margin:0">
                                             {{site_name}}</h1>
                                     </a>
                                 </td>
                                 <td class="miro__col-header-btn"
                                     style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:14px;font-weight:400;hyphens:auto;line-height:1.43;margin:0;padding:0;padding-top:26px;text-align:right;vertical-align:top;width:50%;word-wrap:break-word">
                                     <a href="{{url}}" class="miro-btn" target="_blank"
-                                        style="Margin:0;background-color:#fff;border:1px solid #050038;border-radius:4px;box-sizing:border-box;color:#050038!important;cursor:pointer;display:inline-block;font-family:Helvetica,Arial,sans-serif;font-size:16px!important;font-stretch:normal;font-style:normal;font-weight:400;height:48px;letter-spacing:normal;line-height:48px!important;margin:0;padding:0 5px;text-align:center;text-decoration:none;white-space:nowrap;"><span
+                                        style="line-height:32px;background-color:#fff;border:1px solid #050038;border-radius:4px;box-sizing:border-box;color:#050038!important;cursor:pointer;display:inline-block;font-family:Helvetica,Arial,sans-serif;font-size:16px!important;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;margin:0;padding:0 5px;text-align:center;text-decoration:none;white-space:nowrap;"><span
                                             style="font-family:Helvetica,Arial,sans-serif;font-size:15px;">Go to
-                                            {{site_name}}</span>
+                                            Site</span>
                                     </a>
                                 </td>
                             </tr>
@@ -47,58 +47,90 @@
                     <div class="miro__content-body" style="font-family:Helvetica,Arial,sans-serif">
                         <div class="miro-title-block"
                             style="background-position:center;background-repeat:no-repeat;background-size:100% auto;font-family:Helvetica,Arial,sans-serif;padding:40px 40px 36px">
+                            {{#if agree}}
                             <div class="miro-title-block__title font-size-42"
-                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:42px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
-                                Complete registration</div>
+                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:36px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                                Agreement</div>
+                            <div class="miro-title-block__subtitle font-size-20 m-top-16"
+                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:17px!important;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.4;margin-top:16px;opacity:.6">
+                                Dear <span style="font-weight:700">{{username}},</span> You have accepted the following
+                                agreement.</div>
+                            {{else}}
+                            <div class="miro-title-block__title font-size-42"
+                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:36px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                                Complete Registration</div>
                             <div class="miro-title-block__subtitle font-size-20 m-top-16"
                                 style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:20px!important;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.4;margin-top:16px;opacity:.6">
                                 Please enter this confirmation code in the window where you started creating your
                                 account:</div>
+                            {{/if}}
                         </div>
                         <div class="miro-confirmation-code-block"
                             style="font-family:Helvetica,Arial,sans-serif;padding:0 40px">
+                            {{#if agree}}
                             <div class="miro-confirmation-code-block__code"
-                                style="background-color:#f3f4f8;border-radius:4px;color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:48px;font-stretch:normal;font-style:normal;font-weight:700;height:128px;letter-spacing:normal;line-height:128px;text-align:center">
-                                {{code}}</div>
-                        </div>
-                        <div class="miro-title-block"
-                            style="background-position:center;background-repeat:no-repeat;background-size:100% auto;font-family:Helvetica,Arial,sans-serif;padding:10px 0 0 40px">
-                            <div class="miro-title-block__title font-size-42"
-                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:42px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                                style="background-color:#f3f4f8;border-radius:4px;color:#050038;font-family:Helvetica,Arial,sans-serif; padding:5px 10px">
+                                <p>I, {{username}}, under penalty of perjury, do hereby affirm and agree that I am
+                                    registered
+                                    student
+                                    of {{site_name}}, and that I will personally complete each reading assignment, quiz
+                                    and the
+                                    final examination of the course(s). I understand that my failure to comply with this
+                                    agreement
+                                    will result in revocation of completion certificate, and that such violation will be
+                                    reported to
+                                    my local estate industry regulatory authorities.</p>
+                                <p>Furthermore, I understand that the contents of the course(s) may not be copied,
+                                    reproduced,
+                                    resold or used by any other person. Unauthorized copying of this course is
+                                    prohibited by U.S
+                                    copyright laws which provide substantial penalties for copyright infringement.</p>
+                                {{else}}
+                                <div class="miro-confirmation-code-block__code"
+                                    style="background-color:#f3f4f8;border-radius:4px;color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:48px;font-stretch:normal;font-style:normal;font-weight:700;height:128px;letter-spacing:normal;line-height:128px;text-align:center">
+                                    {{code}}
+                                </div>
                             </div>
-                            <div class="miro-title-block__subtitle font-size-20 m-top-16"
-                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:20px!important;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.4;margin-top:16px;opacity:.6">
-                                From {{site_name}} use the code to confirm email.</div>
-                        </div>
-                        <div class="miro-title-block"
-                            style="background-position:center;background-repeat:no-repeat;background-size:100% auto;font-family:Helvetica,Arial,sans-serif;padding:10px 0 12px 40px">
-                            <div class="miro-title-block__title font-size-42"
-                                style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:42px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                            <div class="miro-title-block"
+                                style="background-position:center;background-repeat:no-repeat;background-size:100% auto;font-family:Helvetica,Arial,sans-serif;padding:10px 0 0 40px">
+                                <div class="miro-title-block__title font-size-42"
+                                    style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:42px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                                </div>
+                                <div class="miro-title-block__subtitle font-size-20 m-top-16"
+                                    style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:20px!important;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.4;margin-top:16px;opacity:.6">
+                                    From {{site_name}} use the code to confirm email.</div>
                             </div>
+                            <div class="miro-title-block"
+                                style="background-position:center;background-repeat:no-repeat;background-size:100% auto;font-family:Helvetica,Arial,sans-serif;padding:10px 0 12px 40px">
+                                <div class="miro-title-block__title font-size-42"
+                                    style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:42px!important;font-stretch:normal;font-style:normal;font-weight:700;letter-spacing:normal;line-height:1.24">
+                                </div>
+                            </div>
+                            <table class="spacer"
+                                style="border-collapse:collapse;border-spacing:0;font-family:Helvetica,Arial,sans-serif;padding:0;text-align:left;vertical-align:top;width:100%">
+                                <tbody style="font-family:Helvetica,Arial,sans-serif">
+                                    <tr
+                                        style="font-family:Helvetica,Arial,sans-serif;padding:0;text-align:left;vertical-align:top">
+                                        <td height="0px"
+                                            style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:0;font-weight:400;hyphens:auto;line-height:0;margin:0;mso-line-height-rule:exactly;padding:0;text-align:left;vertical-align:top;word-wrap:break-word">
+                                             </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            {{/if}}
+
                         </div>
-                        <table class="spacer"
-                            style="border-collapse:collapse;border-spacing:0;font-family:Helvetica,Arial,sans-serif;padding:0;text-align:left;vertical-align:top;width:100%">
-                            <tbody style="font-family:Helvetica,Arial,sans-serif">
-                                <tr
-                                    style="font-family:Helvetica,Arial,sans-serif;padding:0;text-align:left;vertical-align:top">
-                                    <td height="0px"
-                                        style="-moz-hyphens:auto;-webkit-hyphens:auto;Margin:0;border-collapse:collapse!important;color:#0a0a0a;font-family:Helvetica,Arial,sans-serif;font-size:0;font-weight:400;hyphens:auto;line-height:0;margin:0;mso-line-height-rule:exactly;padding:0;text-align:left;vertical-align:top;word-wrap:break-word">
-                                         </td>
-                                </tr>
-                            </tbody>
-                        </table>
                     </div>
-                </div>
-                <div class="miro__footer"
-                    style="font-family:Helvetica,Arial,sans-serif;padding-bottom:72px;padding-top:42px">
-                    <div class="miro__footer-title"
-                        style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.38;margin-top:0!important;opacity:.7;text-align:center">
-                        You have received this notification because you have signed up
-                        <br style="font-family:Helvetica,Arial,sans-serif">for
-                        <a href="{{url}}" target="_blank"
-                            style="Margin:0;color:inherit;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.43;margin:0;padding:0;text-align:left;text-decoration:none">{{site_name}}</a>
+                    <div class="miro__footer"
+                        style="font-family:Helvetica,Arial,sans-serif;padding-bottom:72px;padding-top:42px">
+                        <div class="miro__footer-title"
+                            style="color:#050038;font-family:Helvetica,Arial,sans-serif;font-size:16px;font-stretch:normal;font-style:normal;font-weight:400;letter-spacing:normal;line-height:1.38;margin-top:0!important;opacity:.7;text-align:center">
+                            You have received this notification because you have signed up
+                            <br style="font-family:Helvetica,Arial,sans-serif">for
+                            <a href="{{url}}" target="_blank"
+                                style="Margin:0;color:inherit;font-family:Helvetica,Arial,sans-serif;font-weight:400;line-height:1.43;margin:0;padding:0;text-align:left;text-decoration:none">{{site_name}}</a>
+                        </div>
                     </div>
-                </div>
             </td>
         </tr>
     </table>
