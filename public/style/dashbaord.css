@@ -44,6 +44,10 @@ green red green red green red green red  green red ---- Quiz pages ----- green r
     cursor: move;
 }
 
+.todo-list>li .tools {
+    display: inline-block;
+}
+
 .quiz {
     -webkit-touch-callout: none;
     -webkit-user-select: none;

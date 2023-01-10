@@ -24,7 +24,7 @@ $(document).ready(function () {
   let minutes;
   let time;
 
-  timeInterval = setInterval(()=>timer(), 1000);
+  timeInterval = setInterval(() => timer(), 1000);
   var timer = () => {
     timeInSeconds += 1;
     setQuizTimer();
@@ -38,9 +38,12 @@ $(document).ready(function () {
     $(".timer").text(time);
   };
   $("#quiz").submit(function (e) {
+    submitQuiz(e);
+  });
+  let submitQuiz = (e) => {
     clearInterval(timeInterval);
     e.preventDefault();
-    const formData = $(this).serializeArray();
+    const formData = $(e.target).serializeArray();
     console.log(time);
     // adding time at top of array
     formData.unshift({ name: "time", value: time });
@@ -107,9 +110,12 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
-          document
-            .getElementById("result")
-            .scrollIntoView({ behavior: "smooth" });
+          $([document.documentElement, document.body]).animate(
+            {
+              scrollTop: $("#result").offset().top,
+            },
+            600
+          );
           // }
           if (reviewQuiz == "true") {
             if (wrongAns.length != 0) {
@@ -154,7 +160,7 @@ $(document).ready(function () {
         console.log(error);
       },
     });
-  });
+  };
   var loading = (isLoading, msg = "Loading") => {
     var spinnerContainer = document.querySelector(".spinner");
     var quizContainer = document.querySelector("#quiz");

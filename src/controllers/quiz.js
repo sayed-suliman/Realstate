@@ -118,13 +118,10 @@ const updateQuiz = async (req, res) => {
     const oldCourse = await Course.findOne({ name: quiz.course.name });
     // for index of quiz in course
     const oldCourseindex = oldCourse.quizzes.indexOf(qId);
-    console.log("oldcourseIndex",oldCourseindex)
 
     const afterCourse = await Course.findOne({ name: data.course });
-    console.log(afterCourse)
     // for index of quiz in after course
     const afterCourseindex = afterCourse.quizzes.indexOf(qId);
-    console.log("afterCourseindex",afterCourseindex)
 
     const name = data.name;
     const type = data.type;
@@ -365,6 +362,15 @@ const takeQuiz = async (req, res) => {
     delete req.body.quizId;
     delete req.body.time;
 
+    if (setting.randomizeQuestions) {
+      // sort the object by property and return back an object
+      req.body = Object.entries(req.body)
+        .sort(([a], [b]) => {
+          return a.slice(2) > b.slice(2) ? 1 : -1;
+        })
+        .reduce((prev, [prop, val]) => ({ ...prev, [prop]: val }), {});
+    }
+
     let answersArr = Object.values(req.body);
     let point = 0;
     let wrongAns = [];
@@ -376,6 +382,7 @@ const takeQuiz = async (req, res) => {
         correctAns.push(`q-${index}`);
       } else {
         wrongAns.push(`q-${index}`);
+        // add the correct ans to array for this question i.e: q-0-op-0
         showAns.push(`q-${index}-op-${question.ans}`);
       }
     });
@@ -439,7 +446,6 @@ const takeQuiz = async (req, res) => {
         retake = !(newQuiz.take >= noOfRetake);
       }
     }
-    console.log("Retake", retake, noOfRetake);
     // sending object to client side javascript
     // 1) if reviewQuiz is enable
     //      send both correct and wrong answer of the user
