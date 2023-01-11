@@ -10,10 +10,6 @@ const courseSchema = new mongoose.Schema(
         return `/images/course/${banner}`;
       },
     },
-    progress: {
-      type: Number,
-      default: 0,
-    },
     package: [{ type: mongoose.Schema.Types.ObjectId, ref: "Package" }],
     price: {
       type: Number,

@@ -1,5 +1,6 @@
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 $(document).ready(function () {
+  let timeOver = false;
   let timeInSeconds = 0;
   let timeInterval;
   $(".retake").click(() => {
@@ -36,7 +37,19 @@ $(document).ready(function () {
     seconds = seconds < 10 ? `0${seconds}` : seconds;
     time = `${minutes}:${seconds}`;
     $(".timer").text(time);
+    if (
+      (quizType == "final" || quizType == "mid") &&
+      timeInSeconds == examTime
+    ) {
+      $("#quiz [type=radio]").removeAttr("required");
+      timeOver = true;
+      $("#quiz .submit").click();
+    }
   };
+
+  if (takenQuiz) {
+    clearInterval(timeInterval);
+  }
   $("#quiz").submit(function (e) {
     submitQuiz(e);
   });
@@ -47,7 +60,10 @@ $(document).ready(function () {
     console.log(time);
     // adding time at top of array
     formData.unshift({ name: "time", value: time });
-    loading(true, "Submitting you quiz.");
+    submitMsg = timeOver
+      ? "Time Over. Submitting you quiz."
+      : "Submitting you quiz.";
+    loading(true, submitMsg);
     $.ajax({
       url: "/test-quiz",
       type: "POST",
@@ -82,12 +98,13 @@ $(document).ready(function () {
 
           // if point then show the result
           // if (point) {
-          const percent = Math.round((point / noOfQuestions) * 100);
-          const grade = percent >= passingPercent ? "passed" : "failed";
+          console.log(typeof point);
+          const percent = Math.round((point / Number(noOfQuestions)) * 100);
+          const grade = percent >= Number(passingPercent) ? "passed" : "failed";
 
           $("#result").removeClass("d-none");
           $("#result .percent").text(`${percent}%`);
-          percent >= passingPercent
+          percent >= Number(passingPercent)
             ? $("#result .percent")
                 .removeClass("text-danger")
                 .addClass("text-success")
@@ -102,7 +119,7 @@ $(document).ready(function () {
             : $("#result .grade")
                 .removeClass("text-danger")
                 .addClass("text-success");
-          $("#result .points").text(`${point}/${noOfQuestions}`);
+          $("#result .points").text(`${point}/${Number(noOfQuestions)}`);
           $("#result .time").text(time);
           $("#result .correct").text(
             `${reviewQuiz == "true" ? correctAns.length : correctCount}`

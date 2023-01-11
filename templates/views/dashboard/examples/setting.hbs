@@ -140,7 +140,31 @@
                                                             -1}}selected{{/ifEquals}}>unlimited</option>
                                                     </select>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="form-group col">
+                                                        <label for="midTime">Mid Time</label>
+                                                        <div class="input-group">
+                                                            <input type="number" min="0" name="midTime" id="midTime"
+                                                                value="{{setting.midTakeTime}}"
+                                                                placeholder="Example: 60" class="form-control">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">Minutes</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col">
+                                                        <label for="finalTime">Final Time</label>
+                                                        <div class="input-group">
+                                                            <input type="number" min="0" name="finalTime" id="finalTime"
+                                                                value="{{setting.finalTakeTime}}"
+                                                                placeholder="Example: 60" class="form-control">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">Minutes</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
 
+                                                </div>
 
                                                 {{!-- quizzes policy --}}
                                                 <div>
@@ -236,22 +260,21 @@
                                         <div class="row">
                                             <div class="col-12">
                                                 <!--- Logo  -->
-                                                <div class="form-group">
-                                                    <label for="logo">Logo <small>(<b>Size=</b> 1:1)</small></label>
-                                                    <div class="input-group">
-                                                        <input type="file" name="logo" accept="image/*"
-                                                            id="exampleInputFile">
+                                                <div class="form-group row align-items-center">
+                                                    <div class="col-xl-6">
+                                                        <label for="logo">Logo <small>(<b>Size=</b> 1:1)</small></label>
+                                                        <div class="input-group">
+                                                            <input type="file" name="logo" accept="image/*"
+                                                                id="exampleInputFile">
+                                                        </div>
                                                     </div>
                                                     {{#if setting}}
-                                                    <p class="mb-0 mt-2">
-                                                        <b>
-                                                            <a href="{{setting.logoPath}}" class="font-weight-normal"
-                                                                target="_blank">Current
-                                                                Uploaded logo
-                                                                <i class="fa-solid fa-image mr-1"></i>
-                                                            </a>
-                                                        </b>
-                                                    </p>
+                                                    <div class="col-xl-6">
+                                                        <p class="mb-0 mt-2 d-flex flex-column align-items-center">
+                                                            <img src="{{setting.logoPath}}" alt="logo" width="100px">
+                                                            <b>Current Uploaded logo</b>
+                                                        </p>
+                                                    </div>
                                                     {{/if}}
                                                 </div>
                                                 <!--- College name  -->
