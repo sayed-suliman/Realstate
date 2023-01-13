@@ -507,8 +507,9 @@ var viewCourse = async (req, res) => {
           })
         );
       }
+    }else{
+      res.redirect("/dashboard?msg="+encodeMsg('Course not found.','danger'));
     }
-    res.redirect("/dashboard");
   } catch (err) {
     console.log(err.message);
     if (err.message.includes("ObjectId failed")) {
