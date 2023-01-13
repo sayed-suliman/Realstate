@@ -185,10 +185,7 @@ const updateChapter = async (req, res) => {
 const viewChapter = async (req, res) => {
   try {
     const courseId = req.params.courseId;
-    const course = await CourseModel.findById(courseId)
-      .populate("chapters")
-      .populate("quizzes")
-      .lean();
+    const course = await CourseModel.findById(courseId);
     if (course) {
       await req.user.populate("package");
       let userPackage = req.user.package;
@@ -207,6 +204,9 @@ const viewChapter = async (req, res) => {
         userPackage.courses.includes(course._id) &&
         course.chapters.includes(chapter._id)
       ) {
+        await course.populate("chapters");
+        await course.populate("quizzes");
+        console.log(course);
         const courseMeta = await UserMeta.findOne({
           user_id: req.user._id,
           course: courseId,

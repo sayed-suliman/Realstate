@@ -177,7 +177,9 @@ const viewQuiz = async (req, res) => {
         userPackage.courses.includes(course._id) &&
         course.quizzes.includes(quiz._id)
       ) {
-        course = await course.populate("chapters").populate("quizzes").exec();
+        await course.populate("chapters");
+        await course.populate("quizzes");
+        console.log(course);
         const setting = await Setting.findOne();
         const takenQuiz = await Result.findOne({
           quiz: quiz._id,
@@ -359,8 +361,9 @@ const viewQuiz = async (req, res) => {
           "/dashboard?msg=" + encodeMsg("Unauthorized Access", "danger")
         );
       }
+    } else {
+      res.redirect("/dashboard?msg=" + encodeMsg("Quiz not found.", "danger"));
     }
-    res.redirect("/dashboard?msg=" + encodeMsg("Quiz not found.", "danger"));
   } catch (error) {
     res.redirect("/dashboard?msg=" + encodeMsg(error.message, "danger"));
   }
