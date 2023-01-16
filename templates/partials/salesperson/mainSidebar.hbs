@@ -1,0 +1,6 @@
+{{#ifEquals user.role "admin"}}
+{{>salesperson/adminNav}}
+{{/ifEquals}}
+{{#ifEquals user.role "student"}}
+{{>salesperson/stdOrRegNav}}
+{{/ifEquals}}

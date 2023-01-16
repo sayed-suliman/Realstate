@@ -30,12 +30,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Dashboard</h1>
+                            <h1 class="m-0">Quiz</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
-                                <li class="breadcrumb-item active">Dashboard</li>
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Quiz</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -48,28 +48,51 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Select Quiz by Category</h3>
+                            <h3 class="card-title">{{#if result}}Test & Exam Result{{else}}Select Quiz by
+                                Category{{/if}}</h3>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-bordered">
+                                {{#if result}}
+                                <tbody>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">100% <a href="#">Retake</a></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                </tbody>
+                                {{else}}
                                 <tbody>
                                     <tr>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
+                                    </tr>
+                                    <tr>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
                                     </tr>
                                     <tr>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
+                                    </tr>
+                                    <tr>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
                                     </tr>
                                     <tr>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
                                     </tr>
                                     <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
                                         <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
                                     </tr>
                                 </tbody>
+                                {{/if}}
                             </table>
                         </div>
 

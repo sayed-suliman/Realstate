@@ -249,10 +249,31 @@ module.exports = {
         lastYearAllAmounts,
       });
     } catch (error) {
-      console.log(error.message);
       res.redirect(
         url.format({
           pathname: "/dashboard",
+          query: {
+            msg: encodeMsg(error.message, "danger"),
+          },
+        })
+      );
+    }
+  },
+  async salesPersonDashboard(req, res) {
+    try {
+      var msgToken = req.query.msg;
+      var msg = {};
+      if (msgToken) {
+        msg = decodeMsg(msgToken);
+      }
+      res.render("dashboard/examples/salesperson/dashboard", {
+        title: "Salesperson",
+        toast: Object.keys(msg).length == 0 ? undefined : msg,
+      });
+    } catch (error) {
+      res.redirect(
+        url.format({
+          pathname: "/dashboard/salesperson",
           query: {
             msg: encodeMsg(error.message, "danger"),
           },

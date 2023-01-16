@@ -17,6 +17,9 @@
         <!-- /.navbar -->
 
         <!-- Main Sidebar Container -->
+        {{!--
+        <!-- salesperson variable is used for the salesperson content -->
+        --}}
         {{>dashboardMainSidebar salesperson=true}}
 
         <!-- toast(alert)-->
@@ -34,7 +37,7 @@
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
-                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
                                 <li class="breadcrumb-item active">Dashboard</li>
                             </ol>
                         </div><!-- /.col -->
@@ -48,7 +51,7 @@
                 <div class="container-fluid">
                     <div class="row">
                         <div class="col-lg-3 col-6">
-                            <a href="#">
+                            <a href="salesperson/tests">
                                 <div class="small-box bg-info" style="height: 150px;">
                                     <div class="inner">
                                         <h4>Tests</h4>
@@ -60,7 +63,7 @@
                             </a>
                         </div>
                         <div class="col-lg-3 col-6">
-                            <a href="test-by-category">
+                            <a href="salesperson/test-by-category">
                                 <div class="small-box bg-warning" style="height: 150px;">
                                     <div class="inner">
                                         <h4>Quiz By Category</h4>
@@ -72,7 +75,7 @@
                             </a>
                         </div>
                         <div class="col-lg-3 col-6">
-                            <a href="#">
+                            <a href="salesperson/tests-result">
                                 <div class="small-box bg-danger" style="height: 150px;">
                                     <div class="inner">
                                         <h4>Test Result</h4>
@@ -84,7 +87,7 @@
                             </a>
                         </div>
                         <div class="col-lg-3 col-6">
-                            <a href="#">
+                            <a href="salesperson/exam">
                                 <div class="small-box bg-success" style="height: 150px;">
                                     <div class="inner">
                                         <h4>State Exam Replica</h4>

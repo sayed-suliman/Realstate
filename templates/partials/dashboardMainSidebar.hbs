@@ -26,11 +26,11 @@
     <!-- SidebarSearch Form -->
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column {{#if salesperson}}nav-child-indent{{/if}}" data-widget="treeview"
-        role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column {{#if salesperson}}nav-child-indent{{/if}}"
+        data-widget="treeview" role="menu" data-accordion="false">
         <!-- dashboard -->
         <li class="nav-item">
-          <a href="/dashboard" id='dashboard-link' class="nav-link">
+          <a href="/dashboard{{#if salesperson}}/salesperson{{/if}}" id='dashboard-link' class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Dashboard
@@ -38,74 +38,13 @@
           </a>
         </li>
         {{#if salesperson}}
+        {{>salesperson/mainSidebar}}
         <li class="nav-item">
-          <a href="#" id="package-link" class="nav-link">
-            <i class="nav-icon fas fa-broom-ball"></i>
-            <p>
-              Quiz
-              <i class="fas fa-angle-left right"></i>
-            </p>
+          <a href="/dashboard/" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-id-card-clip nav-icon"></i>
+            <p>Real Estate</p>
           </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" id="package-add-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>By Category</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" id="package-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Result</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" id="package-link" class="nav-link">
-            <i class="nav-icon fa fa-clipboard"></i>
-            <p>
-              Tests
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" id="package-add-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>All</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" id="package-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Result</p>
-              </a>
-            </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a href="#" id="package-link" class="nav-link">
-            <i class="nav-icon fa fa-graduation-cap"></i>
-            <p>
-              Exam
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
-            <li class="nav-item">
-              <a href="#" id="package-add-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>State Exam Replica</p>
-              </a>
-            </li>
-            <li class="nav-item">
-              <a href="#" id="package-detail-link" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Result</p>
-              </a>
-            </li>
-          </ul>
         </li>
         {{else}}
         {{!-- for student --}}
@@ -230,6 +169,14 @@
               </a>
             </li>
           </ul>
+        </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sort-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
         </li>
         {{!-- sort --}}
         <li class="nav-item">

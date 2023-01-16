@@ -41,10 +41,8 @@ const addChapter = async (req, res) => {
       toast: Object.keys(option).length == 0 ? undefined : option,
     });
   } catch (e) {
-    res.status(501).json({
-      status: 501,
-      error: e.message,
-    });
+    var msg = encodeMsg(e.message);
+    return res.redirect("/dashboard?msg=" + msg);
   }
 };
 // add Chapter post

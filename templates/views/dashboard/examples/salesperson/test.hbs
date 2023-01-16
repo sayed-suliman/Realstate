@@ -1,0 +1,171 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini dark-mode">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{!--
+        <!-- salesperson variable is used for the salesperson content -->
+        --}}
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Test</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Test</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    {{#if result}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Test & Exam Result</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">100% <a
+                                                    href="#">Retake</a></span></td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                    <tr>
+                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="row col-md-6 mx-auto">
+                        <div class="col-md-6">
+                            <a href="#">
+                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
+                                    style="height: 150px;">
+                                    <div class="inner">
+                                        <h4>Tests 1</h4>
+                                    </div>
+                                </div>
+                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
+                                    style="top: 5px;right:15px;">Not Completed
+                                </p>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#">
+                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
+                                    style="height: 150px;">
+                                    <div class="inner">
+                                        <h4>Tests 2</h4>
+                                    </div>
+                                </div>
+                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
+                                    style="top: 5px;right:15px;">Not Completed
+                                </p>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#">
+                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
+                                    style="height: 150px;">
+                                    <div class="inner">
+                                        <h4>Tests 3</h4>
+                                    </div>
+                                </div>
+                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
+                                    style="top: 5px;right:15px;">Not Completed
+                                </p>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#">
+                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
+                                    style="height: 150px;">
+                                    <div class="inner">
+                                        <h4>Tests 4</h4>
+                                    </div>
+                                </div>
+                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
+                                    style="top: 5px;right:15px;">Not Completed
+                                </p>
+                            </a>
+                        </div>
+                        <div class="col-md-6">
+                            <a href="#">
+                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
+                                    style="height: 150px;">
+                                    <div class="inner">
+                                        <h4>Tests 5</h4>
+                                    </div>
+                                </div>
+                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
+                                    style="top: 5px;right:15px;">Not Completed
+                                </p>
+                            </a>
+                        </div>
+                        <p>If you're up for the challenge, take the California Real Estate License Exam Replica <a
+                                href="#">here</a>!</p>
+                    </div>
+                    {{/if}}
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+</body>
+
+</html>

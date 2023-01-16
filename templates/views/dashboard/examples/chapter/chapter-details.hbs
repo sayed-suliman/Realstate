@@ -1,4 +1,5 @@
 {{>dashboardheader}}
+
 <body class="hold-transition sidebar-mini">
 
     <!-- Site wrapper -->
@@ -40,9 +41,6 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                {{!-- <div class="card-header">
-                                    <h3 class="card-title">DataTable with minimal features & hover style</h3>
-                                </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <table id="chapterTable" class="table table-bordered table-hover">
@@ -68,33 +66,19 @@
                                                         {{this.fileName}}
                                                     </a>
                                                 </td>
-                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                {{#ifEquals ../user.role "regulator" }}<td class="d-none">{{else}}
+                                                <td>
                                                     <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    {{!-- <a
-                                                        href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </a> --}}
                                                 </td>
+                                                {{/ifEquals}}
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                        {{!-- <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot> --}}
                                     </table>
                                 </div>
                                 <!-- /.card-body -->

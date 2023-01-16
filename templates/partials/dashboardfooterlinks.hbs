@@ -11,7 +11,8 @@
 <script src="/dashboard/dist/js/demo.js"></script>
 
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-{{!-- <script src="/dashboard/dist/js/pages/dashboard3.js"></script> --}}
+{{!--
+<script src="/dashboard/dist/js/pages/dashboard3.js"></script> --}}
 
 <script>
     $(document).ready(function () {
@@ -98,7 +99,7 @@
             $('#course-link').addClass("active")
             $("#course-add-link").addClass("active")
         }
-         //course-detail
+        //course-detail
         if (url.includes("course-detail")) {
             $("#dashboard-link").removeClass("active")
             $('#course-link').addClass("active")
@@ -110,7 +111,7 @@
             $('#chapter-link').addClass("active")
             $("#chapter-add-link").addClass("active")
         }
-         //chapter-detail
+        //chapter-detail
         if (url.includes("chapter-detail")) {
             $("#dashboard-link").removeClass("active")
             $('#chapter-link').addClass("active")
@@ -122,32 +123,32 @@
             $('#quiz-link').addClass("active")
             $("#quiz-add-link").addClass("active")
         }
-         //quiz-detail
+        //quiz-detail
         if (url.includes("quiz-detail")) {
             $("#dashboard-link").removeClass("active")
             $('#quiz-link').addClass("active")
             $("#quiz-detail-link").addClass("active")
         }
         //add-voucher
-         if (url.includes("add-coupon")) {
+        if (url.includes("add-coupon")) {
             $("#dashboard-link").removeClass("active")
             $('#voucher-link').addClass("active")
             $("#voucher-add-link").addClass("active")
         }
-         //voucher-detail
+        //voucher-detail
         if (url.includes("coupon-detail")) {
             $("#dashboard-link").removeClass("active")
             $('#voucher-link').addClass("active")
             $("#voucher-detail-link").addClass("active")
         }
         //add users
-         if (url.includes("add-user")) {
+        if (url.includes("add-user")) {
             $("#dashboard-link").removeClass("active")
             $('#users-link').addClass("active")
             $("#users-add-link").addClass("active")
         }
-         // user-edit
-         if (url.includes("user-edit")) {
+        // user-edit
+        if (url.includes("user-edit")) {
             $("#dashboard-link").removeClass("active")
             $('#users-link').addClass("active")
             $("#users-all-link").addClass("active")
@@ -160,13 +161,13 @@
         //sort
         if (url.includes("sort")) {
             $("#dashboard-link").removeClass("active")
-           // $('#page-link').addClass("active")
+            // $('#page-link').addClass("active")
             $("#sort-link").addClass("active")
         }
         //contact-us
         if (url.includes("contact-us")) {
             $("#dashboard-link").removeClass("active")
-           // $('#page-link').addClass("active")
+            // $('#page-link').addClass("active")
             $("#contact-us-link").addClass("active")
             $("#contact-link").removeClass("active")
         }
@@ -192,25 +193,76 @@
             $('#setting-link').addClass("active")
         }
 
-        $(".nav-item").click(function(){
-            if($(this).attr("class").includes('menu-is-opening menu-open')){
-                $(this).attr("class","nav-item")
+        //salesperson -- category
+        if (url.includes("add-category")) {
+            $("#dashboard-link").removeClass("active")
+            $('#category').addClass("active")
+            $('#category-add').addClass("active")
+        }
+        //salesperson -- category
+        if (url.includes("all-category")) {
+            $("#dashboard-link").removeClass("active")
+            $('#category').addClass("active")
+            $('#category-detail').addClass("active")
+        }
+        //salesperson -- quiz-result
+        if (url.includes("result-by-category")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz').addClass("active")
+            $('#quiz-result').addClass("active")
+        }
+        //salesperson -- quiz-category
+        if (url.includes("test-by-category")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz').addClass("active")
+            $('#quiz-category').addClass("active")
+        }
+        //salesperson -- test
+        if (url.includes("tests")) {
+            $("#dashboard-link").removeClass("active")
+            $('#tests').addClass("active")
+            $('#tests-all').addClass("active")
+        }
+        //salesperson -- test-result
+        if (url.includes("tests-result")) {
+            $("#dashboard-link").removeClass("active")
+            $('#tests').addClass("active")
+            $('#tests-result').addClass("active")
+            $('#tests-all').removeClass("active")
+        }
+        //salesperson -- exam
+        if (url.includes("exam")) {
+            $("#dashboard-link").removeClass("active")
+            $('#exam').addClass("active")
+            $('#exam-replica').addClass("active")
+        }
+        //salesperson -- exam-result
+        if (url.includes("exam-result")) {
+            $("#dashboard-link").removeClass("active")
+            $('#exam').addClass("active")
+            $('#exam-result').addClass("active")
+            $('#exam-replica').removeClass("active")
+        }
+
+        $(".nav-item").click(function () {
+            if ($(this).attr("class").includes('menu-is-opening menu-open')) {
+                $(this).attr("class", "nav-item")
             }
         })
-    
+
     })
-    
+
     //showing alert(toast)
-    {{#if toast }}
+    {{#if toast}}
     $('.toast').toast('show')
-    setTimeout(()=>{
-    $('.toast').toast('dispose')
-    },5000)
+    setTimeout(() => {
+        $('.toast').toast('dispose')
+    }, 5000)
     {{/if}}
-    {{#if toast_error }}
+    {{#if toast_error}}
     $('.toast').toast('show')
-    setTimeout(()=>{
-    $('.toast').toast('dispose')
-    },5000)
+    setTimeout(() => {
+        $('.toast').toast('dispose')
+    }, 5000)
     {{/if}}
 </script>
