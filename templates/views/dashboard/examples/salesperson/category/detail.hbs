@@ -65,7 +65,8 @@
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            {{#each category}}
+                                            {{#if categories}}
+                                            {{#each categories}}
                                             <tr>
                                                 <td>{{increment @index}}</td>
                                                 <td>{{this.name}}</td>
@@ -81,6 +82,11 @@
                                                 {{/ifEquals}}
                                             </tr>
                                             {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="3">Sorry! No data found.</td>
+                                            </tr>
+                                            {{/if}}
                                         </tbody>
                                     </table>
                                 </div>

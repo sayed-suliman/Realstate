@@ -63,15 +63,18 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
+                                    {{#if category}}
+                                    <input type="hidden" name="id" value="{{category._id}}">
+                                    {{/if}}
                                     <div class="form-group">
                                         <label for="inputName">Category Name</label>
-                                        <input type="text" id="inputName" value="{{edit.name}}" required name="name"
+                                        <input type="text" id="inputName" value="{{category.name}}" required name="name"
                                             class="form-control">
                                     </div>
                                 </div>
                                 <div class="card-footer">
                                     <button type="reset" class="btn btn-secondary">Cancel</button>
-                                    <button type="submit" class="btn btn-success float-right">{{#if edit}}Update
+                                    <button type="submit" class="btn btn-success float-right">{{#if category}}Update
                                         {{else}}Create new
                                         {{/if}}Category</button>
                                 </div>

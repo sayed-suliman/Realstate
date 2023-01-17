@@ -1,12 +1,11 @@
 $(document).ready(function () {
-    const questionsParentDev = $("#questions")
-    $("#addNextQuiz").click(function () {
-        let questionNumber = (($(".question-no").length) + (1))
-        console.log(questionNumber)
-        const divElement = document.createElement("div")
-        divElement.className = `question-no`
-        allQuestions = $(".question-no").length
-        divElement.innerHTML = `
+  const questionsParentDev = $("#questions");
+  $("#addNextQuiz").click(function () {
+    let questionNumber = $(".question-no").length + 1;
+    const divElement = document.createElement("div");
+    divElement.className = `question-no`;
+    allQuestions = $(".question-no").length;
+    divElement.innerHTML = `
         <div class="form-group">
         <label for="question-${questionNumber}" class="w-100">
             Question ${questionNumber}
@@ -69,28 +68,27 @@ $(document).ready(function () {
 
             </div>
         </div>
-        `
-        questionsParentDev.append(divElement)
-        $(".cross").click(function (event) {
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-            if (!($($(this).parents()[2]).next()[0])) {
-                $(this).parents()[2].remove()
-            } else {
-                alert("Remove the last question plz")
-                return
-            }
-        })
-    })
+        `;
+    questionsParentDev.append(divElement);
     $(".cross").click(function (event) {
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-        if (!($($(this).parents()[2]).next()[0])) {
-            $(this).parents()[2].remove()
-        } else {
-            alert("Remove the last question plz")
-            return
-        }
-    })
-    
-})
+      event.stopPropagation();
+      event.stopImmediatePropagation();
+      if (!$($(this).parents()[2]).next()[0]) {
+        $(this).parents()[2].remove();
+      } else {
+        alert("Remove the last question plz");
+        return;
+      }
+    });
+  });
+  $(".cross").click(function (event) {
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    if (!$($(this).parents()[2]).next()[0]) {
+      $(this).parents()[2].remove();
+    } else {
+      alert("Remove the last question plz");
+      return;
+    }
+  });
+});

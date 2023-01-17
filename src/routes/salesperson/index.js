@@ -1,18 +1,19 @@
 const express = require("express");
 const { salesPersonDashboard } = require("../../controllers/dashboard");
 const category = require("../../controllers/salesperson/category");
+const quiz = require("../../controllers/salesperson/quiz");
 const router = express.Router();
 
 router.get("/", salesPersonDashboard);
 
 // quiz
 router.get("/test-by-category", (req, res) => {
-  res.render("dashboard/examples/salesperson/quiz", {
+  res.render("dashboard/examples/salesperson/quiz/quiz", {
     title: "Quiz",
   });
 });
 router.get("/result-by-category", (req, res) => {
-  res.render("dashboard/examples/salesperson/quiz", {
+  res.render("dashboard/examples/salesperson/quiz/quiz", {
     result: true,
     title: "Quiz",
   });
@@ -20,10 +21,10 @@ router.get("/result-by-category", (req, res) => {
 
 // test
 router.get("/tests", (req, res) => {
-  res.render("dashboard/examples/salesperson/test", { title: "Test" });
+  res.render("dashboard/examples/salesperson/tests/test", { title: "Test" });
 });
 router.get("/tests-result", (req, res) => {
-  res.render("dashboard/examples/salesperson/test", {
+  res.render("dashboard/examples/salesperson/tests/test", {
     result: true,
     title: "Test",
   });
@@ -31,10 +32,10 @@ router.get("/tests-result", (req, res) => {
 
 // exam
 router.get("/exam", (req, res) => {
-  res.render("dashboard/examples/salesperson/exam", { title: "Exam" });
+  res.render("dashboard/examples/salesperson/exam/exam", { title: "Exam" });
 });
 router.get("/exam-result", (req, res) => {
-  res.render("dashboard/examples/salesperson/exam", {
+  res.render("dashboard/examples/salesperson/exam/exam", {
     title: "Exam",
     result: true,
   });
@@ -44,8 +45,15 @@ router.get("/exam-result", (req, res) => {
 // Admin
 // ********************************
 
-router.get("/all-category", category.all);
+// Category
+router.get("/all-categories", category.all);
 router.get("/add-category", category.add);
 router.get("/edit-category", category.edit);
 router.post("/add-category", category.post);
+
+// Quiz
+router.get("/all-quizzes", quiz.all);
+router.get("/add-quiz", quiz.add);
+router.post("/add-quiz", quiz.post);
+
 module.exports = router;

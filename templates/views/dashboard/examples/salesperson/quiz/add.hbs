@@ -1,0 +1,320 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini dark-mode">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{!--
+        <!-- salesperson variable is used for the salesperson content -->
+        --}}
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Quiz</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <section class="content">
+                <form action="add-quiz" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">General</h3>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {{!-- select quiz or term --}}
+                                    <div class="form-group">
+                                        <label for="inputName">Quiz Name</label>
+                                        <input type="text" required id="inputName" name="name" class="form-control">
+                                    </div>
+                                    {{!-- <div class="form-group">
+                                        <label for="inputStatus">Select Quiz/Term</label>
+                                        <select id="inputStatus" required name="type"
+                                            class="form-control custom-select">
+                                            <option selected disabled value="">Select one</option>
+                                            <option value="quiz">Quiz</option>
+                                            <option value="mid">Mid</option>
+                                            <option value="final">Final</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="inputStatus">Select Course</label>
+                                        <select id="inputStatus" required name="course"
+                                            class="form-control custom-select">
+                                            <option selected disabled value="">Select one</option>
+                                            {{#each courses}}
+                                            <option value="{{this.name}}">{{this.name}}</option>
+                                            {{/each}}
+                                            <option value="term">Term</option>
+                                        </select>
+                                    </div> --}}
+                                    <div id="questions">
+                                        <div class="question-no">
+                                            <div class="form-group">
+                                                <label for="question-1">
+                                                    Question 1
+                                                </label>
+                                                <input type="text" required id="question-1" name="question-1"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="assignCategory">
+                                                    Assign Category
+                                                </label>
+                                                {{#each categories}}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input custom-control-input-success"
+                                                        value="{{this._id}}" type="checkbox" name="assignCategory-1"
+                                                        id="{{this.name}}">
+                                                    <label for="{{this.name}}"
+                                                        class="custom-control-label text-capitalize">{{this.name}}</label>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="opt1-q-1">
+                                                    Answers
+                                                </label>
+                                                <div class="quiz">
+                                                    <div class="d-flex">
+                                                        <div class="options">
+                                                            <label for="opt1-q-1" class="col-form-label">1</label>
+                                                            <input id="opt1-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" required value="0" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op1">
+                                                            <label for="q-1-op1" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex my-2">
+                                                        <div class="options">
+                                                            <label for="opt2-q-1" class="col-form-label">2</label>
+                                                            <input id="opt2-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="1" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op2">
+                                                            <label for="q-1-op2" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <div class="options">
+                                                            <label for="opt3-q-1" class="col-form-label">3</label>
+                                                            <input id="opt3-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="2" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op3">
+                                                            <label for="q-1-op3" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex my-2">
+                                                        <div class="options">
+                                                            <label for="opt4-q-1" class="col-form-label">4</label>
+                                                            <input id="opt4-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="3" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op4">
+                                                            <label for="q-1-op4" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="card-footer">
+                                    <button type="button" id="addNextQuiz" class="btn btn-success float-right">Add
+                                        Next</button>
+                                </div>
+                            </div>
+                            <!-- /.card -->
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="reset" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-success float-right">Add Quiz</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+    <script>
+        $(document).ready(function () {
+            const questionsParentDev = $("#questions");
+            $("#addNextQuiz").click(function () {
+                let questionNumber = $(".question-no").length + 1;
+                const divElement = document.createElement("div");
+                divElement.className = `question-no`;
+                allQuestions = $(".question-no").length;
+                divElement.innerHTML = `
+        <div class="form-group">
+        <label for="question-${questionNumber}" class="w-100">
+            Question ${questionNumber}
+            <button type="button" class="btn p-0 float-right cross">x</button>
+        </label>
+        <input type="text" required id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
+        </div>
+         <div class="form-group">
+            <label for="assignCategory">
+                Assign Category
+            </label>
+            {{#each categories}}
+            <div class="custom-control custom-checkbox">
+                <input class="custom-control-input custom-control-input-success"
+                    value="{{{this._id}}}" type="checkbox" name="assignCategory-${questionNumber}"
+                    id="{{{this.name}}}-${questionNumber}">
+                <label for="{{{this.name}}}-${questionNumber}"
+                    class="custom-control-label text-capitalize">{{{this.name}}}</label>
+            </div>
+            {{/each}}
+        </div>
+        <div class="form-group">
+            <div class="quiz">
+                <div class="d-flex">
+                    <div class="options">
+                        <label for="opt1-q-${questionNumber}" class="col-form-label">1</label>
+                        <input id="opt1-q-${questionNumber}" type="text" required class="form-control d-inline-block" name="question-${questionNumber}-opt">
+                    </div>
+                    <div class="d-flex  align-items-center">
+                        <input type="radio" required value="0" class="checkBox" name="question-${questionNumber}-ans"
+                        id="q-${questionNumber}-op1">
+                        <label for="q-${questionNumber}-op1" class="m-0 ml-1">Correct Answer</label>
+                    </div>
+                </div>
+                <div class="d-flex my-2">
+                    <div class="options">
+                        <label for="opt2-q-${questionNumber}" class="col-form-label">2</label>
+                        <input id="opt2-q-${questionNumber}" type="text" required class="form-control d-inline-block"
+                        name="question-${questionNumber}-opt">
+                    </div>
+                    <div class="d-flex  align-items-center">
+                        <input type="radio" value="1" class="checkBox" name="question-${questionNumber}-ans"
+                            id="q-${questionNumber}-op2">
+                        <label for="q-${questionNumber}-op2" class="m-0 ml-1">Correct Answer</label>
+                    </div>
+                </div>
+                <div class="d-flex">
+                     <div class="options">
+                         <label for="opt3-q-${questionNumber}" class="col-form-label">3</label>
+                         <input id="opt3-q-${questionNumber}" type="text" required class="form-control d-inline-block"
+                               name="question-${questionNumber}-opt">
+                    </div>
+                    <div class="d-flex  align-items-center">
+                         <input type="radio" value="2" class="checkBox" name="question-${questionNumber}-ans"
+                            id="q-${questionNumber}-op3">
+                        <label for="q-${questionNumber}-op3" class="m-0 ml-1">Correct Answer</label>
+                    </div>
+                </div>
+                <div class="d-flex my-2">
+                    <div class="options">
+                        <label for="opt4-q-${questionNumber}" class="col-form-label">4</label>
+                        <input id="opt4-q-${questionNumber}" type="text" required class="form-control d-inline-block" 
+                        name="question-${questionNumber}-opt">
+                    </div>
+                    <div class="d-flex  align-items-center">
+                        <input type="radio" value="3" class="checkBox" name="question-${questionNumber}-ans"
+                            id="q-${questionNumber}-op4">
+                        <label for="q-${questionNumber}-op4" class="m-0 ml-1">Correct Answer</label>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+        `;
+                questionsParentDev.append(divElement);
+                $(".cross").click(function (event) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                    if (!$($(this).parents()[2]).next()[0]) {
+                        $(this).parents()[2].remove();
+                    } else {
+                        alert("Remove the last question plz");
+                        return;
+                    }
+                });
+            });
+            $(".cross").click(function (event) {
+                event.stopPropagation();
+                event.stopImmediatePropagation();
+                if (!$($(this).parents()[2]).next()[0]) {
+                    $(this).parents()[2].remove();
+                } else {
+                    alert("Remove the last question plz");
+                    return;
+                }
+            });
+        });
+
+    </script>
+</body>
+
+</html>

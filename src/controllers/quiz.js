@@ -79,10 +79,7 @@ const postQuiz = async (req, res) => {
       res.redirect("/dashboard/add-quiz?msg=" + msg);
     }
   } catch (e) {
-    res.json(404).json({
-      msg: e.message,
-      status: 404,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -99,9 +96,7 @@ const editQuiz = async (req, res) => {
       title: "Dashboard | Edit Quiz",
     });
   } catch (e) {
-    res.render("500", {
-      err: e.message,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -156,9 +151,7 @@ const updateQuiz = async (req, res) => {
     var msg = encodeMsg("Quiz Updated Successfully!");
     res.redirect("/dashboard/quiz-detail?msg=" + msg);
   } catch (e) {
-    res.render("404", {
-      err: e.message,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -483,7 +476,7 @@ const takeQuiz = async (req, res) => {
 
     res.send(sendObj);
   } catch (error) {
-    res.send({ error: error.message });
+    res.redirect("/dashboard?msg=" + encodeMsg(error.message, "danger"));
   }
 };
 
