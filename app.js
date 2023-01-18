@@ -212,6 +212,11 @@ hbs.registerHelper("returnChecked", (arg1, arg2) => {
     return "checked";
   }
 });
+hbs.registerHelper("returnCheckedArray", (arg1, arg2) => {
+  if (arg2.includes(arg1)) {
+    return "checked";
+  }
+});
 
 // check if available then return the body
 hbs.registerHelper("checkError", (arg, option) => {

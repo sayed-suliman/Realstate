@@ -55,5 +55,7 @@ router.post("/add-category", category.post);
 router.get("/all-quizzes", quiz.all);
 router.get("/add-quiz", quiz.add);
 router.post("/add-quiz", quiz.post);
+router.get("/edit-quiz", quiz.edit);
+router.post("/edit-quiz", quiz.editPost);
 
 module.exports = router;

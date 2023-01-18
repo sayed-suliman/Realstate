@@ -2,8 +2,11 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema(
   {
     title: String,
-    order: Number,
-    questions: Array,
+    order: {
+      type: Number,
+      default: 0,
+    },
+    questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sp_question" }],
   },
   {
     timestamps: true,

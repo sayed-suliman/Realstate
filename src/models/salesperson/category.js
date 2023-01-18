@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema(
   {
     name: String,
-    question: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sp_question" }],
+    questions: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sp_question" }],
   },
   {
     timestamps: true,
