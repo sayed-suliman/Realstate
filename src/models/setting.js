@@ -24,6 +24,14 @@ const Setting = mongoose.model(
     unlockCourse: Boolean,
     finalDay: Number,
     finalTime: Number,
+    finalTakeTime: {
+      type: Number,
+      default: 60,
+    },
+    midTakeTime: {
+      type: Number,
+      default: 30,
+    },
   })
 );
 

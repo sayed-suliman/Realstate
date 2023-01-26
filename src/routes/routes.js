@@ -75,6 +75,7 @@ const {
 const {
   sendVerificationCode,
   welcomeEmail,
+  sendAgreement,
 } = require("../controllers/mailServices");
 const {
   getCoupon,
@@ -125,15 +126,18 @@ router.get("/email", (req, res) => {
     siteName: process.env.SITE_NAME,
     siteURL: "https://members.realestateinstruct.com",
   };
-  welcomeEmail("sulimank418@gmail.com", testUser);
-  res.render("mail/welcome", {
+  // welcomeEmail("sulimank418@gmail.com", testUser);
+  sendAgreement('sulimank418@gmail.com','Suliman Khan')
+  res.render("mail/otp", {
     username: "Suliman Khan",
     orderDate: "24 Dec 2022",
     packageName: "Basic",
     packageCourses: ["Course 1", "Course 2", "Course 3"],
     totalPrice: "200",
-    siteName: "Real estate Instruct",
-    siteURL: "#",
+    site_name: "Real estate Instruct",
+    url: "#",
+    code: 123,
+    agree: true,
   });
 });
 // default route

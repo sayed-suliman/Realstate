@@ -6,6 +6,7 @@ const url = require("url");
 const UserMeta = require("../models/user-meta");
 const Setting = require("../models/setting");
 const fs = require("fs");
+const { sendAgreement } = require("./mailServices");
 
 const course = async (req, res) => {
   try {
@@ -352,143 +353,163 @@ var viewCourse = async (req, res) => {
       .populate("quizzes")
       .lean();
     if (course) {
-      const courseMeta = await UserMeta.findOne({
-        user_id: req.user._id,
-        course: ID,
-      });
-      if (req.query.agree) {
-        if (!courseMeta) {
-          await UserMeta({
-            user_id: req.user._id,
-            course: ID,
-            meta_key: "Course Start Agreement",
-            meta_value: "Accepted",
-          }).save();
-        }
-      }
-      for await (let [index, quiz] of course.quizzes.entries()) {
-        const takenQuiz = await Result.findOne({
-          user: req.user._id,
-          quiz: quiz._id,
+      await req.user.populate("package");
+      let userPackage = req.user.package;
+      // authorized to purchase package courses
+      if (userPackage.courses.includes(course._id)) {
+        const courseMeta = await UserMeta.findOne({
+          user_id: req.user._id,
+          course: ID,
         });
-        if (takenQuiz) {
-          Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
-          Object.assign(course.quizzes[index], { unlock: true });
+        if (req.query.agree) {
+          if (!courseMeta) {
+            await UserMeta({
+              user_id: req.user._id,
+              course: ID,
+              meta_key: "Course Start Agreement",
+              meta_value: "Accepted",
+            }).save();
+            sendAgreement(req.user.email, req.user.name);
+          }
         }
-      }
+        for await (let [index, quiz] of course.quizzes.entries()) {
+          const takenQuiz = await Result.findOne({
+            user: req.user._id,
+            quiz: quiz._id,
+          });
+          if (takenQuiz) {
+            Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
+            Object.assign(course.quizzes[index], { unlock: true });
+          }
+        }
 
-      for await (let [index, chapter] of course.chapters.entries()) {
-        const completedChapter = await UserMeta.findOne({
-          user_id: req.user._id.toString(),
-          chapter_id: chapter,
-          meta_key: "completed",
+        for await (let [index, chapter] of course.chapters.entries()) {
+          const completedChapter = await UserMeta.findOne({
+            user_id: req.user._id.toString(),
+            chapter_id: chapter,
+            meta_key: "completed",
+          });
+          if (completedChapter) {
+            Object.assign(course.chapters[index], { completed: true });
+            Object.assign(course.chapters[index], { unlock: true });
+          }
+        }
+
+        // sorting the chapter by name
+        const contents = [...course.quizzes, ...course.chapters];
+        contents.sort((a, b) => {
+          if (a.order < b.order) {
+            return -1;
+          }
+          if (a.order > b.order) {
+            return 1;
+          }
+          return 0;
         });
-        if (completedChapter) {
-          Object.assign(course.chapters[index], { completed: true });
-          Object.assign(course.chapters[index], { unlock: true });
-        }
-      }
+        const setting = await Setting.findOne();
+        // quiz policy when completed the the previous
+        if (setting.quizPolicy == "accessPassedPrevious") {
+          // unlocking the next content when the previous is completed
+          if (contents.length) {
+            for await (let [index] of contents.entries()) {
+              if (!contents[index].unlock) {
+                if (index == 0) continue;
+                if (typeof contents[index - 1].unlock != undefined) {
+                  if (contents[index - 1].type == "quiz") {
+                    if (contents[index - 1].grade == "failed") {
+                      break;
+                    }
+                  }
+                  if (contents[index - 1].unlock) {
+                    contents[index].unlock = true;
 
-      // sorting the chapter by name
-      const contents = [...course.quizzes, ...course.chapters];
-      contents.sort((a, b) => {
-        if (a.order < b.order) {
-          return -1;
-        }
-        if (a.order > b.order) {
-          return 1;
-        }
-        return 0;
-      });
-      const setting = await Setting.findOne();
-      // quiz policy when completed the the previous
-      if (setting.quizPolicy == "accessPassedPrevious") {
-        // unlocking the next content when the previous is completed
-        if (contents.length) {
-          for await (let [index] of contents.entries()) {
-            if (!contents[index].unlock) {
-              if (index == 0) continue;
-              if (typeof contents[index - 1].unlock != undefined) {
-                if (contents[index - 1].type == "quiz") {
-                  if (contents[index - 1].grade == "failed") {
+                    // lock system for final term when days are in database
+                    if (
+                      contents[index].type == "final" &&
+                      setting.finalDay != -1 &&
+                      courseMeta
+                    ) {
+                      // date of agreement
+                      let agreementDate = new Date(courseMeta.createdAt);
+
+                      // Day and Minute from database
+                      let unlockAfterDay = setting.finalDay;
+                      let unlockAfterTime = setting.finalTime;
+
+                      // adding day and minute to the agreement date
+                      let final = new Date(
+                        agreementDate.getFullYear(),
+                        agreementDate.getMonth(),
+                        agreementDate.getDate() + unlockAfterDay,
+                        agreementDate.getHours(),
+                        agreementDate.getMinutes() + unlockAfterTime
+                      );
+                      let now = new Date();
+                      let unlock = now > final;
+                      contents[index].unlock = unlock;
+                    }
                     break;
                   }
                 }
-                if (contents[index - 1].unlock) {
-                  contents[index].unlock = true;
-
-                  // lock system for final term when days are in database
-                  if (
-                    contents[index].type == "final" &&
-                    setting.finalDay != -1 &&
-                    courseMeta
-                  ) {
-                    // date of agreement
-                    let agreementDate = new Date(courseMeta.createdAt);
-
-                    // Day and Minute from database
-                    let unlockAfterDay = setting.finalDay;
-                    let unlockAfterTime = setting.finalTime;
-
-                    // adding day and minute to the agreement date
-                    let final = new Date(
-                      agreementDate.getFullYear(),
-                      agreementDate.getMonth(),
-                      agreementDate.getDate() + unlockAfterDay,
-                      agreementDate.getHours(),
-                      agreementDate.getMinutes() + unlockAfterTime
-                    );
-                    let now = new Date();
-                    let unlock = now > final;
-                    contents[index].unlock = unlock;
-                  }
-                  break;
-                }
               }
             }
+            // unlock the first content of the current chapter
+            Object.assign(contents[0], { unlock: true });
           }
-          // unlock the first content of the current chapter
-          Object.assign(contents[0], { unlock: true });
-        }
-      } else if (setting.quizPolicy == "accessAllTime") {
-        for await (let [index] of contents.entries()) {
-          if (!contents[index].unlock) {
-            contents[index].unlock = true;
-          }
-          // lock system for final term when days are in database
-          if (
-            setting.finalDay != -1 &&
-            contents[index].type == "final" &&
-            courseMeta
-          ) {
-            // date of agreement
-            let agreementDate = new Date(courseMeta.createdAt);
+        } else if (setting.quizPolicy == "accessAllTime") {
+          for await (let [index] of contents.entries()) {
+            if (!contents[index].unlock) {
+              contents[index].unlock = true;
+            }
+            // lock system for final term when days are in database
+            if (
+              setting.finalDay != -1 &&
+              contents[index].type == "final" &&
+              courseMeta
+            ) {
+              // date of agreement
+              let agreementDate = new Date(courseMeta.createdAt);
 
-            // Day and Minute from database
-            let unlockAfterDay = setting.finalDay;
-            let unlockAfterTime = setting.finalTime;
+              // Day and Minute from database
+              let unlockAfterDay = setting.finalDay;
+              let unlockAfterTime = setting.finalTime;
 
-            // adding day and minute to the agreement date
-            let final = new Date(
-              agreementDate.getFullYear(),
-              agreementDate.getMonth(),
-              agreementDate.getDate() + unlockAfterDay,
-              agreementDate.getHours(),
-              agreementDate.getMinutes() + unlockAfterTime
-            );
-            let now = new Date();
-            let unlock = now > final;
-            contents[index].unlock = unlock;
+              // adding day and minute to the agreement date
+              let final = new Date(
+                agreementDate.getFullYear(),
+                agreementDate.getMonth(),
+                agreementDate.getDate() + unlockAfterDay,
+                agreementDate.getHours(),
+                agreementDate.getMinutes() + unlockAfterTime
+              );
+              let now = new Date();
+              let unlock = now > final;
+              contents[index].unlock = unlock;
+            }
           }
         }
+        return res.render("dashboard/student/view-course", {
+          title: `Course | ${course.name}`,
+          course,
+          contents,
+          timeForExam: {
+            final: setting.finalTakeTime,
+            mid: setting.midTakeTime,
+          },
+        });
+      } else {
+        return res.redirect(
+          url.format({
+            pathname: "/dashboard",
+            query: {
+              msg: encodeMsg("Unauthorized Access", "danger"),
+            },
+          })
+        );
       }
-      return res.render("dashboard/student/view-course", {
-        title: `Course | ${course.name}`,
-        course,
-        contents,
-      });
+    }else{
+      res.redirect("/dashboard?msg="+encodeMsg('Course not found.','danger'));
     }
-    res.redirect("/dashboard");
   } catch (err) {
     console.log(err.message);
     if (err.message.includes("ObjectId failed")) {

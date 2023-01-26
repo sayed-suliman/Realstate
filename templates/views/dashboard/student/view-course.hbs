@@ -46,11 +46,20 @@
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
+
                                                         <i class="fa-regular fa-clock"></i>
                                                         {{/ifEquals}} {{this.name}}</a>
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
                                                     {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}} Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}} Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
                                                         Questions
                                                     </span>
@@ -87,6 +96,14 @@
                                                     {{/if}}
                                                     {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}} Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}} Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
                                                         Questions
                                                     </span>
