@@ -3,6 +3,7 @@ const Quiz = require("../../models/salesperson/quiz");
 const Question = require("../../models/salesperson/question");
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
 const _ = require("lodash");
+
 module.exports = {
   async all(req, res) {
     try {
@@ -19,19 +20,12 @@ module.exports = {
       });
     } catch (error) {
       return res.redirect(
-        "/dashboard/salesperson/all-quizzes?msg=" +
-          encodeMsg(error.message, "danger")
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
       );
     }
   },
   async edit(req, res) {
     try {
-      var msgToken = req.query.msg;
-      var msg = {};
-      if (msgToken) {
-        msg = decodeMsg(msgToken);
-      }
-
       let id = req.query.id;
       if (id) {
         const quiz = await Quiz.findById(id).populate("questions");
@@ -156,33 +150,69 @@ module.exports = {
           });
         }
         for await (let [index, newQuestion] of allQuestions.entries()) {
-          let oldQuestion = await Question.findById(newQuestion._id).lean();
-          questionsId.push(oldQuestion._id);
-          oldQuestion._id = oldQuestion._id.toString();
-          delete oldQuestion.createdAt;
-          delete oldQuestion.updatedAt;
-          delete oldQuestion.__v;
-          // check whether the question is updated or not
-          let same = _.isEqual(oldQuestion, newQuestion);
-          if (!same) {
-            // question is removed from the below categories
-            let CategoryId = _.difference(
+          let categories = [];
+          // if new question is added to the quiz
+          if (newQuestion._id == "undefined") {
+            delete newQuestion._id;
+            let question = await Question(newQuestion).save();
+            questionsId.push(question._id);
+          } else {
+            let oldQuestion = await Question.findById(newQuestion._id);
+
+            questionsId.push(oldQuestion._id);
+            oldQuestion.question = newQuestion.question;
+            oldQuestion.options = newQuestion.options;
+            oldQuestion.ans = newQuestion.ans;
+            // removing
+            // question is removed from these categories
+            let delFromCateId = _.difference(
               oldQuestion.category,
               newQuestion.category
             );
-            // updating the removed category i.e removing this question
-            for await (const [index, delCatID] of CategoryId.entries()) {
-              let deletedCategory = await Category.findById(delCatID).lean();
-              console.log(deletedCategory);
-              deletedCategory.questions = _.remove(
-                deletedCategory.questions,
-                function (questionId) {
-                  return questionId == newQuestion._id;
-                }
-              );
-              console.log(deletedCategory);
-              await deletedCategory.save();
+            if (delFromCateId.length) {
+              // add all old categories.
+              categories.concat(oldQuestion.category);
+
+              // updating the removed category i.e removing this question from it
+              for await (const [index, delCatID] of delFromCateId.entries()) {
+                let deletedCategory = await Category.findById(delCatID);
+                deletedCategory.questions.splice(
+                  deletedCategory.questions.indexOf(newQuestion._id),
+                  1
+                );
+                await deletedCategory.save();
+                
+                // remove the deleted cat from the list
+                categories.splice(categories.indexOf(delCatID), 1);
+              }
+              oldQuestion.category = categories;
             }
+            // adding
+            // question is added to these categories
+            let addToCateID = _.difference(
+              newQuestion.category,
+              oldQuestion.category
+            );
+
+            if (addToCateID.length) {
+              // updating the categories where the question is added to it.
+              // also adding the Category to that question
+              for await (const [index, ID] of addToCateID.entries()) {
+                let addToCat = await Category.findById(ID);
+
+                if (!addToCat.questions.includes(newQuestion._id)) {
+                  addToCat.questions.push(newQuestion._id);
+                  await addToCat.save();
+                }
+                //adding category to question
+                if (!oldQuestion.category.includes(ID)) {
+                  categories.push(ID);
+                }
+              }
+              categories = categories.concat(oldQuestion.category);
+              oldQuestion.category = categories;
+            }
+            await oldQuestion.save();
           }
         }
         let quizObj = {
@@ -206,6 +236,31 @@ module.exports = {
       return res.redirect(
         "/dashboard/salesperson/all-quizzes?msg=" +
           encodeMsg(error.message, "danger")
+      );
+    }
+  },
+  async byCategory(req, res) {
+    try {
+      const categories = await Category.find().populate("questions");
+      res.render("dashboard/examples/salesperson/quiz/quiz", {
+        title: "Quiz",
+        categories,
+      });
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
+      );
+    }
+  },
+  async resultByCategory(req, res) {
+    try {
+      res.render("dashboard/examples/salesperson/quiz/quiz", {
+        result: true,
+        title: "Quiz",
+      });
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
       );
     }
   },

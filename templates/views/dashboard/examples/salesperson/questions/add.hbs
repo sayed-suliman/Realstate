@@ -33,7 +33,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Quiz</h1>
+                            <h1 class="m-0">Question{{#unless edit}}s{{/unless}}</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -48,7 +48,7 @@
 
             <!-- Main content -->
             <section class="content pb-4">
-                <form action="edit-quiz" method="post">
+                <form action="{{#if edit}}edit-question{{else}}add-questions{{/if}}" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -64,38 +64,48 @@
                                 </div>
                                 <div class="card-body">
                                     {{!-- select quiz or term --}}
-                                    <div class="form-group">
-                                        <label for="inputName">Quiz Name</label>
-                                        <input type="text" required id="inputName" value="{{quiz.title}}" name="name"
-                                            class="form-control">
-                                    </div>
-                                    <input type="hidden" name="id" value="{{quiz._id}}">
                                     <div id="questions">
-                                        {{#each quiz.questions}}
                                         <div class="question-no">
                                             <div class="form-group">
-                                                <label for="question-{{increment @index}}" class="w-100">
-                                                    Question {{increment @index}}
-                                                    <button type="button" class="btn p-0 float-right cross">x</button>
+                                                <label for="question-1">
+                                                    Question {{#unless edit}}1{{/unless}}
                                                 </label>
-                                                <input type="text" required value="{{this.question}}"
-                                                    id="question-{{increment @index}}"
-                                                    name="question-{{increment @index}}" class="form-control">
-                                                <input type="hidden" required value="{{this._id}}"
-                                                    name="question-{{increment @index}}-id" class="form-control">
+                                                <input type="text" value="{{question.question}}" required
+                                                    id="question-1" name="question-1" class="form-control">
+                                                {{#if edit}}
+                                                <input type="hidden" required value="{{question._id}}"
+                                                    name="question-id" class="form-control">
+                                                {{/if}}
                                             </div>
                                             <div class="form-group">
+                                                <label for="question-1-explain">
+                                                    Explanation
+                                                </label>
+                                                <input type="text" value="{{question.explain}}" required
+                                                    id="question-1-explain" name="question-1-explain"
+                                                    class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                {{#if error}}
+                                                <div class="alert alert-danger alert-dismissible fade show"
+                                                    role="alert">
+                                                    {{{error}}}
+                                                    <button type="button" class="close" data-dismiss="alert"
+                                                        aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                {{/if}}
                                                 <label for="assignCategory">
                                                     Assign Category
                                                 </label>
-                                                {{#each ../categories}}
+                                                {{#each categories}}
                                                 <div class="custom-control custom-checkbox">
                                                     <input class="custom-control-input custom-control-input-success"
-                                                        value="{{this._id}}" {{checkData this._id
-                                                        ../this.category}} type="checkbox"
-                                                        name="assignCategory-{{increment @../index}}"
-                                                        id="q-{{@ ../index}}-cat-{{@index}}">
-                                                    <label for="q-{{@ ../index}}-cat-{{@index}}"
+                                                        value="{{this._id}}" {{#if ../edit}} {{checkData this._id
+                                                        ../question.category}} {{/if}} type="checkbox"
+                                                        name="assignCategory-1" id="{{this.name}}">
+                                                    <label for="{{this.name}}"
                                                         class="custom-control-label text-capitalize">{{this.name}}</label>
                                                 </div>
                                                 {{/each}}
@@ -105,38 +115,92 @@
                                                     Answers
                                                 </label>
                                                 <div class="quiz">
-                                                    {{#each this.options}}
+                                                    {{#unless edit}}
+                                                    <div class="d-flex">
+                                                        <div class="options">
+                                                            <label for="opt1-q-1" class="col-form-label">1</label>
+                                                            <input id="opt1-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" required value="0" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op1">
+                                                            <label for="q-1-op1" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex my-2">
+                                                        <div class="options">
+                                                            <label for="opt2-q-1" class="col-form-label">2</label>
+                                                            <input id="opt2-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="1" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op2">
+                                                            <label for="q-1-op2" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex">
+                                                        <div class="options">
+                                                            <label for="opt3-q-1" class="col-form-label">3</label>
+                                                            <input id="opt3-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="2" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op3">
+                                                            <label for="q-1-op3" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    <div class="d-flex my-2">
+                                                        <div class="options">
+                                                            <label for="opt4-q-1" class="col-form-label">4</label>
+                                                            <input id="opt4-q-1" type="text" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-1-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" value="3" class="checkBox"
+                                                                name="question-1-ans" id="q-1-op4">
+                                                            <label for="q-1-op4" class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    {{else}}
+                                                    {{#each question.options}}
                                                     <div class="d-flex mb-2">
                                                         <div class="options">
-                                                            <label for="opt{{@index}}-q-{{increment @../index}}"
+                                                            <label for="opt{{@index}}-q-1"
                                                                 class="col-form-label">{{increment @index}}</label>
-                                                            <input id="opt{{@index}}-q-{{increment @../index}}"
-                                                                type="text" value="{{this}}" required
-                                                                class="form-control d-inline-block"
-                                                                name="question-{{increment @../index}}-opt">
+                                                            <input id="opt{{@index}}-q-1" type="text" value="{{this}}"
+                                                                required class="form-control d-inline-block"
+                                                                name="question-1-opt">
                                                         </div>
                                                         <div class="d-flex  align-items-center">
                                                             <input type="radio" required value="{{@index}}"
-                                                                {{returnChecked @index ../this.ans}} class="checkBox"
-                                                                name="question-{{increment @../index}}-ans"
-                                                                id="q-{{increment @../index}}-op{{increment @index}}">
-                                                            <label
-                                                                for="q-{{increment @../index}}-op{{increment @index}}"
+                                                                {{returnChecked @index ../question.ans}}
+                                                                class="checkBox" name="question-1-ans"
+                                                                id="q-1-op{{increment @index}}">
+                                                            <label for="q-1-op{{increment @index}}"
                                                                 class="m-0 ml-1">Correct Answer</label>
                                                         </div>
                                                     </div>
                                                     {{/each}}
+                                                    {{/unless}}
                                                 </div>
                                             </div>
                                         </div>
-                                        {{/each}}
                                     </div>
 
                                 </div>
+                                {{#unless edit}}
                                 <div class="card-footer">
                                     <button type="button" id="addNextQuiz" class="btn btn-success float-right">Add
                                         Next</button>
                                 </div>
+                                {{/unless}}
                             </div>
                             <!-- /.card -->
 
@@ -145,7 +209,8 @@
                     <div class="row">
                         <div class="col-md-6">
                             <button type="reset" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-success float-right">Update Quiz</button>
+                            <button type="submit" class="btn btn-success float-right">{{#if
+                                edit}}Update{{else}}Add{{/if}} Questions</button>
                         </div>
                     </div>
                 </form>
@@ -164,6 +229,8 @@
     <!-- ./wrapper -->
 
     {{>dashboardfooterlinks}}
+    {{!-- only show when the adding question --}}
+    {{#unless edit}}
     <script>
         $(document).ready(function () {
             const questionsParentDev = $("#questions");
@@ -179,7 +246,11 @@
             <button type="button" class="btn p-0 float-right cross">x</button>
         </label>
         <input type="text" required id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
-        <input type="hidden" required value="undefined" name="question-${questionNumber}-id" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="question-${questionNumber}-explain">Explanation</label>
+            <input type="text" required id="question-${questionNumber}-explain"
+                name="question-${questionNumber}-explain" class="form-control">
         </div>
          <div class="form-group">
             <label for="assignCategory">
@@ -274,6 +345,7 @@
         });
 
     </script>
+    {{/unless}}
 </body>
 
 </html>

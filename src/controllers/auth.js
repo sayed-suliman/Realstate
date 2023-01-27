@@ -36,7 +36,6 @@ const signUp = async (req, res) => {
     const formValidations = validationResult(req);
     if (formValidations.errors.length) {
       res.locals.oldData = req.body;
-      console.log(res.locals.oldData);
       const errorObj = {};
       formValidations.errors.forEach((element) => {
         errorObj[element.param] = element.msg;
@@ -58,7 +57,6 @@ const signUp = async (req, res) => {
         });
       }
     } else {
-      console.log(data);
       const otpCode = generateCode();
       const user = await User(data).save();
       await OTP({
@@ -67,8 +65,6 @@ const signUp = async (req, res) => {
       }).save();
       sendVerificationCode(data.email, otpCode);
       if (user) {
-        console.log("user created");
-        console.log(user._id);
         return res.redirect(
           url.format({
             pathname: "/verification",

@@ -165,7 +165,7 @@ hbs.registerHelper("formatDate", (date) => {
 hbs.registerHelper("checkData", (data, arr) => {
   let check = false;
   arr.forEach((arrId) => {
-    if (arrId.name === data) {
+    if (arrId.name === data || arrId.toString() == data.toString()) {
       return (check = true);
     }
   });
@@ -212,11 +212,7 @@ hbs.registerHelper("returnChecked", (arg1, arg2) => {
     return "checked";
   }
 });
-hbs.registerHelper("returnCheckedArray", (arg1, arg2) => {
-  if (arg2.includes(arg1)) {
-    return "checked";
-  }
-});
+
 
 // check if available then return the body
 hbs.registerHelper("checkError", (arg, option) => {

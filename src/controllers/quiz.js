@@ -107,7 +107,6 @@ const updateQuiz = async (req, res) => {
     const data = req.body;
     const qId = req.query.qId;
     const quiz = await Quiz.findById(qId).populate("course");
-    // console.log(quiz)
 
     // before and after courses to remove id of quiz from old course and add to updated one
     const oldCourse = await Course.findOne({ name: quiz.course.name });
@@ -172,12 +171,12 @@ const viewQuiz = async (req, res) => {
       ) {
         await course.populate("chapters");
         await course.populate("quizzes");
-        console.log(course);
         const setting = await Setting.findOne();
         const takenQuiz = await Result.findOne({
           quiz: quiz._id,
           user: req.user._id,
         });
+        // adding percentage when the user have taken the quiz
         if (takenQuiz) {
           takenQuiz["percent"] = Math.floor(
             (Number(takenQuiz.points) / Number(takenQuiz.totalQuestions)) * 100

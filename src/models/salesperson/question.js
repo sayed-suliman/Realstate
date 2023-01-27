@@ -1,12 +1,16 @@
 const mongoose = require("mongoose");
-const schema = mongoose.Schema(
+const schema = new mongoose.Schema(
   {
     question: String,
+    explain: String,
     options: Array,
     ans: Number,
     category: {
-      type: Array,
+      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sp_category" }],
       default: [],
+      get: function (v) {
+        return v.map((id) => id.toString());
+      },
     },
   },
   {

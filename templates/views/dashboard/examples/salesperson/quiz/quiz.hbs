@@ -56,7 +56,8 @@
                                 {{#if result}}
                                 <tbody>
                                     <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">100% <a href="#">Retake</a></span></td>
+                                        <td><a href="#">Title</a> <span class="float-right">100% <a
+                                                    href="#">Retake</a></span></td>
                                     </tr>
                                     <tr>
                                         <td><a href="#">Title</a> <span class="float-right">N/A</td>
@@ -73,24 +74,14 @@
                                 </tbody>
                                 {{else}}
                                 <tbody>
+                                    {{#each categories}}
                                     <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
+                                        {{#if this.questions.length}}
+                                        <td><a href="/dashboard/salesperson/take-test?id={{this._id}}">{{this.name}}</a>
+                                            <span class="float-right">{{this.questions.length}} Questions</span></td>
+                                        {{/if}}
                                     </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">21 Questions</span></td>
-                                    </tr>
+                                    {{/each}}
                                 </tbody>
                                 {{/if}}
                             </table>

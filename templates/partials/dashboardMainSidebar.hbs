@@ -71,6 +71,14 @@
             <p>Settings</p>
           </a>
         </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sort-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
         {{/ifEquals}}
         {{!-- for admin --}}
         {{#ifEquals user.role "admin"}}
