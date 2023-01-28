@@ -217,6 +217,17 @@
             $('#quiz').addClass("active")
             $('#quiz-category').addClass("active")
         }
+        //salesperson -- question
+        if (url.includes("add-question")) {
+            $("#dashboard-link").removeClass("active")
+            $('#question-link').addClass("active")
+            $('#question-add-link').addClass("active")
+        }
+        if (url.includes("all-question")) {
+            $("#dashboard-link").removeClass("active")
+            $('#question-link').addClass("active")
+            $('#question-all-link').addClass("active")
+        }
         //salesperson -- test
         if (url.includes("tests")) {
             $("#dashboard-link").removeClass("active")

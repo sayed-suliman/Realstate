@@ -3,24 +3,24 @@ $(document).ready(function () {
   let timeOver = false;
   let timeInSeconds = 0;
   let timeInterval;
-  //   $(".retake").click(() => {
-  //     clearInterval(timeInterval);
-  //     timeInSeconds = 0;
-  //     timeInterval = setInterval(timer, 1000);
-  //     // remove correct option
-  //     $("label")
-  //       .removeClass("text-success font-weight-bold")
-  //       .children("span")
-  //       .text("");
-  //     $("#quizForm").removeClass("d-none");
-  //     $(".timeHead").removeClass("d-none");
-  //     $("#result").addClass("d-none");
+  $(".retake").click(() => {
+    clearInterval(timeInterval);
+    timeInSeconds = 0;
+    timeInterval = setInterval(timer, 1000);
+    // remove correct option
+    $("label")
+      .removeClass("text-success font-weight-bold")
+      .children("span")
+      .text("");
+    $("#quizForm").removeClass("d-none");
+    $(".timeHead").removeClass("d-none");
+    $("#result").addClass("d-none");
 
-  //     $("#quizForm")[0].reset();
-  //     $(".submit").attr("disabled", false);
-  //     $(".submit").text("Submit");
-  //     $("#quizForm .feedback").addClass("d-none");
-  //   });
+    $("#quizForm")[0].reset();
+    $(".submit").attr("disabled", false);
+    $(".submit").text("Submit");
+    $("#quizForm .feedback").addClass("d-none");
+  });
   let seconds;
   let minutes;
   let time;
@@ -61,21 +61,24 @@ $(document).ready(function () {
     console.log(time);
     // adding time at top of array
     formData.unshift({ name: "time", value: time });
-    submitMsg = "Submitting you quiz.";
+    submitMsg = "Submitting you test.";
     loading(true, submitMsg);
     $.ajax({
-      url: "/take-test",
+      url: "/dashboard/salesperson/take-quiz",
       type: "POST",
       data: formData,
       dataType: "json",
       success: ({
-        error,
         correctAns,
-        wrongAns,
-        point,
         correctCount,
-        wrongCount,
+        point,
         showAns,
+        wrongAns,
+        wrongCount,
+        percent,
+        grade,
+        explain,
+        error,
       }) => {
         loading(false);
         if (!error) {
@@ -88,26 +91,19 @@ $(document).ready(function () {
 
           // if point then show the result
           // if (point) {
-          const percent = Math.round((point / Number(noOfQuestions)) * 100);
-          const grade = percent >= Number(passingPercent) ? "passed" : "failed";
 
           $("#result").removeClass("d-none");
           $("#result .percent").text(`${percent}%`);
-          percent >= Number(passingPercent)
-            ? $("#result .percent")
-                .removeClass("text-danger")
-                .addClass("text-success")
-            : $("#result .percent")
-                .removeClass("text-success")
-                .addClass("text-danger");
-          $("#result .grade").text(`${grade}`);
-          grade == "failed"
-            ? $("#result .grade")
-                .removeClass("text-success")
-                .addClass("text-danger")
-            : $("#result .grade")
-                .removeClass("text-danger")
-                .addClass("text-success");
+          if (grade == "passed") {
+            $("#result .percent")
+              .removeClass("text-danger")
+              .addClass("text-success");
+          } else {
+            $("#result .percent")
+              .removeClass("text-success")
+              .addClass("text-danger");
+          }
+
           $("#result .points").text(`${point}/${Number(noOfQuestions)}`);
           $("#result .time").text(time);
           $("#result .correct").text(
@@ -116,14 +112,29 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
+          // scroll to top to show result.
           $([document.documentElement, document.body]).animate(
             {
               scrollTop: $("#result").offset().top,
             },
             600
           );
+
           // }
           if (reviewQuiz == "true") {
+            // explanation
+            explain.forEach((item) => {
+              let questionDom = $(`#quizForm [name=${item.question}]`).parents(
+                ".form-group-head"
+              );
+              questionDom
+                .find(".feedback")
+                .removeClass("d-none")
+                .find(".explain")
+                .text(`Explanation: ${item.explain}`);
+            });
+
+            //for the wrong answer
             if (wrongAns.length != 0) {
               wrongAns.forEach((ans) => {
                 var parent = $(`#quizForm [name=${ans}]`).parents(
@@ -132,18 +143,12 @@ $(document).ready(function () {
                 parent
                   .find(".feedback")
                   .removeClass("d-none")
+                  .find(".msg")
                   .addClass("text-danger");
-                parent.find(".feedback").text("Your answer is wrong.");
+                parent.find(".feedback .msg").text("Your answer is wrong.");
               });
             }
-            if (wrongAns && showAns) {
-              showAns.forEach((correct) => {
-                $(`#quizForm [for=${correct}]`)
-                  .addClass("text-success font-weight-bold")
-                  .children("span")
-                  .text("(Correct)");
-              });
-            }
+            // correct question at the end of question
             if (correctAns.length) {
               correctAns.forEach((ans) => {
                 var parent = $(`#quizForm [name=${ans}]`).parents(
@@ -152,9 +157,19 @@ $(document).ready(function () {
                 parent
                   .find(".feedback")
                   .removeClass("d-none")
+                  .find(".msg")
                   .removeClass("text-danger")
                   .addClass("text-success");
-                parent.find(".feedback").text("Correct.");
+                parent.find(".feedback .msg").text("Correct.");
+              });
+            }
+            // showing the correct option
+            if (wrongAns && showAns) {
+              showAns.forEach((correct) => {
+                $(`#quizForm [for=${correct}]`)
+                  .addClass("text-success font-weight-bold")
+                  .children("span")
+                  .text("(Correct)");
               });
             }
           }

@@ -16,6 +16,8 @@
 </style>
 
 <body class="hold-transition sidebar-mini dark-mode">
+    <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -47,13 +49,14 @@
                                     <div class="result text-center mb-5{{#unless takenQuiz}} d-none{{/unless}}"
                                         id="result">
                                         <h3 class="mb-0">Your Result</h3>
-                                        <h2
-                                            class="percent mb-0 font-weight-bold {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">
-                                            {{takenQuiz.percent}}%</h2>
-                                        <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
-                                        <p>Your grade is <span
+                                        <h2 class="percent mb-0 font-weight-bold text-success">
+                                            0%</h2>
+                                        {{!-- <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
+                                        --}}
+                                        {{!-- <p>Your grade is <span
                                                 class="grade {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
                                                 takenQuiz.percent '>=' '60'}}passed{{else}}failed{{/ifCond}}</span></p>
+                                        --}}
                                         <table class="mx-auto my-4">
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Points</th>
@@ -65,7 +68,7 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Questions</th>
-                                                <td class="text-right">{{quiz.questions.length}}</td>
+                                                <td class="text-right">{{test.questions.length}}</td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Correct</th>
@@ -76,8 +79,7 @@
                                                 <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
                                             </tr>
                                         </table>
-                                        <button class="retake btn btn-success retake mt-2" {{#unless
-                                            retake}}disabled{{/unless}}>Retake</button>
+                                        <button class="retake btn btn-success retake mt-2">Retake</button>
                                         <button class="btn btn-primary mt-2 ml-2 "
                                             onclick="(function(){ window.history.back();}())">
                                             <span class="text" id="button-text">Go Back</span>
@@ -104,7 +106,11 @@
                                                 </div>
                                                 {{/each}}
                                             </div>
-                                            <div class="feedback font-weight-bold d-none"></div>
+                                            <div class="feedback d-none">
+                                                <p class="msg font-weight-bold"></p>
+                                                <p class="explain"></p>
+                                                <hr>
+                                            </div>
                                         </div>
                                         {{/each}}
                                         <button
@@ -168,7 +174,7 @@
 
     {{>dashboardfooterlinks}}
     <script>
-        const noOfQuestions = `{{{quiz.questions.length}}}`
+        const noOfQuestions = `{{{test.questions.length}}}`
         const passingPercent = `{{{passingPercent}}}`
         const reviewQuiz = `true`
     </script>

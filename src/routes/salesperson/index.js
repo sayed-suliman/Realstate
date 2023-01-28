@@ -12,12 +12,12 @@ router.get("/", salesPersonDashboard);
 // quiz
 router.get("/test-by-category", isStudent, quiz.byCategory);
 router.get("/result-by-category", isStudent, quiz.resultByCategory);
+router.get("/take-quiz", isStudent, quiz.takeQuiz);
+router.post("/take-quiz", quiz.takeQuizPost);
 
 // test
 router.get("/tests", isStudent, test.tests);
 router.get("/tests-result", isStudent, test.testsResult);
-router.get("/take-test", isStudent, test.takeTest);
-router.post("/take-test", isStudent, test.takeTestPost);
 
 // exam
 router.get("/exam", isStudent, (req, res) => {

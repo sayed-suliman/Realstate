@@ -3,6 +3,8 @@ const Quiz = require("../../models/salesperson/quiz");
 const Question = require("../../models/salesperson/question");
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
 const _ = require("lodash");
+const Result = require("../../models/salesperson/results");
+const { default: mongoose } = require("mongoose");
 
 module.exports = {
   async all(req, res) {
@@ -181,7 +183,7 @@ module.exports = {
                   1
                 );
                 await deletedCategory.save();
-                
+
                 // remove the deleted cat from the list
                 categories.splice(categories.indexOf(delCatID), 1);
               }
@@ -254,14 +256,115 @@ module.exports = {
   },
   async resultByCategory(req, res) {
     try {
+      const result = await Result.find().populate("test");
       res.render("dashboard/examples/salesperson/quiz/quiz", {
-        result: true,
+        result,
         title: "Quiz",
       });
     } catch (error) {
       return res.redirect(
         "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
       );
+    }
+  },
+  async takeQuiz(req, res) {
+    try {
+      const id = req.query.id;
+      const test = await Category.findById(id).populate("questions");
+      // add serial no to question
+      for await (let [index, question] of test.questions.entries()) {
+        test.questions[index].qno = `q-${index}`;
+      }
+
+      res.render("dashboard/student/salesperson/takeTest", {
+        title: "Tests",
+        result: false,
+        test,
+      });
+    } catch (error) {
+      console.log("reopen");
+      return res.redirect(
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
+      );
+    }
+  },
+  async takeQuizPost(req, res) {
+    try {
+      const time = req.body.time;
+      const ID = req.body.testId;
+      const quiz = await Category.findById(ID).populate("questions");
+      const questions = quiz.questions;
+      // deleting the quizId & time so that the req.body only contain answer
+      delete req.body.testId;
+      delete req.body.time;
+
+      let answersArr = Object.values(req.body);
+      let point = 0;
+      let wrongAns = [];
+      let wrongQuestionID = [];
+      let correctAns = [];
+      let correctQuestionID = [];
+      let showAns = [];
+      let explain = [];
+      questions.forEach((question, index) => {
+        explain.push({ question: `q-${index}`, explain: question.explain });
+        if (question.ans == answersArr[index]) {
+          point += 1;
+          correctAns.push(`q-${index}`);
+          correctQuestionID.push(question._id);
+        } else {
+          wrongAns.push(`q-${index}`);
+          // add the correct ans to array for this question i.e: q-0-op-0
+          showAns.push(`q-${index}-op-${question.ans}`);
+          wrongQuestionID.push(question._id);
+        }
+      });
+      // passing for marks from database
+      let passingMark = 40;
+
+      const percent = Math.floor((point / questions.length) * 100);
+      const grade = percent >= passingMark ? "passed" : "failed";
+
+      const data = {
+        test: quiz._id || "",
+        user: req.user._id,
+        points: point,
+        correct_ans: correctQuestionID,
+        wrong_ans: wrongQuestionID,
+        totalQuestions: questions.length,
+        time,
+        grade,
+        percent,
+        ans: req.body,
+      };
+      let alreadyTaken = await Result.findOne({
+        test: { $elemMatch: { $eq: mongoose.Types.ObjectId(ID) } },
+        user: req.user._id,
+      });
+      if (alreadyTaken) {
+        delete data.testId;
+        delete data.user;
+
+        let t = await Result.findByIdAndUpdate(alreadyTaken._id, data);
+      } else {
+        await Result(data).save();
+      }
+      // sending object to client side javascript
+      sendObj = {
+        point,
+        showAns,
+        correctAns,
+        wrongAns,
+        correctCount: correctAns.length,
+        wrongCount: wrongAns.length,
+        percent,
+        grade,
+        explain,
+      };
+
+      res.send(sendObj);
+    } catch (error) {
+      res.send({ error: error.message });
     }
   },
 };

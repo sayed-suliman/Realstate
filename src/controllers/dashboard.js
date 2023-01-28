@@ -30,9 +30,11 @@ module.exports = {
         // filtering only courses meta
         courseMeta = courseMeta.filter((el) => el.course != undefined);
 
+        // progress calculation
         for await (let content of userCourses) {
           // used for to find the content(chap+quiz) length
           let total = 0;
+
           for await (let chapter of content.chapters) {
             const completedChap = await UserMeta.findOne({
               chapter_id: chapter.toString(),
@@ -62,6 +64,7 @@ module.exports = {
             }
             total++;
           }
+
           if (progress[content.name]) {
             const value = Math.floor((progress[content.name] / total) * 100);
             progress[content.name] = value;
@@ -70,15 +73,16 @@ module.exports = {
             }
           }
         }
-
-        // remove the completed courses for the userCourse
+        // remove the completed courses for the userCourse list
         for await (let [index, content] of userCourses.entries()) {
           if (completedCourses[content.name]) {
             userCourses.splice(index, 1);
           }
-          // add unlock because unlock is used below
-          userCourses[index].unlock = true;
+          if (userCourses.length) {
+            userCourses[index].unlock = true;
+          }
         }
+        console.log("Completed", completedCourses, userCourses);
 
         //   check that user accept the agreement or not
         userCourses.forEach((course, index) => {
@@ -88,6 +92,7 @@ module.exports = {
             }
           });
         });
+
         // unlock course when previous is completed
         if (setting.unlockCourse) {
           // lock all the courses

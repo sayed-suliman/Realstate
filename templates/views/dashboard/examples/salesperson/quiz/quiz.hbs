@@ -55,30 +55,23 @@
                             <table class="table table-bordered">
                                 {{#if result}}
                                 <tbody>
+                                    {{#each result}}
                                     <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">100% <a
-                                                    href="#">Retake</a></span></td>
+                                        <td><a href="#">{{this.test.[0].name}}</a> <span
+                                                class="float-right">{{this.percent}}% <a
+                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id}}">Retake</a></span>
+                                        </td>
                                     </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
-                                    </tr>
-                                    <tr>
-                                        <td><a href="#">Title</a> <span class="float-right">N/A</td>
-                                    </tr>
+                                    {{/each}}
                                 </tbody>
                                 {{else}}
                                 <tbody>
                                     {{#each categories}}
                                     <tr>
                                         {{#if this.questions.length}}
-                                        <td><a href="/dashboard/salesperson/take-test?id={{this._id}}">{{this.name}}</a>
-                                            <span class="float-right">{{this.questions.length}} Questions</span></td>
+                                        <td><a href="/dashboard/salesperson/take-quiz?id={{this._id}}">{{this.name}}</a>
+                                            <span class="float-right">{{this.questions.length}} Questions</span>
+                                        </td>
                                         {{/if}}
                                     </tr>
                                     {{/each}}
