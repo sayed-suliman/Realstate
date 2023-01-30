@@ -217,6 +217,18 @@
             $('#quiz').addClass("active")
             $('#quiz-category').addClass("active")
         }
+        //salesperson -- quiz-category
+        if (url.includes("all-test")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz-link').addClass("active")
+            $('#quiz-detail-link').addClass("active")
+        }
+        //salesperson -- quiz-category
+        if (url.includes("add-test")) {
+            $("#dashboard-link").removeClass("active")
+            $('#quiz-link').addClass("active")
+            $('#quiz-add-link').addClass("active")
+        }
         //salesperson -- question
         if (url.includes("add-question")) {
             $("#dashboard-link").removeClass("active")
@@ -246,6 +258,18 @@
             $("#dashboard-link").removeClass("active")
             $('#exam').addClass("active")
             $('#exam-replica').addClass("active")
+        }
+        //salesperson -- exam-all
+        if (url.includes("all-exams")) {
+            $("#dashboard-link").removeClass("active")
+            $('#exam-link').addClass("active")
+            $('#exam-detail-link').addClass("active")
+        }
+        //salesperson -- exam
+        if (url.includes("add-exam")) {
+            $("#dashboard-link").removeClass("active")
+            $('#exam-link').addClass("active")
+            $('#exam-add-link').addClass("active")
         }
         //salesperson -- exam-result
         if (url.includes("exam-result")) {

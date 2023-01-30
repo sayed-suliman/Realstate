@@ -33,7 +33,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Quiz</h1>
+                            <h1 class="m-0">Test</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -48,7 +48,7 @@
 
             <!-- Main content -->
             <section class="content pb-4">
-                <form action="add-quiz" method="post">
+                <form action="add-test" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -65,30 +65,9 @@
                                 <div class="card-body">
                                     {{!-- select quiz or term --}}
                                     <div class="form-group">
-                                        <label for="inputName">Quiz Name</label>
+                                        <label for="inputName">Test Name</label>
                                         <input type="text" required id="inputName" name="name" class="form-control">
                                     </div>
-                                    {{!-- <div class="form-group">
-                                        <label for="inputStatus">Select Quiz/Term</label>
-                                        <select id="inputStatus" required name="type"
-                                            class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
-                                            <option value="quiz">Quiz</option>
-                                            <option value="mid">Mid</option>
-                                            <option value="final">Final</option>
-                                        </select>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="inputStatus">Select Course</label>
-                                        <select id="inputStatus" required name="course"
-                                            class="form-control custom-select">
-                                            <option selected disabled value="">Select one</option>
-                                            {{#each courses}}
-                                            <option value="{{this.name}}">{{this.name}}</option>
-                                            {{/each}}
-                                            <option value="term">Term</option>
-                                        </select>
-                                    </div> --}}
                                     <div id="questions">
                                         <div class="question-no">
                                             <div class="form-group">

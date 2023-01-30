@@ -78,75 +78,30 @@
                         </div>
                     </div>
                     {{else}}
+                    {{#if tests}}
                     <div class="row col-md-6 mx-auto">
+                        {{#each tests}}
                         <div class="col-md-6">
-                            <a href="#">
+                            <a href="/dashboard/salesperson/take-quiz?id={{this._id}}">
                                 <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
                                     style="height: 150px;">
                                     <div class="inner">
-                                        <h4>Tests 1</h4>
+                                        <h4>{{this.title}}</h4>
                                     </div>
                                 </div>
+                                {{#unless this.taken}}
                                 <p class="text-danger font-weight-bold text-uppercase position-absolute"
                                     style="top: 5px;right:15px;">Not Completed
-                                </p>
+                                </p>{{/unless}}
                             </a>
                         </div>
-                        <div class="col-md-6">
-                            <a href="#">
-                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
-                                    style="height: 150px;">
-                                    <div class="inner">
-                                        <h4>Tests 2</h4>
-                                    </div>
-                                </div>
-                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
-                                    style="top: 5px;right:15px;">Not Completed
-                                </p>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="#">
-                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
-                                    style="height: 150px;">
-                                    <div class="inner">
-                                        <h4>Tests 3</h4>
-                                    </div>
-                                </div>
-                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
-                                    style="top: 5px;right:15px;">Not Completed
-                                </p>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="#">
-                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
-                                    style="height: 150px;">
-                                    <div class="inner">
-                                        <h4>Tests 4</h4>
-                                    </div>
-                                </div>
-                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
-                                    style="top: 5px;right:15px;">Not Completed
-                                </p>
-                            </a>
-                        </div>
-                        <div class="col-md-6">
-                            <a href="#">
-                                <div class="small-box bg-gradient-success d-flex justify-content-center align-items-center"
-                                    style="height: 150px;">
-                                    <div class="inner">
-                                        <h4>Tests 5</h4>
-                                    </div>
-                                </div>
-                                <p class="text-danger font-weight-bold text-uppercase position-absolute"
-                                    style="top: 5px;right:15px;">Not Completed
-                                </p>
-                            </a>
-                        </div>
+                        {{/each}}
                         <p>If you're up for the challenge, take the California Real Estate License Exam Replica <a
-                                href="#">here</a>!</p>
+                                href="/dashboard/salesperson/exam">here</a>!</p>
                     </div>
+                    {{else}}
+                    <p>Sorry no test found.</p>
+                    {{/if}}
                     {{/if}}
                     <!-- /.row -->
                 </div>

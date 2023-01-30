@@ -30,12 +30,12 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Quizzes</h1>
+                            <h1 class="m-0">Exams</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
                                 <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
-                                <li class="breadcrumb-item active">Quizzes</li>
+                                <li class="breadcrumb-item active">Exams</li>
                             </ol>
                         </div><!-- /.col -->
                     </div><!-- /.row -->
@@ -59,13 +59,13 @@
                                 </thead>
                                 {{!-- static --}}
                                 <tbody>
-                                    {{#each tests}}
+                                    {{#each exams}}
                                     <tr>
                                         <td>{{increment @index}}</td>
                                         <td class="text-capitalize">{{this.title}}</td>
                                         <td class="text-capitalize">{{this.type}}</td>
                                         <td>
-                                            <a href="/dashboard/salesperson/edit-quiz?id={{this._id}}" type="button">
+                                            <a href="/dashboard/salesperson/edit-test?id={{this._id}}" type="button">
                                                 <button class="btn btn-success">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
@@ -118,7 +118,7 @@
                 },
                 "lengthMenu": [
                     [10, 25, 50, -1],
-                    ["10 Quizzes", "25 Quizzes", "50 Quizzes", 'All Quizzes'],
+                    ["10 Exams", "25 Exams", "50 Exams", 'All Exams'],
                 ],
                 "searching": true,
                 "ordering": true,

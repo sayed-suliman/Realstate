@@ -1,6 +1,7 @@
 const express = require("express");
 const { salesPersonDashboard } = require("../../controllers/dashboard");
 const category = require("../../controllers/salesperson/category");
+const exam = require("../../controllers/salesperson/exam");
 const question = require("../../controllers/salesperson/questions");
 const quiz = require("../../controllers/salesperson/quiz");
 const test = require("../../controllers/salesperson/test");
@@ -20,15 +21,9 @@ router.get("/tests", isStudent, test.tests);
 router.get("/tests-result", isStudent, test.testsResult);
 
 // exam
-router.get("/exam", isStudent, (req, res) => {
-  res.render("dashboard/examples/salesperson/exam/exam", { title: "Exam" });
-});
-router.get("/exam-result", isStudent, (req, res) => {
-  res.render("dashboard/examples/salesperson/exam/exam", {
-    title: "Exam",
-    result: true,
-  });
-});
+router.get("/exam", isStudent, exam.exam);
+router.get("/exam-result", isStudent, exam.result);
+router.get("/take-exam", isStudent, quiz.takeQuiz);
 
 // ********************************
 // Admin
@@ -47,11 +42,18 @@ router.post("/add-questions", isAdmin, question.allPost);
 router.get("/edit-question", isAdmin, question.edit);
 router.post("/edit-question", isAdmin, question.post);
 
-// Quiz
-router.get("/all-quizzes", isAdmin, quiz.all);
-router.get("/add-quiz", isAdmin, quiz.add);
-router.post("/add-quiz", isAdmin, quiz.post);
+// test
+router.get("/all-tests", isAdmin, quiz.all);
+router.get("/add-test", isAdmin, quiz.add);
+router.post("/add-test", isAdmin, quiz.post);
 router.get("/edit-quiz", isAdmin, quiz.edit);
 router.post("/edit-quiz", isAdmin, quiz.editPost);
+
+// exam
+router.get("/all-exams", isAdmin, exam.all);
+router.get("/add-exam", isAdmin, exam.add);
+router.post("/add-exam", isAdmin, exam.post);
+router.get("/edit-exam", isAdmin, exam.edit);
+router.post("/edit-exam", isAdmin, exam.editPost);
 
 module.exports = router;

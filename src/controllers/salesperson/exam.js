@@ -1,12 +1,26 @@
 const Category = require("../../models/salesperson/category");
-const Quiz = require("../../models/salesperson/quiz");
 const Question = require("../../models/salesperson/question");
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
-const _ = require("lodash");
-const Result = require("../../models/salesperson/results");
-const { default: mongoose } = require("mongoose");
+const Quiz = require("../../models/salesperson/quiz");
 
 module.exports = {
+  async exam(req, res) {
+    let exam = await Quiz.findOne({ type: "exam" });
+    res.render("dashboard/examples/salesperson/exam/exam", {
+      title: "Exam",
+      exam,
+    });
+  },
+  result(req, res) {
+    res.render("dashboard/examples/salesperson/exam/exam", {
+      title: "Exam",
+      result: true,
+    });
+  },
+
+  /* -------------
+        Admin
+    ---------------*/
   async all(req, res) {
     try {
       var msgToken = req.query.msg;
@@ -14,11 +28,11 @@ module.exports = {
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
-      let tests = await Quiz.find({ type: "test" });
-      res.render("dashboard/examples/salesperson/quiz/allQuizzes", {
+      let exams = await Quiz.find({ type: "exam" });
+      res.render("dashboard/examples/salesperson/exam/allExams", {
         title: "Tests",
         toast: Object.keys(msg).length == 0 ? undefined : msg,
-        tests,
+        exams,
       });
     } catch (error) {
       return res.redirect(
@@ -60,24 +74,37 @@ module.exports = {
   async add(req, res) {
     try {
       const categories = await Category.find();
-      res.render("dashboard/examples/salesperson/quiz/add", {
-        title: "Add Test",
+      const questions = await Question.find().populate("category");
+      res.render("dashboard/examples/salesperson/tests/add", {
+        title: "Add Exam",
         categories,
+        questions,
       });
     } catch (error) {
       res.redirect(
-        "/dashboard/salesperson/all-tests?msg=" + encodeMsg(error.message)
+        "/dashboard/salesperson/all-exams?msg=" + encodeMsg(error.message)
       );
     }
   },
   async post(req, res) {
     try {
-      const allQuestions = [];
+      let allQuestions = [];
       const data = req.body;
+
       const title = data.name;
-      const type = "test";
+      const type = "exam";
       let questionsId = [];
+      let assignQuestionIDs = [];
       delete data.name;
+
+      // separating assign question(adding to questionIDs) and deleting form the data
+      Object.getOwnPropertyNames(data).forEach((prop) => {
+        // object property start with qID i.e qID-0,qID-1,...
+        if (prop.includes("qID-")) {
+          assignQuestionIDs.push(data[prop]);
+          delete data[prop];
+        }
+      });
 
       // because the data contain question title, option, category, and correct ans
       const noOfQ = Object.keys(data).length / 4;
@@ -113,18 +140,18 @@ module.exports = {
       let quizObj = {
         title,
         type,
-        questions: questionsId,
+        questions: [...questionsId, ...assignQuestionIDs],
       };
       let addQuiz = await Quiz(quizObj).save();
       if (addQuiz) {
         return res.redirect(
-          "/dashboard/salesperson/all-tests?msg=" +
-            encodeMsg("Quiz added Successfully.")
+          "/dashboard/salesperson/all-exams?msg=" +
+            encodeMsg("Exam added Successfully.")
         );
       }
     } catch (error) {
       return res.redirect(
-        "/dashboard/salesperson/all-tests?msg=" +
+        "/dashboard/salesperson/all-exams?msg=" +
           encodeMsg(error.message, "danger")
       );
     }
@@ -244,149 +271,6 @@ module.exports = {
         "/dashboard/salesperson/all-tests?msg=" +
           encodeMsg(error.message, "danger")
       );
-    }
-  },
-  async byCategory(req, res) {
-    try {
-      const categories = await Category.find().populate("questions");
-      res.render("dashboard/examples/salesperson/quiz/quiz", {
-        title: "Quiz",
-        categories,
-      });
-    } catch (error) {
-      return res.redirect(
-        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
-      );
-    }
-  },
-  async resultByCategory(req, res) {
-    try {
-      const result = await Result.find().populate("test");
-      res.render("dashboard/examples/salesperson/quiz/quiz", {
-        result,
-        title: "Quiz",
-      });
-    } catch (error) {
-      return res.redirect(
-        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
-      );
-    }
-  },
-  async takeQuiz(req, res) {
-    try {
-      console.log(req.header("referer"));
-      const id = req.query.id;
-      const categoryTest = req.query["by-category"];
-      let test, testByCategory;
-      if (categoryTest == "true") {
-        test = await Category.findById(id).populate("questions");
-        testByCategory = true;
-      } else {
-        test = await Quiz.findById(id).populate("questions");
-        testByCategory = false;
-      }
-      // add serial no to question
-      for await (let [index, question] of test.questions.entries()) {
-        test.questions[index].qno = `q-${index}`;
-      }
-
-      res.render("dashboard/student/salesperson/takeTest", {
-        title: "Tests",
-        result: false,
-        testByCategory,
-        test,
-      });
-    } catch (error) {
-      return res.redirect(
-        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
-      );
-    }
-  },
-  async takeQuizPost(req, res) {
-    try {
-      const time = req.body.time;
-      const ID = req.body.testId;
-      const categoryTest = req.body.byCategory;
-      let quiz;
-      // categoryTest value form req.body is in string
-      if (categoryTest == "true") {
-        quiz = await Category.findById(ID).populate("questions");
-      } else {
-        quiz = await Quiz.findById(ID).populate("questions");
-      }
-      const questions = quiz.questions;
-      // deleting the quizId & time so that the req.body only contain answer
-      delete req.body.testId;
-      delete req.body.time;
-      delete req.body.byCategory;
-
-      let answersArr = Object.values(req.body);
-      let point = 0;
-      let wrongAns = [];
-      let wrongQuestionID = [];
-      let correctAns = [];
-      let correctQuestionID = [];
-      let showAns = [];
-      let explain = [];
-      questions.forEach((question, index) => {
-        // explanation of the question for the client side js
-        explain.push({ question: `q-${index}`, explain: question.explain });
-        if (question.ans == answersArr[index]) {
-          point += 1;
-          correctAns.push(`q-${index}`);
-          correctQuestionID.push(question._id);
-        } else {
-          wrongAns.push(`q-${index}`);
-          // add the correct ans to array for this question i.e: q-0-op-0
-          showAns.push(`q-${index}-op-${question.ans}`);
-          wrongQuestionID.push(question._id);
-        }
-      });
-      // passing for marks from database
-      let passingMark = 40;
-
-      const percent = Math.floor((point / questions.length) * 100);
-      const grade = percent >= passingMark ? "passed" : "failed";
-
-      const data = {
-        test: quiz._id || "",
-        user: req.user._id,
-        points: point,
-        correct_ans: correctQuestionID,
-        wrong_ans: wrongQuestionID,
-        totalQuestions: questions.length,
-        time,
-        grade,
-        percent,
-        ans: req.body,
-      };
-      let alreadyTaken = await Result.findOne({
-        test: { $elemMatch: { $eq: mongoose.Types.ObjectId(ID) } },
-        user: req.user._id,
-      });
-      if (alreadyTaken) {
-        delete data.test;
-        delete data.user;
-        Result.findByIdAndUpdate(alreadyTaken._id, data);
-      } else {
-        Result(data).save();
-      }
-      // sending object to client side javascript
-      sendObj = {
-        point,
-        showAns,
-        correctAns,
-        wrongAns,
-        correctCount: correctAns.length,
-        wrongCount: wrongAns.length,
-        percent,
-        grade,
-        explain,
-      };
-
-      res.send(sendObj);
-    } catch (error) {
-      res.send({ error: error.message });
     }
   },
 };

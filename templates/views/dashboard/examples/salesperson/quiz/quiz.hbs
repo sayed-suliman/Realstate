@@ -59,7 +59,7 @@
                                     <tr>
                                         <td><a href="#">{{this.test.[0].name}}</a> <span
                                                 class="float-right">{{this.percent}}% <a
-                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id}}">Retake</a></span>
+                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id}}&by-category=true">Retake</a></span>
                                         </td>
                                     </tr>
                                     {{/each}}
@@ -69,7 +69,8 @@
                                     {{#each categories}}
                                     <tr>
                                         {{#if this.questions.length}}
-                                        <td><a href="/dashboard/salesperson/take-quiz?id={{this._id}}">{{this.name}}</a>
+                                        <td><a
+                                                href="/dashboard/salesperson/take-quiz?id={{this._id}}&by-category=true">{{this.name}}</a>
                                             <span class="float-right">{{this.questions.length}} Questions</span>
                                         </td>
                                         {{/if}}

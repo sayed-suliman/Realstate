@@ -46,25 +46,18 @@
                                     </div>
                                 </div>
                                 <div class="card-body">
-                                    <div class="result text-center mb-5{{#unless takenQuiz}} d-none{{/unless}}"
-                                        id="result">
+                                    <div class="result text-center mb-5 d-none" id="result">
                                         <h3 class="mb-0">Your Result</h3>
                                         <h2 class="percent mb-0 font-weight-bold text-success">
                                             0%</h2>
-                                        {{!-- <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
-                                        --}}
-                                        {{!-- <p>Your grade is <span
-                                                class="grade {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
-                                                takenQuiz.percent '>=' '60'}}passed{{else}}failed{{/ifCond}}</span></p>
-                                        --}}
                                         <table class="mx-auto my-4">
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Points</th>
-                                                <td class="text-right points">{{takenQuiz.points}}</td>
+                                                <td class="text-right points"></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Time Spend</th>
-                                                <td class="text-right time">{{takenQuiz.time}}</td>
+                                                <td class="text-right time"></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Questions</th>
@@ -72,11 +65,11 @@
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Correct</th>
-                                                <td class="text-right correct">{{takenQuiz.correct_ans.length}}</td>
+                                                <td class="text-right correct"></td>
                                             </tr>
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Wrong</th>
-                                                <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
+                                                <td class="text-right wrong"></td>
                                             </tr>
                                         </table>
                                         <button class="retake btn btn-success retake mt-2">Retake</button>
@@ -85,9 +78,10 @@
                                             <span class="text" id="button-text">Go Back</span>
                                         </button>
                                     </div>
-                                    {{#ifCond user.role '==' 'student'}}
+                                    {{!-- {{#ifCond user.role '==' 'student'}} --}}
                                     <form id="quizForm" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="testId" value="{{test._id}}">
+                                        <input type="hidden" name="byCategory" value="{{testByCategory}}">
                                         {{#each test.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
                                             <label>{{increment @index}}). {{this.question}}</label>
@@ -113,12 +107,12 @@
                                             </div>
                                         </div>
                                         {{/each}}
-                                        <button
-                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
-                                            type="submit">Submit</button>
+                                        {{#ifCond user.role '==' 'student'}}<button
+                                            class="btn btn-success mt-2 float-left submit"
+                                            type="submit">Submit</button>{{/ifCond}}
                                     </form>
-                                    {{/ifCond}}
-                                    {{#ifCond user.role '==' 'regulator'}}
+                                    {{!-- {{/ifCond}} --}}
+                                    {{!-- {{#ifCond user.role '==' 'regulator'}}
                                     <form id="quizForm" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
@@ -143,7 +137,7 @@
                                         </div>
                                         {{/each}}
                                     </form>
-                                    {{/ifCond}}
+                                    {{/ifCond}} --}}
                                     <div
                                         class="spinner d-none flex-column align-items-center position-absolute place-center">
                                         <span class="loader ">

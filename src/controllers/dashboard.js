@@ -82,7 +82,6 @@ module.exports = {
             userCourses[index].unlock = true;
           }
         }
-        console.log("Completed", completedCourses, userCourses);
 
         //   check that user accept the agreement or not
         userCourses.forEach((course, index) => {
