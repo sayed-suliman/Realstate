@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -60,28 +60,30 @@
                                 </thead>
                                 {{!-- static --}}
                                 <tbody>
-                                    {{#each questions}}
+                                    {{#each questions as | question |}}
+                                    {{#with this}}
                                     <tr>
                                         <td>{{increment @index}}</td>
                                         <td class="text-capitalize">{{this.question}}</td>
                                         <td class="text-capitalize">
                                             <ol>
-                                                {{#each this.options}}
-                                                <li {{#ifEquals @index ../this.ans}}class="text-teal" {{/ifEquals}}>
-                                                    {{this}} {{#ifEquals @index ../this.ans}}(Correct) {{/ifEquals}}
+                                                {{#each options}}
+                                                <li {{#ifEquals @index question.ans}}class="text-teal" {{/ifEquals}}>
+                                                    {{this}} {{#ifEquals @index question.ans}}(Correct) {{/ifEquals}}
                                                 </li>
                                                 {{/each}}
                                             </ol>
                                         </td>
                                         <td class="text-capitalize">
-                                            <ol>
-                                                {{#each this.category}}
-                                                <li>{{this.name}}</li>
+                                            {{{category.name}}}
+                                            {{!-- <ol>
+                                                {{#each category}}
+                                                {{this.name}}
                                                 {{/each}}
-                                            </ol>
+                                            </ol> --}}
                                         </td>
                                         <td>
-                                            <a href="/dashboard/salesperson/edit-question?id={{this._id}}"
+                                            <a href="/dashboard/salesperson/edit-question?id={{_id}}"
                                                 type="button">
                                                 <button class="btn btn-success">
                                                     <i class="fa-solid fa-pen-to-square"></i>
@@ -89,6 +91,7 @@
                                             </a>
                                         </td>
                                     </tr>
+                                    {{/with}}
                                     {{/each}}
                                 </tbody>
                             </table>
@@ -145,7 +148,7 @@
                 "info": true,
                 "autoWidth": false,
                 "responsive": true,
-                /*initComplete: function () {
+                initComplete: function () {
                     this.api()
                         .column(3)
                         .every(function () {
@@ -168,9 +171,9 @@
                                     select.append(`<option value="${d}">${d}</option>`);
                                 });
                         });
-                }*/
+                }
             });
-            //$(table.table().container()).find('[name="quizTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
+            $(table.table().container()).find('[name="quizTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
         });
 
     </script>

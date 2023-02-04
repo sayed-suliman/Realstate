@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -79,6 +79,18 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="assignCategory">
+                                                    Select Category
+                                                </label>
+                                                <select id="inputStatus" required name="assignCategory-1"
+                                                    class="form-control custom-select">
+                                                    <option selected disabled value="">Select one</option>
+                                                    {{#each categories}}
+                                                    <option value="{{this._id}}">{{this.name}}
+                                                    </option>
+                                                    {{/each}}
+                                                </select>
+
+                                                {{!-- <label for="assignCategory">
                                                     Assign Category
                                                 </label>
                                                 {{#each categories}}
@@ -89,7 +101,7 @@
                                                     <label for="{{this.name}}"
                                                         class="custom-control-label text-capitalize">{{this.name}}</label>
                                                 </div>
-                                                {{/each}}
+                                                {{/each}} --}}
                                             </div>
                                             <div class="form-group">
                                                 <label for="opt1-q-1">
@@ -202,18 +214,18 @@
         <input type="text" required id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
         </div>
          <div class="form-group">
-            <label for="assignCategory">
-                Assign Category
+            
+            <label for="assignCategory-${questionNumber}">
+                Select Category
             </label>
-            {{#each categories}}
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input custom-control-input-success"
-                    value="{{{this._id}}}" type="checkbox" name="assignCategory-${questionNumber}"
-                    id="{{{this.name}}}-${questionNumber}">
-                <label for="{{{this.name}}}-${questionNumber}"
-                    class="custom-control-label text-capitalize">{{{this.name}}}</label>
-            </div>
-            {{/each}}
+            <select id="inputStatus" required name="assignCategory-${questionNumber}"
+                class="form-control custom-select">
+                <option selected disabled value="">Select one</option>
+                {{#each categories}}
+                <option value="{{this._id}}">{{this.name}}
+                </option>
+                {{/each}}
+            </select>
         </div>
         <div class="form-group">
             <div class="quiz">

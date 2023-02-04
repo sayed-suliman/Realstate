@@ -6,11 +6,9 @@ const schema = new mongoose.Schema(
     options: Array,
     ans: Number,
     category: {
-      type: [{ type: mongoose.Schema.Types.ObjectId, ref: "Sp_category" }],
-      default: [],
-      get: function (v) {
-        return v.map((id) => id.toString());
-      },
+      type: mongoose.Schema.Types.ObjectId,
+      default: "",
+      ref: "Sp_category",
     },
   },
   {

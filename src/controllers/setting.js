@@ -63,6 +63,7 @@ module.exports = {
           midRetake,
           finalRetake,
           quizPolicy,
+          spExamQuCount: 10,
           unlockCourse: !!unlockCourse,
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,

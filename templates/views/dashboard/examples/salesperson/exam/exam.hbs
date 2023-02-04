@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -49,33 +49,58 @@
             <!-- Main content -->
             <div class="content">
                 <div class="container-fluid">
-                    {{#if result}}
+                    {{#if results}}
                     <div class="card">
                         <div class="card-header">
                             <h3 class="card-title">Salesperson Crash Course</h3>
                         </div>
                         <div class="card-body p-0">
-                            <table class="table ">
+                            {{#if results.[0].user}}
+                            {{#each results as | result |}}
+                            <table class="table table-report{{#unless @first}} d-none{{/unless}}" id="{{@index}}">
                                 <tbody>
                                     <tr>
-                                        <td>
+                                        <td class="pt-4">
                                             <span class="font-weight-bold">Overall: Score</span>
-                                            <span class="float-right">100/100</span>
+                                            <span class="float-right">{{result.points}}/{{result.totalQuestions}}</span>
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td>
-                                            <span class="font-weight-bold">Categories:</span>
-                                            <span class="float-right">---</span>
+                                        <td class="border-top-0 pb-4">
+                                            <span class="font-weight-bold">Taken Date</span>
+                                            <span class="float-right">{{formatDate result.createdAt true}}</span>
                                         </td>
                                     </tr>
+                                    <tr>
+                                        <td class="text-center border-top-0 border-bottom pt-5">
+                                            <span class="font-weight-bold">Categories Score</span>
+                                        </td>
+                                    </tr>
+                                    {{#each result.categoryResult}}
+                                    {{#with this}}
+                                    <tr>
+                                        <td class="border-bottom">
+                                            <span class="font-weight-bold">{{name}}</span>
+                                            <span class="float-right">{{obtain}}/{{total}}</span>
+                                        </td>
+                                    </tr>
+                                    {{/with}}
+                                    {{/each}}
                                 </tbody>
                             </table>
-                            <select class="form-control mb-4 ml-4 w-auto" name="" id="">
-                                <option value="">Select a report to see</option>
-                                <option value="">Select a report to see</option>
-                                <option value="">Select a report to see</option>
+                            {{/each}}
+                            <select class="form-control my-4 ml-4 w-auto" name="" id="report">
+                                <option value="" disabled selected>Select a report to see</option>
+                                {{#each results as | result |}}
+                                <option value="{{@index}}">Exam Taken at: {{formatDate result.createdAt true}}</option>
+                                {{/each}}
                             </select>
+                            {{else}}
+                            <p class="py-5 px-4">You haven't taken exam. <a href="/dashboard/salesperson/exam"
+                                    class="text-info">Click
+                                    here</a> to take the
+                                exam</p>
+                            {{/if}}
                         </div>
                     </div>
                     {{else}}
@@ -110,6 +135,12 @@
     <!-- ./wrapper -->
 
     {{>dashboardfooterlinks}}
+    <script>
+        $('#report').on('change', function ({ target: { value } }) {
+            $('.table-report').addClass('d-none')
+            $(`#${value}`).removeClass('d-none')
+        })
+    </script>
 </body>
 
 </html>

@@ -14,7 +14,7 @@ module.exports = {
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
-      let tests = await Quiz.find({ type: "test" });
+      let tests = await Quiz.find();
       res.render("dashboard/examples/salesperson/quiz/allQuizzes", {
         title: "Tests",
         toast: Object.keys(msg).length == 0 ? undefined : msg,
@@ -42,7 +42,7 @@ module.exports = {
         } else {
           return res.redirect(
             "/dashboard/salesperson/all-tests?msg=" +
-              encodeMsg("Quiz no found.", "danger")
+              encodeMsg("Quiz not found.", "danger")
           );
         }
       } else {
@@ -261,9 +261,12 @@ module.exports = {
   },
   async resultByCategory(req, res) {
     try {
-      const result = await Result.find().populate("test");
+      const result = await Result.find({
+        test: { $elemMatch: { model: "Sp_category" } },
+        user: req.user._id,
+      }).populate("test._id");
       res.render("dashboard/examples/salesperson/quiz/quiz", {
-        result,
+        result: result.length ? result : true,
         title: "Quiz",
       });
     } catch (error) {
@@ -274,27 +277,91 @@ module.exports = {
   },
   async takeQuiz(req, res) {
     try {
-      console.log(req.header("referer"));
       const id = req.query.id;
       const categoryTest = req.query["by-category"];
       let test, testByCategory;
+      // used to store the questions ID of the current test
+      let questionsID = [];
       if (categoryTest == "true") {
         test = await Category.findById(id).populate("questions");
         testByCategory = true;
       } else {
-        test = await Quiz.findById(id).populate("questions");
-        testByCategory = false;
-      }
-      // add serial no to question
-      for await (let [index, question] of test.questions.entries()) {
-        test.questions[index].qno = `q-${index}`;
+        // exam mean master exam
+        if (req.query.exam == "true") {
+          let categories = await Category.find().populate("questions");
+
+          // count of questions in each category
+          let noOfQuestionPerCat = categories.map((category) => {
+            return category.questions.length;
+          });
+
+          // count of each category question. i.e total questions in database.
+          let noOfQuestions = noOfQuestionPerCat.reduce((a, b) => {
+            return a + b;
+          });
+          const noOfQuestionForExam = noOfQuestions < 150 ? 8 : 150;
+          let sum = 0;
+
+          // questions from each category i.e: no of questions
+          let noOfQuestionFromEachCat = noOfQuestionPerCat.map(
+            (count, index) => {
+              // percentage of current category questions
+              let percentage = Math.round(
+                (noOfQuestionForExam / noOfQuestions) * 100
+              );
+
+              let no = Math.round((percentage / 100) * count);
+              sum += no;
+
+              // if the index is last then...
+              if (index == noOfQuestionPerCat.length - 1) {
+                /* if the subtraction of both sum and noOfQuestionForExam
+                 * is less the zero then add Absolute value to no.
+                 * i.e -1 then add 1 to n.
+                 */
+                if (sum - noOfQuestionForExam < 0) {
+                  no += Math.abs(sum - noOfQuestionForExam);
+                } else if (sum - noOfQuestionForExam > 0) {
+                  no -= Math.abs(sum - noOfQuestionForExam);
+                }
+              }
+              return no;
+            }
+          );
+          let allQuestions = [];
+          categories.map((category, index) => {
+            // getting questions from each category according to its percentage.
+            let eachCatQuestions = category.questions.slice(
+              0,
+              noOfQuestionFromEachCat[index]
+            );
+            allQuestions = [...allQuestions, ...eachCatQuestions];
+          });
+          test = {
+            name: "Master Exam",
+            exam: "master",
+            questions: allQuestions,
+          };
+          testByCategory = false;
+        } else {
+          test = await Quiz.findById(id).populate("questions");
+          test.name = test.title;
+          testByCategory = false;
+        }
       }
 
+      // add serial no to each question
+      test.questions.map((question, index) => {
+        test.questions[index].qno = `q-${index}`;
+        questionsID.push(question._id);
+      });
+
       res.render("dashboard/student/salesperson/takeTest", {
-        title: "Tests",
+        title: req.query.exam == "true" ? "Master Exam" : "Test",
         result: false,
         testByCategory,
         test,
+        questionsID,
       });
     } catch (error) {
       return res.redirect(
@@ -307,18 +374,28 @@ module.exports = {
       const time = req.body.time;
       const ID = req.body.testId;
       const categoryTest = req.body.byCategory;
-      let quiz;
+      const exam = req.body.exam;
+      const examQuestions = req.body.questions.split(",");
+      let questions, grade, percent;
+      let quiz, modelName;
+
       // categoryTest value form req.body is in string
-      if (categoryTest == "true") {
-        quiz = await Category.findById(ID).populate("questions");
-      } else {
-        quiz = await Quiz.findById(ID).populate("questions");
+      if (exam != "master") {
+        if (categoryTest == "true") {
+          modelName = "Sp_category";
+          quiz = await Category.findById(ID).populate("questions");
+        } else {
+          modelName = "Sp_quiz";
+          quiz = await Quiz.findById(ID).populate("questions");
+        }
+        questions = quiz.questions;
       }
-      const questions = quiz.questions;
       // deleting the quizId & time so that the req.body only contain answer
       delete req.body.testId;
       delete req.body.time;
       delete req.body.byCategory;
+      delete req.body.exam;
+      delete req.body.questions;
 
       let answersArr = Object.values(req.body);
       let point = 0;
@@ -328,28 +405,41 @@ module.exports = {
       let correctQuestionID = [];
       let showAns = [];
       let explain = [];
-      questions.forEach((question, index) => {
-        // explanation of the question for the client side js
-        explain.push({ question: `q-${index}`, explain: question.explain });
-        if (question.ans == answersArr[index]) {
-          point += 1;
-          correctAns.push(`q-${index}`);
-          correctQuestionID.push(question._id);
-        } else {
-          wrongAns.push(`q-${index}`);
-          // add the correct ans to array for this question i.e: q-0-op-0
-          showAns.push(`q-${index}-op-${question.ans}`);
-          wrongQuestionID.push(question._id);
+
+      if (exam == "master" && req.body) {
+        questions = Object.entries(req.body); // output: [['id','value'],[],[]...]
+
+        for await (let [index, question] of questions.entries()) {
+          let dbQuestion = await Question.findById(question[0]);
+          if (dbQuestion.ans == question[1]) {
+            point += 1;
+            correctQuestionID.push(dbQuestion._id);
+          } else {
+            wrongQuestionID.push(dbQuestion._id);
+          }
         }
-      });
-      // passing for marks from database
-      let passingMark = 40;
+      } else {
+        questions.forEach((question, index) => {
+          // explanation of the question for the client side js
+          explain.push({ question: `q-${index}`, explain: question.explain });
+          if (question.ans == answersArr[index]) {
+            point += 1;
+            correctAns.push(`q-${index}`);
+            correctQuestionID.push(question._id);
+          } else {
+            wrongAns.push(`q-${index}`);
+            // add the correct ans to array for this question i.e: q-0-op-0
+            showAns.push(`q-${index}-op-${question.ans}`);
+            wrongQuestionID.push(question._id);
+          }
+        });
+        // passing for marks from database
+        let passingMark = 40;
 
-      const percent = Math.floor((point / questions.length) * 100);
-      const grade = percent >= passingMark ? "passed" : "failed";
-
+        percent = Math.floor((point / questions.length) * 100);
+        grade = percent >= passingMark ? "passed" : "failed";
+      }
       const data = {
-        test: quiz._id || "",
         user: req.user._id,
         points: point,
         correct_ans: correctQuestionID,
@@ -357,22 +447,32 @@ module.exports = {
         totalQuestions: questions.length,
         time,
         grade,
+        examQuestions,
         percent,
         ans: req.body,
       };
-      let alreadyTaken = await Result.findOne({
-        test: { $elemMatch: { $eq: mongoose.Types.ObjectId(ID) } },
-        user: req.user._id,
-      });
-      if (alreadyTaken) {
-        delete data.test;
-        delete data.user;
-        Result.findByIdAndUpdate(alreadyTaken._id, data);
+
+      if (exam == "master") {
+        data.test = [{ _id: "master exam" }];
+        // data.test.modelType = "master exam";
+        data.totalQuestions = examQuestions.length;
+        await Result(data).save();
       } else {
-        Result(data).save();
+        data.test = [{ _id: quiz._id, model: modelName }];
+        let alreadyTaken = await Result.findOne({
+          test: { $elemMatch: { _id: mongoose.Types.ObjectId(ID) } },
+          user: req.user._id,
+        });
+        if (alreadyTaken) {
+          delete data.test;
+          delete data.user;
+          await Result.findByIdAndUpdate(alreadyTaken._id, data);
+        } else {
+          await Result(data).save();
+        }
       }
       // sending object to client side javascript
-      sendObj = {
+      let sendObj = {
         point,
         showAns,
         correctAns,
@@ -383,7 +483,10 @@ module.exports = {
         grade,
         explain,
       };
-
+      // if master exam then redirect to result page
+      exam == "master"
+        ? (sendObj.redirectTo = "/dashboard/salesperson/exam-result")
+        : "";
       res.send(sendObj);
     } catch (error) {
       res.send({ error: error.message });

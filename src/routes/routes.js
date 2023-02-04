@@ -15,7 +15,7 @@ const {
   isStudent,
   isAdmin,
   verifiedAndPaid,
-  isRegulatororStudent,
+  isRegulatorOrStudent,
 } = require("../middleware/authentication");
 const signUpMiddleware = require("../middleware/authValidation");
 const {

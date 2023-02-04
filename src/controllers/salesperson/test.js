@@ -5,17 +5,16 @@ const Result = require("../../models/salesperson/results");
 module.exports = {
   async tests(req, res) {
     try {
-      const tests = await Quiz.find();
+      const tests = await Quiz.find({ questions: { $gt: [] } });
       let takenTest = await Result.find({ user: req.user }).select("test");
       takenTest = takenTest.map((result) => {
-        return result.test[0].toString();
+        return result.test[0]._id.toString();
       });
       tests.map((test) => {
         if (takenTest.includes(test._id.toString())) {
           test.taken = true;
         }
       });
-      console.log(takenTest);
       res.render("dashboard/examples/salesperson/tests/test", {
         title: "Test",
         tests,
@@ -28,8 +27,13 @@ module.exports = {
   },
   async testsResult(req, res) {
     try {
+      const results = await Result.find({
+        test: { $elemMatch: { model: "Sp_quiz" } },
+        user: req.user._id,
+      }).populate("test._id");
+      console.log(results[0]);
       res.render("dashboard/examples/salesperson/tests/test", {
-        result: true,
+        results: results,
         title: "Test",
       });
     } catch (error) {

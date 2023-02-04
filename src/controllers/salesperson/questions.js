@@ -74,29 +74,26 @@ exports.allPost = async (req, res) => {
         explain: data[`question-${i}-explain`].trim(),
         options: data[`question-${i}-opt`],
         ans: Number(data[`question-${i}-ans`]),
-        category: Array.isArray(data[`assignCategory-${i}`])
-          ? data[`assignCategory-${i}`]
-          : [data[`assignCategory-${i}`]],
+        category: data[`assignCategory-${i}`],
       });
     }
     // add questions to sp_question collection
     // and each question to its selected category
     for await (let [index, question] of allQuestions.entries()) {
       const addQuestion = await Question(question).save();
+
       // adding question to selected categories
-      for await (let category of question.category) {
-        let cat = await Category.findById(category);
-        cat.questions.push(addQuestion._id);
-        await cat.save();
-      }
+      let category = await Category.findById(question.category);
+      category.questions.push(addQuestion._id);
+      await category.save();
     }
     return res.redirect(
-      "/dashboard/salesperson/add-questions?msg=" +
+      "/dashboard/salesperson/all-questions?msg=" +
         encodeMsg("Questions are added Successfully.")
     );
   } catch (error) {
     return res.redirect(
-      "/dashboard/salesperson/all-quizzes?msg=" +
+      "/dashboard/salesperson/all-questions?msg=" +
         encodeMsg(error.message, "danger")
     );
   }
@@ -112,34 +109,39 @@ exports.post = async (req, res) => {
     updatingQuestion.explain = data[`question-1-explain`].trim();
     updatingQuestion.options = data[`question-1-opt`];
     updatingQuestion.ans = Number(data[`question-1-ans`]);
-    updatingQuestion.category = Array.isArray(data[`assignCategory-1`])
-      ? data[`assignCategory-1`]
-      : data[`assignCategory-1`] && [data[`assignCategory-1`]];
+    updatingQuestion.category = data[`assignCategory-1`];
 
-    if (!updatingQuestion.category) {
-      req.flash("error", "Category was not selected.");
-      return res.redirect(
-        "/dashboard/salesperson/edit-question?id=" + questionId
-      );
-    }
     let question = await Question.findById(questionId);
     if (question) {
       let oldCategory = question.category;
       await Question.findByIdAndUpdate(questionId, updatingQuestion);
+
+      if (updatingQuestion.category != oldCategory) {
+        console.log("changing");
+        // removing from the old category
+        await updateQuesInCategory(oldCategory, questionId, false);
+        // and add to the new category
+        await updateQuesInCategory(updatingQuestion.category, questionId);
+      }
+
+      // TODO: for multiple category selection
       // add question to category
-      for await (let [index, category] of updatingQuestion.category.entries()) {
-        if (!oldCategory.includes(category)) {
-          // adding
-          await updateQuesInCategory(category, questionId);
-        }
-      }
-      // remove question form category
-      for await (let [index, category] of oldCategory.entries()) {
-        if (!updatingQuestion.category.includes(category)) {
-          // removing
-          await updateQuesInCategory(category, questionId, false);
-        }
-      }
+      // for await (let [index, category] of updatingQuestion.category.entries()) {
+      // if (oldCategory != updatingQuestion.category) {
+      // console.log(updatingQuestion.category)
+      // adding
+      // await updateQuesInCategory(updatingQuestion.category, questionId);
+      // }
+      // }
+
+      // removing from the old category
+      // for await (let [index, category] of oldCategory.entries()) {
+      // if (updatingQuestion.category != oldCategory) {
+      // removing from the old category
+      // await updateQuesInCategory(oldCategory, questionId, false);
+      // }
+      // }
+
       return res.redirect(
         "/dashboard/salesperson/all-questions?msg=" +
           encodeMsg("Question updated Successfully.")

@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -48,22 +48,30 @@
                 <div class="container-fluid">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">{{#if result}}Test & Exam Result{{else}}Select Quiz by
+                            <h3 class="card-title">{{#if result}}Quiz Result{{else}}Select Quiz by
                                 Category{{/if}}</h3>
                         </div>
                         <div class="card-body p-0">
                             <table class="table table-bordered">
                                 {{#if result}}
+                                {{#if result.[0].user}}
                                 <tbody>
                                     {{#each result}}
                                     <tr>
-                                        <td><a href="#">{{this.test.[0].name}}</a> <span
-                                                class="float-right">{{this.percent}}% <a
-                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id}}&by-category=true">Retake</a></span>
+                                        <td><a
+                                                href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id._id}}&by-category=true">{{this.test.[0]._id.name}}</a>
+                                            <span class="float-right">{{this.percent}}% <a
+                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id._id}}&by-category=true">Retake</a></span>
                                         </td>
                                     </tr>
                                     {{/each}}
                                 </tbody>
+                                {{else}}
+                                <p class="py-5 px-4">You haven't taken Quiz. <a
+                                        href="/dashboard/salesperson/test-by-category" class="text-info">Click
+                                        here</a> to take the
+                                    Quiz</p>
+                                {{/if}}
                                 {{else}}
                                 <tbody>
                                     {{#each categories}}

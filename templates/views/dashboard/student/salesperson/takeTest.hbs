@@ -15,7 +15,7 @@
     }
 </style>
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 
     <div class="wrapper">
@@ -42,7 +42,7 @@
                                     <h3 class="card-title">{{test.name}}</h3>
                                     <div class="float-right timeHead ">
                                         <h3 class="card-title mr-2">Timer:</h3>
-                                        <h3 class="card-title timer">00:00</h3>
+                                        <h3 class="card-title timer">00:00:00</h3>
                                     </div>
                                 </div>
                                 <div class="card-body">
@@ -82,6 +82,8 @@
                                     <form id="quizForm" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="testId" value="{{test._id}}">
                                         <input type="hidden" name="byCategory" value="{{testByCategory}}">
+                                        <input type="hidden" name="exam" value="{{test.exam}}">
+                                        <input type="hidden" name="questions" value="{{questionsID}}">
                                         {{#each test.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
                                             <label>{{increment @index}}). {{this.question}}</label>
@@ -91,7 +93,7 @@
                                                     id="question">
                                                     <div class="icheck-primary d-inline">
                                                         <input type="radio" id="{{../this.qno}}-op-{{@index}}"
-                                                            value="{{@index}}" name="{{../this.qno}}" required>
+                                                            value="{{@index}}" name="{{../this._id}}" required>
                                                         <label class="font-weight-normal"
                                                             for="{{../this.qno}}-op-{{@index}}">
                                                             {{this}} <span></span>
@@ -160,6 +162,17 @@
         <aside class="control-sidebar control-sidebar-dark">
             <!-- Control sidebar content goes here -->
         </aside>
+        <!-- Modal -->
+        <div class="modal fade" id="examModal" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-labelledby="examModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Your exam is submitted.
+                    </div>
+                </div>
+            </div>
+        </div>
         <!-- /.control-sidebar -->
         <!-- Main Footer -->
         {{>dashboardfooter}}
@@ -171,6 +184,8 @@
         const noOfQuestions = `{{{test.questions.length}}}`
         const passingPercent = `{{{passingPercent}}}`
         const reviewQuiz = `true`
+        const exam = `{{{test.exam}}}`
+        const userRole = `{{{user.role}}}`
     </script>
     <script src="/js/salesperson/test.js"></script>
 </body>

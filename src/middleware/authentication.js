@@ -91,7 +91,7 @@ var isAdmin = (req, res, next) => {
     res.redirect("/dashboard");
   }
 };
-var isRegulatororStudent = (req, res, next) => {
+var isRegulatorOrStudent = (req, res, next) => {
   if (req.user.role === "regulator" || req.user.role === "student") {
     next();
   } else {
@@ -143,5 +143,5 @@ module.exports = {
   verifiedAndPaid,
   isStudent,
   isAdmin,
-  isRegulatororStudent,
+  isRegulatorOrStudent,
 };

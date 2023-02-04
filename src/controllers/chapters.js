@@ -65,24 +65,9 @@ const postChapter = async (req, res) => {
 
     var msg = encodeMsg("Your Chapter has been added");
     return res.redirect("/dashboard?msg=" + msg);
-
-    // const courses = await Courses.find()
-
-    // res.render("dashboard/examples/add-chapter", {
-    //     courses,
-    //     title:"Dashboard | Add Course"
-    // })
-    // for post man
-    // res.json({
-    //     status:chapterAdded
-    // })
   } catch (e) {
     var msg = encodeMsg(e.message);
     return res.redirect("/dashboard?msg=" + msg);
-    // postman
-    // res.status(501).json({
-    //     error: e.message
-    // })
   }
 };
 

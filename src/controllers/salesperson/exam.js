@@ -2,20 +2,64 @@ const Category = require("../../models/salesperson/category");
 const Question = require("../../models/salesperson/question");
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
 const Quiz = require("../../models/salesperson/quiz");
+const Result = require("../../models/salesperson/results");
 
 module.exports = {
   async exam(req, res) {
-    let exam = await Quiz.findOne({ type: "exam" });
-    res.render("dashboard/examples/salesperson/exam/exam", {
-      title: "Exam",
-      exam,
-    });
+    try {
+      let exam = await Quiz.findOne({ type: "exam" });
+
+      res.render("dashboard/examples/salesperson/exam/exam", {
+        title: "Exam",
+        exam,
+      });
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
+      );
+    }
   },
-  result(req, res) {
-    res.render("dashboard/examples/salesperson/exam/exam", {
-      title: "Exam",
-      result: true,
-    });
+  async result(req, res) {
+    try {
+      let results = await Result.find({
+        test: { $elemMatch: { $eq: { _id: "master exam" } } },
+        user: req.user._id,
+      }).populate("examQuestions");
+      if (results) {
+        for await (let [index, result] of results.entries()) {
+          // store all the result by category wise.
+          let categoryResult = {};
+          for await (let [index, question] of result.examQuestions.entries()) {
+            let categoryDetail = await Category.findById(question.category);
+            if (!categoryResult[question.category]) {
+              let obj = {
+                name: categoryDetail.name,
+                obtain: 0,
+                total: 1,
+              };
+              if (result.correct_ans.includes(question._id)) {
+                obj.obtain += 1;
+              }
+              categoryResult[question.category] = obj;
+            } else {
+              if (result.correct_ans.includes(question._id)) {
+                categoryResult[question.category].obtain += 1;
+              }
+              categoryResult[question.category].total += 1;
+            }
+          }
+          results[index].categoryResult = categoryResult;
+        }
+      }
+      res.render("dashboard/examples/salesperson/exam/exam", {
+        title: "Exam",
+        results: results.length ? results : true,
+      });
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson?msg=" + encodeMsg(error.message, "danger")
+      );
+    }
   },
 
   /* -------------
@@ -44,24 +88,26 @@ module.exports = {
     try {
       let id = req.query.id;
       if (id) {
-        const quiz = await Quiz.findById(id).populate("questions");
-        console.log(quiz);
-        if (quiz) {
+        const exam = await Quiz.findById(id).populate("questions");
+        if (exam) {
           const categories = await Category.find();
-          res.render("dashboard/examples/salesperson/quiz/edit", {
-            title: "Edit Quiz",
+          const questions = await Question.find().populate("category");
+          res.render("dashboard/examples/salesperson/exam/add", {
+            title: "Edit Exam",
             categories,
-            quiz,
+            questions,
+            exam,
+            edit: true,
           });
         } else {
           return res.redirect(
-            "/dashboard/salesperson/all-tests?msg=" +
-              encodeMsg("Quiz no found.", "danger")
+            "/dashboard/salesperson/all-exams?msg=" +
+              encodeMsg("Exam not found.", "danger")
           );
         }
       } else {
         return res.redirect(
-          "/dashboard/salesperson/all-tests?msg=" +
+          "/dashboard/salesperson/all-exams?msg=" +
             encodeMsg("Id must be required to edit Quiz.", "danger")
         );
       }
@@ -75,10 +121,12 @@ module.exports = {
     try {
       const categories = await Category.find();
       const questions = await Question.find().populate("category");
-      res.render("dashboard/examples/salesperson/tests/add", {
+      const exam = await Quiz.findOne({ type: "exam" });
+      res.render("dashboard/examples/salesperson/exam/add", {
         title: "Add Exam",
         categories,
         questions,
+        alreadyCreated: !!exam,
       });
     } catch (error) {
       res.redirect(
@@ -162,7 +210,6 @@ module.exports = {
       const data = req.body;
       const quizId = req.body.id;
       const title = data.name;
-      const type = "test";
       let questionsId = [];
       delete data.name;
       delete data.id;
@@ -250,25 +297,24 @@ module.exports = {
         }
         let quizObj = {
           title,
-          type,
           questions: questionsId,
         };
         let updatedQuiz = await Quiz.findByIdAndUpdate(quizId, quizObj);
         if (updatedQuiz) {
           return res.redirect(
-            "/dashboard/salesperson/all-tests?msg=" +
+            "/dashboard/salesperson/all-exams?msg=" +
               encodeMsg("Quiz updated Successfully.")
           );
         }
       } else {
         return res.redirect(
-          "/dashboard/salesperson/all-tests?msg=" +
+          "/dashboard/salesperson/all-exams?msg=" +
             encodeMsg("Quiz not found.", "danger")
         );
       }
     } catch (error) {
       return res.redirect(
-        "/dashboard/salesperson/all-tests?msg=" +
+        "/dashboard/salesperson/all-exams?msg=" +
           encodeMsg(error.message, "danger")
       );
     }

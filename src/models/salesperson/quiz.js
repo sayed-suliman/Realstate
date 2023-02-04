@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const schema = mongoose.Schema(
   {
     title: String,
-    type: String,
+    // type: String,
     order: {
       type: Number,
       default: 0,

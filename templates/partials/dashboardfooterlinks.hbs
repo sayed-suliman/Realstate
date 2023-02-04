@@ -224,13 +224,13 @@
             $('#quiz-detail-link').addClass("active")
         }
         //salesperson -- quiz-category
-        if (url.includes("add-test")) {
+        if (url.includes("add-test") || url.includes("edit-quiz")) {
             $("#dashboard-link").removeClass("active")
             $('#quiz-link').addClass("active")
             $('#quiz-add-link').addClass("active")
         }
         //salesperson -- question
-        if (url.includes("add-question")) {
+        if (url.includes("add-question") || url.includes("edit-question")) {
             $("#dashboard-link").removeClass("active")
             $('#question-link').addClass("active")
             $('#question-add-link').addClass("active")
@@ -266,7 +266,7 @@
             $('#exam-detail-link').addClass("active")
         }
         //salesperson -- exam
-        if (url.includes("add-exam")) {
+        if (url.includes("add-exam") || url.includes("edit-exam")) {
             $("#dashboard-link").removeClass("active")
             $('#exam-link').addClass("active")
             $('#exam-add-link').addClass("active")

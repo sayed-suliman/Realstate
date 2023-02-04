@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -86,19 +86,20 @@
                                                     class="form-control">
                                             </div>
                                             <div class="form-group">
-                                                {{#if error}}
-                                                <div class="alert alert-danger alert-dismissible fade show"
-                                                    role="alert">
-                                                    {{{error}}}
-                                                    <button type="button" class="close" data-dismiss="alert"
-                                                        aria-label="Close">
-                                                        <span aria-hidden="true">&times;</span>
-                                                    </button>
-                                                </div>
-                                                {{/if}}
                                                 <label for="assignCategory">
-                                                    Assign Category
+                                                    Select Category
                                                 </label>
+                                                <select id="inputStatus" required name="assignCategory-1"
+                                                    class="form-control custom-select">
+                                                    <option selected disabled value="">Select one</option>
+                                                    {{#each categories}}
+                                                    <option value="{{this._id}}" {{#if ../edit}}{{#ifEquals this._id
+                                                        ../question.category}}selected{{/ifEquals}}{{/if}}>{{this.name}}
+                                                    </option>
+                                                    {{/each}}
+                                                </select>
+                                                {{!--
+                                                <!-- checkbox     -->
                                                 {{#each categories}}
                                                 <div class="custom-control custom-checkbox">
                                                     <input class="custom-control-input custom-control-input-success"
@@ -108,13 +109,14 @@
                                                     <label for="{{this.name}}"
                                                         class="custom-control-label text-capitalize">{{this.name}}</label>
                                                 </div>
-                                                {{/each}}
+                                                {{/each}}--}}
                                             </div>
                                             <div class="form-group">
                                                 <label for="opt1-q-1">
                                                     Answers
                                                 </label>
                                                 <div class="quiz">
+                                                    {{!-- for adding --}}
                                                     {{#unless edit}}
                                                     <div class="d-flex">
                                                         <div class="options">
@@ -169,6 +171,7 @@
                                                         </div>
                                                     </div>
                                                     {{else}}
+                                                    {{!-- for editing question --}}
                                                     {{#each question.options}}
                                                     <div class="d-flex mb-2">
                                                         <div class="options">
@@ -254,17 +257,17 @@
         </div>
          <div class="form-group">
             <label for="assignCategory">
-                Assign Category
+                Select Category
             </label>
-            {{#each categories}}
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input custom-control-input-success"
-                    value="{{{this._id}}}" type="checkbox" name="assignCategory-${questionNumber}"
-                    id="{{{this.name}}}-${questionNumber}">
-                <label for="{{{this.name}}}-${questionNumber}"
-                    class="custom-control-label text-capitalize">{{{this.name}}}</label>
-            </div>
-            {{/each}}
+            <select id="inputStatus" required name="assignCategory-${questionNumber}"
+                class="form-control custom-select">
+                <option selected disabled value="">Select one</option>
+                {{#each categories}}
+                <option value="{{this._id}}" {{#if edit}}{{returnSelectFromArr this._id
+                    ../question.category}}{{/if}}>{{this.name}}
+                </option>
+                {{/each}}
+            </select>
         </div>
         <div class="form-group">
             <div class="quiz">

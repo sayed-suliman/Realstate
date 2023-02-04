@@ -5,25 +5,28 @@ const exam = require("../../controllers/salesperson/exam");
 const question = require("../../controllers/salesperson/questions");
 const quiz = require("../../controllers/salesperson/quiz");
 const test = require("../../controllers/salesperson/test");
-const { isAdmin, isStudent } = require("../../middleware/authentication");
+const {
+  isAdmin,
+  isRegulatorOrStudent,
+} = require("../../middleware/authentication");
 const router = express.Router();
 
 router.get("/", salesPersonDashboard);
 
 // quiz
-router.get("/test-by-category", isStudent, quiz.byCategory);
-router.get("/result-by-category", isStudent, quiz.resultByCategory);
-router.get("/take-quiz", isStudent, quiz.takeQuiz);
+router.get("/test-by-category", isRegulatorOrStudent, quiz.byCategory);
+router.get("/result-by-category", isRegulatorOrStudent, quiz.resultByCategory);
+router.get("/take-quiz", isRegulatorOrStudent, quiz.takeQuiz);
 router.post("/take-quiz", quiz.takeQuizPost);
 
 // test
-router.get("/tests", isStudent, test.tests);
-router.get("/tests-result", isStudent, test.testsResult);
+router.get("/tests", isRegulatorOrStudent, test.tests);
+router.get("/tests-result", isRegulatorOrStudent, test.testsResult);
 
 // exam
-router.get("/exam", isStudent, exam.exam);
-router.get("/exam-result", isStudent, exam.result);
-router.get("/take-exam", isStudent, quiz.takeQuiz);
+router.get("/exam", isRegulatorOrStudent, exam.exam);
+router.get("/exam-result", isRegulatorOrStudent, exam.result);
+router.get("/take-exam", isRegulatorOrStudent, quiz.takeQuiz);
 
 // ********************************
 // Admin

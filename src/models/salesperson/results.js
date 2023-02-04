@@ -5,9 +5,16 @@ const SP_Result = mongoose.model(
   new mongoose.Schema(
     {
       // testId for category wise quiz
-      test: {
-        type: [{ type: mongoose.Schema.Types.Mixed, ref: ["Sp_category"] }],
-      },
+      test: [
+        {
+          _id: {
+            type: mongoose.Schema.Types.Mixed,
+            refPath: "test.model",
+          },
+
+          model: { type: String },
+        },
+      ],
       user: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
@@ -21,6 +28,10 @@ const SP_Result = mongoose.model(
       time: String,
       grade: String,
       percent: Number,
+      examQuestions: {
+        type: Array,
+        ref: "Sp_question",
+      },
       ans: {
         type: String,
         // convert database data to Object from string

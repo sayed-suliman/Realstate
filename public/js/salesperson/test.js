@@ -1,11 +1,13 @@
 document.addEventListener("contextmenu", (event) => event.preventDefault());
 $(document).ready(function () {
+  console.log(exam);
   let timeOver = false;
-  let timeInSeconds = 0;
+  // time for master is 1hour and 30 minutes (5400seconds)
+  let timeInSeconds = exam == "master" ? 5400 : 0;
   let timeInterval;
   $(".retake").click(() => {
     clearInterval(timeInterval);
-    timeInSeconds = 0;
+    timeInSeconds = exam == "master" ? 5400 : 0;
     timeInterval = setInterval(timer, 1000);
     // remove correct option
     $("label")
@@ -21,46 +23,55 @@ $(document).ready(function () {
     $(".submit").text("Submit");
     $("#quizForm .feedback").addClass("d-none");
   });
-  let seconds;
-  let minutes;
-  let time;
+  let time,
+    timeTake = 0; //used only for the master exam
 
   timeInterval = setInterval(timer, 1000);
   function timer() {
-    timeInSeconds += 1;
+    if (exam == "master") {
+      timeInSeconds -= 1;
+      timeTake += 1;
+      if (timeInSeconds == 0) {
+        timeOver = true;
+        clearInterval(timeInterval);
+      }
+    } else {
+      timeInSeconds += 1;
+    }
     setQuizTimer();
   }
   var setQuizTimer = () => {
-    seconds = timeInSeconds % 60;
-    minutes = Math.floor(timeInSeconds / 60);
-    minutes = minutes < 10 ? `0${minutes}` : minutes;
-    seconds = seconds < 10 ? `0${seconds}` : seconds;
-    time = `${minutes}:${seconds}`;
+    time = timeFormatter(timeInSeconds);
     $(".timer").text(time);
 
-    // if (
-    //   (quizType == "final" || quizType == "mid") &&
-    //   timeInSeconds == examTime
-    // ) {
-    //   $("#quizForm [type=radio]").removeAttr("required");
-    //   timeOver = true;
-    //   $("#quizForm .submit").click();
-    // }
+    if (timeOver && userRole != "regulator") {
+      $("#quizForm [type=radio]").removeAttr("required");
+      $("#quizForm .submit").click();
+    }
   };
+  function timeFormatter(seconds) {
+    let sec = seconds % 60;
+    let min = Math.floor((seconds / 60) % 60);
+    let hours = Math.floor(seconds / (60 * 60));
+    hours = hours < 10 ? `0${hours}` : hours;
+    min = min < 10 ? `0${min}` : min;
+    sec = sec < 10 ? `0${sec}` : sec;
+    return `${hours}:${min}:${sec}`;
+  }
 
   $("#quizForm").submit(function (e) {
-    console.log("test1");
     e.preventDefault();
-
     submitQuiz(e);
   });
   let submitQuiz = (e) => {
     clearInterval(timeInterval);
     e.preventDefault();
     const formData = $(e.target).serializeArray();
-    console.log(time);
     // adding time at top of array
-    formData.unshift({ name: "time", value: time });
+    formData.unshift({
+      name: "time",
+      value: exam == "master" ? timeFormatter(timeTake) : time,
+    });
     submitMsg = "Submitting you test.";
     loading(true, submitMsg);
     $.ajax({
@@ -79,9 +90,16 @@ $(document).ready(function () {
         grade,
         explain,
         error,
+        ...res
       }) => {
         loading(false);
         if (!error) {
+          if (exam == "master") {
+            $("#examModal").modal("show");
+            return setInterval(() => {
+              window.location.replace(res.redirectTo);
+            }, 2000);
+          }
           $(".submit").attr("disabled", true);
           $(".submit").text("Submitted");
 

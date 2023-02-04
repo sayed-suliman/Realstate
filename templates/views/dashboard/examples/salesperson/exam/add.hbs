@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini dark-mode">
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -33,7 +33,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1 class="m-0">Exam</h1>
+                            <h1 class="m-0">Master Exam</h1>
                         </div><!-- /.col -->
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -48,7 +48,11 @@
 
             <!-- Main content -->
             <section class="content pb-4">
-                <form action="add-exam" method="post">
+                {{#if alreadyCreated}}
+                <p>The Master Exam is already created click <a href="/dashboard/salesperson/all-exams">here</a> to edit.
+                </p>
+                {{else}}
+                <form action="{{#if edit}}edit-exam{{else}}add-exam{{/if}}" method="post">
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card card-primary">
@@ -66,10 +70,11 @@
                                     {{!-- select quiz or term --}}
                                     <div class="form-group">
                                         <label for="inputName">Exam Name</label>
-                                        <input type="text" required id="inputName" value="{{quiz.title}}" name="name"
+                                        <input type="text" required id="inputName" value="{{exam.title}}" name="name"
                                             class="form-control">
                                     </div>
                                     <div id="questions">
+                                        {{#unless edit}}
                                         <label for="qID-1">
                                             Assign Questions
                                         </label>
@@ -97,6 +102,17 @@
                                             </div>
                                             <div class="form-group">
                                                 <label for="assignCategory">
+                                                    Select Category
+                                                </label>
+                                                <select id="inputStatus" required name="assignCategory-1"
+                                                    class="form-control custom-select">
+                                                    <option selected disabled value="">Select one</option>
+                                                    {{#each categories}}
+                                                    <option value="{{this._id}}">{{this.name}}
+                                                    </option>
+                                                    {{/each}}
+                                                </select>
+                                                {{!-- <label for="assignCategory">
                                                     Assign Category
                                                 </label>
                                                 {{#each categories}}
@@ -107,7 +123,7 @@
                                                     <label for="{{this.name}}"
                                                         class="custom-control-label text-capitalize">{{this.name}}</label>
                                                 </div>
-                                                {{/each}}
+                                                {{/each}} --}}
                                             </div>
                                             <div class="form-group">
                                                 <label for="opt1-q-1">
@@ -169,6 +185,65 @@
                                                 </div>
                                             </div>
                                         </div>
+                                        {{else}}
+                                        {{#each exam.questions}}
+                                        <div class="question-no">
+                                            <div class="form-group">
+                                                <label for="question-{{increment @index}}" class="w-100">
+                                                    Question {{increment @index}}
+                                                    <button type="button" class="btn p-0 float-right cross">x</button>
+                                                </label>
+                                                <input type="text" required value="{{this.question}}"
+                                                    id="question-{{increment @index}}"
+                                                    name="question-{{increment @index}}" class="form-control">
+                                                <input type="hidden" required value="{{this._id}}"
+                                                    name="question-{{increment @index}}-id" class="form-control">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="assignCategory">
+                                                    Select Category
+                                                </label>
+                                                <select id="inputStatus" required name="assignCategory-1"
+                                                    class="form-control custom-select">
+                                                    <option selected disabled value="">Select one</option>
+                                                    {{#each ../categories}}
+                                                    <option value="{{this._id}}" {{returnSelectFromArr this._id
+                                                        ../this.category}}>{{this.name}}
+                                                    </option>
+                                                    {{/each}}
+                                                </select>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="opt1-q-1">
+                                                    Answers
+                                                </label>
+                                                <div class="quiz">
+                                                    {{#each this.options}}
+                                                    <div class="d-flex mb-2">
+                                                        <div class="options">
+                                                            <label for="opt{{@index}}-q-{{increment @../index}}"
+                                                                class="col-form-label">{{increment @index}}</label>
+                                                            <input id="opt{{@index}}-q-{{increment @../index}}"
+                                                                type="text" value="{{this}}" required
+                                                                class="form-control d-inline-block"
+                                                                name="question-{{increment @../index}}-opt">
+                                                        </div>
+                                                        <div class="d-flex  align-items-center">
+                                                            <input type="radio" required value="{{@index}}"
+                                                                {{returnChecked @index ../this.ans}} class="checkBox"
+                                                                name="question-{{increment @../index}}-ans"
+                                                                id="q-{{increment @../index}}-op{{increment @index}}">
+                                                            <label
+                                                                for="q-{{increment @../index}}-op{{increment @index}}"
+                                                                class="m-0 ml-1">Correct Answer</label>
+                                                        </div>
+                                                    </div>
+                                                    {{/each}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                        {{/unless}}
                                     </div>
 
                                 </div>
@@ -188,6 +263,7 @@
                         </div>
                     </div>
                 </form>
+                {{/if}}
             </section>
             <!-- /.content -->
         </div>
@@ -221,18 +297,18 @@
         <input type="hidden" required value="undefined" name="question-${questionNumber}-id" class="form-control">
         </div>
          <div class="form-group">
-            <label for="assignCategory">
-                Assign Category
+            
+            <label for="assignCategory-${questionNumber}">
+                Select Category
             </label>
-            {{#each categories}}
-            <div class="custom-control custom-checkbox">
-                <input class="custom-control-input custom-control-input-success"
-                    value="{{{this._id}}}" type="checkbox" name="assignCategory-${questionNumber}"
-                    id="{{{this.name}}}-${questionNumber}">
-                <label for="{{{this.name}}}-${questionNumber}"
-                    class="custom-control-label text-capitalize">{{{this.name}}}</label>
-            </div>
-            {{/each}}
+            <select id="inputStatus" required name="assignCategory-${questionNumber}"
+                class="form-control custom-select">
+                <option selected disabled value="">Select one</option>
+                {{#each categories}}
+                <option value="{{this._id}}">{{this.name}}
+                </option>
+                {{/each}}
+            </select>
         </div>
         <div class="form-group">
             <div class="quiz">

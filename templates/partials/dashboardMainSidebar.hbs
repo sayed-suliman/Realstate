@@ -27,7 +27,7 @@
     <!-- Sidebar Menu -->
     <nav class="mt-2">
       <ul class="nav nav-pills nav-sidebar flex-column {{#if salesperson}}nav-child-indent{{/if}}"
-        data-widget="treeview" role="menu" data-accordion="false">
+        data-widget="treeview" role="menu" data-accordion="false" style="margin-bottom:70px">
         <!-- dashboard -->
         <li class="nav-item">
           <a href="/dashboard{{#if salesperson}}/salesperson{{/if}}" id='dashboard-link' class="nav-link">
@@ -287,14 +287,29 @@
             <p>Courses</p>
           </a>
         </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sort-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
+        {{#if salesperson}}
+        {{>salesperson/mainSidebar}}
+        <li class="nav-item">
+          <a href="/dashboard/" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-home nav-icon"></i>
+            <p>Real Estate</p>
+          </a>
+        </li>
+        {{/if}}
         {{/ifEquals}}
         {{/if}}<!--salesperson-->
       </ul>
-    </nav>
-  </div>
-  <div class="sidebar" style="margin-bottom:10px">
-    <nav>
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" style="position:absolute;bottom:10px" data-widget="treeview"
+        role="menu" data-accordion="false">
         <li class="nav-item">
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>
