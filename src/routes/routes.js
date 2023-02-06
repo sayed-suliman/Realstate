@@ -180,23 +180,34 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
         })
       );
     }
-    const user = await User.findById(req.query.uid);
-    req.login(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-      req.session.admin = adminId;
-      return res.redirect(
-        url.format({
-          pathname: "/dashboard",
-          query: {
-            msg: encodeMsg("You're login as a " + user.name),
-          },
-        })
-      );
+    const user = await User.findById(req.query.uid).populate({
+      path: "package",
+      populate: { path: "courses", match: { status: "publish" } },
     });
+    if (user.package && user.package.courses) {
+      req.login(user, function (err) {
+        if (err) {
+          return next(err);
+        }
+        req.session.admin = adminId;
+        return res.redirect(
+          url.format({
+            pathname: "/dashboard",
+            query: {
+              msg: encodeMsg("You're login as a " + user.name),
+            },
+          })
+        );
+      });
+    } else {
+      res.redirect(
+        "/dashboard/users?msg=" +
+          encodeMsg("Please add courses to continue.", "danger")
+      );
+    }
   } else {
-    res.redirect("/dashboard/user");
+    res.redirect("/dashboard/users?msg=" +
+    encodeMsg("User ID is required.", "danger"));
   }
 });
 // router.post('/login',postLogin)

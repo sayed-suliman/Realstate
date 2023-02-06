@@ -55,8 +55,10 @@ app.use(async (req, res, next) => {
 
   // site title and logo
   const setting = await Setting.findOne();
-  title = setting.collegeName;
-  logo = setting.logoPath;
+  if (setting) {
+    title = setting.collegeName;
+    logo = setting.logoPath;
+  }
   next();
 });
 
@@ -74,7 +76,7 @@ hbs.registerPartials(partialsPath);
 app.use(express.static(publicPath));
 
 hbs.registerHelper("ifEquals", function (arg1, arg2, block) {
-  if (arg1.toString() == arg2.toString()) {
+  if (arg1 && arg1.toString() == arg2 && arg2.toString()) {
     return block.fn(this);
   }
   return block.inverse(this);
