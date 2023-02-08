@@ -45,6 +45,279 @@
                         }}userSetting{{/ifEquals}}" enctype="multipart/form-data" method="post" id="validFrom">
                         <input type="hidden" name="id" value="{{setting._id}}">
                         <div class="row">
+                            {{!-- super admin --}}
+                            {{#ifEquals user.role "superAdmin"}}
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-cyan h-100 mb-0">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Application Setting</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="col-lg-4">
+                                                        {{!-- quiz percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Quiz Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="quizMarks"
+                                                                    id="quizMarks" value="{{setting.quizPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{!-- mid percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Mid Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="midMarks"
+                                                                    id="quizMarks" value="{{setting.midPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{!-- final percenteage --}}
+                                                        <div class="form-group">
+                                                            <label for="quizMarks">Final Passing Marks</label>
+                                                            <div class="input-group">
+                                                                <input type="number" min="0" max="100" name="finalMarks"
+                                                                    id="quizMarks" value="{{setting.finalPassingMark}}"
+                                                                    placeholder="Example: 60" class="form-control">
+                                                                <div class="input-group-append">
+                                                                    <span class="input-group-text">%</span>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for mid exam?</label>
+                                                    <select class="custom-select" name="midRetake">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1" {{#ifEquals setting.midRetake
+                                                            1}}selected{{/ifEquals}}>1</option>
+                                                        <option value="2" {{#ifEquals setting.midRetake
+                                                            2}}selected{{/ifEquals}}>2</option>
+                                                        <option value="3" {{#ifEquals setting.midRetake
+                                                            3}}selected{{/ifEquals}}>3</option>
+                                                        <option value="4" {{#ifEquals setting.midRetake
+                                                            4}}selected{{/ifEquals}}>4</option>
+                                                        <option value="5" {{#ifEquals setting.midRetake
+                                                            5}}selected{{/ifEquals}}>5</option>
+                                                        <option value="-1" {{#ifEquals setting.midRetake
+                                                            -1}}selected{{/ifEquals}}>unlimited</option>
+                                                    </select>
+                                                </div>
+                                                {{!-- final part --}}
+                                                {{!-- time retake of quiz --}}
+                                                <div class="form-group">
+                                                    <label>How many retakes can a student have for Final exam?</label>
+                                                    <select class="custom-select" name="finalRetake">
+                                                        <option selected="" disabled="" value="">Select one</option>
+                                                        <option value="1" {{#ifEquals setting.finalRetake
+                                                            1}}selected{{/ifEquals}}>1</option>
+                                                        <option value="2" {{#ifEquals setting.finalRetake
+                                                            2}}selected{{/ifEquals}}>2</option>
+                                                        <option value="3" {{#ifEquals setting.finalRetake
+                                                            3}}selected{{/ifEquals}}>3</option>
+                                                        <option value="4" {{#ifEquals setting.finalRetake
+                                                            4}}selected{{/ifEquals}}>4</option>
+                                                        <option value="5" {{#ifEquals setting.finalRetake
+                                                            5}}selected{{/ifEquals}}>5</option>
+                                                        <option value="-1" {{#ifEquals setting.finalRetake
+                                                            -1}}selected{{/ifEquals}}>unlimited</option>
+                                                    </select>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col">
+                                                        <label for="midTime">Mid Time</label>
+                                                        <div class="input-group">
+                                                            <input type="number" min="0" name="midTime" id="midTime"
+                                                                value="{{setting.midTakeTime}}"
+                                                                placeholder="Example: 60" class="form-control">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">Minutes</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col">
+                                                        <label for="finalTime">Final Time</label>
+                                                        <div class="input-group">
+                                                            <input type="number" min="0" name="finalTime" id="finalTime"
+                                                                value="{{setting.finalTakeTime}}"
+                                                                placeholder="Example: 60" class="form-control">
+                                                            <div class="input-group-append">
+                                                                <span class="input-group-text">Minutes</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                </div>
+
+                                                {{!-- quizzes policy --}}
+                                                <div>
+                                                    <p class="font-weight-bold mb-0">Quizzes Attempt policy</p>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input custom-control-input-primary"
+                                                            type="radio" id="policy1" {{#ifEquals
+                                                            setting.quizPolicy "accessAllTime" }}checked{{/ifEquals}}
+                                                            value="accessAllTime" name="quizPolicy">
+                                                        <label class="font-weight-normal custom-control-label"
+                                                            for="policy1">Keep all
+                                                            quizzes
+                                                            open to be accessed at any
+                                                            time
+                                                        </label>
+                                                    </div>
+                                                    <div class="custom-control custom-radio">
+                                                        <input class="custom-control-input custom-control-input-primary"
+                                                            type="radio" id="policy2" value="accessPassedPrevious"
+                                                            {{#ifEquals setting.quizPolicy "accessPassedPrevious"
+                                                            }}checked{{/ifEquals}} name="quizPolicy">
+                                                        <label class="font-weight-normal custom-control-label"
+                                                            for="policy2">Allow access
+                                                            only if previous quiz has been
+                                                            passed
+                                                        </label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="unlockCourse" id="unlockCourse" {{#if
+                                                            setting.unlockCourse }}checked{{/if}}>
+                                                        <label for="unlockCourse"
+                                                            class="custom-control-label font-weight-normal">Unlock
+                                                            Course when previous is completed.</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="randomizeQuestions" id="randomize"
+                                                            {{#if setting.randomizeQuestions }}checked{{/if}}>
+                                                        <label for="randomize"
+                                                            class="custom-control-label font-weight-normal">Randomize
+                                                            the questions of Exam(Quiz,Mid & Final)</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="reviewQuiz" id="reviewQuiz" {{#if
+                                                            setting.reviewQuiz }}checked{{/if}}>
+                                                        <label for="reviewQuiz"
+                                                            class="custom-control-label font-weight-normal">Can
+                                                            student review their quiz?</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="showAnswer" id="showAnsCheckbox" {{#if
+                                                            setting.showAnswer }}checked{{/if}}>
+                                                        <label for="showAnsCheckbox"
+                                                            class="custom-control-label font-weight-normal">Show Correct
+                                                            answers?</label>
+                                                    </div>
+                                                    <div class="custom-control custom-checkbox">
+                                                        <input
+                                                            class="custom-control-input custom-control-input-primary custom-control-input"
+                                                            type="checkbox" name="showFinalDay" id="showFinalTerm"
+                                                            {{#ifCond setting.finalDay '>' '-1' }}checked{{/ifCond}}>
+                                                        <label for="showFinalTerm"
+                                                            class="custom-control-label font-weight-normal">Unlock Final
+                                                            Term after days?</label>
+                                                    </div>
+                                                    <div class="form-group finalDay mt-1">
+                                                        <input type="number" min="0" name="finalDay" id="finalTermDay"
+                                                            value="{{setting.finalDay}}" placeholder="Enter No of days"
+                                                            class="form-control">
+                                                        <input type="number" min="0" name="finalTime"
+                                                            value="{{setting.finalTime}}" placeholder="Time in minutes"
+                                                            class="form-control mt-2">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-primary h-100 mb-0">
+                                    <div class="card-header">
+                                        <h3 class="card-title">General Setting</h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <!--- Logo  -->
+                                                <div class="form-group row align-items-center">
+                                                    <div class="col-xl-6">
+                                                        <label for="logo">Logo <small>(<b>Size=</b> 1:1)</small></label>
+                                                        <div class="input-group">
+                                                            <input type="file" name="logo" accept="image/*"
+                                                                id="exampleInputFile">
+                                                        </div>
+                                                    </div>
+                                                    {{#if setting}}
+                                                    <div class="col-xl-6">
+                                                        <p class="mb-0 mt-2 d-flex flex-column align-items-center">
+                                                            <img src="{{setting.logoPath}}" alt="logo" width="100px">
+                                                            <b>Current Uploaded logo</b>
+                                                        </p>
+                                                    </div>
+                                                    {{/if}}
+                                                </div>
+                                                <!--- College name  -->
+                                                <div class="form-group">
+                                                    <label for="collegeName">College Name</label>
+                                                    <input type="text" class="form-control" id="collegeName"
+                                                        placeholder="College Name" value="{{setting.collegeName}}"
+                                                        name="name">
+                                                </div>
+                                                <!--- College address  -->
+                                                <div class="form-group">
+                                                    <label for="collegeAdd">College Address</label>
+                                                    <textarea id="collegeAdd" class="form-control" rows="3"
+                                                        placeholder="College Address" spellcheck="false"
+                                                        style="height: 102px;"
+                                                        name="address">{{setting.collegeAddress}}</textarea>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label>Phone No</label>
+                                                    <div class="input-group">
+                                                        <div class="input-group-prepend">
+                                                            <span class="input-group-text"><i
+                                                                    class="fas fa-phone"></i></span>
+                                                        </div>
+                                                        <input type="text" value="{{setting.collegePhone}}"
+                                                            class="form-control"
+                                                            data-inputmask='"mask": "(999) 999-9999"' name="phone"
+                                                            data-mask>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary float-right">{{#if
+                                            setting}}Update{{else}}Save{{/if}}</button>
+                                    </div>
+                                </div>
+                            </div>
+                            {{/ifEquals}}
+
+                            {{!-- Admin --}}
                             {{#ifEquals user.role "admin"}}
                             <div class="col-md-6 mb-2">
                                 <div class="card card-cyan h-100 mb-0">
@@ -315,6 +588,7 @@
                                 </div>
                             </div>
                             {{/ifEquals}}
+
                             {{!-- for student --}}
                             {{#ifEquals user.role "student"}}
                             <div class="col-md-6">
