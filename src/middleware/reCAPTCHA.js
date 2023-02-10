@@ -3,6 +3,7 @@ const axios = require("axios");
 module.exports = (req, res, next) => {
   const recaptcha = req.body["g-recaptcha-response"];
   const secretKey = process.env.recaptcha_secretKey;
+  console.log(secretKey)
   if (!recaptcha) {
     req.flash("error", "Please select reCAPTCHA.");
     return res.redirect("/login");
@@ -14,9 +15,12 @@ module.exports = (req, res, next) => {
       response: recaptcha,
     })
     .then((response) => {
-      if (response) {
-        console.log(response);
+      if (response.data.success) {
+        console.log(response.data);
         next();
+      } else {
+        req.flash("error", "Failed to validate reCAPTCHA");
+        return res.redirect("/login");
       }
     })
     .catch((error) => {
