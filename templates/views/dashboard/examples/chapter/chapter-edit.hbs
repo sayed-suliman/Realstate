@@ -19,7 +19,7 @@
         <div class="container-fluid">
           <div class="row mb-2">
             <div class="col-sm-6">
-              <h1>Add Chapter</h1>
+              <h1>Edit Chapter</h1>
             </div>
             <div class="col-sm-6">
               <ol class="breadcrumb float-sm-right">
@@ -49,7 +49,8 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Chapter Name</label>
-                    <input type="text" required id="inputName" name="name" value="{{chapter.name}}" class="form-control">
+                    <input type="text" required id="inputName" name="name" value="{{chapter.name}}"
+                      class="form-control">
                   </div>
                   <div class="form-group">
                     <label for="coursefile">Chapter File <span class="small text-danger">(File Should be less than
@@ -61,6 +62,17 @@
                         <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
                       </a>
                     </p>
+                  </div>
+                  <div class="form-group">
+                    <label for="inputStatus">On Trial
+                      {{!-- <span class="small text-danger">(Other chapters of this course
+                        will be removed
+                        from the trial if exist.)</span> --}}
+                    </label>
+                    <div>
+                      <input type="checkbox" value="yes" name="trial" {{#if chapter.onTrial}}checked{{/if}}
+                        data-bootstrap-switch>
+                    </div>
                   </div>
                   <div class="form-group">
                     <label for="inputStatus">Select Course</label>
@@ -98,6 +110,12 @@
 
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
+  <script src="/dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+  <script>
+    $("input[data-bootstrap-switch]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    })
+  </script>
 </body>
 
 </html>

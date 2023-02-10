@@ -50,6 +50,7 @@
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
+                                                <th>Trial Link</th>
                                                 <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     Edit</th>
                                             </tr>
@@ -65,6 +66,11 @@
                                                         <i class="fa-solid fa-file-pdf mr-1" style="color: red;"></i>
                                                         {{this.fileName}}
                                                     </a>
+                                                </td>
+                                                <td>{{#if this.onTrial}}
+                                                    <a href="/trial/chapter/{{this.course._id}}/{{this._id}}"><span
+                                                            class="domainName"></span>/trial/chapter/{{this.course._id}}/{{this._id}}</a>
+                                                    {{else}}No{{/if}}
                                                 </td>
                                                 {{#ifEquals ../user.role "regulator" }}<td class="d-none">{{else}}
                                                 <td>
@@ -166,6 +172,9 @@
             });
             $(table.table().container()).find('[name="chapterTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
         });
+        let fullUrl = new URL(window.location)
+        const domainName = fullUrl.origin
+        $(".domainName").text(domainName)
     </script>
 
 </body>

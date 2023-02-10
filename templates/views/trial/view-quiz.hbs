@@ -1,0 +1,211 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+<style>
+    body {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <div class="wrapper">
+        {{>dashboardNavbar guest=true}}
+
+        <!-- Main Sidebar Container -->
+        {{>trialSidebar}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="content pt-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 mb-2">
+                            <div class="card h-100">
+                                <div class="card-header border-bottom-0">
+                                    <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
+                                </div>
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <tbody>
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
+                                                <td><a {{#if this.unlock}}
+                                                        href="{{#ifEquals this.type 'chapter'}}/trial/chapter/{{../courseId}}/{{this._id}}{{else}}/trial/quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
+                                                        {{else}} href="#" {{/if}}>
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{#if this.completed}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/if}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8 mb-2 quiz" oncopy="return false" oncut="return false"
+                            onpaste="return false">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{quiz.name}}</h3>
+                                    <div class="float-right timeHead {{#if takenQuiz}}d-none{{/if}}">
+                                        <h3 class="card-title mr-2">Timer:</h3>
+                                        <h3 class="card-title timer">00:00</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="result text-center mb-5 d-none"
+                                        id="result">
+                                        <h3 class="mb-0">Your Result</h3>
+                                        <h2 class="percent mb-0 font-weight-bold text-success">
+                                            0%</h2>
+                                        <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
+                                        <p>Your grade is <span class="grade text-success"> nil</span></p>
+                                        <table class="mx-auto my-4">
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Points</th>
+                                                <td class="text-right points"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Time Spend</th>
+                                                <td class="text-right time"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Questions</th>
+                                                <td class="text-right">{{quiz.questions.length}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Correct</th>
+                                                <td class="text-right correct"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Wrong</th>
+                                                <td class="text-right wrong"></td>
+                                            </tr>
+                                        </table>
+                                        <button class="retake btn btn-success retake mt-2" disabled>Retake</button>
+                                        <button class="btn btn-primary mt-2 ml-2 "
+                                            onclick="(function(){ window.history.back();}())">
+                                            <span class="text" id="button-text">Go Back</span>
+                                        </button>
+                                    </div>
+                                    <form id="quiz" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
+                                        <input type="hidden" name="quizId" value="{{quiz._id}}">
+                                        <input type="hidden" name="user" value="guest">
+                                        {{#each quiz.questions}}
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{increment @index}}). {{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this.qno}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="{{../this.qno}}-op-{{@index}}">
+                                                            {{this}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="feedback font-weight-bold d-none"></div>
+                                        </div>
+                                        {{/each}}
+                                        <button
+                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
+                                            type="submit">Submit</button>
+                                    </form>
+                                    <div
+                                        class="spinner d-none flex-column align-items-center position-absolute place-center">
+                                        <span class="loader ">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                        </span>
+                                        <span class="text font-weight-bold">msg</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!--
+    <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
+
+    <script>
+        const noOfQuestions = `{{{quiz.questions.length}}}`
+        const passingPercent = `{{{passingPercent}}}`
+        const reviewQuiz = `{{{reviewQuiz}}}`
+        const quizType = `{{{quiz.type}}}`
+        const takenQuiz = `{{{takenQuiz}}}`;
+        const examTime = quizType == "final" ? Number(`{{{timeForExam.final}}}`) * 60 : quizType == "mid" ? Number(`{{{timeForExam.mid}}}`) * 60 : 0;
+    </script>
+    <script src="/js/quiz-take.js"></script>
+</body>
+
+</html>

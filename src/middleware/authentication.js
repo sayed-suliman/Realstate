@@ -70,8 +70,8 @@ var authenticated = async (req, res, next) => {
 // redirect to dashboard when user is logged in
 var logged_in = (req, res, next) => {
   if (req.isAuthenticated()) {
-    req.flash("error", encodeMsg("test", "danger"));
-    req.flash("success", encodeMsg("test"));
+    // req.flash("error", encodeMsg("test", "danger"));
+    // req.flash("success", encodeMsg("test"));
     res.redirect("/dashboard");
   } else {
     next();

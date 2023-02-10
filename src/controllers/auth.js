@@ -10,6 +10,7 @@ const bcrypt = require("bcrypt");
 const login = (req, res) => {
   res.render("login", {
     title: "Login",
+    reCaptchaSiteKey: process.env.recaptcha_siteKey,
   });
 };
 const postLogin = (req, res) => {

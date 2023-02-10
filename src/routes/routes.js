@@ -112,6 +112,8 @@ const {
 const User = require("../models/users");
 const url = require("url");
 const { encodeMsg } = require("../helper/createMsg");
+const reCAPTCHA = require("../middleware/reCAPTCHA");
+const trial = require("../controllers/trial");
 
 router.get("/test", (req, res) => {
   sendVerificationCode("sulimank418@gmail.com", "1234");
@@ -206,12 +208,13 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
       );
     }
   } else {
-    res.redirect("/dashboard/users?msg=" +
-    encodeMsg("User ID is required.", "danger"));
+    res.redirect(
+      "/dashboard/users?msg=" + encodeMsg("User ID is required.", "danger")
+    );
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student
@@ -431,7 +434,10 @@ router.get("/dashboard/order", allOrders);
 router.get("/dashboard/messages", isAdmin, messages);
 router.get("/dashboard/read-message/:id", isAdmin, readMessage);
 
-// eroor 500 page
+router.get("/trial/chapter/:courseID/:chapterID", trial.chapter);
+router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
+
+// error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
   res.render("404", { title: "404 Error", err: "Page not Found Go back" });

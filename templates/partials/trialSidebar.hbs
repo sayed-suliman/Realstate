@@ -1,0 +1,74 @@
+<aside class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column overflow-hidden">
+  <!-- Brand Logo -->
+  <a href="#" class="brand-link">
+    <img src="{{site_logo}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <span class="brand-text font-weight-light">{{site_Title}}</span>
+  </a>
+
+  <!-- Sidebar -->
+  <div class="sidebar flex-grow-1">
+    <!-- Sidebar user panel (optional) -->
+    <div class="user-panel mt-3 pb-3 mb-3 d-flex">
+      <div class="image">
+        <img src="https://ui-avatars.com/api/?name=Guest User&rounded=true" class="img-circle elevation-2"
+          alt="User Image">
+      </div>
+      <div class="info">
+        <a href="#" class="d-block">Guest User</a>
+      </div>
+    </div>
+
+    <!-- SidebarSearch Form -->
+    <!-- Sidebar Menu -->
+    <nav class="mt-2 position-relative">
+      <ul class="nav nav-pills nav-sidebar flex-column opacity-25" data-widget="treeview" role="menu"
+        data-accordion="false">
+        <!-- dashboard -->
+        <li class="nav-item">
+          <a href="#" id='dashboard-link' class="nav-link">
+            <i class="nav-icon fas fa-tachometer-alt"></i>
+            <p>
+              Dashboard
+            </p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" id="courses" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="nav-icon fas fa-book"></i>
+            <p>Courses</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="#" id="contact-us-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-id-card-clip nav-icon"></i>
+            <p>Contact Us</p>
+          </a>
+        </li>
+        {{!-- Setting --}}
+        <li class="nav-item">
+          <a href="#" id="setting-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-sharp fa-solid fa-gear nav-icon"></i>
+            <p>Settings</p>
+          </a>
+        </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="#" id="sort-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
+      </ul>
+      <div class="lock position-absolute"
+        style="top:0;width:100%;height:100%;color:white;text-align:center;font-size:40px;display:grid;place-items:center">
+        <i class="fas fa-lock"></i>
+      </div>
+    </nav>
+  </div>
+  <!-- /.sidebar-menu -->
+  <!-- /.sidebar -->
+</aside>

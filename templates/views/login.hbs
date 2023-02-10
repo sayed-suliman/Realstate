@@ -1,4 +1,6 @@
 {{>header}}
+<!-- Google reCAPTCHA CDN -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
 <body>
     <main class="login-page pt-5 ">
@@ -28,6 +30,13 @@
                                     <label class="form-check-label user-select-none" for="remember-me">
                                         Remember Me
                                     </label>
+                                </div>
+                                <style>
+                                    .g-recaptcha>div {
+                                        width: 100% !important;
+                                    }
+                                </style>
+                                <div class="g-recaptcha" data-sitekey="{{reCaptchaSiteKey}}">
                                 </div>
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
