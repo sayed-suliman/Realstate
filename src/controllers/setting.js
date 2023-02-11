@@ -36,14 +36,6 @@ module.exports = {
       if (req.user.role == "admin") {
         const {
           stripeSecretKey,
-          stripePublishKey,
-          paypalClientID,
-          paypalClientSecret,
-          mailHost,
-          mailPort,
-          mailUser,
-          mailPass,
-          mailEmail,
           name,
           address,
           phone,
@@ -62,25 +54,6 @@ module.exports = {
           finalDay,
           finalTime,
         } = req.body;
-        if (stripeSecretKey) {
-          // check the stripe key is valid or not
-          // if invalid then throw error which is handle in catch section
-          const stripe = require("stripe")(stripeSecretKey);
-          await stripe.customers.list({ limit: 1 });
-        }
-        // if (stripePublishKey) {
-        //   console.log("publish");
-        //   // check the stripe key is valid or not
-        //   // if invalid then throw error
-        //   const stripe = require("stripe")(stripePublishKey);
-        //   await stripe.charges.create({
-        //     amount: 100,
-        //     currency: "usd",
-        //     source: "tok_visa",
-        //     description: "Test charge",
-        //   });
-        //   console.log("working");
-        // }
 
         const settingData = {
           collegeName: name,
@@ -92,15 +65,6 @@ module.exports = {
           midRetake,
           finalRetake,
           quizPolicy,
-          stripeSecretKey,
-          stripePublishKey,
-          paypalClientID,
-          paypalClientSecret,
-          mailHost,
-          mailPort,
-          mailUser,
-          mailPass,
-          mailEmail,
           unlockCourse: !!unlockCourse,
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,
@@ -307,11 +271,6 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log(error);
-      if (error.type == "StripeAuthenticationError") {
-        req.flash("error", { stripe: "Invalid API Key" });
-        return res.redirect("/dashboard/setting");
-      }
       var msg = encodeMsg(error.message, "danger", 500);
       res.redirect("/dashboard/setting?msg=" + msg);
     }

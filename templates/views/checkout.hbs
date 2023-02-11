@@ -14,12 +14,22 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row" class="text-start">Package</th>
-                                        <th class="text-end">{{package.name}}</th>
+                                        <th scope="row" class="text-start">{{#if course}}Course{{/if}}{{#if
+                                            package}}Package{{/if}}</th>
+                                        <th class="text-end">
+                                            {{#if package}}{{package.name}}{{/if}}
+                                            {{#if course}}{{course.name}}{{/if}}
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">Package Subtotal</td>
-                                        <td class="text-end">${{package.price}}</td>
+                                        <td scope="row" class="text-start">
+                                            {{#if course}}Course{{/if}}
+                                            {{#if package}}Package{{/if}} Subtotal
+                                        </td>
+                                        <td class="text-end">
+                                            ${{#if course}}{{course.price}}{{/if}}
+                                            {{#if package}}{{package.price}}{{/if}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Order Discounts</td>
@@ -27,11 +37,19 @@
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">{{package.tax}}%</td>
+                                        <td class="text-end">
+                                            {{#if package}}
+                                            {{package.tax}}%
+                                            {{else}}0%
+                                            {{/if}}
+                                        </td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">${{package.total}}</th>
+                                        <th class="text-end">
+                                            ${{#if course}}{{course.price}}{{/if}}
+                                            {{#if package}}{{package.total}}{{/if}}
+                                        </th>
                                     </tr>
                                 </tbody>
                             </table>

@@ -39,6 +39,7 @@ module.exports = {
           }
           return 0;
         });
+
         return res.render("trial/view-chapter", {
           title: `Chapter | ${chapter.name}`,
           chapter,
@@ -107,12 +108,13 @@ module.exports = {
         } else if (quiz.type == "final") {
           passingPercent = setting.finalPassingMark;
         }
+        console.log(course.package)
         res.render("trial/view-quiz", {
           title: `Quiz | ${quiz.name}`,
           quiz,
           passingPercent,
           reviewQuiz: setting.reviewQuiz,
-          courseId: course._id.toString(),
+          course,
           contents,
         });
       }

@@ -44,8 +44,8 @@
                                             {{#each contents}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td><a {{#if this.unlock}}
-                                                        href="{{#ifEquals this.type 'chapter'}}/trial/chapter/{{../courseId}}/{{this._id}}{{else}}/trial/quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
-                                                        {{else}} href="#" {{/if}}>
+                                                        href="{{#ifEquals this.type 'chapter'}}/trial/chapter/{{../course._id}}/{{this._id}}{{else}}/trial/quiz/{{../course._id}}/{{this._id}}{{/ifEquals}}"
+                                                        {{else}} href="#" {{course.package}} {{/if}}>
                                                         {{#ifEquals this.type 'chapter'}}<i
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
