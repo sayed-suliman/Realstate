@@ -22,10 +22,15 @@ const settingSchema = mongoose.Schema({
   unlockCourse: Boolean,
   finalDay: Number,
   finalTime: Number,
-  spExamQuCount: {
-    type: Number,
-    default: 0,
-  },
+  stripeSecretKey: String,
+  stripePublishKey: String,
+  paypalClientID: String,
+  paypalClientSecret: String,
+  mailHost: String,
+  mailPort: String,
+  mailUser: String,
+  mailPass: String,
+  mailEmail: String,
   finalTakeTime: {
     type: Number,
     default: 60,
@@ -34,41 +39,6 @@ const settingSchema = mongoose.Schema({
     type: Number,
     default: 30,
   },
-});
-
-settingSchema.pre("save", function (next) {
-  SP_Category.find({}, function (error, categories) {
-    if (error) {
-      return next(error);
-    }
-    let noOfQuestions = categories
-      .map((category) => {
-        return category.questions.length;
-      })
-      .reduce((a, b) => {
-        return a + b;
-      });
-    this.spExamQuCount = noOfQuestions;
-    console.log("save called", noOfQuestions);
-  });
-});
-settingSchema.pre("findByIdAndUpdate", function (next) {
-  console.log("hello");
-  SP_Category.find({}, function (error, categories) {
-    if (error) {
-      return next(error);
-    }
-    let noOfQuestions = categories
-      .map((category) => {
-        return category.questions.length;
-      })
-      .reduce((a, b) => {
-        return a + b;
-      });
-    this.spExamQuCount = noOfQuestions;
-  });
-  console.log("updated called", noOfQuestions);
-  return next();
 });
 
 const Setting = mongoose.model("setting", settingSchema);

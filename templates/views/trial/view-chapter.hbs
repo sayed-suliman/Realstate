@@ -1,0 +1,150 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar guest=true}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>trialSidebar}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="content pt-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-lg-4 mb-2">
+                            <div class="card h-100">
+                                <div class="card-header border-bottom-0">
+                                    <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
+                                </div>
+                                <div class="card-body table-responsive p-0">
+                                    <table class="table table-hover text-nowrap">
+                                        <tbody>
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
+                                                <td><a {{#if this.unlock}}
+                                                        href="{{#ifEquals this.type 'chapter'}}/trial/chapter/{{../courseId}}/{{this._id}}{{else}}/trial/quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
+                                                        {{else}} href="#" {{/if}}>
+                                                        {{#ifEquals this.type 'chapter'}}
+                                                        <i class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+
+                                                </td>
+                                                <td class="text-right">
+                                                    {{#ifEquals this.type 'chapter'}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-12 col-lg-8 mb-2">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h3 class="card-title">Chapter: {{chapter.name}}</h3>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row h-100">
+                                        <div class="w-100" style="min-height: calc(100vh - 278px);">
+                                            <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=0'
+                                                type="application/pdf" width="100%" height="100%">
+
+                                                <iframe src='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=0'
+                                                    width="100%" height="100%">
+                                                    <p>This browser does not support PDF!</p>
+                                                </iframe>
+                                            </object>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- REQUIRED SCRIPTS -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!--
+    <script src="/js/pdfjsExpress/webviewer.min.js"></script> --}}
+    {{!--
+    <script src="/js/pdfviewer.js"></script> --}}
+
+    <script>
+        if (window.outerWidth >= 993 && window.outerWidth <= 1200) {
+            $('body').addClass('sidebar-collapse')
+        }
+        window.addEventListener('resize', () => {
+            if (window.outerWidth >= 993 && window.outerWidth <= 1200) {
+                $('body').addClass('sidebar-collapse')
+            } else if (window.outerWidth >= 1200) {
+                $('body').removeClass('sidebar-collapse')
+            }
+        })
+    </script>
+</body>
+
+</html>

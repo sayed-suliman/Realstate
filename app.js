@@ -8,8 +8,6 @@ const passport = require("passport");
 const path = require("path");
 const flash = require("connect-flash");
 
-// Routes
-const allRoutes = require("./src/routes/routes");
 const Setting = require("./src/models/setting");
 require("dotenv").config();
 // database connection
@@ -58,10 +56,17 @@ app.use(async (req, res, next) => {
   if (setting) {
     title = setting.collegeName;
     logo = setting.logoPath;
+    // console.log("currently not working env file updation");
+    process.env.host = setting.mailHost;
+    process.env.mail_port = setting.mailPort;
+    process.env.user = setting.mailUser;
+    process.env.pass = setting.mailPass;
+    process.env.email = setting.mailEmail;
   }
   next();
 });
-
+// Routes
+const allRoutes = require("./src/routes/routes");
 // views path
 const viewsPath = path.join(__dirname, "./templates/views");
 // partials Path

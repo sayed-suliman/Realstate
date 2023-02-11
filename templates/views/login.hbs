@@ -29,6 +29,7 @@
                                         Remember Me
                                     </label>
                                 </div>
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
                             </form>
@@ -38,98 +39,17 @@
                         </span>
                     </div>
                 </div>
-                {{!-- <div class="col-lg-7 my-3 my-lg-0 offset-xxl-1 text-center register">
-                    <div class="card">
-                        <div class="bg-primary w-100 login-image-div">
-                            <img src="./images/login/register-icon.png" class="img-fluid" alt="">
-                        </div>
-                        <h2 class="fw-bold">Register</h2>
-                        <!-- <p class="m-0 mb-3">New Here?</p> -->
-                        <p class="m-0 mb-3">Register here with your information</p>
-                        <div class="px-3 mb-3">
-                            <form action="/register" method="post">
-                                <div class="row text-start">
-                                    <div class="col-md-6 mb-3">
-                                        <label for="f-n" class="form-label">First Name</label>
-                                        <input required type="text" id="f-n" class="form-control shadow-none"
-                                            name="first_name" placeholder="First Name">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="l-n" class="form-label">Last Name</label>
-                                        <input required type="text" id="l-n" class="form-control shadow-none"
-                                            name="last_name" placeholder="Last Name">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="p-i" class="form-label">Personal Id</label>
-                                        <input required type="text" id="p-i" class="form-control shadow-none"
-                                            name="personal_id" placeholder="Your Personal Id" aria-describedby="">
-                                        {{#if err}}
-                                        <div id="pi" class="form-text text-danger">{{err.personal_id}}</div>
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="email" class="form-label">Email</label>
-                                        <input required type="email" id="email" class="form-control shadow-none"
-                                            name="email" placeholder="Email">
-                                        {{#if err}}
-                                        <div id="em" class="form-text text-danger">{{err.email}}</div>
-                                        {{/if}}
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="ph-n" class="form-label">Phone Number</label>
-                                        <input required type="number" id="ph-n" class="form-control shadow-none"
-                                            name="phone" placeholder="Phone Number">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="city" class="form-label">City</label>
-                                        <input required type="text" id="city" class="form-control shadow-none"
-                                            name="city" placeholder="City">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="address" class="form-label">Address</label>
-                                        <input required type="text" id="address" class="form-control shadow-none"
-                                            name="address" placeholder="Address">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="state" class="form-label">State</label>
-                                        <input required type="text" id="state" class="form-control shadow-none"
-                                            name="state" placeholder="State">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="z-c" class="form-label">Zip Code</label>
-                                        <input required id="z-c" type="number" class="form-control shadow-none"
-                                            name="zip_code" placeholder="Zip Code">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="dob" class="form-label">Date of Birth</label>
-                                        <input required type="date" id="dob" class="form-control shadow-none" name="dob"
-                                            value="pla">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="password" class="form-label">Password</label>
-                                        <input required id="password" type="password"
-                                            class="form-control shadow-none mb-3 pass" name="password"
-                                            placeholder="Password">
-                                    </div>
-                                    <div class="col-md-6 mb-3">
-                                        <label for="c_password" class="form-label">Confirm Password</label>
-                                        <input required type="password" id="c_password" name="c_password"
-                                            class="form-control shadow-none mb-3 pass" placeholder="Confirm Password">
-                                        {{#if err.password}}
-                                        <div class="form-text text-danger">{{err.password}}</div>
-                                        {{/if}}
-                                    </div>
-                                </div>
-                                <button type="submit"
-                                    class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
-                                    Now</button>
-                            </form>
-                        </div>
-                    </div>
-                </div> --}}
             </div>
         </div>
     </main>
     {{!--for form validaitons --}}
     <script src="./js/form-validations.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
+    </script>
     {{>footer}}

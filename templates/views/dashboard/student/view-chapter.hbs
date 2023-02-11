@@ -51,6 +51,16 @@
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
                                                     {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
                                                         Questions
                                                     </span>
@@ -87,6 +97,16 @@
                                                     {{/if}}
                                                     {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
                                                         Questions
                                                     </span>
@@ -135,16 +155,15 @@
                                 </div>
                                 <div class="card-footer">
                                     {{#unless chapter.completed}}
-                                        <button
-                                            class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right"
-                                            id="completed" style="width: 170px;" {{#if
-                                            chapter.completed}}disabled{{/if}}>
-                                            <div class="spinner d-none" id="spinner">
-                                                <i class="fa-solid fa-circle-notch fa-spin"></i>
-                                            </div>
-                                            <span class="text" id="button-text">Mark as completed</span>
-                                        </button>
-                                        {{/unless}}
+                                    <button
+                                        class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right"
+                                        id="completed" style="width: 170px;" {{#if chapter.completed}}disabled{{/if}}>
+                                        <div class="spinner d-none" id="spinner">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                        </div>
+                                        <span class="text" id="button-text">Mark as completed</span>
+                                    </button>
+                                    {{/unless}}
                                 </div>
 
                             </div>

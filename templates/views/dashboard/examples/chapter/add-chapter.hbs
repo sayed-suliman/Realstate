@@ -57,6 +57,17 @@
                     <input required type="file" accept=".pdf" id="coursefile" name="courseFile" class="form-control">
                   </div>
                   <div class="form-group">
+                    <label for="inputStatus">On Trial
+                      {{!-- <span class="small text-danger">(Other chapters of this course
+                        will be removed
+                        from the trial if exist.)</span> --}}
+                    </label>
+                    <div>
+                      <input type="checkbox" value="yes" name="trial" {{#if chapter.onTrial}}checked{{/if}}
+                        data-bootstrap-switch>
+                    </div>
+                  </div>
+                  <div class="form-group">
                     <label for="inputStatus">Select Course</label>
                     <select id="inputStatus" required name="course" class="form-control custom-select">
                       <option selected disabled value="">Select one</option>
@@ -98,6 +109,12 @@
 
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
+  <script src="/dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
+  <script>
+    $("input[data-bootstrap-switch]").each(function () {
+      $(this).bootstrapSwitch('state', $(this).prop('checked'));
+    })
+  </script>
 </body>
 
 </html>

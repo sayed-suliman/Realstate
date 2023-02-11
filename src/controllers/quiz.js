@@ -55,9 +55,11 @@ const postQuiz = async (req, res) => {
     const course = await Course.findOne({ name: data.course });
     const name = data.name;
     const type = data.type;
+    const onTrail = !!data.trial;
     delete data.name;
     delete data.course;
     delete data.type;
+    delete data.trail;
     const questions = Object.keys(data).length / 3;
     for (let i = 1; i <= questions; i++) {
       fullQuiz.push({
@@ -71,6 +73,7 @@ const postQuiz = async (req, res) => {
       name: name,
       type: type,
       questions: fullQuiz,
+      onTrail,
     }).save();
     if (quizAdded) {
       course.quizzes.push(quizAdded._id);
@@ -119,9 +122,11 @@ const updateQuiz = async (req, res) => {
 
     const name = data.name;
     const type = data.type;
+    const onTrial = data.trial;
     delete data.name;
     delete data.course;
     delete data.type;
+    delete data.trail;
     const questions = Object.keys(data).length / 3;
     for (let i = 1; i <= questions; i++) {
       fullQuiz.push({
@@ -134,6 +139,7 @@ const updateQuiz = async (req, res) => {
       questions: fullQuiz,
       name,
       type,
+      onTrial,
       course: afterCourse._id,
     });
     if (!(oldCourse.name == afterCourse.name)) {
@@ -364,6 +370,7 @@ const viewQuiz = async (req, res) => {
 const takeQuiz = async (req, res) => {
   try {
     const time = req.body.time;
+    const user = req.body.user;
     const quiz = await Quiz.findById(req.body.quizId);
     const questions = quiz.questions;
     const setting = await Setting.findOne();
@@ -371,6 +378,7 @@ const takeQuiz = async (req, res) => {
     // deleting the quizId & time so that the req.body only contain answer
     delete req.body.quizId;
     delete req.body.time;
+    delete req.body.user;
 
     if (setting.randomizeQuestions) {
       // sort the object by property and return back an object
@@ -431,29 +439,34 @@ const takeQuiz = async (req, res) => {
       noOfRetake = setting.finalRetake;
     }
     let retake = true;
-    if (alreadyTakenQuiz) {
-      delete data.quiz;
-      delete data.user;
-      const updatedQuiz = await Result.findOneAndUpdate(
-        {
-          quiz: quiz._id,
-          user: req.user._id,
-        },
-        {
-          ...data,
-          take: alreadyTakenQuiz.take + 1,
-        },
-        { new: true }
-      );
-      // only for mid and final term
-      if (quiz.type != "quiz") {
-        retake = !(updatedQuiz.take >= noOfRetake);
-      }
-    } else {
-      const newQuiz = await Result({ ...data, take: 1 }).save();
-      // only for mid and final term
-      if (quiz.type != "quiz") {
-        retake = !(newQuiz.take >= noOfRetake);
+
+    // saving the result when the user is not guest
+    //i.e guest for the trial user
+    if (user != "guest") {
+      if (alreadyTakenQuiz) {
+        delete data.quiz;
+        delete data.user;
+        const updatedQuiz = await Result.findOneAndUpdate(
+          {
+            quiz: quiz._id,
+            user: req.user._id,
+          },
+          {
+            ...data,
+            take: alreadyTakenQuiz.take + 1,
+          },
+          { new: true }
+        );
+        // only for mid and final term
+        if (quiz.type != "quiz") {
+          retake = !(updatedQuiz.take >= noOfRetake);
+        }
+      } else {
+        const newQuiz = await Result({ ...data, take: 1 }).save();
+        // only for mid and final term
+        if (quiz.type != "quiz") {
+          retake = !(newQuiz.take >= noOfRetake);
+        }
       }
     }
     // sending object to client side javascript

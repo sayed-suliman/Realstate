@@ -56,6 +56,7 @@
                                     placeholder="Email">
                                 <input type="password" required class="form-control shadow-none mb-3" name="password"
                                     placeholder="Password">
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
                             </form>
@@ -103,13 +104,13 @@
                                                     <div class="col-12 mb-3">
                                                         <label for="f-n" class="form-label">Full Name</label>
                                                         <input required type="text" id="f-n"
-                                                            class="form-control shadow-none" value="{{oldData.name}}" name="name"
-                                                            placeholder="Full Name">
+                                                            class="form-control shadow-none" value="{{oldData.name}}"
+                                                            name="name" placeholder="Full Name">
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <label for="email" class="form-label">Email</label>
-                                                        <input required type="email" value="{{oldData.email}}" id="email"
-                                                            class="form-control shadow-none" name="email"
+                                                        <input required type="email" value="{{oldData.email}}"
+                                                            id="email" class="form-control shadow-none" name="email"
                                                             placeholder="Email">
                                                         {{#if err}}
                                                         <div id="em" class="form-text text-danger">{{err.email}}</div>
@@ -132,6 +133,8 @@
                                                         {{/if}}
                                                     </div>
                                                 </div>
+                                                <input type="hidden" id="g-recaptcha-response"
+                                                    name="g-recaptcha-response">
                                                 <button type="submit"
                                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
                                                     Now</button>
@@ -154,9 +157,15 @@
     {{!--for form validations --}}
     <script src="./js/form-validations.js"></script>
     {{>footer}}
+    <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
     <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'registration' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
         var err = `{{{err}}}`
-        if(err){
+        if (err) {
             new bootstrap.Modal(document.getElementById("registrationModal")).show()
         }
     </script>
