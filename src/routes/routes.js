@@ -258,7 +258,7 @@ router.post("/reset-password", doResetPassword);
 // checkout post
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", signUpMiddleware, signUp);
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 // sign up used because their is registration on checkout
 // router.post("/checkout", signUpMiddleware, signUp)
 router.get("/checkout2", doCheckout);
