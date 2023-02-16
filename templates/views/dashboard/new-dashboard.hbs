@@ -214,6 +214,7 @@
                       {{#each userCourses}}
                       <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                         <td>
+                          {{this.test}}
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-blue" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default" data-banner="{{this.banner}}"
@@ -255,13 +256,13 @@
                         </td>
                       </tr>
                       {{/each}}
+                      {{/if}}
                       <tr>
                         <td colspan="2"><a class="text-capitalize" href="/dashboard/salesperson/">Salesperson</a></td>
                         <td class="text-right"><a href="/dashboard/salesperson/" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a></td>
                       </tr>
-                      {{/if}}
                     </tbody>
                   </table>
                 </div>

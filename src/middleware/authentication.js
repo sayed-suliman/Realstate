@@ -25,6 +25,7 @@ var authenticated = async (req, res, next) => {
     }
     // check whether user bought a package or not
     if (req.user.role == "student") {
+      // when user is not verified
       if (!req.user.verified) {
         const otpCode = generateCode();
         await OTP({
@@ -41,6 +42,7 @@ var authenticated = async (req, res, next) => {
           })
         );
       }
+      // check that the user have purchase any package or course
       var order = await Order.findOne({ user: req.user._id });
       if (!order) {
         // when logged in by admin as student

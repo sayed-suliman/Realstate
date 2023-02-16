@@ -115,10 +115,16 @@
                                             </div>
                                             <form action="/register" method="post" id="validFrom">
                                                 <div class="row text-start">
+                                                    {{#if course}}
+                                                    <input required type="hidden" name="total" value="{{course.price}}">
+                                                    <input required type="hidden" name="course" value="{{course._id}}">
+                                                    {{/if}}
+                                                    {{#if package}}
                                                     <input required type="hidden" name="total"
                                                         value="{{package.total}}">
                                                     <input required type="hidden" name="package"
                                                         value="{{package._id}}">
+                                                    {{/if}}
                                                     <div class="col-12 mb-3">
                                                         <label for="f-n" class="form-label">Full Name</label>
                                                         <input required type="text" id="f-n"

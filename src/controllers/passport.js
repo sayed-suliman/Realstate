@@ -22,15 +22,26 @@ passport.use(
             return done(null, false, { message: "Credentials doesn't match." });
           }
           if (user.role == "student") {
-            await user.populate({
-              path: "package",
-              populate: { path: "courses", match: { status: "publish" } },
-            });
-            if (!user.package || !user.package.courses) {
-              //show this message when there is no package or course in the database
-              return done(null, false, {
-                message: "Your package is expired or is no longer available.",
+            if (user.package) {
+              await user.populate({
+                path: "package",
+                populate: { path: "courses", match: { status: "publish" } },
               });
+              if (!user.package || !user.package.courses) {
+                //show this message when there is no package or course in the database
+                return done(null, false, {
+                  message: "Your package is expired or is no longer available.",
+                });
+              }
+            }
+            if (user.courses.length) {
+              await user.populate("courses");
+              if (!user.courses || !user.courses.length > 0) {
+                //show this message when there is no course in the database
+                return done(null, false, {
+                  message: "Your course is no longer available.",
+                });
+              }
             }
           }
           return done(null, user);

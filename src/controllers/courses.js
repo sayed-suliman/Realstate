@@ -209,10 +209,18 @@ const deleteCourse = async (req, res) => {
 // Student all courses
 var allCourses = async (req, res) => {
   try {
-    await req.user.populate({ path: "package", populate: { path: "courses" } });
-    var userCourses;
+    await req.user.populate([
+      { path: "package", populate: { path: "courses" } },
+      { path: "courses" },
+    ]);
+    let userCourses = [];
     if (req.user.role === "student") {
-      userCourses = await req.user.package.courses;
+      if (req.user.package) {
+        userCourses = [...req.user.package.courses];
+      }
+      if (req.user.courses) {
+        userCourses = [...userCourses, ...req.user.courses];
+      }
       let courseMeta = await UserMeta.find({
         user_id: req.user._id,
       });
@@ -270,6 +278,7 @@ var allCourses = async (req, res) => {
           (progress[content.name] / total) * 100
         );
       }
+      console.log(progress, total);
     }
     res.render("dashboard/examples/courses/course-detail", {
       title: "Dashboard | All Courses",
@@ -277,6 +286,7 @@ var allCourses = async (req, res) => {
       progress,
     });
   } catch (e) {
+    console.log(e.message);
     res.redirect(
       url.format({
         pathname: "/dashboard",
@@ -353,10 +363,17 @@ var viewCourse = async (req, res) => {
       .populate("quizzes")
       .lean();
     if (course) {
-      await req.user.populate("package");
-      let userPackage = req.user.package;
-      // authorized to purchase package courses
-      if (userPackage.courses.includes(course._id)) {
+      let userCourses = [];
+      if (req.user.package) {
+        await req.user.populate("package");
+        userCourses = [...req.user.package.courses];
+      }
+      if (req.user.courses.length) {
+        userCourses = [...userCourses, ...req.user.courses];
+      }
+      userCourses = userCourses.map((el) => el.toString());
+      // authorized to purchase course of package or course
+      if (userCourses.includes(course._id.toString())) {
         const courseMeta = await UserMeta.findOne({
           user_id: req.user._id,
           course: ID,
@@ -507,11 +524,13 @@ var viewCourse = async (req, res) => {
           })
         );
       }
-    }else{
-      res.redirect("/dashboard?msg="+encodeMsg('Course not found.','danger'));
+    } else {
+      res.redirect(
+        "/dashboard?msg=" + encodeMsg("Course not found.", "danger")
+      );
     }
   } catch (err) {
-    console.log(err.message);
+    console.log("Courses Error:", err.message);
     if (err.message.includes("ObjectId failed")) {
       return res.redirect(
         url.format({

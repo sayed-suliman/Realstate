@@ -16,11 +16,21 @@ module.exports = {
       }
 
       if (req.user.role == "student") {
-        await req.user.populate({
-          path: "package",
-          populate: { path: "courses", match: { status: "publish" } },
-        });
-        var userCourses = await req.user.package.courses;
+        let userCourses = [];
+        await req.user.populate([
+          {
+            path: "package",
+            populate: { path: "courses", match: { status: "publish" } },
+          },
+          { path: "courses" },
+        ]);
+
+        if (req.user.package) {
+          userCourses = [...(await req.user.package.courses)];
+        }
+        if (req.user.courses.length) {
+          userCourses = [...userCourses, ...req.user.courses];
+        }
         if (userCourses) {
           var completedCourses = {};
           let progress = {};
@@ -28,14 +38,14 @@ module.exports = {
           let courseMeta = await UserMeta.find({
             user_id: req.user._id,
           });
-          // filtering only courses meta
+          // filtering only courses meta (used for accept agreement)
           courseMeta = courseMeta.filter((el) => el.course != undefined);
 
           // progress calculation
-          for await (let content of userCourses) {
+          for await (let [index, content] of userCourses.entries()) {
             // used for to find the content(chap+quiz) length
             let total = 0;
-
+            userCourses[index].unlock = true;
             for await (let chapter of content.chapters) {
               const completedChap = await UserMeta.findOne({
                 chapter_id: chapter.toString(),
@@ -66,6 +76,8 @@ module.exports = {
               total++;
             }
 
+            // calculating the progress in percentage
+            // and adding the 100% completed course to completedCourses
             if (progress[content.name]) {
               const value = Math.floor((progress[content.name] / total) * 100);
               progress[content.name] = value;
@@ -74,13 +86,10 @@ module.exports = {
               }
             }
           }
-          // remove the completed courses for the userCourse list
+          // remove the completed courses from the userCourse list
           for await (let [index, content] of userCourses.entries()) {
             if (completedCourses[content.name]) {
               userCourses.splice(index, 1);
-            }
-            if (userCourses.length) {
-              userCourses[index].unlock = true;
             }
           }
 
@@ -254,6 +263,7 @@ module.exports = {
         lastYearAllAmounts,
       });
     } catch (error) {
+      console.log(error);
       res.redirect(
         url.format({
           pathname: "/dashboard",
@@ -280,7 +290,7 @@ module.exports = {
         url.format({
           pathname: "/dashboard/salesperson",
           query: {
-            msg: encodeMsg(error.message, "danger"),
+            msg: encodeMsg(error.message, "danger", 500),
           },
         })
       );

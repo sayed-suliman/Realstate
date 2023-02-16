@@ -1,8 +1,5 @@
 const Package = require("../models/package");
-const { generateCode } = require("../helper/genCode");
-const { sendVerificationCode } = require("./mailServices");
 const url = require("url");
-const User = require("../models/users");
 const Course = require("../models/courses");
 
 module.exports = {
@@ -12,15 +9,26 @@ module.exports = {
     try {
       const packageID = req.query.package;
       const courseID = req.query.course;
-
+      
+      let cart = {
+        user: null,
+        item: "",
+        itemType: "",
+      };
       // when user buying package
       if (packageID) {
         var package = await Package.findById(packageID)
           .where("status")
           .equals("publish");
         if (package) {
+          cart.item = package._id;
+          cart.itemType = "package";
+          req.session.cart = cart;
+
           if (req.user) {
-            // await User.findByIdAndUpdate(req.user._id, { package: packageID })
+            // updating cart user
+            req.session.cart.user = req.user._id;
+
             return res.redirect(
               url.format({
                 pathname: "/payment",
@@ -45,34 +53,34 @@ module.exports = {
         let course = await Course.findById(courseID)
           .where("status")
           .equals("publish");
-          if (course) {
-            if (req.user) {
-              return res.redirect(
-                url.format({
-                  pathname: "/payment",
-                  query: {
-                    user: req.user._id.toString(),
-                  },
-                })
-              );
-            }
-            course.total = (course.price).toFixed(2); //total price with tax
-            return res.render("checkout", {
-              title: "Checkout",
-              course,
-              reCaptchaSiteKey: process.env.recaptcha_siteKey,
-            });
+
+        if (course) {
+          cart.item = course._id;
+          cart.itemType = "course";
+          req.session.cart = cart;
+          if (req.user) {
+            req.session.cart.user = req.user._id;
+            return res.redirect(
+              url.format({
+                pathname: "/payment",
+                query: {
+                  user: req.user._id.toString(),
+                },
+              })
+            );
           }
-          
+          course.total = course.price.toFixed(2); //total price with tax
+          return res.render("checkout", {
+            title: "Checkout",
+            course,
+            reCaptchaSiteKey: process.env.recaptcha_siteKey,
+          });
+        }
       }
 
       return res.redirect("/");
     } catch (error) {
       res.redirect("/");
     }
-  },
-  doCheckout(req, res) {
-    sendVerificationCode("sulimank418@gmail.com", generateCode());
-    res.send(generateCode());
   },
 };

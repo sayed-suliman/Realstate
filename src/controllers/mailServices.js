@@ -52,13 +52,12 @@ module.exports = {
         },
       });
       if (send) {
-        console.log("sent");
-        console.log(send);
+        console.log("Verification email send.");
       } else {
-        console.log("failed send email");
+        console.log("Error at verification mail.");
       }
     } catch (error) {
-      console.log("Sending verification email failed.");
+      console.log("Sending verification email failed." + error.message);
     }
   },
   async sendAgreement(email, username) {

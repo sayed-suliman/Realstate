@@ -175,8 +175,15 @@ const viewChapter = async (req, res) => {
     const courseId = req.params.courseId;
     const course = await CourseModel.findById(courseId);
     if (course) {
-      await req.user.populate("package");
-      let userPackage = req.user.package;
+      let userCourses;
+      if (req.user.package) {
+        await req.user.populate("package");
+        userCourses = req.user.package.courses;
+      }
+      if (req.user.courses.length) {
+        userCourses = req.user.courses;
+      }
+
       // pdf view (right side)
       const ID = req.params.id;
       const chapter = await Chapters.findById(ID).lean();
@@ -189,12 +196,11 @@ const viewChapter = async (req, res) => {
       }
       // access only the course of the purchased package
       if (
-        userPackage.courses.includes(course._id) &&
+        userCourses.includes(course._id) &&
         course.chapters.includes(chapter._id)
       ) {
         await course.populate("chapters");
         await course.populate("quizzes");
-        console.log(course);
         const courseMeta = await UserMeta.findOne({
           user_id: req.user._id,
           course: courseId,

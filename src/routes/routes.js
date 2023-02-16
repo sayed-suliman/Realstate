@@ -145,26 +145,30 @@ router.get("/email", (req, res) => {
 });
 // default route
 router.get("/", async (req, res) => {
-  const msg = req.query.msg;
-  const type = req.query.type;
-  const packages = await Package.find({ status: "publish" })
-    .populate({
-      path: "courses",
-      match: {
-        status: "publish",
-      },
-    })
-    .sort("price");
-  const packageObj = {};
-  packages.forEach((package) => {
-    packageObj[package.name] = package;
-  });
-  res.render("package", {
-    packages,
-    msg: { text: msg, type },
-    title: "Packages Plan",
-    packageObj,
-  });
+    try {
+    const msg = req.query.msg;
+    const type = req.query.type;
+    const packages = await Package.find({ status: "publish" })
+      .populate({
+        path: "courses",
+        match: {
+          status: "publish",
+        },
+      })
+      .sort("price");
+    const packageObj = {};
+    packages.forEach((package) => {
+      packageObj[package.name] = package;
+    });
+    res.render("package", {
+      packages,
+      msg: { text: msg, type },
+      title: "Packages Plan",
+      packageObj,
+    });
+  } catch (error) {
+    res.redirect("/");
+  }
 });
 
 // login route
@@ -186,7 +190,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
       path: "package",
       populate: { path: "courses", match: { status: "publish" } },
     });
-    if (user.package && user.package.courses) {
+    if ((user.package && user.package.courses) || user.courses) {
       req.login(user, function (err) {
         if (err) {
           return next(err);
@@ -214,7 +218,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
+router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student
@@ -258,15 +262,7 @@ router.post("/reset-password", doResetPassword);
 // checkout post
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
-// sign up used because their is registration on checkout
-// router.post("/checkout", signUpMiddleware, signUp)
-router.get("/checkout2", doCheckout);
-
-// for testing checkout
-router.get("/check", (req, res) => {
-  res.render("check", { title: "Checkout" });
-});
+router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
 
 // middleware for all dashboard route
 router.use("/dashboard", authenticated);

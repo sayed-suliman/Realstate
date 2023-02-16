@@ -168,11 +168,18 @@ const viewQuiz = async (req, res) => {
     const quiz = await Quiz.findById(QuizId);
     let course = await Course.findById(courseId);
     if (quiz && course) {
-      await req.user.populate("package");
-      let userPackage = req.user.package;
+      let userCourses;
+      if (req.user.package) {
+        await req.user.populate("package");
+        userCourses = req.user.package.courses;
+      }
+      if (req.user.courses.length) {
+        userCourses = [...userCourses, ...req.user.courses];
+      }
+      userCourses = userCourses.map((el) => el.toString());
       // authorized to purchase package quizzes
       if (
-        userPackage.courses.includes(course._id) &&
+        userCourses.includes(course._id.toString()) &&
         course.quizzes.includes(quiz._id)
       ) {
         await course.populate("chapters");

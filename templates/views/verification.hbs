@@ -14,12 +14,22 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row" class="text-start">Package</th>
-                                        <th class="text-end">{{user.package.name}}</th>
+                                        <th scope="row" class="text-start">{{#if
+                                            user.package}}Package{{else}}Course{{/if}}</th>
+                                        <th class="text-end">
+                                            {{#if
+                                            user.package}}{{user.package.name}}{{else}}{{user.courses.[0].name}}{{/if}}
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">Package Subtotal</td>
-                                        <td class="text-end">${{user.package.price}}</td>
+                                        <td scope="row" class="text-start">
+                                            {{#if user.package}}Package{{else}}Course{{/if}}
+                                            Subtotal
+                                        </td>
+                                        <td class="text-end">
+                                            ${{#if user.package}}{{user.package.price}}{{else}}
+                                            {{user.courses.[0].price}}{{/if}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Order Discounts</td>
@@ -27,11 +37,19 @@
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">{{user.package.tax}}%</td>
+                                        <td class="text-end">
+                                            {{#if user.package}}
+                                            {{user.package.tax}}%
+                                            {{else}}0%
+                                            {{/if}}
+                                        </td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">${{user.total}}</th>
+                                        <th class="text-end">
+                                            ${{#if user.package}}{{user.total}}{{else}}
+                                            {{user.courses.[0].price}}{{/if}}
+                                        </th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -50,8 +68,9 @@
                             <div>
                                 <p class="mx-auto w-50 fs-18" style="font-weight: 300;">We have send 4 digits code via
                                     your email. Please
-                                    check your email. The code will be expired in <b class="text-danger">10 minutes</b>.<br><span
-                                        style="color: var(--btn-primary);">{{user.email}}</span></p>
+                                    check your email. The code will be expired in <b class="text-danger">10
+                                        minutes</b>.<br><span style="color: var(--btn-primary);">{{user.email}}</span>
+                                </p>
                             </div>
                             {{!-- form --}}
                             <div class="bg-white w-50 mx-auto py-5  rounded-8">
@@ -69,10 +88,10 @@
                                     </div>
                                     <button class="btn btn-success btn-verify px-3 py-2" type="submit">Verify!</button>
                                     {{#if sent}}
-                                        <p class="mb-0 mt-3 text-success fs-16">Verification code sent successfully.</p>
+                                    <p class="mb-0 mt-3 text-success fs-16">Verification code sent successfully.</p>
                                     {{/if}}
                                     {{#if err}}
-                                        <p class="mb-0 mt-3 text-danger fs-16">{{err}}</p>
+                                    <p class="mb-0 mt-3 text-danger fs-16">{{err}}</p>
                                     {{/if}}
                                 </form>
                             </div>
@@ -125,23 +144,23 @@
             }
         }
 /*
-                                                //jquery to send next
-                                                 $(document).ready(function(){
-                                                            $('.verify-input').keyup(function(e){
-                                                                const input = e.target
-                                                                let value = input.value
-                                                                //input.value = ""
-                                                                input.value = value ? value[0] : ""
-                                                                if(value.length >= 1){
-                                                                   $(input).next().focus()
-                                                                }
-                                                                if(e.key == "Backspace"){
-                                                                    if(value.length < 1){
-                                                                        $(input).prev().focus()
-                                                                    }
-                                                                }
-                                                            })
-                                                        })
-                                                */
+                                                                                                        //jquery to send next
+                                                                                                         $(document).ready(function(){
+                                                                                                                    $('.verify-input').keyup(function(e){
+                                                                                                                        const input = e.target
+                                                                                                                        let value = input.value
+                                                                                                                        //input.value = ""
+                                                                                                                        input.value = value ? value[0] : ""
+                                                                                                                        if(value.length >= 1){
+                                                                                                                           $(input).next().focus()
+                                                                                                                        }
+                                                                                                                        if(e.key == "Backspace"){
+                                                                                                                            if(value.length < 1){
+                                                                                                                                $(input).prev().focus()
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    })
+                                                                                                                })
+                                                                                                        */
     </script>
     {{>footer}}
