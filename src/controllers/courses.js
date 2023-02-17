@@ -132,7 +132,7 @@ const updateCourse = async (req, res) => {
       package: packages,
     });
     fs.unlink("public/images/course" + oldPath, (err, data) => {
-      console.log("delte", err, data);
+      console.log("Course File Deleted.");
     });
     if (course) {
       if (!data.package) {
@@ -210,8 +210,11 @@ const deleteCourse = async (req, res) => {
 var allCourses = async (req, res) => {
   try {
     await req.user.populate([
-      { path: "package", populate: { path: "courses" } },
-      { path: "courses" },
+      {
+        path: "package",
+        populate: { path: "courses", match: { status: "publish" } },
+      },
+      { path: "courses", match: { status: "publish" } },
     ]);
     let userCourses = [];
     if (req.user.role === "student") {
@@ -240,7 +243,10 @@ var allCourses = async (req, res) => {
       userCourses = await CourseModel.find({ status: "publish" });
     }
     let progress = {};
-    for await (let content of userCourses) {
+    let uniqueCourses = [
+      ...new Set(userCourses.map((el) => JSON.stringify(el))),
+    ].map((el) => JSON.parse(el));
+    for await (let content of uniqueCourses) {
       // used for to find the content(chap+quiz) length
       let total = 0;
 
@@ -278,7 +284,6 @@ var allCourses = async (req, res) => {
           (progress[content.name] / total) * 100
         );
       }
-      console.log(progress, total);
     }
     res.render("dashboard/examples/courses/course-detail", {
       title: "Dashboard | All Courses",

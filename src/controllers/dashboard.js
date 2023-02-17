@@ -22,7 +22,7 @@ module.exports = {
             path: "package",
             populate: { path: "courses", match: { status: "publish" } },
           },
-          { path: "courses" },
+          { path: "courses", match: { status: "publish" } },
         ]);
 
         if (req.user.package) {

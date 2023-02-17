@@ -9,7 +9,7 @@ module.exports = {
     try {
       const packageID = req.query.package;
       const courseID = req.query.course;
-      
+
       let cart = {
         user: null,
         item: "",

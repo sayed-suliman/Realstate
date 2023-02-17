@@ -50,9 +50,9 @@
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Package</th>
-                                                <th>Description</th>
                                                 <th>Status</th>
                                                 <th>Price</th>
+                                                <th>Purchase Link</th>
                                                 <th>Edit</th>
                                             </tr>
                                         </thead>
@@ -65,9 +65,14 @@
                                                     <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
                                                     {{/each}}
                                                 </td>
-                                                <td>{{this.description}}</td>
                                                 <td>{{this.status}}</td>
                                                 <td>{{this.price}}</td>
+                                                <td>{{#ifEquals this.status 'publish'}}
+                                                    <a href="/checkout?course={{this._id}}"><span
+                                                            class="domainName"></span>/checkout?course={{this._id}}</a>{{else}}
+                                                    Publish the course to see the link.
+                                                    {{/ifEquals}}
+                                                </td>
                                                 <td>
                                                     <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
                                                         type="button">
@@ -338,6 +343,11 @@
         });
     </script>
     {{/ifEquals}}
+    <script>
+        let fullUrl = new URL(window.location)
+        const domainName = fullUrl.origin
+        $(".domainName").text(domainName)
+    </script>
 
 </body>
 

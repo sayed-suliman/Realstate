@@ -1,0 +1,147 @@
+{{>dashboardheader}}
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+        {{!-- toast --}}
+        {{>alert}}
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>{{#ifEquals user.role "admin"}}Courses Detail{{else}}All Courses{{/ifEquals}}</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Buy More</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <table id="courseTable" class="table table-bordered table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Name</th>
+                                                <th>Package(Included)</th>
+                                                <th>Price</th>
+                                                <th>Purchase Link</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {{#each allCourses}}
+                                            <tr>
+                                                <td>{{this.name}}</td>
+                                                <td>
+                                                    {{#each this.package}}
+                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
+                                                    {{/each}}
+                                                </td>
+                                                <td>{{this.price}}</td>
+                                                <td>
+                                                    <a href="/checkout?course={{this._id}}"><span
+                                                            class="domainName"></span>/checkout?course={{this._id}}</a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- /.card-body -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.card -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!-- table jquery plugins --}}
+    <!-- DataTables  & Plugins -->
+    <script src="../dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/jszip/jszip.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+        $(function () {
+            $('#courseTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+    </script>
+    {{#ifEquals user.role "student"}}
+    <script>
+        $("#modal-default").on("show.bs.modal", function (e) {
+            let link = $(e.relatedTarget).data('link')
+            let banner = $(e.relatedTarget).data('banner')
+            $(this).find('.modal-body').css('background', `url('${banner}') no-repeat center`)
+            $(this).find('#yes-start').data('link', link)
+        });
+        $("#agreement").on('show.bs.modal', function (e) {
+            $("#modal-default").modal("hide");
+            let link = $(e.relatedTarget).data('link')
+            $(this).find('#accept').prop('href', link + "?agree=true")
+        });
+    </script>
+    {{/ifEquals}}
+    <script>
+        let fullUrl = new URL(window.location)
+        const domainName = fullUrl.origin
+        $(".domainName").text(domainName)
+    </script>
+
+</body>
+
+</html>

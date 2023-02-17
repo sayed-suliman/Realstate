@@ -114,6 +114,7 @@ const url = require("url");
 const { encodeMsg } = require("../helper/createMsg");
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const trial = require("../controllers/trial");
+const buyMore = require("../controllers/buy-more");
 
 router.get("/test", (req, res) => {
   sendVerificationCode("sulimank418@gmail.com", "1234");
@@ -145,7 +146,7 @@ router.get("/email", (req, res) => {
 });
 // default route
 router.get("/", async (req, res) => {
-    try {
+  try {
     const msg = req.query.msg;
     const type = req.query.type;
     const packages = await Package.find({ status: "publish" })
@@ -186,10 +187,13 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
         })
       );
     }
-    const user = await User.findById(req.query.uid).populate({
-      path: "package",
-      populate: { path: "courses", match: { status: "publish" } },
-    });
+    const user = await User.findById(req.query.uid).populate([
+      {
+        path: "package",
+        populate: { path: "courses", match: { status: "publish" } },
+      },
+      { path: "courses" },
+    ]);
     if ((user.package && user.package.courses) || user.courses) {
       req.login(user, function (err) {
         if (err) {
@@ -425,6 +429,9 @@ router.post("/sort/data", sortData);
 
 // ************************************ Orders
 router.get("/dashboard/order", allOrders);
+
+// ************************************ buy-more
+router.get("/dashboard/buy-more", buyMore);
 
 // ************************************ message
 router.get("/dashboard/messages", isAdmin, messages);

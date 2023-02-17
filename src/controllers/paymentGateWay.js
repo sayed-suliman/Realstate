@@ -118,7 +118,6 @@ module.exports = {
   async stripeIntent(req, res) {
     try {
       const cart = req.session.cart;
-      console.log(cart);
       const { userId, id, dob, couponId } = req.body;
       const user = await User.findById(userId).populate("package");
       if (user) {
@@ -140,7 +139,6 @@ module.exports = {
                   .ne(0)
                   .gte("validTill", new Date());
                 discount = Number(price) * (Number(coupon.discount) / 100);
-                console.log(discount);
               }
               var amount = price - discount;
               // Create a PaymentIntent with the order amount and currency
@@ -170,7 +168,6 @@ module.exports = {
   async stripeIntentCancel(req, res) {
     try {
       const paymentIntent = await stripe.paymentIntents.cancel(req.body.id);
-      console.log(paymentIntent);
       res.send(paymentIntent);
     } catch (error) {
       res.send({ error: "Server error" });
@@ -262,8 +259,8 @@ module.exports = {
         })
       );
     } catch (error) {
-      console.log("500 Erro:", error);
-      res.render("500");
+      console.log("Payment success error:", error);
+      res.redirect("/");
     }
   },
 };

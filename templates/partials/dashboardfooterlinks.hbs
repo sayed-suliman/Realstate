@@ -171,6 +171,12 @@
             $("#contact-us-link").addClass("active")
             $("#contact-link").removeClass("active")
         }
+        //BUY-MORE
+        if (url.includes("buy-more")) {
+            $("#dashboard-link").removeClass("active")
+            // $('#page-link').addClass("active")
+            $("#buyMore-link").addClass("active")
+        }
 
         //order
         if (url.includes("order")) {

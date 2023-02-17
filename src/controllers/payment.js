@@ -11,11 +11,11 @@ module.exports = {
     const userID = req.query.user;
     const cart = req.session.cart;
     let itemDetail = {
-      type: cart.itemType,
+      type: cart?.itemType,
     };
     try {
       if (userID) {
-        const user = await User.findById(userID);
+        const user = await User.findById(userID).populate("package");
         if (user.verified) {
           // admin and regulator redirect to dashboard with msg
           // they can't buy a package
@@ -24,18 +24,52 @@ module.exports = {
               url.format({
                 pathname: "/dashboard",
                 query: {
-                  msg: encodeMsg(`${user.role} can't buy a package.`, "danger"),
+                  msg: encodeMsg(
+                    `${user.role} can't buy a ${
+                      cart.itemType ?? "course/package"
+                    }.`,
+                    "danger"
+                  ),
                 },
               })
             );
           }
           // if user has not select a package or course
-          if (!cart.item) {
+          console.log(req.session.admin);
+          if (!cart?.item) {
             const msg = encodeURIComponent(
               "Please! Select a Package/Course to continue."
             );
             const type = encodeURIComponent("danger");
-            return res.redirect(`/?msg=${msg}&type=${type}`);
+            return req.logout((error) => {
+              if (error) {
+                console.log(error);
+                const msg = encodeURIComponent(error);
+                const type = encodeURIComponent("danger");
+                return res.redirect(`/?msg=${msg}&type=${type}`);
+              }
+              return res.redirect(`/?msg=${msg}&type=${type}`);
+            });
+          }
+
+          // if user have already purchase a package which contain this course
+          let userCourses = user.package.courses.map((el) => el.toString());
+          if (cart.itemType == "course" && userCourses.includes(cart.item)) {
+            return req.login(user, function (err) {
+              if (err) {
+                return next(err);
+              }
+              return res.redirect(
+                url.format({
+                  pathname: "/dashboard",
+                  query: {
+                    msg: encodeMsg(
+                      "You have already purchased a package which contain this course."
+                    ),
+                  },
+                })
+              );
+            });
           }
 
           let orders = await Order.find({ user: user._id }).select(
