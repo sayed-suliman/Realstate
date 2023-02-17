@@ -222,7 +222,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student
@@ -266,7 +266,7 @@ router.post("/reset-password", doResetPassword);
 // checkout post
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 
 // middleware for all dashboard route
 router.use("/dashboard", authenticated);
