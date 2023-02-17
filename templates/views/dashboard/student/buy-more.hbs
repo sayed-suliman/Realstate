@@ -45,7 +45,6 @@
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
-                                                <th>Package(Included)</th>
                                                 <th>Price</th>
                                                 <th>Purchase Link</th>
                                             </tr>
@@ -54,11 +53,6 @@
                                             {{#each allCourses}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>
-                                                    {{#each this.package}}
-                                                    <span>{{this.name}}{{#unless @last}},{{/unless}}</span>
-                                                    {{/each}}
-                                                </td>
                                                 <td>{{this.price}}</td>
                                                 <td>
                                                     <a href="/checkout?course={{this._id}}"><span
