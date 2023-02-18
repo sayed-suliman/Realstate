@@ -1,4 +1,54 @@
 {{>dashboardheader}}
+<style>
+    :root {
+        --dark-blue: #315181;
+        --warning: #edc36f;
+        --warning-25: rgba(237, 195, 111, 0.774);
+    }
+
+    .bg-dark-blue {
+        background-color: var(--dark-blue);
+    }
+
+    .bg-light-yellow {
+        background-color: var(--warning);
+    }
+
+    .bg-light-yellow:hover {
+        background-color: var(--warning-25);
+    }
+
+    .pricing .package-column {
+        height: 100%;
+        padding: 15px 0;
+        border: 1px solid;
+        transition: all 1s ease;
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .pricing .banner {
+        height: 300px;
+        overflow: hidden;
+    }
+
+    .pricing .banner>img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .pricing .package-column:hover {
+        transform: scale(1.01);
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    [for='priceToggle'] {
+        font-size: 24px;
+        line-height: 1;
+        font-weight: 500;
+    }
+</style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
     <!-- Site wrapper -->
@@ -41,34 +91,97 @@
                             <div class="card">
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                    <table id="courseTable" class="table table-bordered table-hover">
+                                    {{!-- <table id="courseTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
                                                 <th>Name</th>
                                                 <th>Price</th>
-                                                <th>Purchase Link</th>
+                                                <th>Buy Now</th>
                                             </tr>
                                         </thead>
                                         <tbody>
                                             {{#each allCourses}}
                                             <tr>
                                                 <td>{{this.name}}</td>
-                                                <td>{{this.price}}</td>
+                                                <td>{{#if this.price}}${{this.price}}{{/if}}</td>
                                                 <td>
-                                                    <a href="/checkout?course={{this._id}}"><span
-                                                            class="domainName"></span>/checkout?course={{this._id}}</a>
+                                                    <a href="/checkout?course={{this._id}}" class="btn btn-success">Buy
+                                                        Now</a>
                                                 </td>
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                    </table>
+                                    </table> --}}
+                                    <div class="pricing">
+                                        <div class="toggler d-flex justify-content-center mb-3" style="gap:10px">
+                                            <label for="priceToggle">Packages</label>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="priceToggle">
+                                                <label class="custom-control-label" for="priceToggle">Courses</label>
+                                            </div>
+                                        </div>
+                                        <div class="row package">
+                                            {{#if packages}}
+                                            {{#each packages}}
+                                            <div class="col-lg-3 col-md-5 p-1 text-center">
+                                                <div class=" package-column border">
+                                                    <h5 class="text-capitalize">{{this.name}}</h5>
+                                                    <h1><del class="text-decoration-line-through">${{increaseAmount
+                                                            this.price}}
+                                                        </del></h1>
+                                                    <h2>${{this.price}}</h2>
+                                                    <div>
+                                                        <a href="../checkout?package={{_id}}">
+                                                            <button
+                                                                class="btn bg-light-yellow border-0 rounded-0 px-5 py-2">Enroll</button>
+                                                        </a>
+                                                    </div>
+                                                    <p class="bg-dark-blue text-white py-2 mt-2">WHO IT'S FOR</p>
+                                                    <div>
+                                                        {{#each whoFor}}
+                                                        <p>{{this}}</p>
+                                                        {{/each}}
+                                                    </div>
+                                                    <p class="bg-dark-blue text-white py-2">WHAT'S INCLUDED</p>
+                                                    <div>
+                                                        {{#each this.whatsIncluded}}
+                                                        <p class="text-capitalize">{{this}}</p>
+                                                        {{/each}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                            {{/if}}
+                                        </div>
+                                        <div class="row courses d-none">
+                                            {{#if courses}}
+                                            {{#each courses}}
+                                            <div class="col-lg-3 col-md-5 p-1 text-center">
+                                                <div class=" package-column border">
+                                                    <h5 class="text-capitalize">{{this.name}}</h5>
+                                                    <h1>${{this.price}}</h1>
+                                                    <div class="banner">
+                                                        <img src="{{this.banner}}" class="img-fluid">
+                                                    </div>
+                                                    <div class="mt-3">
+                                                        <a href="../checkout?course={{this._id}}">
+                                                            <button
+                                                                class="btn bg-light-yellow border-0 rounded-0 px-5 py-2">Buy
+                                                                Now</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
                                 </div>
-                                <!-- /.card-body -->
                             </div>
                         </div>
                     </div>
-                </div>
-                <!-- /.card -->
+                    <!-- /.card -->
 
             </section>
             <!-- /.content -->
@@ -114,7 +227,18 @@
                 "responsive": true,
             });
         });
+        $('#priceToggle').change(function () {
+            if ($('#priceToggle').prop('checked')) {
+                $('.courses').removeClass('d-none')
+                $('.package').addClass('d-none')
+            } else {
+                $('.courses').addClass('d-none')
+                $('.package').removeClass('d-none')
+            }
+
+        })
     </script>
+
     {{#ifEquals user.role "student"}}
     <script>
         $("#modal-default").on("show.bs.modal", function (e) {

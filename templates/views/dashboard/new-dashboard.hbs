@@ -103,7 +103,8 @@
                     </p>
                     <p class="ml-auto d-flex flex-column text-right">
                       <span class="{{#ifCond percentageAmount '>=' 0}}text-success{{else}}text-danger{{/ifCond}}">
-                        <i class="fas fas fa-arrow-{{#ifCond percentageAmount '>=' 0}}up{{else}}down{{/ifCond}}"></i>
+                        <i
+                          class="fas fas {{#ifCond percentageAmount '!=' 0}}fa-arrow-{{#ifCond percentageAmount '>=' 0}}up{{else}}down{{/ifCond}}{{/ifCond}}"></i>
                         {{percentageAmount}}%
                       </span>
                       <span class="text-muted">Since last Year</span>
@@ -258,8 +259,9 @@
                       {{/each}}
                       {{/if}}
                       <tr>
-                        <td colspan="2"><a class="text-capitalize" href="/dashboard/salesperson/">Salesperson</a></td>
-                        <td class="text-right"><a href="/dashboard/salesperson/" class="text-muted">
+                        <td colspan="2"><a class="text-capitalize" target="_blank"
+                            href="/dashboard/salesperson/">Salesperson</a></td>
+                        <td class="text-right"><a href="/dashboard/salesperson/" target="_blank" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a></td>
                       </tr>

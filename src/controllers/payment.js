@@ -35,7 +35,6 @@ module.exports = {
             );
           }
           // if user has not select a package or course
-          console.log(req.session.admin);
           if (!cart?.item) {
             const msg = encodeURIComponent(
               "Please! Select a Package/Course to continue."
@@ -94,16 +93,17 @@ module.exports = {
                   url.format({
                     pathname: "/dashboard",
                     query: {
-                      msg: encodeMsg(
-                        "You have already purchased a this course. You can also buy another one."
-                      ),
+                      msg: encodeMsg("Sorry. This course doesn't exist."),
                     },
                   })
                 );
               });
             }
-            // if user have already purchased any package then redirect to dashboard
-            if (cart.itemType == "package" && order.package) {
+            // if user have already purchased package then redirect to dashboard
+            if (
+              cart.itemType == "package" &&
+              cart.item == order?.package.toString()
+            ) {
               return req.login(user, function (err) {
                 if (err) {
                   return next(err);
@@ -113,7 +113,7 @@ module.exports = {
                     pathname: "/dashboard",
                     query: {
                       msg: encodeMsg(
-                        "You have already purchased a package. Please contact with admin for package changing."
+                        "You have already purchased this package. You can also buy another one."
                       ),
                     },
                   })
@@ -123,14 +123,19 @@ module.exports = {
           }
 
           if (cart.itemType == "course" && cart.item) {
-            let course = await Course.findById(cart.item);
+            let course = await Course.findOne({
+              _id: cart.item,
+              status: "publish",
+            });
             itemDetail.name = course.name;
             itemDetail.price = course.price;
             itemDetail.total = course.price;
             itemDetail.tax = 0;
           }
           if (cart.itemType == "package" && cart.item) {
-            let package = await Package.findById(cart.item);
+            let package = await Package.findById(cart.item)
+              .where("status")
+              .equals("publish");
             var { price, tax } = package;
             itemDetail.name = package.name;
             itemDetail.price = price;
