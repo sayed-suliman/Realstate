@@ -112,7 +112,7 @@ module.exports = {
             if (req.body.couponId && req.body.user) {
                 const { couponId, dob, id } = req.body;
                 var coupon = await Coupon.findOne({ couponId, validTill: { $gte: new Date() }, length: { $ne: 0 }, discount: 100 });
-                const user = await User.findById(req.body.user).populate('package');
+                const user = await User.findById(req.body.user).populate('packages');
                 if (coupon) {
                     user.updateOne({ dob, driver_license: id }, { runValidators: true }, async (error, result) => {
                         if (error) {
@@ -123,7 +123,7 @@ module.exports = {
                         if (result) {
                             const order = await Order({
                                 user: user._id,
-                                package: user.package._id,
+                                package: user.packages._id,
                                 amount: 0,
                                 pay_method: "Coupon Discount",
                                 discount: coupon.discount,
@@ -133,7 +133,7 @@ module.exports = {
                             welcomeEmail(user.email, {
                                 username: user.name,
                                 orderDate: order.createdAt,
-                                packageName: user.package.name,
+                                packageName: user.packages.name,
                                 totalPrice: 0,
                                 siteName: process.env.SITE_NAME,
                                 siteURL: "https://members.realestateinstruct.com"

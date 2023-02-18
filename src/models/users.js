@@ -58,10 +58,12 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    package: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Package",
-    },
+    packages: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Package",
+      },
+    ],
     courses: [
       {
         type: mongoose.Schema.Types.ObjectId,

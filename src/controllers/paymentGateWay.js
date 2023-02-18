@@ -119,7 +119,7 @@ module.exports = {
     try {
       const cart = req.session.cart;
       const { userId, id, dob, couponId } = req.body;
-      const user = await User.findById(userId).populate("package");
+      const user = await User.findById(userId);
       if (user) {
         user.updateOne(
           { dob, driver_license: id },
@@ -205,12 +205,17 @@ module.exports = {
             { $inc: { length: -1 } }
           );
         }
-        // adding item(package/course) to user model
+        // adding item(course) to user model
         if (cart.itemType == "course" && Array.isArray(user.courses)) {
           user.courses.push(cart.item);
         } else {
-          user[cart.itemType] =
-            cart.itemType == "course" ? [cart.item] : cart.item;
+          user.courses = [cart.item];
+        }
+        // adding item(package) to user model
+        if (cart.itemType == "package" && Array.isArray(user.courses)) {
+          user.packages.push(cart.item);
+        } else {
+          user.packages = [cart.item];
         }
         await user.save();
 
