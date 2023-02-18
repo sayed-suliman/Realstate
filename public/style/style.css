@@ -1,5 +1,5 @@
-/* poppins sanserif */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+/* titillium sanserif */
+@import url('https://fonts.googleapis.com/css2?family=Titillium+Web:wght@200;300;400;600;700;900&display=swap');
 
 :root {
     /* colors */
@@ -169,7 +169,7 @@ table th {
 /* bodyy */
 body {
     background: var(--light-white);
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Titillium Web', sans-serif;
 }
 
 

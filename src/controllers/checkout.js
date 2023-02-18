@@ -1,6 +1,7 @@
 const Package = require("../models/package");
 const url = require("url");
 const Course = require("../models/courses");
+const { encodeMsg } = require("../helper/createMsg");
 
 module.exports = {
   async checkout(req, res) {
@@ -76,6 +77,14 @@ module.exports = {
             reCaptchaSiteKey: process.env.recaptcha_siteKey,
           });
         }
+        if (req.user) {
+          return res.redirect(
+            "/dashboard?msg=" + encodeMsg("Sorry this course doesn't exist.")
+          );
+        }
+        return res.redirect(
+          `/?msg=Sorry this course doesn't exist.&type=danger`
+        );
       }
 
       return res.redirect("/");

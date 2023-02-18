@@ -19,15 +19,18 @@ module.exports = {
         let userCourses = [];
         await req.user.populate([
           {
-            path: "package",
+            path: "packages",
             populate: { path: "courses", match: { status: "publish" } },
           },
           { path: "courses", match: { status: "publish" } },
         ]);
-
-        if (req.user.package) {
-          userCourses = [...(await req.user.package.courses)];
+        if (req.user.packages) {
+          req.user.packages.map((package) => {
+            userCourses = [userCourses, ...package.courses];
+          });
+          // userCourses = [...(await req.user.packages.courses)];
         }
+        console.log(userCourses);
         if (req.user.courses.length) {
           userCourses = [...userCourses, ...req.user.courses];
         }
@@ -239,14 +242,17 @@ module.exports = {
         }
         allSale += order.amount;
       });
-      let percentageAmount = Math.round(
-        ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) *
-          100
-      );
+      let percentageAmount =
+        lastYearAllAmounts &&
+        Math.round(
+          ((currentYearAllAmounts - lastYearAllAmounts) / lastYearAllAmounts) *
+            100
+        );
       if (isNaN(percentageAmount)) {
         percentageAmount = 0;
       }
       // end of amounts portions
+
       // by default is admin
       res.render("dashboard/new-dashboard", {
         title: "Dashboard",
