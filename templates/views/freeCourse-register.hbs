@@ -12,40 +12,46 @@
                         <p class="fs-16 text-danger text-center">{{error}}</p>
                         {{/if}}
                         <div class="px-3 my-3">
-                            <form action="/freeCourse-register" method="post" id="login-form">
+                            <form action="/free-lesson" method="post" id="login-form">
                             <div class="row justify-content-center">
-                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="first-name" class="form-label">First Name</label>
-                                <input type="text" class="form-control shadow-none mb-4" required name="firstName"
-                                    placeholder="">
+                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
+                                    <label for="first-name" class="form-label">First Name<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                <input type="text" class="form-control shadow-none" required name="firstName"
+                                    placeholder="" value="{{#if oldData}}{{oldData.firstName}}{{/if}}">
+                                    {{#if errorObj}}<small class="form-text text-danger">{{errorObj.firstName}}</small>{{/if}}
                                 </div>
-                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="last-name" class="form-label">Last Name</label>
-                                <input type="text" class="form-control shadow-none mb-4" required name="lastName"
-                                    placeholder="">
+                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
+                                    <label for="last-name" class="form-label">Last Name<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                <input type="text" class="form-control shadow-none" required name="lastName"
+                                    placeholder="" value="{{#if oldData}}{{oldData.lastName}}{{/if}}">
+                                    {{#if errorObj}}<small class="form-text text-danger">{{errorObj.lastName}}</small>{{/if}}
                                 </div>
-                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="eamil" class="form-label">Email</label>
-                                <input type="text" class="form-control shadow-none mb-4" required name="email"
-                                    placeholder="">
+                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
+                                    <label for="eamil" class="form-label">Email<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                <input type="text" class="form-control shadow-none" required name="email"
+                                    placeholder="" value="{{#if oldData}}{{oldData.email}}{{/if}}">
+                                    {{#if errorObj}}<small class="form-text text-danger">{{errorObj.email}}</small>{{/if}}
                                 </div>
-                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="select" class="form-label">Lesson Type</label>
-                                 <select id="Select" class="form-select" style="box-shadow: none;">
-                                    <option value="Priciple Preview">Priciple Preview</option>
+                                <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
+                                    <label for="select" class="form-label">Lesson Type<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                 <select id="Select" class="form-select" style="box-shadow: none;" name="lessonType" required>
+                                    <option value="Priciple Preview" selected>Principle Preview</option>
                                     <option value="Practice Preview">Practice Preview</option>
                                     <option value="Legal Preview">Legal Preview</option>
                                 </select>
+                                {{#if errorObj}}<small class="form-text text-danger">{{errorObj.lessonType}}</small>{{/if}}
                                 </div>
-                                 <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="eamil" class="form-label">Password</label>
-                                <input type="password" class="form-control shadow-none mb-4" required name="password"
+                                 <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
+                                    <label for="eamil" class="form-label">Password<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                <input type="password" class="form-control shadow-none" required name="password"
                                     placeholder="">
+                                    {{#if errorObj}}<small class="form-text text-danger">{{errorObj.password}}</small>{{/if}}
                                 </div>
-                                 <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2">
-                                    <label for="eamil" class="form-label">Confirm Password</label>
-                                <input type="password" class="form-control shadow-none mb-4" required name="cPassword"
+                                 <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2  mb-4">
+                                    <label for="eamil" class="form-label">Confirm Password<sup class="text-danger fs-5 fw-semibold top-0">*</sup></label>
+                                <input type="password" class="form-control shadow-none" required name="cPassword"
                                     placeholder="">
+                                    {{#if errorObj}}<small class="form-text text-danger">{{errorObj.cPassword}}</small>{{/if}}
                                 </div>
                                 </div>
                                  <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
@@ -62,7 +68,7 @@
         <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
     <script>
         grecaptcha.ready(function () {
-            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'freeLesson-register' }).then(function (token) {
                 document.getElementById('g-recaptcha-response').value = token;
             });
         });
