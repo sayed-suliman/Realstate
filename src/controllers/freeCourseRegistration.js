@@ -5,7 +5,8 @@ module.exports = {
     register : async (req, res)=>{
         try {
             res.render('freeCourse-register',{
-                title: 'Free Lesson'
+                title: 'Free Lesson',
+                reCaptchaSiteKey: process.env.recaptcha_siteKey
             }) 
         } catch (error) {
             console.log(error.message)
@@ -27,7 +28,8 @@ module.exports = {
                 });
                 return res.status(400).render('freeCourse-register',{
                     title: 'Free Lesson',
-                    errorObj
+                    errorObj,
+                    reCaptchaSiteKey: process.env.recaptcha_siteKey
                 }) 
             }
             res.json(req.body);
