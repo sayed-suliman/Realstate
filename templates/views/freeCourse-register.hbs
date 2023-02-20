@@ -48,6 +48,7 @@
                                     placeholder="">
                                 </div>
                                 </div>
+                                 <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <div class="d-flex justify-content-center"><button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-4">Register</button></div>
                             </form>
@@ -57,4 +58,13 @@
             
         </div>
     </main>
+
+        <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
+    </script>
     {{>footer}}
