@@ -13,6 +13,7 @@
 <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
 {{!--
 <script src="/dashboard/dist/js/pages/dashboard3.js"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/iframe-resizer/4.3.3/iframeResizer.contentWindow.js"></script>
 
 <script>
     $(document).ready(function () {
@@ -294,16 +295,18 @@
     })
 
     //showing alert(toast)
-    {{#if toast}}
+    { { #if toast } }
     $('.toast').toast('show')
     setTimeout(() => {
         $('.toast').toast('dispose')
     }, 5000)
-    {{/if}}
-    {{#if toast_error}}
-    $('.toast').toast('show')
-    setTimeout(() => {
-        $('.toast').toast('dispose')
-    }, 5000)
-    {{/if}}
+    {
+        {
+            /if}}
+            { { #if toast_error } }
+            $('.toast').toast('show')
+            setTimeout(() => {
+                $('.toast').toast('dispose')
+            }, 5000)
+            { { /if}}
 </script>
