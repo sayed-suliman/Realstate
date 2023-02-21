@@ -108,7 +108,7 @@ module.exports = {
             // if user have already purchased package then redirect to dashboard
             if (
               cart.itemType == "package" &&
-              cart.item == order?.package.toString()
+              cart.item == order.package?.toString() 
             ) {
               return req.login(user, function (err) {
                 if (err) {
@@ -166,7 +166,7 @@ module.exports = {
       }
       return res.redirect("/");
     } catch (error) {
-      console.log(error);
+      console.log("Error at payment:", error);
       res.redirect("/");
     }
   },

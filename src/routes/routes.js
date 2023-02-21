@@ -115,6 +115,8 @@ const { encodeMsg } = require("../helper/createMsg");
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const trial = require("../controllers/trial");
 const buyMore = require("../controllers/buy-more");
+const freeLesson = require("../controllers/freeCourseRegistration");
+const freeLessonValidation = require("../middleware/freeLessonValidation");
 
 router.get("/test", (req, res) => {
   sendVerificationCode("sulimank418@gmail.com", "1234");
@@ -194,7 +196,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
       },
       { path: "courses" },
     ]);
-    if ((user.package && user.package.courses) || user.courses) {
+    if (user.packages.length || user.courses.length) {
       req.login(user, function (err) {
         if (err) {
           return next(err);
@@ -440,6 +442,13 @@ router.get("/dashboard/read-message/:id", isAdmin, readMessage);
 router.get("/trial/chapter/:courseID/:chapterID", trial.chapter);
 router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
 
+// Free Lesson Registration
+router.get("/free-lesson", freeLesson.register);
+router.post(
+  "/free-lesson",
+  /*reCAPTCHA,*/ freeLessonValidation,
+  freeLesson.doRegister
+);
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {

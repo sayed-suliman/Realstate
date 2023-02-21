@@ -52,7 +52,7 @@ module.exports = {
       }
       return res.redirect("/");
     } catch (error) {
-      console.log("Error at verification:", error.message);
+      console.log("Error at verification:", error);
       return res.redirect("/");
     }
   },
