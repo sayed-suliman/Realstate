@@ -191,7 +191,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
     }
     const user = await User.findById(req.query.uid).populate([
       {
-        path: "package",
+        path: "packages",
         populate: { path: "courses", match: { status: "publish" } },
       },
       { path: "courses" },

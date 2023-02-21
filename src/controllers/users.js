@@ -14,7 +14,7 @@ module.exports = {
     }
     const users = await User.find().populate("packages");
     // binary to base64
-    for await (let [index] of users.entries()) {
+    for (let [index] of users.entries()) {
       if (users[index].avatar) {
         users[index].avatar = users[index].avatar.toString("base64");
       }
