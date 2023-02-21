@@ -59,20 +59,9 @@ const signUp = async (req, res) => {
           title: "Checkout",
           err: errorObj,
         };
-        if (data.package) {
-          let package = await Package.findById(data.package);
-          let { price, tax } = package;
-          package.total = price * ((100 + tax) / 100); //total price with tax
-          renderObject = { ...renderObject, package };
-        }
-        if (data.course) {
-          let course = await Course.findById(data.course);
-          renderObject = { ...renderObject, course };
-        }
         res.render("checkout", renderObject);
       }
     } else {
-      // req.session.cart = cart;
       const otpCode = generateCode();
 
       // to save user with package or course

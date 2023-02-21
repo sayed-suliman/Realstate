@@ -1,20 +1,18 @@
 const OTP = require("../models/otp");
 const User = require("../models/users");
 const url = require("url");
-const Course = require("../models/courses");
-const Package = require("../models/package");
+const { encodeMsg } = require("../helper/createMsg");
 
 module.exports = {
   async verification(req, res) {
-    const cart = req.session.cart;
-    let itemDetail = {
-      type: cart?.itemType,
-    };
     try {
-      let cart = req.session.cart;
       var { user: userID } = req.query;
       if (userID) {
         let user = await User.findById(userID);
+        if (!user) {
+          const msg = encodeURIComponent("Please! User not found.");
+          return res.redirect(`/?msg=${msg}&type=danger`);
+        }
         // if verified user then redirect to payment
         if (user.verified) {
           return res.redirect(
@@ -26,27 +24,9 @@ module.exports = {
             })
           );
         } else {
-          if (cart.itemType == "course" && cart.item) {
-            let course = await Course.findById(cart.item);
-            itemDetail.name = course.name;
-            itemDetail.price = course.price;
-            itemDetail.total = course.price;
-            itemDetail.tax = 0;
-          }
-          if (cart.itemType == "package" && cart.item) {
-            let package = await Package.findById(cart.item)
-              .where("status")
-              .equals("publish");
-            var { price, tax } = package;
-            itemDetail.name = package.name;
-            itemDetail.price = price;
-            itemDetail.tax = tax;
-            itemDetail.total = Math.round(price * ((100 + tax) / 100));
-          }
           return res.render("verification", {
             title: "Verification",
             user,
-            itemDetail,
           });
         }
       }
@@ -61,16 +41,7 @@ module.exports = {
     const code = val1 + val2 + val3 + val4;
     const otp = await OTP.findOne({ otp: code });
     if (!otp) {
-      let user = await User.findById(userID)
-        .populate("package")
-        .populate("courses");
-      if (user.package) {
-        var { price, tax } = user.package;
-        user.total = price * ((100 + tax) / 100); //total price with tax
-      } else {
-        user.total = user.courses[0].price;
-      }
-
+      let user = await User.findById(userID);
       return res.render("verification", {
         title: "Verification",
         user,
@@ -79,6 +50,14 @@ module.exports = {
     }
     const user = await User.findByIdAndUpdate(userID, { verified: true });
     await otp.deleteOne();
+    if (user.role == "guest") {
+      req.login(user, function (error) {
+        if (error) {
+          return res.redirect("/?msg=" + encodeURIComponent(error) + "&type=danger");
+        }
+        return res.redirect("/dashboard?msg="+encodeMsg(`Welcome to ${process.env.SITE_NAME}.`));
+      });
+    }
     res.redirect(
       url.format({
         pathname: "/payment",

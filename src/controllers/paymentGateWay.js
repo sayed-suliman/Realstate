@@ -252,7 +252,7 @@ module.exports = {
           });
           return req.login(user, function (err) {
             if (err) {
-              return next(err);
+              console.log(err);
             }
             return res.redirect(
               url.format({

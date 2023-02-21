@@ -1,5 +1,10 @@
 const express = require("express");
 const { validationResult } = require("express-validator");
+const { encodeMsg } = require("../helper/createMsg");
+const { generateCode } = require("../helper/genCode");
+const OTP = require("../models/otp");
+const User = require("../models/users");
+const { sendVerificationCode } = require("./mailServices");
 
 module.exports = {
   register: async (req, res) => {
@@ -31,10 +36,23 @@ module.exports = {
           reCaptchaSiteKey: process.env.recaptcha_siteKey,
         });
       }
-      
-      res.json(req.body);
+      let data = req.body;
+      data.name = `${req.body.firstName} ${req.body.lastName}`;
+      data.role = "guest";
+
+      let user = await User(data).save();
+      if (user) {
+        const otpCode = generateCode();
+        await OTP({
+          email: user.email,
+          otp: otpCode,
+        }).save();
+        sendVerificationCode(user.email, otpCode);
+        return res.redirect("/verification?user=" + user._id);
+      }
     } catch (error) {
       console.log(error.message);
+      req.flash('error',error.message)
       res.status(500).redirect("/free-lesson");
     }
   },

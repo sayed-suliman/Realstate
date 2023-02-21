@@ -61,7 +61,6 @@ var authenticated = async (req, res, next) => {
         );
       }
     }
-
     res.locals.unreadMsg = await Message.find({ read: false }).count();
     return next();
   } else {

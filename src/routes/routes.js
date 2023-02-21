@@ -199,7 +199,14 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
     if (user.packages.length || user.courses.length) {
       req.login(user, function (err) {
         if (err) {
-          return next(err);
+          return res.redirect(
+            url.format({
+              pathname: "/dashboard",
+              query: {
+                msg: encodeMsg(err.messages),
+              },
+            })
+          );
         }
         req.session.admin = adminId;
         return res.redirect(

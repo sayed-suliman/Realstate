@@ -15,7 +15,7 @@ module.exports = {
     };
     try {
       if (userID) {
-        const user = await User.findById(userID).populate("packages");
+        const user = await User.findById(userID);
         if (user.verified) {
           // admin and regulator redirect to dashboard with msg
           // they can't buy a package
@@ -108,7 +108,7 @@ module.exports = {
             // if user have already purchased package then redirect to dashboard
             if (
               cart.itemType == "package" &&
-              cart.item == order.package?.toString() 
+              cart.item == order.package?.toString()
             ) {
               return req.login(user, function (err) {
                 if (err) {
@@ -161,7 +161,7 @@ module.exports = {
                 : false,
           });
         } else {
-          return res.redirect("/verification?user=" + req.user._id.toString());
+          return res.redirect("/verification?user=" + req.user?._id.toString());
         }
       }
       return res.redirect("/");
