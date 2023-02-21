@@ -3,7 +3,6 @@
     :root {
         --dark-blue: #315181;
         --warning: #edc36f;
-        --warning-25: rgba(237, 195, 111, 0.774);
     }
 
     .bg-dark-blue {
@@ -15,7 +14,8 @@
     }
 
     .bg-light-yellow:hover {
-        background-color: var(--warning-25);
+        background-color: var(--dark-blue);
+        color: white;
     }
 
     .pricing .package-column {
@@ -114,10 +114,11 @@
                                     </table> --}}
                                     <div class="pricing">
                                         <div class="toggler d-flex justify-content-center mb-3" style="gap:10px">
-                                            <label for="priceToggle">Packages</label>
+                                            <label style="user-select:none" for="priceToggle">Packages</label>
                                             <div class="custom-control custom-switch">
                                                 <input type="checkbox" class="custom-control-input" id="priceToggle">
-                                                <label class="custom-control-label" for="priceToggle">Courses</label>
+                                                <label class="custom-control-label" style="user-select:none"
+                                                    for="priceToggle">Courses</label>
                                             </div>
                                         </div>
                                         <div class="row package">

@@ -10,7 +10,6 @@ module.exports = {
     try {
       const packageID = req.query.package;
       const courseID = req.query.course;
-
       let cart = {
         user: null,
         item: "",
@@ -45,6 +44,7 @@ module.exports = {
             title: "Checkout",
             package,
             reCaptchaSiteKey: process.env.recaptcha_siteKey,
+            signUpError: req.flash('signUpError'),
           });
         }
       }

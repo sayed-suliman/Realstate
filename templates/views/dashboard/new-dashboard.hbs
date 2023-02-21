@@ -218,7 +218,7 @@
                           {{this.test}}
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-blue" id="start" {{#if
-                            this.unlock}}data-toggle="modal" data-target="#modal-default" data-banner="{{this.banner}}"
+                            this.unlock}}data-toggle="modal" data-target="#modal-default" data-banner="/images/course/{{this.banner}}"
                             data-link="/dashboard/view-course/{{this._id}}" {{/if}}>
                             {{this.name}}
                           </button>
@@ -237,7 +237,7 @@
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-muted" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-link="/dashboard/view-course/{{this._id}}" data-banner="{{this.banner}}" {{/if}}>
+                            data-link="/dashboard/view-course/{{this._id}}" data-banner="/images/course/{{this.banner}}" {{/if}}>
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
                             {{else}}

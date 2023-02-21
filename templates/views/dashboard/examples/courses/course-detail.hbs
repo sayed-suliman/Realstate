@@ -151,18 +151,19 @@
                                         </thead>
                                         <tbody>
                                             {{#each userCourses}}
-                                            <tr>
+                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td class="text-capitalize">
                                                     {{#unless started}}
-                                                    <button type="button" class="btn p-0 text-blue" id="start"
-                                                        data-toggle="modal" data-target="#modal-default"
+                                                    <button type="button" class="btn p-0 text-blue" id="start" {{#if
+                                                        this.unlock}}data-toggle="modal" data-target="#modal-default"
                                                         data-banner="{{this.banner}}"
-                                                        data-link="/dashboard/view-course/{{this._id}}">
+                                                        data-link="/dashboard/view-course/{{this._id}}" {{/if}}>
                                                         {{this.name}}
                                                     </button>
                                                     {{else}}
-                                                    <a class="text-capitalize"
-                                                        href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                                                    <a class="text-capitalize" {{#if
+                                                        this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}}
+                                                        href="#" {{/if}}>{{this.name}}</a>
                                                     {{/unless}}
                                                 </td>
                                                 <td>
@@ -175,15 +176,24 @@
                                                 </td>
                                                 <td>
                                                     {{#unless started}}
-                                                    <button type="button" class="btn p-0 text-muted" id="start"
-                                                        data-toggle="modal" data-target="#modal-default"
+                                                    <button type="button" class="btn p-0 text-muted" id="start" {{#if
+                                                        this.unlock}}data-toggle="modal" data-target="#modal-default"
                                                         data-link="/dashboard/view-course/{{this._id}}"
-                                                        data-banner="{{this.banner}}">
+                                                        data-banner="{{this.banner}}" {{/if}}>
+                                                        {{#unless this.unlock}}
+                                                        <i class="fa-solid fa-lock"></i>
+                                                        {{else}}
                                                         <i class="fas fa-book"></i> View Course
+                                                        {{/unless}}
                                                     </button>
                                                     {{else}}
-                                                    <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
+                                                    <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                                                        {{else}} href="#" {{/if}} class="text-muted">
+                                                        {{#unless this.unlock}}
+                                                        <i class="fa-solid fa-lock"></i>
+                                                        {{else}}
                                                         <i class="fas fa-book"></i> View Course
+                                                        {{/unless}}
                                                     </a>
                                                     {{/unless}}
                                                 </td>

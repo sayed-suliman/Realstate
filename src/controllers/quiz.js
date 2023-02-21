@@ -168,10 +168,12 @@ const viewQuiz = async (req, res) => {
     const quiz = await Quiz.findById(QuizId);
     let course = await Course.findById(courseId);
     if (quiz && course) {
-      let userCourses;
-      if (req.user.package) {
-        await req.user.populate("package");
-        userCourses = req.user.package.courses;
+      let userCourses = [];
+      if (req.user.packages) {
+        await req.user.populate("packages");
+        req.user.packages.map((package) => {
+          return (userCourses = [...userCourses, ...package.courses]);
+        });
       }
       if (req.user.courses.length) {
         userCourses = [...userCourses, ...req.user.courses];
@@ -245,10 +247,13 @@ const viewQuiz = async (req, res) => {
               if (!contents[index].unlock) {
                 if (index == 0) continue;
                 if (typeof contents[index - 1].unlock != undefined) {
-                  if (contents[index - 1].type == "quiz") {
-                    if (contents[index - 1].grade == "failed") {
-                      break;
-                    }
+                  if (
+                    contents[index - 1].type == "quiz" &&
+                    contents[index - 1].grade == "failed"
+                  ) {
+                    // if (contents[index - 1].grade == "failed") {
+                    break;
+                    // }
                   }
                   if (contents[index - 1].unlock) {
                     contents[index].unlock = true;
@@ -370,6 +375,7 @@ const viewQuiz = async (req, res) => {
       res.redirect("/dashboard?msg=" + encodeMsg("Quiz not found.", "danger"));
     }
   } catch (error) {
+    console.log("Error at view Quiz: ", error.message);
     res.redirect("/dashboard?msg=" + encodeMsg(error.message, "danger"));
   }
 };

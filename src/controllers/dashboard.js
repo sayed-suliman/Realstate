@@ -14,23 +14,26 @@ module.exports = {
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
-
+      /*******************  STUDENT DASHBOARD  **********************/
       if (req.user.role == "student") {
         let userCourses = [];
         await req.user.populate([
           {
             path: "packages",
             populate: { path: "courses", match: { status: "publish" } },
+            options: { getters: true },
           },
-          { path: "courses", match: { status: "publish" } },
+          {
+            path: "courses",
+            match: { status: "publish" },
+            options: { getters: true },
+          },
         ]);
         if (req.user.packages) {
           req.user.packages.map((package) => {
-            userCourses = [userCourses, ...package.courses];
+            userCourses = [...userCourses, ...package.courses];
           });
-          // userCourses = [...(await req.user.packages.courses)];
         }
-        console.log(userCourses);
         if (req.user.courses.length) {
           userCourses = [...userCourses, ...req.user.courses];
         }
@@ -43,6 +46,11 @@ module.exports = {
           });
           // filtering only courses meta
           courseMeta = courseMeta.filter((el) => el.course != undefined);
+
+          // remove duplicate courses
+          userCourses = [
+            ...new Set(userCourses.map((el) => JSON.stringify(el))),
+          ].map((el) => JSON.parse(el));
 
           // progress calculation
           for await (let content of userCourses) {
@@ -129,7 +137,7 @@ module.exports = {
           });
         }
       }
-      // regulator part start
+      /*******************  REGULATOR DASHBOARD  **********************/
       if (req.user.role == "regulator") {
         var userCourses = await Course.find({ status: "publish" });
         return res.render("dashboard/new-dashboard", {
@@ -139,8 +147,7 @@ module.exports = {
         });
       }
 
-      // regulator part end
-
+      /*******************  ADMIN  **********************/
       const students = await User.find({ role: "student" });
       const countStudents = await User.find({ role: "student" }).count();
       const orders = await Order.find();

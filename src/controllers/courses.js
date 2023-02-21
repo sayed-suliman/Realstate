@@ -211,15 +211,19 @@ var allCourses = async (req, res) => {
   try {
     await req.user.populate([
       {
-        path: "package",
+        path: "packages",
         populate: { path: "courses", match: { status: "publish" } },
       },
       { path: "courses", match: { status: "publish" } },
     ]);
     let userCourses = [];
+    let progress = {};
+
     if (req.user.role === "student") {
-      if (req.user.package) {
-        userCourses = [...req.user.package.courses];
+      if (req.user.packages) {
+        req.user.packages.map((package) => {
+          userCourses = [...userCourses, ...package.courses];
+        });
       }
       if (req.user.courses) {
         userCourses = [...userCourses, ...req.user.courses];
@@ -227,9 +231,74 @@ var allCourses = async (req, res) => {
       let courseMeta = await UserMeta.find({
         user_id: req.user._id,
       });
+
+      // removing the duplicate courses
+      userCourses = [
+        ...new Set(userCourses.map((course) => JSON.stringify(course))),
+      ].map((course) => JSON.parse(course));
+      for await (let [index,content] of userCourses.entries()) {
+        // used for to find the content(chap+quiz) length
+        let total = 0;
+
+        for await (let chapter of content.chapters) {
+          const completedChap = await UserMeta.findOne({
+            chapter_id: chapter.toString(),
+            user_id: req.user._id,
+            meta_key: "completed",
+          });
+          if (completedChap) {
+            progress[content.name] = (progress[content.name] || 0) + 1;
+          }
+          total++;
+        }
+        for await (let quiz of content.quizzes) {
+          const takenQuiz = await Result.findOne({
+            user: req.user._id,
+            quiz: quiz.toString(),
+          });
+          if (takenQuiz) {
+            progress[content.name] = (progress[content.name] || 0) + 1;
+          }
+          total++;
+        }
+        if (progress[content.name]) {
+          let percent = Math.floor((progress[content.name] / total) * 100);
+          progress[content.name] = percent;
+          userCourses[index].unlock = percent == 100 ? true : false;
+        }
+      }
+
+      let setting = await Setting.findOne();
+      // unlock course when previous is completed
+      if (setting.unlockCourse) {
+        if (userCourses.length) {
+          for await (let [index] of userCourses.entries()) {
+            if (!userCourses[index].unlock) {
+              if (index == 0) continue;
+              console.log(
+                index,
+                userCourses[index].unlock,
+                userCourses[index - 1].unlock
+              );
+              if (typeof userCourses[index - 1].unlock != undefined) {
+                if (userCourses[index - 1].unlock) {
+                  userCourses[index].unlock = true;
+                  break;
+                }
+              }
+            }
+          }
+          // unlock the first content of the current chapter
+          Object.assign(userCourses[0], { unlock: true });
+        }
+      }else{
+        for await (let [index] of userCourses.entries()) {
+          Object.assign(userCourses[index], { unlock: true });
+        }
+      }
+
       // filtering only courses meta
       courseMeta = courseMeta.filter((el) => el.course != undefined);
-
       //   check that user accept the agreement or not
       userCourses.forEach((course, index) => {
         courseMeta.forEach((startedCourse) => {
@@ -239,51 +308,9 @@ var allCourses = async (req, res) => {
         });
       });
     }
+
     if (req.user.role === "regulator") {
       userCourses = await CourseModel.find({ status: "publish" });
-    }
-    let progress = {};
-    let uniqueCourses = [
-      ...new Set(userCourses.map((el) => JSON.stringify(el))),
-    ].map((el) => JSON.parse(el));
-    for await (let content of uniqueCourses) {
-      // used for to find the content(chap+quiz) length
-      let total = 0;
-
-      for await (let chapter of content.chapters) {
-        const completedChap = await UserMeta.findOne({
-          chapter_id: chapter.toString(),
-          user_id: req.user._id,
-          meta_key: "completed",
-        });
-        if (completedChap) {
-          if (progress[content.name]) {
-            progress[content.name]++;
-          } else {
-            progress[content.name] = 1;
-          }
-        }
-        total++;
-      }
-      for await (let quiz of content.quizzes) {
-        const takenQuiz = await Result.findOne({
-          user: req.user._id,
-          quiz: quiz.toString(),
-        });
-        if (takenQuiz) {
-          if (progress[content.name]) {
-            progress[content.name]++;
-          } else {
-            progress[content.name] = 1;
-          }
-        }
-        total++;
-      }
-      if (progress[content.name]) {
-        progress[content.name] = Math.floor(
-          (progress[content.name] / total) * 100
-        );
-      }
     }
     res.render("dashboard/examples/courses/course-detail", {
       title: "Dashboard | All Courses",
@@ -369,13 +396,16 @@ var viewCourse = async (req, res) => {
       .lean();
     if (course) {
       let userCourses = [];
-      if (req.user.package) {
-        await req.user.populate("package");
-        userCourses = [...req.user.package.courses];
+      if (req.user.packages) {
+        await req.user.populate("packages");
+        req.user.packages.map((package) => {
+          return (userCourses = [...userCourses, ...package.courses]);
+        });
       }
       if (req.user.courses.length) {
         userCourses = [...userCourses, ...req.user.courses];
       }
+      // courses from mongoose id to string
       userCourses = userCourses.map((el) => el.toString());
       // authorized to purchase course of package or course
       if (userCourses.includes(course._id.toString())) {

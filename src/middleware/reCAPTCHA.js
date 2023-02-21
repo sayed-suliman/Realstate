@@ -3,9 +3,12 @@ const axios = require("axios");
 module.exports = (req, res, next) => {
   const recaptcha = req.body["g-recaptcha-response"];
   const secretKey = process.env.recaptcha_secretKey;
+  const previousRoute = req.headers.referer;
   if (!recaptcha) {
-    req.flash("error", "reCAPTCHA initialization failed.");
-    return res.redirect(req.headers.referer || "/login");
+    previousRoute.includes("checkout")
+      ? req.flash("signUpError", "reCAPTCHA initialization failed.")
+      : req.flash("error", "reCAPTCHA initialization failed.");
+    return res.redirect(previousRoute || "/login");
   }
 
   axios
@@ -23,12 +26,16 @@ module.exports = (req, res, next) => {
       if (response.data.success) {
         next();
       } else {
-        req.flash("error", "Failed to validate reCAPTCHA");
-        return res.redirect(req.headers.referer || "/login");
+        previousRoute.includes("checkout")
+          ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+          : req.flash("error", "Failed to validate reCAPTCHA");
+        return res.redirect(previousRoute || "/login");
       }
     })
     .catch((error) => {
-      req.flash("error", "Failed to validate reCAPTCHA");
-      return res.redirect(req.headers.referer || "/login");
+      previousRoute.includes("checkout")
+        ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+        : req.flash("error", "Failed to validate reCAPTCHA");
+      return res.redirect(previousRoute || "/login");
     });
 };

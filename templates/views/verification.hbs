@@ -14,42 +14,31 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row" class="text-start">{{#if
-                                            user.package}}Package{{else}}Course{{/if}}</th>
-                                        <th class="text-end">
-                                            {{#if
-                                            user.package}}{{user.package.name}}{{else}}{{user.courses.[0].name}}{{/if}}
+                                        <th scope="row" class="text-start text-capitalize">
+                                            {{itemDetail.type}}
+                                        </th>
+                                        <th class="text-end text-capitalize">
+                                            {{itemDetail.name}}
                                         </th>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">
-                                            {{#if user.package}}Package{{else}}Course{{/if}}
-                                            Subtotal
+                                        <td scope="row" class="text-start text-capitalize">
+                                            {{itemDetail.type}} Subtotal</td>
+                                        <td class="text-end">${{itemDetail.price}}
                                         </td>
-                                        <td class="text-end">
-                                            ${{#if user.package}}{{user.package.price}}{{else}}
-                                            {{user.courses.[0].price}}{{/if}}
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td scope="row" class="text-start">Order Discounts</td>
-                                        <td class="text-danger text-end">-$0</td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">
-                                            {{#if user.package}}
-                                            {{user.package.tax}}%
-                                            {{else}}0%
-                                            {{/if}}
+                                        <td class="text-end">{{itemDetail.tax}}%
                                         </td>
+                                    </tr>
+                                    <tr>
+                                        <td scope="row" class="text-start">Order Discount</td>
+                                        <td class="text-danger text-end discount">-$0</td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">
-                                            ${{#if user.package}}{{user.total}}{{else}}
-                                            {{user.courses.[0].price}}{{/if}}
-                                        </th>
+                                        <th class="text-end">${{itemDetail.total}}</th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -144,23 +133,23 @@
             }
         }
 /*
-                                                                                                        //jquery to send next
-                                                                                                         $(document).ready(function(){
-                                                                                                                    $('.verify-input').keyup(function(e){
-                                                                                                                        const input = e.target
-                                                                                                                        let value = input.value
-                                                                                                                        //input.value = ""
-                                                                                                                        input.value = value ? value[0] : ""
-                                                                                                                        if(value.length >= 1){
-                                                                                                                           $(input).next().focus()
-                                                                                                                        }
-                                                                                                                        if(e.key == "Backspace"){
-                                                                                                                            if(value.length < 1){
-                                                                                                                                $(input).prev().focus()
-                                                                                                                            }
-                                                                                                                        }
-                                                                                                                    })
-                                                                                                                })
-                                                                                                        */
+                                                                                                                                                        //jquery to send next
+                                                                                                                                                         $(document).ready(function(){
+                                                                                                                                                                    $('.verify-input').keyup(function(e){
+                                                                                                                                                                        const input = e.target
+                                                                                                                                                                        let value = input.value
+                                                                                                                                                                        //input.value = ""
+                                                                                                                                                                        input.value = value ? value[0] : ""
+                                                                                                                                                                        if(value.length >= 1){
+                                                                                                                                                                           $(input).next().focus()
+                                                                                                                                                                        }
+                                                                                                                                                                        if(e.key == "Backspace"){
+                                                                                                                                                                            if(value.length < 1){
+                                                                                                                                                                                $(input).prev().focus()
+                                                                                                                                                                            }
+                                                                                                                                                                        }
+                                                                                                                                                                    })
+                                                                                                                                                                })
+                                                                                                                                                        */
     </script>
     {{>footer}}

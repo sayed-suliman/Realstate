@@ -175,16 +175,17 @@ const viewChapter = async (req, res) => {
     const courseId = req.params.courseId;
     const course = await CourseModel.findById(courseId);
     if (course) {
-      let userCourses;
-      if (req.user.package) {
-        await req.user.populate("package");
-        userCourses = req.user.package.courses;
+      let userCourses = [];
+      if (req.user.packages) {
+        await req.user.populate("packages");
+        req.user.packages.map((package) => {
+          return (userCourses = [...userCourses, ...package.courses]);
+        });
       }
       if (req.user.courses.length) {
-        userCourses = req.user.courses;
+        userCourses = [...userCourses, ...req.user.courses];
       }
-
-      // pdf view (right side)
+      // pdf view (at right side)
       const ID = req.params.id;
       const chapter = await Chapters.findById(ID).lean();
       const completedChap = await userMeta.findOne({
@@ -194,9 +195,11 @@ const viewChapter = async (req, res) => {
       if (completedChap) {
         chapter.completed = true;
       }
+      // courses from mongoose id to string
+      userCourses = userCourses.map((el) => el.toString());
       // access only the course of the purchased package
       if (
-        userCourses.includes(course._id) &&
+        userCourses.includes(course._id.toString()) &&
         course.chapters.includes(chapter._id)
       ) {
         await course.populate("chapters");

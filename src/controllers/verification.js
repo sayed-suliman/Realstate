@@ -6,6 +6,10 @@ const Package = require("../models/package");
 
 module.exports = {
   async verification(req, res) {
+    const cart = req.session.cart;
+    let itemDetail = {
+      type: cart?.itemType,
+    };
     try {
       let cart = req.session.cart;
       var { user: userID } = req.query;
@@ -24,16 +28,25 @@ module.exports = {
         } else {
           if (cart.itemType == "course" && cart.item) {
             let course = await Course.findById(cart.item);
-            user.total = course.price;
+            itemDetail.name = course.name;
+            itemDetail.price = course.price;
+            itemDetail.total = course.price;
+            itemDetail.tax = 0;
           }
           if (cart.itemType == "package" && cart.item) {
-            let package = await Package.findById(cart.item);
+            let package = await Package.findById(cart.item)
+              .where("status")
+              .equals("publish");
             var { price, tax } = package;
-            user.total = Math.round(price * ((100 + tax) / 100));
+            itemDetail.name = package.name;
+            itemDetail.price = price;
+            itemDetail.tax = tax;
+            itemDetail.total = Math.round(price * ((100 + tax) / 100));
           }
           return res.render("verification", {
             title: "Verification",
             user,
+            itemDetail,
           });
         }
       }

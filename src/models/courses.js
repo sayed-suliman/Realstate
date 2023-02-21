@@ -6,9 +6,6 @@ const courseSchema = new mongoose.Schema(
     status: String,
     banner: {
       type: String,
-      get: function (banner) {
-        return `/images/course/${banner}`;
-      },
     },
     package: [{ type: mongoose.Schema.Types.ObjectId, ref: "Package" }],
     price: {

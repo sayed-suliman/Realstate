@@ -15,7 +15,7 @@ module.exports = {
     };
     try {
       if (userID) {
-        const user = await User.findById(userID).populate("package");
+        const user = await User.findById(userID).populate("packages");
         if (user.verified) {
           // admin and regulator redirect to dashboard with msg
           // they can't buy a package
@@ -42,7 +42,6 @@ module.exports = {
             const type = encodeURIComponent("danger");
             return req.logout((error) => {
               if (error) {
-                console.log(error);
                 const msg = encodeURIComponent(error);
                 const type = encodeURIComponent("danger");
                 return res.redirect(`/?msg=${msg}&type=${type}`);
@@ -52,23 +51,30 @@ module.exports = {
           }
 
           // if user have already purchase a package which contain this course
-          let userCourses = user.package.courses.map((el) => el.toString());
-          if (cart.itemType == "course" && userCourses.includes(cart.item)) {
-            return req.login(user, function (err) {
-              if (err) {
-                return next(err);
-              }
-              return res.redirect(
-                url.format({
-                  pathname: "/dashboard",
-                  query: {
-                    msg: encodeMsg(
-                      "You have already purchased a package which contain this course."
-                    ),
-                  },
-                })
-              );
-            });
+          if (user.packages) {
+            // mongoose id to string
+            let userCourses = [].concat(
+              ...user.packages.map((package) => {
+                return package.courses.map((el) => el.toString());
+              })
+            );
+            if (cart.itemType == "course" && userCourses.includes(cart.item)) {
+              return req.login(user, function (err) {
+                if (err) {
+                  return next(err);
+                }
+                return res.redirect(
+                  url.format({
+                    pathname: "/dashboard",
+                    query: {
+                      msg: encodeMsg(
+                        "You have already purchased a package which contain this course."
+                      ),
+                    },
+                  })
+                );
+              });
+            }
           }
 
           let orders = await Order.find({ user: user._id }).select(

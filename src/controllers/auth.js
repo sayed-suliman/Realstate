@@ -52,33 +52,6 @@ const signUp = async (req, res) => {
       */
       if (errorObj.email?.includes("redirect to verification")) {
         const userId = errorObj.email.split(",")[1];
-        // cart.user = userId;
-        // req.session.cart = cart;
-        // const password = await bcrypt.hash(data.password, 10);
-        // let userObject = {
-        //   name: data.name,
-        //   email: data.email,
-        //   password,
-        //   verified: false,
-        //   role: "student",
-        // };
-
-        // // when user purchasing package
-        // if (data.package) {
-        //   userObject = {
-        //     ...userObject,
-        //     package: data.package,
-        //   };
-        // }
-        // if (data.course) {
-        //   // when user purchasing course
-        //   userObject = {
-        //     ...userObject,
-        //     courses: [data.course],
-        //   };
-        // }
-        // await User.findOneAndReplace({ _id: ObjectId(userId) }, userObject);
-        // await User.findByIdAndUpdate(userId, userObject);
         res.redirect("/verification?user=" + userId);
       } else {
         // this section render when error exist

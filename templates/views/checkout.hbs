@@ -93,6 +93,7 @@
                         <h2 class="fw-bold">Register</h2>
                         <!-- <p class="m-0 mb-3">New Here?</p> -->
                         <p class="m-0 mb-3">Register here with your information</p>
+                        {{#if signUpError}}<p class="fs-16 text-danger">{{signUpError}}</p>{{/if}}
                         <div class="px-3 mb-3">
                             <button type="button" class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3"
                                 data-bs-toggle="modal" data-bs-target="#registrationModal">

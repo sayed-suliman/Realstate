@@ -206,16 +206,26 @@ module.exports = {
           );
         }
         // adding item(course) to user model
-        if (cart.itemType == "course" && Array.isArray(user.courses)) {
-          user.courses.push(cart.item);
-        } else {
-          user.courses = [cart.item];
+        if (cart.itemType == "course") {
+          if (
+            Array.isArray(user.courses) &&
+            !user.courses.includes(cart.item)
+          ) {
+            user.courses.push(cart.item);
+          } else {
+            user.courses = [cart.item];
+          }
         }
         // adding item(package) to user model
-        if (cart.itemType == "package" && Array.isArray(user.courses)) {
-          user.packages.push(cart.item);
-        } else {
-          user.packages = [cart.item];
+        if (cart.itemType == "package") {
+          if (
+            Array.isArray(user.courses) &&
+            !user.packages.includes(cart.item)
+          ) {
+            user.packages.push(cart.item);
+          } else {
+            user.packages = [cart.item];
+          }
         }
         await user.save();
 
