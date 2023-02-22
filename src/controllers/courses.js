@@ -219,15 +219,9 @@ var allCourses = async (req, res) => {
     let userCourses = [];
     let progress = {};
 
-    if (req.user.role === "student") {
-      if (req.user.packages) {
-        req.user.packages.map((package) => {
-          userCourses = [...userCourses, ...package.courses];
-        });
-      }
-      if (req.user.courses) {
-        userCourses = [...userCourses, ...req.user.courses];
-      }
+    if (req.user.role === "guest") {
+      await req.user.populate({ path: "trialCourse" });
+      userCourses = [req.user.trialCourse];
       let courseMeta = await UserMeta.find({
         user_id: req.user._id,
       });
@@ -236,7 +230,7 @@ var allCourses = async (req, res) => {
       userCourses = [
         ...new Set(userCourses.map((course) => JSON.stringify(course))),
       ].map((course) => JSON.parse(course));
-      for await (let [index,content] of userCourses.entries()) {
+      for await (let [index, content] of userCourses.entries()) {
         // used for to find the content(chap+quiz) length
         let total = 0;
 
@@ -275,11 +269,6 @@ var allCourses = async (req, res) => {
           for await (let [index] of userCourses.entries()) {
             if (!userCourses[index].unlock) {
               if (index == 0) continue;
-              console.log(
-                index,
-                userCourses[index].unlock,
-                userCourses[index - 1].unlock
-              );
               if (typeof userCourses[index - 1].unlock != undefined) {
                 if (userCourses[index - 1].unlock) {
                   userCourses[index].unlock = true;
@@ -291,7 +280,92 @@ var allCourses = async (req, res) => {
           // unlock the first content of the current chapter
           Object.assign(userCourses[0], { unlock: true });
         }
-      }else{
+      } else {
+        for await (let [index] of userCourses.entries()) {
+          Object.assign(userCourses[index], { unlock: true });
+        }
+      }
+
+      // filtering only courses meta
+      courseMeta = courseMeta.filter((el) => el.course != undefined);
+      //   check that user accept the agreement or not
+      userCourses.forEach((course, index) => {
+        courseMeta.forEach((startedCourse) => {
+          if (course._id.toString() == startedCourse.course.toString()) {
+            userCourses[index].started = true;
+          }
+        });
+      });
+    }
+
+    if (req.user.role === "student") {
+      if (req.user.packages) {
+        req.user.packages.map((package) => {
+          userCourses = [...userCourses, ...package.courses];
+        });
+      }
+      if (req.user.courses) {
+        userCourses = [...userCourses, ...req.user.courses];
+      }
+      let courseMeta = await UserMeta.find({
+        user_id: req.user._id,
+      });
+
+      // removing the duplicate courses
+      userCourses = [
+        ...new Set(userCourses.map((course) => JSON.stringify(course))),
+      ].map((course) => JSON.parse(course));
+      for await (let [index, content] of userCourses.entries()) {
+        // used for to find the content(chap+quiz) length
+        let total = 0;
+
+        for await (let chapter of content.chapters) {
+          const completedChap = await UserMeta.findOne({
+            chapter_id: chapter.toString(),
+            user_id: req.user._id,
+            meta_key: "completed",
+          });
+          if (completedChap) {
+            progress[content.name] = (progress[content.name] || 0) + 1;
+          }
+          total++;
+        }
+        for await (let quiz of content.quizzes) {
+          const takenQuiz = await Result.findOne({
+            user: req.user._id,
+            quiz: quiz.toString(),
+          });
+          if (takenQuiz) {
+            progress[content.name] = (progress[content.name] || 0) + 1;
+          }
+          total++;
+        }
+        if (progress[content.name]) {
+          let percent = Math.floor((progress[content.name] / total) * 100);
+          progress[content.name] = percent;
+          userCourses[index].unlock = percent == 100 ? true : false;
+        }
+      }
+
+      let setting = await Setting.findOne();
+      // unlock course when previous is completed
+      if (setting.unlockCourse) {
+        if (userCourses.length) {
+          for await (let [index] of userCourses.entries()) {
+            if (!userCourses[index].unlock) {
+              if (index == 0) continue;
+              if (typeof userCourses[index - 1].unlock != undefined) {
+                if (userCourses[index - 1].unlock) {
+                  userCourses[index].unlock = true;
+                  break;
+                }
+              }
+            }
+          }
+          // unlock the first content of the current chapter
+          Object.assign(userCourses[0], { unlock: true });
+        }
+      } else {
         for await (let [index] of userCourses.entries()) {
           Object.assign(userCourses[index], { unlock: true });
         }
@@ -387,7 +461,124 @@ var viewCourse = async (req, res) => {
       }
     }
     // regulator end
+    if (req.user.role === "guest") {
+      // student start
+      const ID = req.params.id;
+      const course = await CourseModel.findById(ID)
+        .populate("chapters")
+        .populate("quizzes")
+        .lean();
+      if (course) {
+        // authorized to purchase course of package or course
+        if (req.user.trialCourse.toString() == course._id.toString()) {
+          const courseMeta = await UserMeta.findOne({
+            user_id: req.user._id,
+            course: ID,
+          });
+          if (req.query.agree) {
+            if (!courseMeta) {
+              await UserMeta({
+                user_id: req.user._id,
+                course: ID,
+                meta_key: "Course Start Agreement",
+                meta_value: "Accepted",
+              }).save();
+              sendAgreement(req.user.email, req.user.name);
+            }
+          }
+          for await (let [index, quiz] of course.quizzes.entries()) {
+            Object.assign(course.quizzes[index], { unlock: false });
 
+            const takenQuiz = await Result.findOne({
+              user: req.user._id,
+              quiz: quiz._id,
+            });
+            if (takenQuiz) {
+              Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
+              Object.assign(course.quizzes[index], { unlock: true });
+            }
+            if (quiz.onTrial) {
+              Object.assign(course.quizzes[index], { unlock: true });
+            }
+          }
+
+          for await (let [index, chapter] of course.chapters.entries()) {
+            Object.assign(course.chapters[index], { unlock: false });
+            const completedChapter = await UserMeta.findOne({
+              user_id: req.user._id.toString(),
+              chapter_id: chapter,
+              meta_key: "completed",
+            });
+            if (completedChapter) {
+              Object.assign(course.chapters[index], { completed: true });
+              Object.assign(course.chapters[index], { unlock: true });
+            }
+            if (chapter.onTrial) {
+              Object.assign(course.chapters[index], { unlock: true });
+            }
+          }
+
+          // sorting the chapter by name
+          const contents = [...course.quizzes, ...course.chapters];
+          contents.sort((a, b) => {
+            if (a.order < b.order) {
+              return -1;
+            }
+            if (a.order > b.order) {
+              return 1;
+            }
+            return 0;
+          });
+          const setting = await Setting.findOne();
+          // quiz policy when completed the the previous
+          if (setting.quizPolicy == "accessPassedPrevious") {
+            // unlocking the next content when the previous is completed
+            if (contents.length) {
+              for await (let [index] of contents.entries()) {
+                if (!contents[index].unlock) {
+                  if (index == 0) continue;
+                  if (typeof contents[index - 1].unlock != undefined) {
+                    if (contents[index - 1].type == "quiz") {
+                      if (contents[index - 1].grade == "failed") {
+                        break;
+                      }
+                    }
+                    if (contents[index - 1].unlock) {
+                      contents[index].unlock = true;
+                      break;
+                    }
+                  }
+                }
+              }
+              // unlock the first content of the current chapter
+              Object.assign(contents[0], { unlock: true });
+            }
+          }
+          return res.render("dashboard/student/view-course", {
+            title: `Course | ${course.name}`,
+            course,
+            contents,
+            timeForExam: {
+              final: setting.finalTakeTime,
+              mid: setting.midTakeTime,
+            },
+          });
+        } else {
+          return res.redirect(
+            url.format({
+              pathname: "/dashboard",
+              query: {
+                msg: encodeMsg("Unauthorized Access", "danger"),
+              },
+            })
+          );
+        }
+      } else {
+        res.redirect(
+          "/dashboard?msg=" + encodeMsg("Course not found.", "danger")
+        );
+      }
+    }
     // student start
     const ID = req.params.id;
     const course = await CourseModel.findById(ID)

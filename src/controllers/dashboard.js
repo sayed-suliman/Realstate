@@ -14,6 +14,114 @@ module.exports = {
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
+      /*******************  GUEST DASHBOARD  **********************/
+      if (req.user.role == "guest") {
+        let userCourses = [];
+        await req.user.populate({
+          path: "trialCourse",
+          match: { status: "publish" },
+        });
+        userCourses = [req.user.trialCourse];
+        if (userCourses) {
+          var completedCourses = {};
+          let progress = {};
+          let setting = await Setting.findOne();
+          let courseMeta = await UserMeta.find({
+            user_id: req.user._id,
+          });
+          // filtering only courses meta
+          courseMeta = courseMeta.filter((el) => el.course != undefined);
+
+          // remove duplicate courses
+          userCourses = [
+            ...new Set(userCourses.map((el) => JSON.stringify(el))),
+          ].map((el) => JSON.parse(el));
+
+          // progress calculation
+          for await (let content of userCourses) {
+            // used for to find the content(chap+quiz) length
+            let total = 0;
+
+            for await (let chapter of content.chapters) {
+              const completedChap = await UserMeta.findOne({
+                chapter_id: chapter.toString(),
+                user_id: req.user._id.toString(),
+                meta_key: "completed",
+              });
+              if (completedChap) {
+                if (progress[content.name]) {
+                  progress[content.name]++;
+                } else {
+                  progress[content.name] = 1;
+                }
+              }
+              total++;
+            }
+            for await (let quiz of content.quizzes) {
+              const takenQuiz = await Result.findOne({
+                user: req.user._id,
+                quiz: quiz.toString(),
+              });
+              if (takenQuiz) {
+                if (progress[content.name]) {
+                  progress[content.name]++;
+                } else {
+                  progress[content.name] = 1;
+                }
+              }
+              total++;
+            }
+
+            if (progress[content.name]) {
+              const value = Math.floor((progress[content.name] / total) * 100);
+              progress[content.name] = value;
+              if (value == 100) {
+                completedCourses[content.name] = content._id.toString();
+              }
+            }
+          }
+          // remove the completed courses for the userCourse list
+          for await (let [index, content] of userCourses.entries()) {
+            if (completedCourses[content.name]) {
+              userCourses.splice(index, 1);
+            }
+            if (userCourses.length) {
+              userCourses[index].unlock = true;
+            }
+          }
+
+          //   check that user accept the agreement or not
+          userCourses.forEach((course, index) => {
+            courseMeta.forEach((startedCourse) => {
+              if (course._id.toString() == startedCourse.course.toString()) {
+                userCourses[index].started = true;
+              }
+            });
+          });
+
+          // unlock course when previous is completed
+          if (setting.unlockCourse) {
+            // lock all the courses
+            userCourses.forEach((course, index) => {
+              userCourses[index].unlock = false;
+            });
+            // unlock only the first one
+            userCourses[0].unlock = true;
+          }
+          // assign undefined when completedCourses obj is empty
+          completedCourses = Object.keys(completedCourses).length
+            ? completedCourses
+            : undefined;
+
+          return res.render("dashboard/new-dashboard", {
+            title: "Dashboard",
+            userCourses,
+            completedCourses,
+            progress,
+            toast: Object.keys(msg).length == 0 ? undefined : msg,
+          });
+        }
+      }
       /*******************  STUDENT DASHBOARD  **********************/
       if (req.user.role == "student") {
         let userCourses = [];
@@ -277,6 +385,7 @@ module.exports = {
         lastYearAllAmounts,
       });
     } catch (error) {
+      console.log(error)
       res.redirect(
         url.format({
           pathname: "/dashboard",

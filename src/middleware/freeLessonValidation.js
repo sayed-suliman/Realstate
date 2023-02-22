@@ -27,7 +27,7 @@ const freeLessonValidation = checkSchema({
             }
         }
     },
-    lessonType: {
+    trialCourse: {
         notEmpty: true,
         isString: true
     },

@@ -79,7 +79,7 @@ const postQuiz = async (req, res) => {
       course.quizzes.push(quizAdded._id);
       await course.save();
       var msg = encodeMsg("Your Quiz has been added Successfully");
-      res.redirect("/dashboard/add-quiz?msg=" + msg);
+      res.redirect("/dashboard/quiz-detail?msg=" + msg);
     }
   } catch (e) {
     res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));

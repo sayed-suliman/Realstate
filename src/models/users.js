@@ -73,6 +73,11 @@ const userSchema = new mongoose.Schema(
     avatar: {
       type: Buffer,
     },
+    // this is only the guest user (trial view)
+    trialCourse: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Course",
+    },
   },
   {
     timestamps: true,

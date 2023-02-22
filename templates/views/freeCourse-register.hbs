@@ -41,11 +41,13 @@
                             <div class="col-12 col-xxl-4 col-xl-4 col-lg-4 col-md-4 login mx-2 mb-4">
                                 <label for="select" class="form-label">Lesson Type<sup
                                         class="text-danger fs-5 fw-semibold top-0">*</sup></label>
-                                <select id="Select" class="form-select" style="box-shadow: none;" name="lessonType"
+                                <select id="Select" class="form-select" style="box-shadow: none;" name="trialCourse"
                                     required>
-                                    <option value="Priciple Preview" selected>Principle Preview</option>
-                                    <option value="Practice Preview">Practice Preview</option>
-                                    <option value="Legal Preview">Legal Preview</option>
+                                    <option value="" selected disabled>Select a Lesson Type</option>
+                                    {{#each courses}}
+                                    <option value="{{this._id}}"{{../oldData.trialCourse}} {{#ifEquals this._id
+                                        ../oldData.trialCourse}}selected{{/ifEquals}}>{{this.name}}</option>
+                                    {{/each}}
                                 </select>
                                 {{#if errorObj}}<small
                                     class="form-text text-danger">{{errorObj.lessonType}}</small>{{/if}}

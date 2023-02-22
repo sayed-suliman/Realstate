@@ -47,6 +47,31 @@
           </a>
         </li>
         {{else}}
+        {{!-- for guest --}}
+        {{#ifEquals user.role "guest"}}
+        <li class="nav-item">
+          <a href="/dashboard/courses" id="courses" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="nav-icon fas fa-book"></i>
+            <p>Courses</p>
+          </a>
+        </li>
+        {{!-- Buy More --}}
+        <li class="nav-item">
+          <a href="/dashboard/buy-more" id="buyMore-link" class="nav-link">
+            <i class="fa-solid fa-bag-shopping nav-icon"></i>
+            <p>Buy More</p>
+          </a>
+        </li>
+        {{!-- Setting --}}
+        <li class="nav-item">
+          <a href="/dashboard/setting" id="setting-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-sharp fa-solid fa-gear nav-icon"></i>
+            <p>Settings</p>
+          </a>
+        </li>
+        {{/ifEquals}}
         {{!-- for student --}}
         {{#ifEquals user.role "student"}}
         <li class="nav-item">

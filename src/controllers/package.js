@@ -134,7 +134,6 @@ module.exports = {
       });
       if (package) {
         if (!data.coursename) {
-          console.log("nocourses-selected");
           const courses = await Course.find();
           courses.forEach(async (cs) => {
             const index = cs.package.indexOf(pId);
@@ -157,10 +156,8 @@ module.exports = {
                 }
               }
               await cs.save();
-              console.log("saved", cs);
             });
           } else {
-            console.log("another here");
             courses.forEach(async (cs) => {
               const index = cs.package.indexOf(pId);
               if (cs.name == data.coursename) {

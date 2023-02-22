@@ -295,18 +295,16 @@
     })
 
     //showing alert(toast)
-    { { #if toast } }
+    {{#if toast }}
     $('.toast').toast('show')
     setTimeout(() => {
         $('.toast').toast('dispose')
     }, 5000)
-    {
-        {
-            /if}}
-            { { #if toast_error } }
+    {{/if}}
+            {{#if toast_error}}
             $('.toast').toast('show')
             setTimeout(() => {
                 $('.toast').toast('dispose')
             }, 5000)
-            { { /if}}
+            {{/if}}
 </script>

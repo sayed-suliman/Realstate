@@ -47,7 +47,8 @@
                 <div class="card-body">
                   <div class="form-group">
                     <label for="inputName">Package Name</label>
-                    <input type="text" id="inputName" value="{{package.name}}" required name="name" class="form-control">
+                    <input type="text" id="inputName" value="{{package.name}}" required name="name"
+                      class="form-control">
                   </div>
                   <div class="form-group">
                     <label>Select Courses to Add in Package</label>
@@ -71,12 +72,13 @@
                   <div class="row">
                     <div class="form-group col">
                       <label for="price">Package Price</label>
-                      <input type="number" id="price" required value="{{package.price}}" name="price" class="form-control">
+                      <input type="number" id="price" required value="{{package.price}}" name="price"
+                        class="form-control">
                     </div>
                     <div class="form-group col">
-                      <label for="percentage">Package Tax(%)</label>
-                      <input type="number" min="0" max="100" id="percentage" name="tax" value="{{package.tax}}"
-                        class="form-control">
+                      <label for="tax">Package Tax(%)</label>
+                      <input type="text" id="tax" name="tax" required class="form-control" value="{{package.tax}}"
+                        pattern="[0-9]+(\.[0-9]+)?" min="0" max="100" title="Please enter a valid number">
                     </div>
                   </div>
                   {{!-- todo part start here --}}
@@ -163,6 +165,18 @@
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
   {{!-- custom script for this page --}}
+  <script>
+    const tax = document.getElementById('tax')
+    tax.addEventListener('input', () => {
+      const value = parseFloat(tax.value)
+      if (isNaN(value) || value < 0 || value > 100) {
+        tax.setCustomValidity('Please enter value between 0 and 100')
+      } else {
+        tax.setCustomValidity('')
+      }
+
+    })
+  </script>
   <script>
     $(document).ready(function () {
       $(".fa-trash").click(function (event) {

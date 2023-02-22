@@ -231,7 +231,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
+router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student

@@ -11,7 +11,7 @@ module.exports = {
     if (msgToken) {
       msg = decodeMsg(msgToken);
     }
-    if (req.user.role === "student") {
+    if (req.user.role === "student" || req.user.role === "guest") {
       return res.render("dashboard/examples/setting", {
         title: "Dashboard | Setting",
         toast: Object.keys(msg).length == 0 ? undefined : msg,

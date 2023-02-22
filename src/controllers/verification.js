@@ -10,7 +10,7 @@ module.exports = {
       if (userID) {
         let user = await User.findById(userID);
         if (!user) {
-          const msg = encodeURIComponent("Please! User not found.");
+          const msg = encodeURIComponent("User not found.");
           return res.redirect(`/?msg=${msg}&type=danger`);
         }
         // if verified user then redirect to payment
@@ -51,11 +51,15 @@ module.exports = {
     const user = await User.findByIdAndUpdate(userID, { verified: true });
     await otp.deleteOne();
     if (user.role == "guest") {
-      req.login(user, function (error) {
+      return req.login(user, function (error) {
         if (error) {
-          return res.redirect("/?msg=" + encodeURIComponent(error) + "&type=danger");
+          return res.redirect(
+            "/?msg=" + encodeURIComponent(error) + "&type=danger"
+          );
         }
-        return res.redirect("/dashboard?msg="+encodeMsg(`Welcome to ${process.env.SITE_NAME}.`));
+        return res.redirect(
+          "/dashboard?msg=" + encodeMsg(`Welcome to ${process.env.SITE_NAME}.`)
+        );
       });
     }
     res.redirect(

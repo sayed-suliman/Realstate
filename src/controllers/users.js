@@ -14,11 +14,11 @@ module.exports = {
     }
     const users = await User.find().populate("packages");
     // binary to base64
-    for (let [index] of users.entries()) {
+    users.forEach((user, index) => {
       if (users[index].avatar) {
         users[index].avatar = users[index].avatar.toString("base64");
       }
-    }
+    });
     res.render("dashboard/examples/users/users", {
       title: "Dashboard | Users",
       users,
@@ -114,7 +114,7 @@ module.exports = {
         option = msg;
       }
       const uId = req.params.id;
-      const editUser = await User.findById(uId).populate("package");
+      const editUser = await User.findById(uId).populate("packages");
       const order = await Order.findOne({ user: uId }).select("amount");
       const packages = await Package.find();
       res.render("dashboard/examples/users/user-edit", {
