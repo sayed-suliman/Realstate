@@ -231,7 +231,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student
@@ -453,7 +453,8 @@ router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
 router.get("/free-lesson", freeLesson.register);
 router.post(
   "/free-lesson",
-  /*reCAPTCHA,*/ freeLessonValidation,
+  reCAPTCHA,
+  freeLessonValidation,
   freeLesson.doRegister
 );
 // error 500 page
