@@ -31,7 +31,16 @@ passport.use(
               //show this message when there is no package or course in the database
               return done(null, false, {
                 message:
-                  "Your package/course is expired or is no longer available.",
+                  "Your packages/courses are expired or is no longer available.",
+              });
+            }
+          }
+          if (user.role == "guest") {
+            if (!user.trialCourse) {
+              //show this message when there is no package or course in the database
+              return done(null, false, {
+                message:
+                  "Your course is expired or is no longer available.",
               });
             }
           }

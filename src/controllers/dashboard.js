@@ -21,8 +21,8 @@ module.exports = {
           path: "trialCourse",
           match: { status: "publish" },
         });
-        userCourses = [req.user.trialCourse];
-        if (userCourses) {
+        if (req.user.trialCourse) {
+          userCourses = [req.user.trialCourse];
           var completedCourses = {};
           let progress = {};
           let setting = await Setting.findOne();
@@ -31,7 +31,7 @@ module.exports = {
           });
           // filtering only courses meta
           courseMeta = courseMeta.filter((el) => el.course != undefined);
-
+          console.log(userCourses)
           // remove duplicate courses
           userCourses = [
             ...new Set(userCourses.map((el) => JSON.stringify(el))),
