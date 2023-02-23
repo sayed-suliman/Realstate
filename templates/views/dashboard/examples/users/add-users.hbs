@@ -41,7 +41,7 @@
                                     <h3 class="card-title">User Data</h3>
                                 </div>
 
-                                <form action="add-user" method="post" class="form-horizontal">
+                                <form action="add-user" method="post" id="form" class="form-horizontal">
                                     <div class="card-body">
                                         {{!-- fullname --}}
                                         <div class="form-group row">
@@ -75,16 +75,19 @@
                                             <label for="selectPackage" class="col-sm-2 col-form-label">Select
                                                 Package</label>
                                             <div class="col-sm-10">
-                                                <select required id="selectPackage" name="package"
-                                                    class="form-control custom-select">
-                                                    <option {{returnSelected data.package}} disabled value="">Select one
-                                                    </option>
-                                                    {{#each packages}}
-                                                    <option {{#checkroleorpackage data.package
-                                                        this.name}}selected{{/checkroleorpackage}}
-                                                        value="{{this.name}}">{{this.name}}</option>
-                                                    {{/each}}
-                                                </select>
+                                                {{#each packages}}
+                                                <div class="custom-control custom-checkbox d-flex flex-column">
+                                                    <input
+                                                        class="custom-control-input custom-control-input-success packages custom-control-input-outline"
+                                                        value="{{this._id}}" type="checkbox" name="packages"
+                                                        id="package-{{@index}}" />
+                                                    <label for="package-{{@index}}"
+                                                        class="custom-control-label">{{this.name}}</label>
+                                                </div>
+                                                {{/each}}
+                                                <span class="packages-error invalid-feedback">
+                                                    Please select at least one package.
+                                                </span>
                                             </div>
                                         </div>
                                         {{!-- date of birth --}}
@@ -144,35 +147,7 @@
                                                 <input min="0" required type="number" value="{{data.amount}}"
                                                     name="amount" class="form-control" id="amount" placeholder="Amount">
                                             </div>
-                                            {{!-- <div class="col-sm-6">
-                                                <select id="pay_method" name="pay_method"
-                                                    class="form-control custom-select">
-                                                    <option selected disabled value="">Select one</option>
-                                                    <option value="byHand">By Hand</option>
-                                                    <option value="Paypal">Paypal</option>
-                                                    <option value="Stripe">Stripe</option>
-                                                </select>
-                                            </div> --}}
                                         </div>
-                                        {{!-- confirm password --}}
-                                        {{!-- <div class="form-group row">
-                                            <label for="c-password" class="col-sm-2 col-form-label">Confirm
-                                                Password</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" name class="form-control" id="c-password"
-                                                    placeholder="ConfirmPassword">
-                                            </div>
-                                        </div> --}}
-                                        {{!-- this is check box --}}
-                                        {{!-- <div class="form-group row">
-                                            <div class="offset-sm-2 col-sm-10">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="exampleCheck2">
-                                                    <label class="form-check-label" for="exampleCheck2">Remember
-                                                        me</label>
-                                                </div>
-                                            </div>
-                                        </div> --}}
                                     </div>
 
                                     <div class="card-footer">
@@ -206,6 +181,27 @@
     {{>dashboardfooterlinks}}
     {{!-- custom js for this page --}}
     <script>
+        const form = document.getElementById('form');
+        const checkboxes = document.querySelectorAll('.packages');
+        const errorMessage = document.querySelector('.packages-error');
+
+        form.addEventListener('submit', (event) => {
+            let atLeastOneChecked = false;
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    atLeastOneChecked = true;
+                }
+            });
+
+            if (!atLeastOneChecked) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+            } else {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
+    <script>
         $(document).ready(function () {
             let rolVal = $("#role").val()
             if (rolVal == 'regulator' || rolVal == 'admin') {
@@ -233,7 +229,7 @@
 
                     //amount
                     $("#amount").attr("required", "")
-                     $("#amount").removeAttr("disabled")
+                    $("#amount").removeAttr("disabled")
                 }
             })
             // for amount input

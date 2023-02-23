@@ -6,24 +6,29 @@ const Order = require("../models/order");
 
 module.exports = {
   async users(req, res) {
-    var msgToken = req.query.msg;
-    var option = {};
-    if (msgToken) {
-      var msg = decodeMsg(msgToken);
-      option = msg;
-    }
-    const users = await User.find().populate("packages");
-    // binary to base64
-    users.forEach((user, index) => {
-      if (users[index].avatar) {
-        users[index].avatar = users[index].avatar.toString("base64");
+    try {
+      var msgToken = req.query.msg;
+      var option = {};
+      if (msgToken) {
+        var msg = decodeMsg(msgToken);
+        option = msg;
       }
-    });
-    res.render("dashboard/examples/users/users", {
-      title: "Dashboard | Users",
-      users,
-      toast: Object.keys(option).length == 0 ? undefined : option,
-    });
+      const users = await User.find().populate("packages");
+      // binary to base64
+      users.forEach((user, index) => {
+        if (users[index].avatar) {
+          users[index].avatar = users[index].avatar.toString("base64");
+        }
+      });
+      res.render("dashboard/examples/users/users", {
+        title: "Dashboard | Users",
+        users,
+        toast: Object.keys(option).length == 0 ? undefined : option,
+      });
+    } catch (e) {
+      var msg = encodeMsg(e.message);
+      res.redirect("/dashboard/users?msg=" + msg);
+    }
   },
   async addUsers(req, res) {
     try {
@@ -40,10 +45,8 @@ module.exports = {
         toast: Object.keys(option).length == 0 ? undefined : option,
       });
     } catch (e) {
-      res.render("500", {
-        title: "Error 500",
-        err: e.message,
-      });
+      var msg = encodeMsg(e.message);
+      res.redirect("/dashboard/users?msg=" + msg);
     }
   },
   // post user
@@ -52,8 +55,6 @@ module.exports = {
       const data = req.body;
       const formValidations = validationResult(req);
       const packages = await Package.find({ status: "publish" });
-      const package =
-        (await Package.findOne({ name: data.package }).select("_id")) || "";
       if (formValidations.errors.length) {
         const errorObj = {};
         formValidations.errors.forEach((element) => {
@@ -70,7 +71,7 @@ module.exports = {
         name: data.name,
         email: data.email,
         role: data.role,
-        package: package || undefined,
+        packages: data.packages,
         dob: data.dob,
         password: data.password,
         verified: true,
@@ -79,29 +80,18 @@ module.exports = {
         if (data.role == "student") {
           let order = await Order({
             user: user._id,
-            package: package || undefined,
+            package: packages || undefined,
             verified: true,
             pay_method: "Offline Payment",
             amount: data.amount,
           }).save();
         }
-        var msg = encodeMsg("User Added");
-        res.redirect("/dashboard/add-user?msg=" + msg);
+        var msg = encodeMsg("User Added Successfully.");
+        res.redirect("/dashboard/users?msg=" + msg);
       }
-      // const packages = await Package.find({ status: "publish" })
-      // res.render("dashboard/examples/users/add-users", {
-      //     title: "Dashboard | Add-User",
-      //     packages
-      // })
     } catch (e) {
-      res.render("500", {
-        title: "Error 500",
-        err: e.message,
-      });
-      // res.status(404).json({
-      //     err: e.message,
-      //     status: 404
-      // })
+      var msg = encodeMsg(e.message);
+      res.redirect("/dashboard/users?msg=" + msg);
     }
   },
   // edit user
@@ -114,9 +104,9 @@ module.exports = {
         option = msg;
       }
       const uId = req.params.id;
-      const editUser = await User.findById(uId).populate("packages");
+      const editUser = await User.findById(uId);
       const order = await Order.findOne({ user: uId }).select("amount");
-      const packages = await Package.find();
+      const packages = await Package.find({ status: "publish" });
       res.render("dashboard/examples/users/user-edit", {
         title: "Dashboard | User-Edit",
         editUser,
@@ -125,9 +115,8 @@ module.exports = {
         toast: Object.keys(option).length == 0 ? undefined : option,
       });
     } catch (e) {
-      res.render("500", {
-        err: e.message,
-      });
+      var msg = encodeMsg(e.message);
+      res.redirect("/dashboard/users?msg=" + msg);
     }
   },
   // update user
@@ -137,22 +126,13 @@ module.exports = {
       const editUser = req.body;
       const order = await Order.findOne({ user: uId }).select("amount");
       const packages = await Package.find({ status: "publish" });
-
       const user = await User.findById(uId);
-      const packageId = await Package.findOne({ name: editUser.package });
-      delete editUser.package;
       await user.updateOne(
-        {
-          ...editUser,
-          package: packageId._id,
-        },
+        { ...editUser },
         { runValidators: true },
         async (error, result) => {
           if (error) {
             const err = {};
-            editUser["package"] = {
-              name: packageId.name,
-            };
             if (error.message.includes("driver_license")) {
               err.driver_license =
                 "This driver license Already in Use please try another!";

@@ -16,7 +16,6 @@ hbs.registerHelper("userRoute", function (user) {
   }
 });
 hbs.registerHelper("or", function (arg1, arg2) {
-  console.log(arg1,arg2)
   return arg1 || arg2;
 });
 hbs.registerHelper("ifCond", function (v1, operator, v2, options) {

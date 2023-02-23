@@ -127,12 +127,11 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
-          $([document.documentElement, document.body]).animate(
-            {
-              scrollTop: $("#result").offset().top,
-            },
-            600
-          );
+          let top = document.querySelector(".quiz-body");
+          top.scrollTo({
+            top: 0,
+            behavior: "smooth",
+          });
           // }
           if (reviewQuiz == "true") {
             if (wrongAns.length != 0) {

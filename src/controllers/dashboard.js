@@ -31,7 +31,6 @@ module.exports = {
           });
           // filtering only courses meta
           courseMeta = courseMeta.filter((el) => el.course != undefined);
-          console.log(userCourses)
           // remove duplicate courses
           userCourses = [
             ...new Set(userCourses.map((el) => JSON.stringify(el))),

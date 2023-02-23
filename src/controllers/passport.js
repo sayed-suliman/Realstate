@@ -22,6 +22,13 @@ passport.use(
             return done(null, false, { message: "Credentials doesn't match." });
           }
           if (user.role == "student") {
+            console.log(user.packages, user.courses);
+            console.log((
+              !user.packages ||
+              !user.packages.length ||
+              !user.courses ||
+              !user.courses.length
+            ));
             if (
               !user.packages ||
               !user.packages.length ||
@@ -39,8 +46,7 @@ passport.use(
             if (!user.trialCourse) {
               //show this message when there is no package or course in the database
               return done(null, false, {
-                message:
-                  "Your course is expired or is no longer available.",
+                message: "Your course is expired or is no longer available.",
               });
             }
           }

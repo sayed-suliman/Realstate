@@ -176,7 +176,8 @@ const viewChapter = async (req, res) => {
     const course = await CourseModel.findById(courseId);
     if (course) {
       let userCourses = [];
-      if (req.user.packages) {
+      let guestUser = false;
+      if (req.user.packages.length) {
         await req.user.populate("packages");
         req.user.packages.map((package) => {
           return (userCourses = [...userCourses, ...package.courses]);
@@ -185,6 +186,7 @@ const viewChapter = async (req, res) => {
       if (req.user.courses.length) {
         userCourses = [...userCourses, ...req.user.courses];
       }
+
       // pdf view (at right side)
       const ID = req.params.id;
       const chapter = await Chapters.findById(ID).lean();
@@ -197,13 +199,28 @@ const viewChapter = async (req, res) => {
       }
       // courses from mongoose id to string
       userCourses = userCourses.map((el) => el.toString());
+
+      if (req.user.role == "guest") {
+        userCourses = [
+          await req.user.populate({
+            path: "trialCourse",
+            match: { status: "publish" },
+          }),
+        ];
+        if (userCourses.length) {
+          // access for the guest user to the course
+          guestUser = course.chapters.includes(chapter._id);
+        }
+      }
       // access only the course of the purchased package
       if (
-        userCourses.includes(course._id.toString()) &&
-        course.chapters.includes(chapter._id)
+        guestUser ||
+        (userCourses.includes(course._id.toString()) &&
+          course.chapters.includes(chapter._id))
       ) {
         await course.populate("chapters");
         await course.populate("quizzes");
+
         const courseMeta = await UserMeta.findOne({
           user_id: req.user._id,
           course: courseId,
@@ -219,6 +236,9 @@ const viewChapter = async (req, res) => {
             Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
             Object.assign(course.quizzes[index], { unlock: true });
           }
+          if (req.user.role === "guest" && quiz.onTrial) {
+            Object.assign(course.quizzes[index], { unlock: true });
+          }
         }
 
         // unlocking completed course
@@ -230,6 +250,9 @@ const viewChapter = async (req, res) => {
           });
           if (completedChapter) {
             Object.assign(course.chapters[index], { completed: true });
+            Object.assign(course.chapters[index], { unlock: true });
+          }
+          if (req.user.role === "guest" && chapter.onTrial) {
             Object.assign(course.chapters[index], { unlock: true });
           }
         }
@@ -247,7 +270,10 @@ const viewChapter = async (req, res) => {
         });
         const setting = await Setting.findOne();
         // quiz policy when completed the the previous
-        if (setting.quizPolicy == "accessPassedPrevious") {
+        if (
+          setting.quizPolicy == "accessPassedPrevious" &&
+          req.user.role != "guest"
+        ) {
           // unlocking the next content when the previous is completed
           if (contents.length) {
             for await (let [index] of contents.entries()) {
@@ -295,7 +321,10 @@ const viewChapter = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting.quizPolicy == "accessAllTime") {
+        } else if (
+          setting.quizPolicy == "accessAllTime" &&
+          req.user.role != "guest"
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
@@ -327,12 +356,15 @@ const viewChapter = async (req, res) => {
             }
           }
         }
-
         return res.render("dashboard/student/view-chapter", {
           title: `Chapter | ${chapter.name}`,
           chapter,
           courseId: course._id,
           contents,
+          timeForExam: {
+            final: setting.finalTakeTime,
+            mid: setting.midTakeTime,
+          },
         });
       } else {
         return res.redirect(

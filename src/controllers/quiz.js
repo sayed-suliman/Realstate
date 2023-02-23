@@ -169,6 +169,7 @@ const viewQuiz = async (req, res) => {
     let course = await Course.findById(courseId);
     if (quiz && course) {
       let userCourses = [];
+      let guestUser = false;
       if (req.user.packages) {
         await req.user.populate("packages");
         req.user.packages.map((package) => {
@@ -178,11 +179,27 @@ const viewQuiz = async (req, res) => {
       if (req.user.courses.length) {
         userCourses = [...userCourses, ...req.user.courses];
       }
+
       userCourses = userCourses.map((el) => el.toString());
+
+      if (req.user.role == "guest") {
+        userCourses = [
+          await req.user.populate({
+            path: "trialCourse",
+            match: { status: "publish" },
+          }),
+        ];
+        if (userCourses.length) {
+          // access for the guest user to the course
+          guestUser = course.quizzes.includes(quiz._id);
+        }
+      }
+
       // authorized to purchase package quizzes
       if (
-        userCourses.includes(course._id.toString()) &&
-        course.quizzes.includes(quiz._id)
+        guestUser ||
+        (userCourses.includes(course._id.toString()) &&
+          course.quizzes.includes(quiz._id))
       ) {
         await course.populate("chapters");
         await course.populate("quizzes");
@@ -212,6 +229,9 @@ const viewQuiz = async (req, res) => {
             Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
             Object.assign(course.quizzes[index], { unlock: true });
           }
+          if (req.user.role === "guest" && quiz.onTrial) {
+            Object.assign(course.quizzes[index], { unlock: true });
+          }
         }
 
         // unlocking completed course
@@ -223,6 +243,9 @@ const viewQuiz = async (req, res) => {
           });
           if (completedChapter) {
             Object.assign(course.chapters[index], { completed: true });
+            Object.assign(course.chapters[index], { unlock: true });
+          }
+          if (req.user.role === "guest" && chapter.onTrial) {
             Object.assign(course.chapters[index], { unlock: true });
           }
         }
@@ -240,7 +263,10 @@ const viewQuiz = async (req, res) => {
         });
 
         // quiz policy when completed the the previous
-        if (setting.quizPolicy == "accessPassedPrevious") {
+        if (
+          setting.quizPolicy == "accessPassedPrevious" &&
+          req.user.role != "guest"
+        ) {
           // unlocking the next content when the previous is completed
           if (contents.length) {
             for await (let [index] of contents.entries()) {
@@ -291,7 +317,10 @@ const viewQuiz = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting.quizPolicy == "accessAllTime") {
+        } else if (
+          setting.quizPolicy == "accessAllTime" &&
+          req.user.role != "guest"
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;

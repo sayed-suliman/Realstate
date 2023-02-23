@@ -13,6 +13,32 @@
     body {
         scroll-behavior: smooth;
     }
+
+    .quiz-container {
+        height: 86vh;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .quiz-container .table tr td {
+        padding-left: 10px;
+        padding-right: 10px;
+        vertical-align: middle;
+    }
+
+    @media screen and (max-width:991px) {
+        .quiz-container {
+            height: auto;
+        }
+    }
+
+    .quiz-container .quiz-left {
+        height: 100%;
+    }
+
+    .quiz-container .quiz-left .quiz-body {
+        overflow: hidden scroll;
+    }
 </style>
 
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -33,14 +59,14 @@
         <div class="content-wrapper">
             <div class="content pt-3">
                 <div class="container-fluid">
-                    <div class="row">
-                        <div class="col-12 col-lg-4 mb-2">
+                    <div class="row quiz-container">
+                        <div class="col-12 col-lg-4 mb-2 h-100 pb-2">
                             <div class="card h-100">
                                 <div class="card-header border-bottom-0">
                                     <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
                                 </div>
                                 <div class="card-body table-responsive p-0">
-                                    <table class="table table-hover text-nowrap">
+                                    <table class="table table-hover">
                                         <tbody>
                                             {{!-- regulator --}}
                                             {{#ifEquals user.role "regulator"}}
@@ -133,12 +159,82 @@
                                             </tr>
                                             {{/if}}
                                             {{/ifEquals}}
+                                            {{!-- guest --}}
+                                            {{#ifEquals user.role "guest"}}
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr {{#unless this.unlock}}class="bg-lock" data-toggle="modal"
+                                                data-target="#modal-default" {{/unless}}>
+                                                <td><a {{#if this.unlock}}
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{../courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
+                                                        {{else}} href="#" {{/if}}>
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class="fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{#if this.completed}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/if}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{#ifEquals this.grade "passed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.grade "failed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
+                                                    {{/ifEquals}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                            <div class="modal fade courseModal" id="modal-default"
+                                                style="display: none;" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content p-4">
+                                                        <div class="modal-body">
+                                                            <p>Thank you for your interest in this content. To unlock
+                                                                it, please purchase the corresponding package or course.
+                                                                Click the 'Purchase' button to proceed.</p>
+                                                        </div>
+                                                        <div class="modal-footer border-0 justify-content-center">
+                                                            <a href="/dashboard/buy-more"
+                                                                class="btn btn-primary">Purchase</a>
+                                                            <button type="button" class="btn btn-danger ml-2"
+                                                                data-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/ifEquals}}
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-lg-8 mb-2 quiz" oncopy="return false" oncut="return false"
+                        <div class="col-12 col-lg-8 mb-2 pb-2 quiz quiz-left" oncopy="return false" oncut="return false"
                             onpaste="return false">
                             <div class="card h-100">
                                 <div class="card-header">
@@ -148,7 +244,7 @@
                                         <h3 class="card-title timer">00:00</h3>
                                     </div>
                                 </div>
-                                <div class="card-body">
+                                <div class="card-body quiz-body mb-5">
                                     <div class="alert-section">
                                         {{#unless retake}}
                                         <div class="alert alert-danger mx-auto w-75" role="alert">
@@ -198,7 +294,40 @@
                                     </div>
                                     {{#ifCond user.role '==' 'student'}}
                                     {{#if retake}}
-                                    <form id="quiz" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
+                                    <form id="quiz" name="quizForm"
+                                        class="position-relative {{#if takenQuiz}} d-none{{/if}}">
+                                        <input type="hidden" name="quizId" value="{{quiz._id}}">
+                                        {{#each quiz.questions}}
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{increment @index}}). {{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this.qno}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="{{../this.qno}}-op-{{@index}}">
+                                                            {{this}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="feedback font-weight-bold d-none"></div>
+                                        </div>
+                                        {{/each}}
+                                        <button
+                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
+                                            type="submit">Submit</button>
+                                    </form>
+                                    {{/if}}
+                                    {{/ifCond}}
+                                    {{#ifCond user.role '==' 'guest'}}
+                                    {{#if retake}}
+                                    <form id="quiz" name="quizForm"
+                                        class="position-relative {{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
@@ -228,7 +357,8 @@
                                     {{/if}}
                                     {{/ifCond}}
                                     {{#ifCond user.role '==' 'regulator'}}
-                                    <form id="quiz" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
+                                    <form id="quiz" name="quizForm"
+                                        class="position-relative {{#if takenQuiz}} d-none{{/if}}">
                                         <input type="hidden" name="quizId" value="{{quiz._id}}">
                                         {{#each quiz.questions}}
                                         <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
