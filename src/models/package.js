@@ -1,22 +1,30 @@
 const mongoose = require("mongoose");
-const Course = require("./courses")
+const Course = require("./courses");
 
-const packageSchema = new mongoose.Schema({
+const packageSchema = new mongoose.Schema(
+  {
     name: String,
     status: String,
     tax: Number,
-    link:String,
-    courses: [{ type: mongoose.Schema.Types.ObjectId, ref: "Course" }],
+    link: String,
+    courses: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
     price: Number,
-    whoFor:Array,
-    whatsIncluded:Array,
-}, {
-    timestamps: true
-})
+    whoFor: Array,
+    whatsIncluded: Array,
+  },
+  {
+    timestamps: true,
+  }
+);
 // packageSchema.pre("remove",async function(next){
 //     const courses = await this
 //     await Course.deleteMany({package:courses._id})
 //     next()
 // })
-const Package = mongoose.model('Package', packageSchema)
-module.exports = Package
+const Package = mongoose.model("Package", packageSchema);
+module.exports = Package;

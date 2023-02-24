@@ -14,12 +14,22 @@
                             <table class="table table-borderless">
                                 <tbody>
                                     <tr>
-                                        <th scope="row" class="text-start">Package</th>
-                                        <th class="text-end">{{package.name}}</th>
+                                        <th scope="row" class="text-start">{{#if course}}Course{{/if}}{{#if
+                                            package}}Package{{/if}}</th>
+                                        <th class="text-end">
+                                            {{#if package}}{{package.name}}{{/if}}
+                                            {{#if course}}{{course.name}}{{/if}}
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">Package Subtotal</td>
-                                        <td class="text-end">${{package.price}}</td>
+                                        <td scope="row" class="text-start">
+                                            {{#if course}}Course{{/if}}
+                                            {{#if package}}Package{{/if}} Subtotal
+                                        </td>
+                                        <td class="text-end">
+                                            ${{#if course}}{{course.price}}{{/if}}
+                                            {{#if package}}{{package.price}}{{/if}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Order Discounts</td>
@@ -27,11 +37,19 @@
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">{{package.tax}}%</td>
+                                        <td class="text-end">
+                                            {{#if package}}
+                                            {{package.tax}}%
+                                            {{else}}0%
+                                            {{/if}}
+                                        </td>
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">${{package.total}}</th>
+                                        <th class="text-end">
+                                            ${{#if course}}{{course.price}}{{/if}}
+                                            {{#if package}}{{package.total}}{{/if}}
+                                        </th>
                                     </tr>
                                 </tbody>
                             </table>
@@ -56,6 +74,7 @@
                                     placeholder="Email">
                                 <input type="password" required class="form-control shadow-none mb-3" name="password"
                                     placeholder="Password">
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
                             </form>
@@ -74,6 +93,7 @@
                         <h2 class="fw-bold">Register</h2>
                         <!-- <p class="m-0 mb-3">New Here?</p> -->
                         <p class="m-0 mb-3">Register here with your information</p>
+                        {{#if signUpError}}<p class="fs-16 text-danger">{{signUpError}}</p>{{/if}}
                         <div class="px-3 mb-3">
                             <button type="button" class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3"
                                 data-bs-toggle="modal" data-bs-target="#registrationModal">
@@ -96,20 +116,26 @@
                                             </div>
                                             <form action="/register" method="post" id="validFrom">
                                                 <div class="row text-start">
+                                                    {{#if course}}
+                                                    <input required type="hidden" name="total" value="{{course.price}}">
+                                                    <input required type="hidden" name="course" value="{{course._id}}">
+                                                    {{/if}}
+                                                    {{#if package}}
                                                     <input required type="hidden" name="total"
                                                         value="{{package.total}}">
                                                     <input required type="hidden" name="package"
                                                         value="{{package._id}}">
+                                                    {{/if}}
                                                     <div class="col-12 mb-3">
                                                         <label for="f-n" class="form-label">Full Name</label>
                                                         <input required type="text" id="f-n"
-                                                            class="form-control shadow-none" value="{{oldData.name}}" name="name"
-                                                            placeholder="Full Name">
+                                                            class="form-control shadow-none" value="{{oldData.name}}"
+                                                            name="name" placeholder="Full Name">
                                                     </div>
                                                     <div class="col-md-12 mb-3">
                                                         <label for="email" class="form-label">Email</label>
-                                                        <input required type="email" value="{{oldData.email}}" id="email"
-                                                            class="form-control shadow-none" name="email"
+                                                        <input required type="email" value="{{oldData.email}}"
+                                                            id="email" class="form-control shadow-none" name="email"
                                                             placeholder="Email">
                                                         {{#if err}}
                                                         <div id="em" class="form-text text-danger">{{err.email}}</div>
@@ -132,6 +158,8 @@
                                                         {{/if}}
                                                     </div>
                                                 </div>
+                                                <input type="hidden" id="g-recaptcha-response"
+                                                    name="g-recaptcha-response">
                                                 <button type="submit"
                                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Register
                                                     Now</button>
@@ -154,9 +182,15 @@
     {{!--for form validations --}}
     <script src="./js/form-validations.js"></script>
     {{>footer}}
+    <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
     <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'registration' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+            });
+        });
         var err = `{{{err}}}`
-        if(err){
+        if (err) {
             new bootstrap.Modal(document.getElementById("registrationModal")).show()
         }
     </script>

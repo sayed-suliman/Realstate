@@ -55,9 +55,11 @@ const postQuiz = async (req, res) => {
     const course = await Course.findOne({ name: data.course });
     const name = data.name;
     const type = data.type;
+    const onTrail = !!data.trial;
     delete data.name;
     delete data.course;
     delete data.type;
+    delete data.trail;
     const questions = Object.keys(data).length / 3;
     for (let i = 1; i <= questions; i++) {
       fullQuiz.push({
@@ -71,18 +73,16 @@ const postQuiz = async (req, res) => {
       name: name,
       type: type,
       questions: fullQuiz,
+      onTrail,
     }).save();
     if (quizAdded) {
       course.quizzes.push(quizAdded._id);
       await course.save();
       var msg = encodeMsg("Your Quiz has been added Successfully");
-      res.redirect("/dashboard/add-quiz?msg=" + msg);
+      res.redirect("/dashboard/quiz-detail?msg=" + msg);
     }
   } catch (e) {
-    res.json(404).json({
-      msg: e.message,
-      status: 404,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -99,9 +99,7 @@ const editQuiz = async (req, res) => {
       title: "Dashboard | Edit Quiz",
     });
   } catch (e) {
-    res.render("500", {
-      err: e.message,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -112,7 +110,6 @@ const updateQuiz = async (req, res) => {
     const data = req.body;
     const qId = req.query.qId;
     const quiz = await Quiz.findById(qId).populate("course");
-    // console.log(quiz)
 
     // before and after courses to remove id of quiz from old course and add to updated one
     const oldCourse = await Course.findOne({ name: quiz.course.name });
@@ -125,9 +122,11 @@ const updateQuiz = async (req, res) => {
 
     const name = data.name;
     const type = data.type;
+    const onTrial = data.trial;
     delete data.name;
     delete data.course;
     delete data.type;
+    delete data.trail;
     const questions = Object.keys(data).length / 3;
     for (let i = 1; i <= questions; i++) {
       fullQuiz.push({
@@ -140,6 +139,7 @@ const updateQuiz = async (req, res) => {
       questions: fullQuiz,
       name,
       type,
+      onTrial,
       course: afterCourse._id,
     });
     if (!(oldCourse.name == afterCourse.name)) {
@@ -156,9 +156,7 @@ const updateQuiz = async (req, res) => {
     var msg = encodeMsg("Quiz Updated Successfully!");
     res.redirect("/dashboard/quiz-detail?msg=" + msg);
   } catch (e) {
-    res.render("404", {
-      err: e.message,
-    });
+    res.redirect("/dashboard?msg=" + encodeMsg(e.message, "danger"));
   }
 };
 
@@ -170,21 +168,48 @@ const viewQuiz = async (req, res) => {
     const quiz = await Quiz.findById(QuizId);
     let course = await Course.findById(courseId);
     if (quiz && course) {
-      await req.user.populate("package");
-      let userPackage = req.user.package;
+      let userCourses = [];
+      let guestUser = false;
+      if (req.user.packages) {
+        await req.user.populate("packages");
+        req.user.packages.map((package) => {
+          return (userCourses = [...userCourses, ...package.courses]);
+        });
+      }
+      if (req.user.courses.length) {
+        userCourses = [...userCourses, ...req.user.courses];
+      }
+
+      userCourses = userCourses.map((el) => el.toString());
+
+      if (req.user.role == "guest") {
+        userCourses = [
+          await req.user.populate({
+            path: "trialCourse",
+            match: { status: "publish" },
+          }),
+        ];
+        if (userCourses.length) {
+          // access for the guest user to the course
+          guestUser = course.quizzes.includes(quiz._id);
+        }
+      }
+
       // authorized to purchase package quizzes
       if (
-        userPackage.courses.includes(course._id) &&
-        course.quizzes.includes(quiz._id)
+        guestUser ||
+        req.user.role == "regulator" ||
+        (userCourses.includes(course._id.toString()) &&
+          course.quizzes.includes(quiz._id))
       ) {
         await course.populate("chapters");
         await course.populate("quizzes");
-        console.log(course);
         const setting = await Setting.findOne();
         const takenQuiz = await Result.findOne({
           quiz: quiz._id,
           user: req.user._id,
         });
+        // adding percentage when the user have taken the quiz
         if (takenQuiz) {
           takenQuiz["percent"] = Math.floor(
             (Number(takenQuiz.points) / Number(takenQuiz.totalQuestions)) * 100
@@ -205,6 +230,9 @@ const viewQuiz = async (req, res) => {
             Object.assign(course.quizzes[index], { grade: takenQuiz.grade });
             Object.assign(course.quizzes[index], { unlock: true });
           }
+          if (req.user.role === "guest" && quiz.onTrial) {
+            Object.assign(course.quizzes[index], { unlock: true });
+          }
         }
 
         // unlocking completed course
@@ -216,6 +244,9 @@ const viewQuiz = async (req, res) => {
           });
           if (completedChapter) {
             Object.assign(course.chapters[index], { completed: true });
+            Object.assign(course.chapters[index], { unlock: true });
+          }
+          if (req.user.role === "guest" && chapter.onTrial) {
             Object.assign(course.chapters[index], { unlock: true });
           }
         }
@@ -233,17 +264,23 @@ const viewQuiz = async (req, res) => {
         });
 
         // quiz policy when completed the the previous
-        if (setting.quizPolicy == "accessPassedPrevious") {
+        if (
+          setting.quizPolicy == "accessPassedPrevious" &&
+          req.user.role != "guest"
+        ) {
           // unlocking the next content when the previous is completed
           if (contents.length) {
             for await (let [index] of contents.entries()) {
               if (!contents[index].unlock) {
                 if (index == 0) continue;
                 if (typeof contents[index - 1].unlock != undefined) {
-                  if (contents[index - 1].type == "quiz") {
-                    if (contents[index - 1].grade == "failed") {
-                      break;
-                    }
+                  if (
+                    contents[index - 1].type == "quiz" &&
+                    contents[index - 1].grade == "failed"
+                  ) {
+                    // if (contents[index - 1].grade == "failed") {
+                    break;
+                    // }
                   }
                   if (contents[index - 1].unlock) {
                     contents[index].unlock = true;
@@ -281,7 +318,10 @@ const viewQuiz = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting.quizPolicy == "accessAllTime") {
+        } else if (
+          setting.quizPolicy == "accessAllTime" &&
+          req.user.role != "guest"
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
@@ -365,6 +405,7 @@ const viewQuiz = async (req, res) => {
       res.redirect("/dashboard?msg=" + encodeMsg("Quiz not found.", "danger"));
     }
   } catch (error) {
+    console.log("Error at view Quiz: ", error.message);
     res.redirect("/dashboard?msg=" + encodeMsg(error.message, "danger"));
   }
 };
@@ -372,6 +413,7 @@ const viewQuiz = async (req, res) => {
 const takeQuiz = async (req, res) => {
   try {
     const time = req.body.time;
+    const user = req.body.user;
     const quiz = await Quiz.findById(req.body.quizId);
     const questions = quiz.questions;
     const setting = await Setting.findOne();
@@ -379,6 +421,7 @@ const takeQuiz = async (req, res) => {
     // deleting the quizId & time so that the req.body only contain answer
     delete req.body.quizId;
     delete req.body.time;
+    delete req.body.user;
 
     if (setting.randomizeQuestions) {
       // sort the object by property and return back an object
@@ -439,29 +482,34 @@ const takeQuiz = async (req, res) => {
       noOfRetake = setting.finalRetake;
     }
     let retake = true;
-    if (alreadyTakenQuiz) {
-      delete data.quiz;
-      delete data.user;
-      const updatedQuiz = await Result.findOneAndUpdate(
-        {
-          quiz: quiz._id,
-          user: req.user._id,
-        },
-        {
-          ...data,
-          take: alreadyTakenQuiz.take + 1,
-        },
-        { new: true }
-      );
-      // only for mid and final term
-      if (quiz.type != "quiz") {
-        retake = !(updatedQuiz.take >= noOfRetake);
-      }
-    } else {
-      const newQuiz = await Result({ ...data, take: 1 }).save();
-      // only for mid and final term
-      if (quiz.type != "quiz") {
-        retake = !(newQuiz.take >= noOfRetake);
+
+    // saving the result when the user is not guest
+    //i.e guest for the trial user
+    if (user != "guest") {
+      if (alreadyTakenQuiz) {
+        delete data.quiz;
+        delete data.user;
+        const updatedQuiz = await Result.findOneAndUpdate(
+          {
+            quiz: quiz._id,
+            user: req.user._id,
+          },
+          {
+            ...data,
+            take: alreadyTakenQuiz.take + 1,
+          },
+          { new: true }
+        );
+        // only for mid and final term
+        if (quiz.type != "quiz") {
+          retake = !(updatedQuiz.take >= noOfRetake);
+        }
+      } else {
+        const newQuiz = await Result({ ...data, take: 1 }).save();
+        // only for mid and final term
+        if (quiz.type != "quiz") {
+          retake = !(newQuiz.take >= noOfRetake);
+        }
       }
     }
     // sending object to client side javascript
@@ -483,7 +531,7 @@ const takeQuiz = async (req, res) => {
 
     res.send(sendObj);
   } catch (error) {
-    res.send({ error: error.message });
+    res.redirect("/dashboard?msg=" + encodeMsg(error.message, "danger"));
   }
 };
 

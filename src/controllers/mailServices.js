@@ -4,7 +4,6 @@ const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 const Setting = require("../models/setting");
 
-// format date
 var transport = nodemailer.createTransport({
   host: process.env.host,
   port: process.env.mail_port,
@@ -17,6 +16,10 @@ var transport = nodemailer.createTransport({
     rejectUnauthorized: false,
   },
 });
+console.log(process.env.host);
+console.log(process.env.mail_port);
+console.log(process.env.user);
+console.log(process.env.pass);
 transport.use(
   "compile",
   hbs({
@@ -32,6 +35,7 @@ transport.use(
 
 module.exports = {
   async sendVerificationCode(email, code) {
+    console.log(process.env.email);
     try {
       const setting = await Setting.findOne();
       title = setting.collegeName;
@@ -48,13 +52,12 @@ module.exports = {
         },
       });
       if (send) {
-        console.log("sent");
-        console.log(send);
+        console.log("Verification email send.");
       } else {
-        console.log("failed send email");
+        console.log("Error at verification mail.");
       }
     } catch (error) {
-      console.log("Sending verification email failed.");
+      console.log("Sending verification email failed." + error.message);
     }
   },
   async sendAgreement(email, username) {

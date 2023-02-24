@@ -1,0 +1,245 @@
+{{>dashboardheader}}
+<style>
+    :root {
+        --dark-blue: #315181;
+        --warning: #edc36f;
+    }
+
+    .bg-dark-blue {
+        background-color: var(--dark-blue);
+    }
+
+    .bg-light-yellow {
+        background-color: var(--warning);
+    }
+
+    .bg-light-yellow:hover {
+        background-color: var(--dark-blue);
+        color: white;
+    }
+
+    .pricing .package-column {
+        height: 100%;
+        padding: 15px 0;
+        border: 1px solid;
+        transition: all 1s ease;
+        background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    .pricing .banner {
+        min-height: 300px;
+        overflow: hidden;
+    }
+
+    .pricing .banner>img {
+        height: 100%;
+        width: 100%;
+        object-fit: cover;
+        object-position: center;
+    }
+
+    .pricing .package-column:hover {
+        transform: scale(1.01);
+        background-color: rgba(0, 0, 0, 0.06);
+    }
+
+    [for='priceToggle'] {
+        font-size: 24px;
+        line-height: 1;
+        font-weight: 500;
+    }
+</style>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+        {{!-- toast --}}
+        {{>alert}}
+
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Buy More</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Buy More</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12">
+                            <div class="card">
+                                <!-- /.card-header -->
+                                <div class="card-body">
+                                    <div class="pricing">
+                                        <div class="toggler d-flex justify-content-center mb-3" style="gap:10px">
+                                            <label style="user-select:none" for="priceToggle">Packages</label>
+                                            <div class="custom-control custom-switch">
+                                                <input type="checkbox" class="custom-control-input" id="priceToggle">
+                                                <label class="custom-control-label" style="user-select:none"
+                                                    for="priceToggle">Courses</label>
+                                            </div>
+                                        </div>
+                                        <div class="row package justify-content-center">
+                                            {{#if packages}}
+                                            {{#each packages}}
+                                            <div class="col-lg-3 col-md-5 p-1 text-center">
+                                                <div class=" package-column border">
+                                                    <h5 class="text-capitalize">{{this.name}}</h5>
+                                                    <h1><del class="text-decoration-line-through">${{increaseAmount
+                                                            this.price}}
+                                                        </del></h1>
+                                                    <h2>${{this.price}}</h2>
+                                                    <div>
+                                                        <a href="../checkout?package={{_id}}">
+                                                            <button
+                                                                class="btn bg-light-yellow border-0 rounded-0 px-5 py-2">Enroll</button>
+                                                        </a>
+                                                    </div>
+                                                    <p class="bg-dark-blue text-white py-2 mt-2">WHO IT'S FOR</p>
+                                                    <div>
+                                                        {{#each whoFor}}
+                                                        <p>{{this}}</p>
+                                                        {{/each}}
+                                                    </div>
+                                                    <p class="bg-dark-blue text-white py-2">WHAT'S INCLUDED</p>
+                                                    <div>
+                                                        {{#each this.whatsIncluded}}
+                                                        <p class="text-capitalize">{{this}}</p>
+                                                        {{/each}}
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                            {{/if}}
+                                        </div>
+                                        <div class="row courses justify-content-center d-none">
+                                            {{#if courses}}
+                                            {{#each courses}}
+                                            <div class="col-lg-3 col-md-5 p-1 text-center">
+                                                <div class=" package-column border">
+                                                    <h5 class="text-capitalize">{{this.name}}</h5>
+                                                    <h1>${{this.price}}</h1>
+                                                    <div class="banner">
+                                                        <img src="../images/course/{{this.banner}}" class="img-fluid">
+                                                    </div>
+                                                    <div class="mt-3">
+                                                        <a href="../checkout?course={{this._id}}">
+                                                            <button
+                                                                class="btn bg-light-yellow border-0 rounded-0 px-5 py-2">Buy
+                                                                Now</button>
+                                                        </a>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            {{/each}}
+                                            {{/if}}
+                                        </div>
+                                    </div>
+                                    <!-- /.card-body -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.card -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    <!-- jQuery -->
+    {{>dashboardfooterlinks}}
+    {{!-- table jquery plugins --}}
+    <!-- DataTables  & Plugins -->
+    <script src="../dashboard/plugins/datatables/jquery.dataTables.min.js"></script>
+    <script src="../dashboard/plugins/datatables-bs4/js/dataTables.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/dataTables.responsive.min.js"></script>
+    <script src="../dashboard/plugins/datatables-responsive/js/responsive.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/dataTables.buttons.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.bootstrap4.min.js"></script>
+    <script src="../dashboard/plugins/jszip/jszip.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/pdfmake.min.js"></script>
+    <script src="../dashboard/plugins/pdfmake/vfs_fonts.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.html5.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.print.min.js"></script>
+    <script src="../dashboard/plugins/datatables-buttons/js/buttons.colVis.min.js"></script>
+    <!-- Page specific script -->
+    <script>
+        $(function () {
+            $('#courseTable').DataTable({
+                "paging": true,
+                "lengthChange": true,
+                "searching": true,
+                "ordering": true,
+                "info": true,
+                "autoWidth": false,
+                "responsive": true,
+            });
+        });
+        $('#priceToggle').change(function () {
+            if ($('#priceToggle').prop('checked')) {
+                $('.courses').removeClass('d-none')
+                $('.package').addClass('d-none')
+            } else {
+                $('.courses').addClass('d-none')
+                $('.package').removeClass('d-none')
+            }
+
+        })
+    </script>
+
+    {{#ifEquals user.role "student"}}
+    <script>
+        $("#modal-default").on("show.bs.modal", function (e) {
+            let link = $(e.relatedTarget).data('link')
+            let banner = $(e.relatedTarget).data('banner')
+            $(this).find('.modal-body').css('background', `url('${banner}') no-repeat center`)
+            $(this).find('#yes-start').data('link', link)
+        });
+        $("#agreement").on('show.bs.modal', function (e) {
+            $("#modal-default").modal("hide");
+            let link = $(e.relatedTarget).data('link')
+            $(this).find('#accept').prop('href', link + "?agree=true")
+        });
+    </script>
+    {{/ifEquals}}
+    <script>
+        let fullUrl = new URL(window.location)
+        const domainName = fullUrl.origin
+        $(".domainName").text(domainName)
+    </script>
+
+</body>
+
+</html>

@@ -1,4 +1,5 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column overflow-hidden">
+<aside
+  class="main-sidebar {{#if salesperson}}sidebar-dark-orange{{else}}sidebar-dark-primary{{/if}} elevation-4 d-flex flex-column overflow-hidden">
   <!-- Brand Logo -->
   <a href="/dashboard" class="brand-link">
     <img src="{{site_logo}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -25,16 +26,52 @@
     <!-- SidebarSearch Form -->
     <!-- Sidebar Menu -->
     <nav class="mt-2">
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column {{#if salesperson}}nav-child-indent{{/if}}"
+        data-widget="treeview" role="menu" data-accordion="false" style="margin-bottom:70px">
         <!-- dashboard -->
         <li class="nav-item">
-          <a href="/dashboard" id='dashboard-link' class="nav-link">
+          <a href="/dashboard{{#if salesperson}}/salesperson{{/if}}" id='dashboard-link' class="nav-link">
             <i class="nav-icon fas fa-tachometer-alt"></i>
             <p>
               Dashboard
             </p>
           </a>
         </li>
+        {{#if salesperson}}
+        {{>salesperson/mainSidebar}}
+        <li class="nav-item">
+          <a href="/dashboard/" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-home nav-icon"></i>
+            <p>Real Estate</p>
+          </a>
+        </li>
+        {{else}}
+        {{!-- for guest --}}
+        {{#ifEquals user.role "guest"}}
+        <li class="nav-item">
+          <a href="/dashboard/courses" id="courses" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="nav-icon fas fa-book"></i>
+            <p>Courses</p>
+          </a>
+        </li>
+        {{!-- Buy More --}}
+        <li class="nav-item">
+          <a href="/dashboard/buy-more" id="buyMore-link" class="nav-link">
+            <i class="fa-solid fa-bag-shopping nav-icon"></i>
+            <p>Buy More</p>
+          </a>
+        </li>
+        {{!-- Setting --}}
+        <li class="nav-item">
+          <a href="/dashboard/setting" id="setting-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-sharp fa-solid fa-gear nav-icon"></i>
+            <p>Settings</p>
+          </a>
+        </li>
+        {{/ifEquals}}
         {{!-- for student --}}
         {{#ifEquals user.role "student"}}
         <li class="nav-item">
@@ -49,6 +86,13 @@
             {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-id-card-clip nav-icon"></i>
             <p>Contact Us</p>
+          </a>
+        </li>
+        {{!-- Buy More --}}
+        <li class="nav-item">
+          <a href="/dashboard/buy-more" id="buyMore-link" class="nav-link">
+            <i class="fa-solid fa-bag-shopping nav-icon"></i>
+            <p>Buy More</p>
           </a>
         </li>
         {{!-- Setting --}}
@@ -158,6 +202,14 @@
             </li>
           </ul>
         </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sale-link" target="_blank" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
         {{!-- sort --}}
         <li class="nav-item">
           <a href="/dashboard/sort" id="sort-link" class="nav-link">
@@ -259,13 +311,21 @@
             <p>Courses</p>
           </a>
         </li>
+        {{#if salesperson}}
+        {{>salesperson/mainSidebar}}
+        <li class="nav-item">
+          <a href="/dashboard/" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-home nav-icon"></i>
+            <p>Real Estate</p>
+          </a>
+        </li>
+        {{/if}}
         {{/ifEquals}}
+        {{/if}}<!--salesperson-->
       </ul>
-    </nav>
-  </div>
-  <div class="sidebar" style="margin-bottom:10px">
-    <nav>
-      <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+      <ul class="nav nav-pills nav-sidebar flex-column" style="position:absolute;bottom:10px" data-widget="treeview"
+        role="menu" data-accordion="false">
         <li class="nav-item">
           <a href="/logout" id="logout" class="nav-link bg-danger">
             <i class="nav-icon fas fa-sign-out-alt"></i>

@@ -1,0 +1,7 @@
+{{#ifEquals user.role "admin"}}
+{{>salesperson/adminNav}}
+{{/ifEquals}}
+{{!-- for student and regulator --}}
+{{#ifCond user.role "!=" "admin"}}
+{{>salesperson/stdOrRegNav}}
+{{/ifCond}}

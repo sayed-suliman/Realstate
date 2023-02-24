@@ -1,0 +1,146 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini  layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{!--
+        <!-- salesperson variable is used for the salesperson content -->
+        --}}
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Exam</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Exam</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    {{#if results}}
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Salesperson Crash Course</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            {{#if results.[0].user}}
+                            {{#each results as | result |}}
+                            <table class="table table-report{{#unless @first}} d-none{{/unless}}" id="{{@index}}">
+                                <tbody>
+                                    <tr>
+                                        <td class="pt-4">
+                                            <span class="font-weight-bold">Overall: Score</span>
+                                            <span class="float-right">{{result.points}}/{{result.totalQuestions}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="border-top-0 pb-4">
+                                            <span class="font-weight-bold">Taken Date</span>
+                                            <span class="float-right">{{formatDate result.createdAt true}}</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-center border-top-0 border-bottom pt-5">
+                                            <span class="font-weight-bold">Categories Score</span>
+                                        </td>
+                                    </tr>
+                                    {{#each result.categoryResult}}
+                                    {{#with this}}
+                                    <tr>
+                                        <td class="border-bottom">
+                                            <span class="font-weight-bold">{{name}}</span>
+                                            <span class="float-right">{{obtain}}/{{total}}</span>
+                                        </td>
+                                    </tr>
+                                    {{/with}}
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                            {{/each}}
+                            <select class="form-control my-4 ml-4 w-auto" name="" id="report">
+                                <option value="" disabled selected>Select a report to see</option>
+                                {{#each results as | result |}}
+                                <option value="{{@index}}">Exam Taken at: {{formatDate result.createdAt true}}</option>
+                                {{/each}}
+                            </select>
+                            {{else}}
+                            <p class="py-5 px-4">You haven't taken exam. <a href="/dashboard/salesperson/exam"
+                                    class="text-info">Click
+                                    here</a> to take the
+                                exam</p>
+                            {{/if}}
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="card">
+                        <div class="card-body">
+                            <h1>Hi {{user.name}},</h1>
+                            <p class="mb-3">This is an replica of the California Real Estate Exam. Just like the real
+                                exam, you
+                                will be
+                                given 150 questions and 3 hours to answer.</p>
+                            <a href="/dashboard/salesperson/take-exam?id={{exam._id}}&exam=true"
+                                class="btn btn-primary btn-large btn-lg">Take Exam</a>
+                            <p class="my-3">Need some help before you take the exam? Take our practice tests <a
+                                    href="/dashboard/salesperson/tests">here</a>.</p>
+                        </div>
+                    </div>
+                    {{/if}}
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+    <script>
+        $('#report').on('change', function ({ target: { value } }) {
+            $('.table-report').addClass('d-none')
+            $(`#${value}`).removeClass('d-none')
+        })
+    </script>
+</body>
+
+</html>

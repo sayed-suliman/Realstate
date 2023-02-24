@@ -35,16 +35,23 @@
                             <table class="table table-borderless mt-4">
                                 <tbody>
                                     <tr>
-                                        <th scope="row" class="text-start">User</th>
-                                        <th class="text-end">{{user.package.name}}</th>
+                                        <th scope="row" class="text-start text-capitalize">
+                                            {{itemDetail.type}}
+                                        </th>
+                                        <th class="text-end text-capitalize">
+                                            {{itemDetail.name}}
+                                        </th>
                                     </tr>
                                     <tr>
-                                        <td scope="row" class="text-start">Package Subtotal</td>
-                                        <td class="text-end">${{user.package.price}}</td>
+                                        <td scope="row" class="text-start text-capitalize">
+                                            {{itemDetail.type}} Subtotal</td>
+                                        <td class="text-end">${{itemDetail.price}}
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Taxes</td>
-                                        <td class="text-end">{{user.package.tax}}%</td>
+                                        <td class="text-end">{{itemDetail.tax}}%
+                                        </td>
                                     </tr>
                                     <tr>
                                         <td scope="row" class="text-start">Order Discount</td>
@@ -52,7 +59,7 @@
                                     </tr>
                                     <tr class="border-top">
                                         <th scope="row" class="text-start">Estimated Total</th>
-                                        <th class="text-end">${{user.total}}</th>
+                                        <th class="text-end">${{itemDetail.total}}</th>
                                     </tr>
                                     <tr class="discount-row d-none">
                                         <td scope="row" class="text-start">After Discount</td>
@@ -137,8 +144,9 @@
                                 </button>
                             </div>
                             <div class="btn-coupon-register d-none">
-                                <button class="btn btn-success px-5 py-2 mb-2 mb-md-0" style="width: 200px;" id="coupon-register">
-                                    <div class="spinner d-none" >
+                                <button class="btn btn-success px-5 py-2 mb-2 mb-md-0" style="width: 200px;"
+                                    id="coupon-register">
+                                    <div class="spinner d-none">
                                         <i class="fa-solid fa-circle-notch fa-spin"></i>
                                     </div>
                                     <span class="text" id="button-text">Register</span>

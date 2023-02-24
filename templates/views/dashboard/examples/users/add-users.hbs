@@ -1,6 +1,6 @@
 {{>dashboardheader}}
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -41,7 +41,7 @@
                                     <h3 class="card-title">User Data</h3>
                                 </div>
 
-                                <form action="add-user" method="post" class="form-horizontal">
+                                <form action="add-user" method="post" id="form" class="form-horizontal">
                                     <div class="card-body">
                                         {{!-- fullname --}}
                                         <div class="form-group row">
@@ -72,17 +72,29 @@
                                         </div>
                                         {{!-- package --}}
                                         <div class="form-group row">
-                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select
-                                                Package</label>
+                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select</label>
                                             <div class="col-sm-10">
-                                                <select required id="selectPackage" name="package"
-                                                    class="form-control custom-select">
-                                                    <option {{returnSelected data.package}} disabled value="">Select one
-                                                    </option>
+
+                                                <input type="radio" name="selecting" checked value="package"
+                                                    id="packageR">
+                                                <label for="packageR">Package</label>
+                                                <input type="radio" class="ml-3" name="selecting" value="course"
+                                                    id="courseR">
+                                                <label for="courseR">Course</label>
+                                                <select name="package" id="package" class="form-control" required>
+                                                    <option value="" selected disabled>Select One Package</option>
                                                     {{#each packages}}
-                                                    <option {{#checkroleorpackage data.package
-                                                        this.name}}selected{{/checkroleorpackage}}
-                                                        value="{{this.name}}">{{this.name}}</option>
+                                                    <option value="{{this._id}}" {{#ifEquals ../data.package
+                                                        this._id}}selected{{/ifEquals}}>
+                                                        {{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                                <select name="course" id="course" class="form-control d-none">
+                                                    <option value="" selected disabled>Select One Course</option>
+                                                    {{#each courses}}
+                                                    <option value="{{this._id}}" {{#ifEquals ../data.course
+                                                        this._id}}selected{{/ifEquals}}>
+                                                        {{this.name}}</option>
                                                     {{/each}}
                                                 </select>
                                             </div>
@@ -144,35 +156,7 @@
                                                 <input min="0" required type="number" value="{{data.amount}}"
                                                     name="amount" class="form-control" id="amount" placeholder="Amount">
                                             </div>
-                                            {{!-- <div class="col-sm-6">
-                                                <select id="pay_method" name="pay_method"
-                                                    class="form-control custom-select">
-                                                    <option selected disabled value="">Select one</option>
-                                                    <option value="byHand">By Hand</option>
-                                                    <option value="Paypal">Paypal</option>
-                                                    <option value="Stripe">Stripe</option>
-                                                </select>
-                                            </div> --}}
                                         </div>
-                                        {{!-- confirm password --}}
-                                        {{!-- <div class="form-group row">
-                                            <label for="c-password" class="col-sm-2 col-form-label">Confirm
-                                                Password</label>
-                                            <div class="col-sm-10">
-                                                <input type="text" name class="form-control" id="c-password"
-                                                    placeholder="ConfirmPassword">
-                                            </div>
-                                        </div> --}}
-                                        {{!-- this is check box --}}
-                                        {{!-- <div class="form-group row">
-                                            <div class="offset-sm-2 col-sm-10">
-                                                <div class="form-check">
-                                                    <input type="checkbox" class="form-check-input" id="exampleCheck2">
-                                                    <label class="form-check-label" for="exampleCheck2">Remember
-                                                        me</label>
-                                                </div>
-                                            </div>
-                                        </div> --}}
                                     </div>
 
                                     <div class="card-footer">
@@ -218,8 +202,14 @@
                 $("#amount").attr("disabled", "")
                 $("#amount").val("")
             }
+            $("[name='selecting']").change(function () {
+                let type = $(this).val();
+                $(`#${type}`).siblings("select").removeClass('d-block').addClass('d-none').removeAttr('required')
+                $(`#${type}`).removeClass('d-none').addClass('d-block').attr('required', true)
+            })
             $("#role").change(function () {
                 if (this.value == 'regulator' || this.value == 'admin') {
+                    $("[name='selecting']").siblings('select').removeAttr('required')
                     $("#selectPackage").attr("disabled", "")
                     $("#selectPackage").val("")
                     $("#selectPackage").removeAttr("required")
@@ -228,12 +218,13 @@
                     $("#amount").attr("disabled", "")
                     $("#amount").val("")
                 } else {
+                    $("[name='selecting']").siblings('select').attr('required', true)
                     $("#selectPackage").attr("required", "")
                     $("#selectPackage").removeAttr("disabled")
 
                     //amount
                     $("#amount").attr("required", "")
-                     $("#amount").removeAttr("disabled")
+                    $("#amount").removeAttr("disabled")
                 }
             })
             // for amount input

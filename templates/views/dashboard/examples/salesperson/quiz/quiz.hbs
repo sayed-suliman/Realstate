@@ -1,0 +1,113 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini  layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Quiz</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Quiz</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <div class="content">
+                <div class="container-fluid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">{{#if result}}Quiz Result{{else}}Select Quiz by
+                                Category{{/if}}</h3>
+                        </div>
+                        <div class="card-body p-0">
+                            <table class="table table-bordered">
+                                {{#if result}}
+                                {{#if result.[0].user}}
+                                <tbody>
+                                    {{#each result}}
+                                    <tr>
+                                        <td><a
+                                                href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id._id}}&by-category=true">{{this.test.[0]._id.name}}</a>
+                                            <span class="float-right">{{this.percent}}% <a
+                                                    href="/dashboard/salesperson/take-quiz?id={{this.test.[0]._id._id}}&by-category=true">Retake</a></span>
+                                        </td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                                {{else}}
+                                <p class="py-5 px-4">You haven't taken Quiz. <a
+                                        href="/dashboard/salesperson/test-by-category" class="text-info">Click
+                                        here</a> to take the
+                                    Quiz</p>
+                                {{/if}}
+                                {{else}}
+                                <tbody>
+                                    {{#each categories}}
+                                    <tr>
+                                        {{#if this.questions.length}}
+                                        <td><a
+                                                href="/dashboard/salesperson/take-quiz?id={{this._id}}&by-category=true">{{this.name}}</a>
+                                            <span class="float-right">{{this.questions.length}} Questions</span>
+                                        </td>
+                                        {{/if}}
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                                {{/if}}
+                            </table>
+                        </div>
+
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+</body>
+
+</html>

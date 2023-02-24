@@ -9,9 +9,11 @@ const signUpMiddleware = [
             return Promise.reject("Email already in Use! Please Try Another")
         }
     }).custom(async value => {
+        // if the user already exist but not verified
         const user = await User.findOne({ email: value, verified: false }).then(user => {
             return user
         })
+        // user already exist but not verified
         if (user) {
             return Promise.reject("redirect to verification," + user._id.toString())
         }

@@ -4,7 +4,7 @@
     <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
 </head>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <!-- toast(alert)-->
     {{>alert}}
     <!-- Site wrapper -->
@@ -64,6 +64,7 @@
                                     <div class="table-responsive mailbox-messages">
                                         <table class="table table-hover table-striped">
                                             <tbody>
+                                                {{#if messages}}
                                                 {{#each messages}}
                                                 <tr class="{{#unless this.read}}text-bold{{/unless}}">
                                                     {{!-- <td>
@@ -83,6 +84,9 @@
                                                     <td class="mailbox-date">{{formatDate this.createdAt}}</td>
                                                 </tr>
                                                 {{/each}}
+                                                {{else}}
+                                                <p class="my-4 ml-4">Inbox Empty.</p>
+                                                {{/if}}
                                             </tbody>
                                         </table>
 

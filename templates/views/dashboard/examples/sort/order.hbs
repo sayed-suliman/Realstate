@@ -1,6 +1,6 @@
 {{>dashboardheader}}
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -45,6 +45,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{#if courses}}
                                             {{#each courses}}
                                             <tr>
                                                 <td>{{increment @index}}</td>
@@ -53,6 +54,11 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No course found. Please add course to see. </td>
+                                            </tr>
+                                            {{/if}}
                                         </tbody>
                                     </table>
                                 </div>

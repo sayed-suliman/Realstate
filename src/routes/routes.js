@@ -1,5 +1,6 @@
 const express = require("express");
 const router = new express.Router();
+const salespersonRoutes = require("./salesperson/index");
 const { login, postLogin, signUp } = require("../controllers/auth");
 const {
   forgotPassword,
@@ -14,7 +15,7 @@ const {
   isStudent,
   isAdmin,
   verifiedAndPaid,
-  isRegulatororStudent,
+  isRegulatorOrStudent,
 } = require("../middleware/authentication");
 const signUpMiddleware = require("../middleware/authValidation");
 const {
@@ -111,6 +112,11 @@ const {
 const User = require("../models/users");
 const url = require("url");
 const { encodeMsg } = require("../helper/createMsg");
+const reCAPTCHA = require("../middleware/reCAPTCHA");
+const trial = require("../controllers/trial");
+const buyMore = require("../controllers/buy-more");
+const freeLesson = require("../controllers/freeCourseRegistration");
+const freeLessonValidation = require("../middleware/freeLessonValidation");
 
 router.get("/test", (req, res) => {
   sendVerificationCode("sulimank418@gmail.com", "1234");
@@ -127,7 +133,7 @@ router.get("/email", (req, res) => {
     siteURL: "https://members.realestateinstruct.com",
   };
   // welcomeEmail("sulimank418@gmail.com", testUser);
-  sendAgreement('sulimank418@gmail.com','Suliman Khan')
+  sendAgreement("sulimank418@gmail.com", "Suliman Khan");
   res.render("mail/otp", {
     username: "Suliman Khan",
     orderDate: "24 Dec 2022",
@@ -142,26 +148,30 @@ router.get("/email", (req, res) => {
 });
 // default route
 router.get("/", async (req, res) => {
-  const msg = req.query.msg;
-  const type = req.query.type;
-  const packages = await Package.find({ status: "publish" })
-    .populate({
-      path: "courses",
-      match: {
-        status: "publish",
-      },
-    })
-    .sort("price");
-  const packageObj = {};
-  packages.forEach((package) => {
-    packageObj[package.name] = package;
-  });
-  res.render("package", {
-    packages,
-    msg: { text: msg, type },
-    title: "Packages Plan",
-    packageObj,
-  });
+  try {
+    const msg = req.query.msg;
+    const type = req.query.type;
+    const packages = await Package.find({ status: "publish" })
+      .populate({
+        path: "courses",
+        match: {
+          status: "publish",
+        },
+      })
+      .sort("price");
+    const packageObj = {};
+    packages.forEach((package) => {
+      packageObj[package.name] = package;
+    });
+    res.render("package", {
+      packages,
+      msg: { text: msg, type },
+      title: "Packages Plan",
+      packageObj,
+    });
+  } catch (error) {
+    res.redirect("/");
+  }
 });
 
 // login route
@@ -179,27 +189,54 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
         })
       );
     }
-    const user = await User.findById(req.query.uid);
-    req.login(user, function (err) {
-      if (err) {
-        return next(err);
-      }
-      req.session.admin = adminId;
-      return res.redirect(
-        url.format({
-          pathname: "/dashboard",
-          query: {
-            msg: encodeMsg("You're login as a " + user.name),
-          },
-        })
+    const user = await User.findById(req.query.uid).populate([
+      {
+        path: "packages",
+        populate: { path: "courses", match: { status: "publish" } },
+      },
+      { path: "courses" },
+    ]);
+    if (
+      user.packages.length ||
+      user.courses.length ||
+      user.trialCourse ||
+      user.role == "regulator"
+    ) {
+      req.login(user, function (err) {
+        if (err) {
+          return res.redirect(
+            url.format({
+              pathname: "/dashboard",
+              query: {
+                msg: encodeMsg(err.messages),
+              },
+            })
+          );
+        }
+        req.session.admin = adminId;
+        return res.redirect(
+          url.format({
+            pathname: "/dashboard",
+            query: {
+              msg: encodeMsg("You're login as a " + user.name),
+            },
+          })
+        );
+      });
+    } else {
+      res.redirect(
+        "/dashboard/users?msg=" +
+          encodeMsg("User haven't buy any package or course yet.", "danger")
       );
-    });
+    }
   } else {
-    res.redirect("/dashboard/user");
+    res.redirect(
+      "/dashboard/users?msg=" + encodeMsg("User ID is required.", "danger")
+    );
   }
 });
 // router.post('/login',postLogin)
-router.post("/login", verifiedAndPaid, authLocal, postLogin);
+router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
 // Logout
 router.get("/logout", async (req, res) => {
   // if admin login as student
@@ -243,18 +280,11 @@ router.post("/reset-password", doResetPassword);
 // checkout post
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", signUpMiddleware, signUp);
-// sign up used because their is registration on checkout
-// router.post("/checkout", signUpMiddleware, signUp)
-router.get("/checkout2", doCheckout);
-
-// for testing checkout
-router.get("/check", (req, res) => {
-  res.render("check", { title: "Checkout" });
-});
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 
 // middleware for all dashboard route
 router.use("/dashboard", authenticated);
+router.use("/dashboard/salesperson", salespersonRoutes);
 
 // main-dashboard
 router.get("/dashboard", dashboard);
@@ -414,11 +444,24 @@ router.post("/sort/data", sortData);
 // ************************************ Orders
 router.get("/dashboard/order", allOrders);
 
+// ************************************ buy-more
+router.get("/dashboard/buy-more", buyMore);
+
 // ************************************ message
 router.get("/dashboard/messages", isAdmin, messages);
 router.get("/dashboard/read-message/:id", isAdmin, readMessage);
 
-// eroor 500 page
+router.get("/trial/chapter/:courseID/:chapterID", trial.chapter);
+router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
+
+// Free Lesson Registration
+router.get("/free-lesson", freeLesson.register);
+router.post(
+  "/free-lesson",
+  /*reCAPTCHA,*/ freeLessonValidation,
+  freeLesson.doRegister
+);
+// error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
   res.render("404", { title: "404 Error", err: "Page not Found Go back" });

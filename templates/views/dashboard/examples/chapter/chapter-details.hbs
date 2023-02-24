@@ -1,5 +1,6 @@
 {{>dashboardheader}}
-<body class="hold-transition sidebar-mini">
+
+<body class="hold-transition sidebar-mini layout-fixed">
 
     <!-- Site wrapper -->
     <div class="wrapper">
@@ -40,9 +41,6 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card">
-                                {{!-- <div class="card-header">
-                                    <h3 class="card-title">DataTable with minimal features & hover style</h3>
-                                </div> --}}
                                 <!-- /.card-header -->
                                 <div class="card-body">
                                     <table id="chapterTable" class="table table-bordered table-hover">
@@ -52,6 +50,7 @@
                                                 <th>Name</th>
                                                 <th>Course</th>
                                                 <th>File</th>
+                                                <th>Trial Link</th>
                                                 <th {{#ifEquals user.role "regulator" }}class="d-none" {{/ifEquals}}>
                                                     Edit</th>
                                             </tr>
@@ -68,33 +67,24 @@
                                                         {{this.fileName}}
                                                     </a>
                                                 </td>
-                                                <td {{#ifEquals ../user.role "regulator" }}class="d-none" {{/ifEquals}}>
+                                                <td>{{#if this.onTrial}}
+                                                    <a href="/trial/chapter/{{this.course._id}}/{{this._id}}"><span
+                                                            class="domainName"></span>/trial/chapter/{{this.course._id}}/{{this._id}}</a>
+                                                    {{else}}No{{/if}}
+                                                </td>
+                                                {{#ifEquals ../user.role "regulator" }}<td class="d-none">{{else}}
+                                                <td>
                                                     <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
                                                         type="button">
                                                         <button class="btn btn-success">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
-                                                    {{!-- <a
-                                                        href="/dashboard/chapter-detail/delete-chapter?cId={{this._id}}"
-                                                        type="button">
-                                                        <button class="btn btn-danger">
-                                                            <i class="fa-solid fa-trash"></i>
-                                                        </button>
-                                                    </a> --}}
                                                 </td>
+                                                {{/ifEquals}}
                                             </tr>
                                             {{/each}}
                                         </tbody>
-                                        {{!-- <tfoot>
-                                            <tr>
-                                                <th>Rendering engine</th>
-                                                <th>Browser</th>
-                                                <th>Platform(s)</th>
-                                                <th>Engine version</th>
-                                                <th>CSS grade</th>
-                                            </tr>
-                                        </tfoot> --}}
                                     </table>
                                 </div>
                                 <!-- /.card-body -->
@@ -182,6 +172,9 @@
             });
             $(table.table().container()).find('[name="chapterTable_length"]').removeClass('custom-select custom-select-sm form-control-sm')
         });
+        let fullUrl = new URL(window.location)
+        const domainName = fullUrl.origin
+        $(".domainName").text(domainName)
     </script>
 
 </body>

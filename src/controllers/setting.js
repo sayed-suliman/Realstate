@@ -11,7 +11,7 @@ module.exports = {
     if (msgToken) {
       msg = decodeMsg(msgToken);
     }
-    if (req.user.role === "student") {
+    if (req.user.role === "student" || req.user.role === "guest") {
       return res.render("dashboard/examples/setting", {
         title: "Dashboard | Setting",
         toast: Object.keys(msg).length == 0 ? undefined : msg,
@@ -35,6 +35,7 @@ module.exports = {
     try {
       if (req.user.role == "admin") {
         const {
+          stripeSecretKey,
           name,
           address,
           phone,
@@ -53,6 +54,7 @@ module.exports = {
           finalDay,
           finalTime,
         } = req.body;
+
         const settingData = {
           collegeName: name,
           collegeAddress: address,
@@ -269,14 +271,13 @@ module.exports = {
         }
       }
     } catch (error) {
-      console.log("crash");
-      res.send(error.message);
+      var msg = encodeMsg(error.message, "danger", 500);
+      res.redirect("/dashboard/setting?msg=" + msg);
     }
   },
   settingError(error, req, res, next) {
-    console.log(error.message);
+    // console.log(error.message);
     var msg = encodeMsg(error.message, "danger", 500);
     res.redirect("/dashboard/setting?msg=" + msg);
-    // res.status(404).json({ error: error.message })
   },
 };

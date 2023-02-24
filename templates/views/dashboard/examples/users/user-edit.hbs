@@ -1,6 +1,6 @@
 {{>dashboardheader}}
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <!-- Site wrapper -->
     <div class="wrapper">
         <!-- Navbar -->
@@ -41,7 +41,8 @@
                                     <h3 class="card-title">Edit Data</h3>
                                 </div>
 
-                                <form action="update-user?uId={{editUser._id}}" method="post" class="form-horizontal">
+                                <form action="update-user?uId={{editUser._id}}" method="post" id="form"
+                                    class="form-horizontal">
                                     <div class="card-body">
                                         {{!-- fullname --}}
                                         <div class="form-group row">
@@ -54,15 +55,46 @@
                                         {{!-- package --}}
                                         <div class="form-group row">
                                             <label for="selectPackage" class="col-sm-2 col-form-label">Select
-                                                Package</label>
-                                            <div class="col-sm-10">
-                                                <select required id="selectPackage" name="package"
-                                                    class="form-control custom-select">
-                                                    <option disabled value="">Select one</option>
-                                                    {{#each packages}}
-                                                    <option {{#ifCond this.name '==' ../editUser.package.name}}selected{{/ifCond}} value="{{this.name}}">{{this.name}}</option>
-                                                    {{/each}}
-                                                </select>
+                                                Packages</label>
+                                            <div class="col-sm-4">
+                                                {{#each packages}}
+                                                <div class="custom-control custom-checkbox d-flex flex-column">
+                                                    <input
+                                                        class="custom-control-input custom-control-input-success packages custom-control-input-outline"
+                                                        {{checkData this._id ../editUser.packages}} value="{{this._id}}"
+                                                        type="checkbox" name="packages" id="package-{{@index}}" />
+                                                    <label for="package-{{@index}}"
+                                                        class="custom-control-label">{{this.name}}</label>
+                                                </div>
+                                                {{/each}}
+                                                <span class="packages-error invalid-feedback">
+                                                    Please select at least one package.
+                                                </span>
+                                            </div>
+                                        </div>
+                                        {{!-- course --}}
+                                        <div class="form-group row">
+                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select
+                                                Courses</label>
+                                            <div class="col-sm-4">
+                                                {{#each courses}}
+                                                <div class="custom-control custom-checkbox d-flex flex-column">
+                                                    <input
+                                                        class="custom-control-input custom-control-input-success custom-control-input-outline"
+                                                        {{checkData this._id ../editUser.courses}} value="{{this._id}}"
+                                                        type="checkbox" name="courses" id="course-{{@index}}" />
+                                                    <label for="course-{{@index}}"
+                                                        class="custom-control-label">{{this.name}}</label>
+                                                </div>
+                                                {{/each}}
+                                                <div class="custom-control custom-checkbox d-flex flex-column">
+                                                    <input
+                                                        class="custom-control-input custom-control-input-success custom-control-input-outline"
+                                                        {{#if editUser.salesperson}}checked{{/if}} value="yes"
+                                                        type="checkbox" name="salesperson" id="salesperson" />
+                                                    <label for="salesperson"
+                                                        class="custom-control-label">Salesperson</label>
+                                                </div>
                                             </div>
                                         </div>
                                         {{!-- date of birth --}}
@@ -71,7 +103,8 @@
                                             <div class="col-sm-10">
                                                 <div class="input-group date" id="reservationdate"
                                                     data-target-input="nearest">
-                                                    <input id="dob" required type="date" name="dob" value="{{formatDate editUser.dob}}"
+                                                    <input id="dob" required type="date" name="dob"
+                                                        value="{{dateFormat editUser.dob}}"
                                                         class="form-control datetimepicker-input {{#checkError err.dob}}is-invalid{{/checkError}}"
                                                         data-target="#reservationdate">
                                                     <span class="dob invalid-feedback">
@@ -82,7 +115,8 @@
                                         </div>
                                         {{!-- license --}}
                                         <div class="form-group row">
-                                            <label for="license" class="col-sm-2 col-form-label">Driver License / CA ID Number</label>
+                                            <label for="license" class="col-sm-2 col-form-label">Driver License / CA ID
+                                                Number</label>
                                             <div class="col-sm-10">
                                                 <input required type="text" name="driver_license"
                                                     value="{{editUser.driver_license}}"
@@ -112,7 +146,6 @@
                                             </div>
                                         </div>
                                     </div>
-
                                     <div class="card-footer">
                                         <button type="reset" class="btn btn-default">Cancel</button>
                                         <button type="submit" class="btn btn-success float-right">Update User</button>
@@ -142,7 +175,32 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+    <script src="/dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
     {{!-- custom js for this page --}}
+    <script>
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
+        const form = document.getElementById('form');
+        const checkboxes = document.querySelectorAll('.packages');
+        const errorMessage = document.querySelector('.packages-error');
+
+        form.addEventListener('submit', (event) => {
+            let atLeastOneChecked = false;
+            checkboxes.forEach((checkbox) => {
+                if (checkbox.checked) {
+                    atLeastOneChecked = true;
+                }
+            });
+
+            if (!atLeastOneChecked) {
+                event.preventDefault();
+                errorMessage.style.display = 'block';
+            } else {
+                errorMessage.style.display = 'none';
+            }
+        });
+    </script>
     <script>
         $(document).ready(function () {
             let rolVal = $("#role").val()
@@ -171,7 +229,7 @@
 
                     //amount
                     $("#amount").attr("required", "")
-                     $("#amount").removeAttr("disabled")
+                    $("#amount").removeAttr("disabled")
                 }
             })
             // for amount input

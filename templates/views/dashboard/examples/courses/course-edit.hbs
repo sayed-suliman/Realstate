@@ -1,6 +1,6 @@
 {{>dashboardheader}}
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- Navbar -->
@@ -49,20 +49,19 @@
                     <label for="inputName">Course Name</label>
                     <input required type="text" id="inputName" value="{{course.name}}" name="name" class="form-control">
                   </div>
-                  <div class="form-group">
-                    <label for="banner">Banner <small>(Showing to User at start of course)</small></label>
-                    <div class="input-group">
-                      <input type="file" name="banner" accept="image/*" id="banner" />
+                  <div class="row">
+                    <div class="form-group col">
+                      <label for="banner">Banner <small>(Showing to User at start of course)</small></label>
+                      <div class="input-group">
+                        <input type="file" name="banner" accept="image/*" id="banner" {{#unless
+                          course.banner}}required{{/unless}} />
+                      </div>
                     </div>
                     {{#if course.banner}}
-                    <p class="mb-0 mt-2">
-                      <b>
-                        <a href="{{course.banner}}" class="font-weight-normal" target="_blank">Already
-                          Uploaded banner
-                          <i class="fa-solid fa-image mr-1"></i>
-                        </a>
-                      </b>
-                    </p>
+                    <div class="col">
+                      <img src="/images/course/{{course.banner}}" alt="image" class="img-fluid">
+                      <small>Already Uploaded</small>
+                    </div>
                     {{/if}}
                   </div>
                   <div class="form-group">

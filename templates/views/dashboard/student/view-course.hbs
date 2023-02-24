@@ -10,7 +10,7 @@
   * sidebar-mini
 -->
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
     <div class="wrapper">
         <!-- Navbar -->
         {{>dashboardNavbar}}
@@ -53,11 +53,13 @@
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
                                                     {{else}}
                                                     {{#ifEquals this.type 'final'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.final}} Minutes</span>
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
                                                     <span class="badge badge-success">Final</span>
                                                     {{/ifEquals}}
                                                     {{#ifEquals this.type 'mid'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.mid}} Minutes</span>
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
                                                     <span class="badge badge-success">Mid</span>
                                                     {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
@@ -97,11 +99,13 @@
                                                     {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
                                                     {{#ifEquals this.type 'final'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.final}} Minutes</span>
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
                                                     <span class="badge badge-success">Final</span>
                                                     {{/ifEquals}}
                                                     {{#ifEquals this.type 'mid'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.mid}} Minutes</span>
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
                                                     <span class="badge badge-success">Mid</span>
                                                     {{/ifEquals}}
                                                     <span class="badge badge-primary">{{this.questions.length}}
@@ -123,6 +127,76 @@
                                                 <td colspan="2">No Contents for this Course.</td>
                                             </tr>
                                             {{/if}}
+                                            {{/ifEquals}}
+                                            {{!-- students --}}
+                                            {{#ifEquals user.role "guest"}}
+                                            {{#if contents}}
+                                            {{#each contents}}
+                                            <tr {{#unless this.unlock}}class="bg-lock" data-toggle="modal"
+                                                data-target="#modal-default" {{/unless}}>
+                                                <td><a {{#if this.unlock}}
+                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{course._id}}/{{this._id}}{{else}}/dashboard/view-quiz/{{course._id}}/{{this._id}}{{/ifEquals}}"
+                                                        {{/if}}>
+                                                        {{#ifEquals this.type 'chapter'}}<i
+                                                            class=" fa-regular fa-file"></i>
+                                                        {{else}}
+                                                        <i class="fa-regular fa-clock"></i>
+                                                        {{/ifEquals}} {{this.name}}</a>
+
+                                                </td>
+                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
+                                                    {{#if this.completed}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/if}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{else}}
+                                                    {{#ifEquals this.type 'final'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.final}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Final</span>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.type 'mid'}}
+                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
+                                                        Minutes</span>
+                                                    <span class="badge badge-success">Mid</span>
+                                                    {{/ifEquals}}
+                                                    <span class="badge badge-primary">{{this.questions.length}}
+                                                        Questions
+                                                    </span>
+                                                    {{#ifEquals this.grade "passed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    {{/ifEquals}}
+                                                    {{#ifEquals this.grade "failed"}}
+                                                    <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
+                                                    {{/ifEquals}}
+                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
+                                                    {{/ifEquals}}
+                                                </td>
+                                            </tr>
+                                            {{/each}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="2">No Contents for this Course.</td>
+                                            </tr>
+                                            {{/if}}
+                                            <div class="modal fade courseModal" id="modal-default"
+                                                style="display: none;" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content p-4">
+                                                        <div class="modal-body">
+                                                            <p>Thank you for your interest in this content. To unlock
+                                                                it, please purchase the corresponding package or course.
+                                                                Click the 'Purchase' button to proceed.</p>
+                                                        </div>
+                                                        <div class="modal-footer border-0 justify-content-center">
+                                                            <a href="/dashboard/buy-more"
+                                                                class="btn btn-primary">Purchase</a>
+                                                            <button type="button" class="btn btn-danger ml-2"
+                                                                data-dismiss="modal">Cancel</button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             {{/ifEquals}}
                                         </tbody>
                                     </table>

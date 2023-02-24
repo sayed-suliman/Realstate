@@ -1,0 +1,193 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+<style>
+    body {
+        scroll-behavior: smooth;
+    }
+</style>
+
+<body class="hold-transition sidebar-mini dark-mode layout-fixed">
+    <link rel="stylesheet" href="/dashboard/plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <div class="content pt-3">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-12 col-lg-8 mb-2 quiz" oncopy="return false" oncut="return false"
+                            onpaste="return false">
+                            <div class="card h-100">
+                                <div class="card-header">
+                                    <h3 class="card-title">{{test.name}}</h3>
+                                    <div class="float-right timeHead ">
+                                        <h3 class="card-title mr-2">Timer:</h3>
+                                        <h3 class="card-title timer">00:00:00</h3>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    <div class="result text-center mb-5 d-none" id="result">
+                                        <h3 class="mb-0">Your Result</h3>
+                                        <h2 class="percent mb-0 font-weight-bold text-success">
+                                            0%</h2>
+                                        <table class="mx-auto my-4">
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Points</th>
+                                                <td class="text-right points"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Time Spend</th>
+                                                <td class="text-right time"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Questions</th>
+                                                <td class="text-right">{{test.questions.length}}</td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Correct</th>
+                                                <td class="text-right correct"></td>
+                                            </tr>
+                                            <tr>
+                                                <th class="text-left" style="width:230px ;">Wrong</th>
+                                                <td class="text-right wrong"></td>
+                                            </tr>
+                                        </table>
+                                        <button class="retake btn btn-success retake mt-2">Retake</button>
+                                        <button class="btn btn-primary mt-2 ml-2 "
+                                            onclick="(function(){ window.history.back();}())">
+                                            <span class="text" id="button-text">Go Back</span>
+                                        </button>
+                                    </div>
+                                    {{!-- {{#ifCond user.role '==' 'student'}} --}}
+                                    <form id="quizForm" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
+                                        <input type="hidden" name="testId" value="{{test._id}}">
+                                        <input type="hidden" name="byCategory" value="{{testByCategory}}">
+                                        <input type="hidden" name="exam" value="{{test.exam}}">
+                                        <input type="hidden" name="questions" value="{{questionsID}}">
+                                        {{#each test.questions}}
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{increment @index}}). {{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this._id}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="{{../this.qno}}-op-{{@index}}">
+                                                            {{this}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="feedback d-none">
+                                                <p class="msg font-weight-bold"></p>
+                                                <p class="explain"></p>
+                                                <hr>
+                                            </div>
+                                        </div>
+                                        {{/each}}
+                                        {{#ifCond user.role '==' 'student'}}<button
+                                            class="btn btn-success mt-2 float-left submit"
+                                            type="submit">Submit</button>{{/ifCond}}
+                                    </form>
+                                    {{!-- {{/ifCond}} --}}
+                                    {{!-- {{#ifCond user.role '==' 'regulator'}}
+                                    <form id="quizForm" name="quizForm" class="{{#if takenQuiz}} d-none{{/if}}">
+                                        <input type="hidden" name="quizId" value="{{quiz._id}}">
+                                        {{#each quiz.questions}}
+                                        <div class="form-group-head {{#unless @first}}mt-4{{/unless}}">
+                                            <label>{{increment @index}}). {{this.question}}</label>
+                                            <div class="ans pl-4">
+                                                {{#each this.options}}
+                                                <div class="form-group clearfix mb-0 {{#unless @last}}mb-2{{/unless}}"
+                                                    id="question">
+                                                    <div class="icheck-primary d-inline">
+                                                        <input type="radio" id="{{../this.qno}}-op-{{@index}}"
+                                                            value="{{@index}}" name="{{../this.qno}}" required>
+                                                        <label class="font-weight-normal"
+                                                            for="{{../this.qno}}-op-{{@index}}">
+                                                            {{this}} <span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                                {{/each}}
+                                            </div>
+                                            <div class="feedback font-weight-bold d-none"></div>
+                                        </div>
+                                        {{/each}}
+                                    </form>
+                                    {{/ifCond}} --}}
+                                    <div
+                                        class="spinner d-none flex-column align-items-center position-absolute place-center">
+                                        <span class="loader ">
+                                            <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                        </span>
+                                        <span class="text font-weight-bold">msg</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.container-fluid -->
+            </div>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- Modal -->
+        <div class="modal fade" id="examModal" data-backdrop="static" tabindex="-1" role="dialog"
+            aria-labelledby="examModal" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-body">
+                        Your exam is submitted.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+    <script>
+        const noOfQuestions = `{{{test.questions.length}}}`
+        const passingPercent = `{{{passingPercent}}}`
+        const reviewQuiz = `true`
+        const exam = `{{{test.exam}}}`
+        const userRole = `{{{user.role}}}`
+    </script>
+    <script src="/js/salesperson/test.js"></script>
+</body>
+
+</html>

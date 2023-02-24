@@ -5,20 +5,23 @@ const url = require("url");
 const OTP = require("../models/otp");
 const { generateCode } = require("../helper/genCode");
 const { sendVerificationCode } = require("./mailServices");
-const bcrypt = require("bcrypt");
+const Course = require("../models/courses");
 
 const login = (req, res) => {
   res.render("login", {
     title: "Login",
+    reCaptchaSiteKey: process.env.recaptcha_siteKey,
   });
 };
 const postLogin = (req, res) => {
+  // by default redirect to dashboard
   let redirectTo = "/dashboard";
   if (req.body.remember) {
     req.session.cookie.maxAge = 14 * 24 * 60 * 60 * 1000; // Cookie expires after 14 days
   } else {
     req.session.cookie.expires = false; // Cookie expires at end of session
   }
+
   if (req.session.returnURL) {
     redirectTo = req.session.returnURL;
     delete req.session.returnURL;
@@ -28,38 +31,43 @@ const postLogin = (req, res) => {
 
 const signUp = async (req, res) => {
   try {
-    const data = await req.body;
-    // selected package detail
-    var package = await Package.findById(data.package);
-    var { price, tax } = package;
-    package.total = price * ((100 + tax) / 100); //total price with tax
+    let data = await req.body;
+    let cart = {
+      user: null,
+      item: data.package || data.course,
+      itemType: data.package ? "package" : "course",
+    };
+    req.session.cart = cart;
     const formValidations = validationResult(req);
     if (formValidations.errors.length) {
       res.locals.oldData = req.body;
-      console.log(res.locals.oldData);
       const errorObj = {};
       formValidations.errors.forEach((element) => {
         errorObj[element.param] = element.msg;
       });
-      if (errorObj.email.includes("redirect to verification")) {
+
+      /*
+      when user have left registration at verification page
+      or when user already exist but not verified
+      */
+      if (errorObj.email?.includes("redirect to verification")) {
         const userId = errorObj.email.split(",")[1];
-        const password = await bcrypt.hash(data.password, 10);
-        await User.findByIdAndUpdate(userId, {
-          name: data.name,
-          package: data.package,
-          password,
-        });
         res.redirect("/verification?user=" + userId);
       } else {
-        res.render("checkout", {
+        // this section render when error exist
+        let renderObject = {
           title: "Checkout",
           err: errorObj,
-          package,
-        });
+        };
+        res.render("checkout", renderObject);
       }
     } else {
-      console.log(data);
       const otpCode = generateCode();
+
+      // to save user with package or course
+      delete data.course;
+      delete data.package;
+
       const user = await User(data).save();
       await OTP({
         email: data.email,
@@ -67,8 +75,6 @@ const signUp = async (req, res) => {
       }).save();
       sendVerificationCode(data.email, otpCode);
       if (user) {
-        console.log("user created");
-        console.log(user._id);
         return res.redirect(
           url.format({
             pathname: "/verification",
@@ -80,9 +86,14 @@ const signUp = async (req, res) => {
       }
     }
   } catch (e) {
-    res.status(404).send({
-      error: e.message,
-    });
+    if (req.body.course) {
+      req.flash("error", e.message);
+      return res.redirect("/checkout?course=" + req.body.course);
+    }
+    if (req.body.package) {
+      req.flash("error", e.message);
+      return res.redirect("/checkout?package=" + req.body.package);
+    }
   }
 };
 

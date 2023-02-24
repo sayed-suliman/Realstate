@@ -18,7 +18,7 @@
   }
 </style>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini layout-fixed">
   <!-- Site wrapper -->
   <div class="wrapper">
     <!-- toast(alert)-->
@@ -56,51 +56,6 @@
         <!-- Default box -->
         <div class="card card-solid">
           <div class="card-body">
-            {{!-- {{#each users}}
-            <div class="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column">
-              <div class="card bg-light d-flex flex-fill">
-                <div class="card-header text-muted border-bottom-0">
-                  Student
-                </div>
-                <div class="card-body pt-0">
-                  <div class="row">
-                    <div class="col-7">
-                      <h2 class="lead"><b>{{this.name}}</b></h2>
-                      <p class="text-muted text-sm"><b>Package: </b> {{this.package.name}}
-                      </p>
-                      <ul class="ml-4 mb-0 fa-ul text-muted">
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-envelope"></i></span> Email: <a
-                            href="mailto:{{{this.email}}}" class="text-muted">{{{this.email}}}</a>
-                        </li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-id-card-alt"></i></span> Driver
-                          License / CA ID: {{this.driver_license}}</li>
-                        <li class="small"><span class="fa-li"><i class="fas fa-lg fa-calendar-alt"></i></span> DOB:
-                          {{formatDate this.dob}}</li>
-                      </ul>
-                    </div>
-                    <div class="col-5 text-center">
-                      {{#if this.avatar}}
-                      <img src="data:image/jpg;base64,{{this.avatar}}" alt="user-avatar" id="user-avatar"
-                        class="img-circle img-fluid">
-                      {{else}}
-                      <img src="https://ui-avatars.com/api/?name={{this.name}}&size=256" alt="user-avatar"
-                        class="img-circle img-fluid">
-                      {{/if}}
-                    </div>
-                  </div>
-                </div>
-                <div class="card-footer">
-                  <div class="text-right">
-                    <a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal">
-                      <i class="fas fa-edit"></i>
-                    </a>
-                    <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary">
-                      <i class="fas fa-user"></i> View</a>
-                  </div>
-                </div>
-              </div>
-            </div>
-            {{/each}} --}}
             <table id="userTable" class="table table-bordered table-hover">
               <thead>
                 <tr>
@@ -108,7 +63,7 @@
                   <th>User</th>
                   <th>Role</th>
                   <th>Email</th>
-                  <th>Package</th>
+                  <th>Packages</th>
                   <th>Driver License/CA ID</th>
                   <th>DOB</th>
                   <th style="width: 50px;">Action</th>
@@ -131,7 +86,11 @@
                   </td>
                   <td class="text-capitalize">{{this.role}}</td>
                   <td>{{this.email}}</td>
-                  <td>{{this.package.name}}</td>
+                  <td class="text-capitalize">
+                    {{#each this.packages}}
+                    {{this.name}}{{#unless @last}},{{/unless}}
+                    {{/each}}
+                  </td>
                   <td>{{this.driver_license}}</td>
                   <td>{{formatDate this.dob}}</td>
                   <td><a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal" title="Edit User">
@@ -202,30 +161,10 @@
         "responsive": true,
         initComplete: function () {
           this.api()
-            .column(4)
+            .column(2)
             .every(function () {
               var column = this;
-              var select = $('<select class="form-control w-auto d-inline mb-2 mb-md-0 text-capitalize"><option value="">Filter By Package</option></select>')
-                .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
-                //.appendTo($(colum.header()))
-                .on('change', function () {
-                  var val = $.fn.dataTable.util.escapeRegex($(this).val());
-                  column.search(val ? '^' + val + '$' : '', true, false).draw();
-                });
-              select.on('click', function (e) {
-                e.stopPropagation()
-              })
-              column
-                .data()
-                .unique()
-                .sort()
-                .each(function (d, j) {
-                  select.append(`<option value="${d}">${d}</option>`);
-                });
-            }).column(2)
-            .every(function () {
-              var column = this;
-              var select = $('<select class="form-control w-auto d-inline ml-md-2 text-capitalize"><option value="">Filter By Role</option></select>')
+              var select = $('<select class="form-control w-auto d-inline text-capitalize"><option value="">Filter By Role</option></select>')
                 .appendTo($('#userTable_wrapper').children('.row:first').children('div:first'))
                 //.appendTo($(colum.header()))
                 .on('change', function () {

@@ -25,6 +25,7 @@ var authenticated = async (req, res, next) => {
     }
     // check whether user bought a package or not
     if (req.user.role == "student") {
+      // when user is not verified
       if (!req.user.verified) {
         const otpCode = generateCode();
         await OTP({
@@ -41,6 +42,7 @@ var authenticated = async (req, res, next) => {
           })
         );
       }
+      // check that the user have purchase any package or course
       var order = await Order.findOne({ user: req.user._id });
       if (!order) {
         // when logged in by admin as student
@@ -59,7 +61,6 @@ var authenticated = async (req, res, next) => {
         );
       }
     }
-
     res.locals.unreadMsg = await Message.find({ read: false }).count();
     return next();
   } else {
@@ -70,8 +71,8 @@ var authenticated = async (req, res, next) => {
 // redirect to dashboard when user is logged in
 var logged_in = (req, res, next) => {
   if (req.isAuthenticated()) {
-    req.flash("error", encodeMsg("test", "danger"));
-    req.flash("success", encodeMsg("test"));
+    // req.flash("error", encodeMsg("test", "danger"));
+    // req.flash("success", encodeMsg("test"));
     res.redirect("/dashboard");
   } else {
     next();
@@ -91,7 +92,7 @@ var isAdmin = (req, res, next) => {
     res.redirect("/dashboard");
   }
 };
-var isRegulatororStudent = (req, res, next) => {
+var isRegulatorOrStudent = (req, res, next) => {
   if (req.user.role === "regulator" || req.user.role === "student") {
     next();
   } else {
@@ -143,5 +144,5 @@ module.exports = {
   verifiedAndPaid,
   isStudent,
   isAdmin,
-  isRegulatororStudent,
+  isRegulatorOrStudent,
 };
