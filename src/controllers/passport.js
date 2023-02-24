@@ -28,13 +28,15 @@ passport.use(
               user.trialCourse
             ) {
               return done(null, user);
+            } else {
+              //show this message when there is no package or course in the database
+              return done(null, false, {
+                message:
+                  "Your packages/courses are expired or is no longer available.",
+              });
             }
           }
-          //show this message when there is no package or course in the database
-          return done(null, false, {
-            message:
-              "Your packages/courses are expired or is no longer available.",
-          });
+          return done(null, user);
         });
       });
     }
