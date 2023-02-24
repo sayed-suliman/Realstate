@@ -71,16 +71,16 @@ module.exports = {
         name: data.name,
         email: data.email,
         role: data.role,
-        packages: data.packages,
+        packages: [data.packages],
         dob: data.dob,
         password: data.password,
         verified: true,
       }).save();
       if (user) {
         if (data.role == "student") {
-          let order = await Order({
+          await Order({
             user: user._id,
-            package: packages || undefined,
+            package: data.packages || undefined,
             verified: true,
             pay_method: "Offline Payment",
             amount: data.amount,

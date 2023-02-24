@@ -75,19 +75,13 @@
                                             <label for="selectPackage" class="col-sm-2 col-form-label">Select
                                                 Package</label>
                                             <div class="col-sm-10">
-                                                {{#each packages}}
-                                                <div class="custom-control custom-checkbox d-flex flex-column">
-                                                    <input
-                                                        class="custom-control-input custom-control-input-success packages custom-control-input-outline"
-                                                        value="{{this._id}}" type="checkbox" name="packages"
-                                                        id="package-{{@index}}" />
-                                                    <label for="package-{{@index}}"
-                                                        class="custom-control-label">{{this.name}}</label>
-                                                </div>
-                                                {{/each}}
-                                                <span class="packages-error invalid-feedback">
-                                                    Please select at least one package.
-                                                </span>
+                                                <select name="packages" class="form-control" required>
+                                                    <option value="" selected disabled>Select One</option>
+                                                    {{#each packages}}
+                                                    <option value="{{this._id}}" {{#ifEquals ../data.packages this._id}}selected{{/ifEquals}}>
+                                                        {{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
                                             </div>
                                         </div>
                                         {{!-- date of birth --}}
@@ -180,27 +174,6 @@
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
     {{!-- custom js for this page --}}
-    <script>
-        const form = document.getElementById('form');
-        const checkboxes = document.querySelectorAll('.packages');
-        const errorMessage = document.querySelector('.packages-error');
-
-        form.addEventListener('submit', (event) => {
-            let atLeastOneChecked = false;
-            checkboxes.forEach((checkbox) => {
-                if (checkbox.checked) {
-                    atLeastOneChecked = true;
-                }
-            });
-
-            if (!atLeastOneChecked) {
-                event.preventDefault();
-                errorMessage.style.display = 'block';
-            } else {
-                errorMessage.style.display = 'none';
-            }
-        });
-    </script>
     <script>
         $(document).ready(function () {
             let rolVal = $("#role").val()

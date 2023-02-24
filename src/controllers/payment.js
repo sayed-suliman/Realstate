@@ -99,7 +99,7 @@ module.exports = {
                   url.format({
                     pathname: "/dashboard",
                     query: {
-                      msg: encodeMsg("Sorry. This course doesn't exist."),
+                      msg: encodeMsg("You have already purchase this course."),
                     },
                   })
                 );
@@ -119,7 +119,7 @@ module.exports = {
                     pathname: "/dashboard",
                     query: {
                       msg: encodeMsg(
-                        "You have already purchased this package. You can also buy another one."
+                        "You have already purchased this package."
                       ),
                     },
                   })
