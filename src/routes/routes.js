@@ -196,7 +196,12 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
       },
       { path: "courses" },
     ]);
-    if (user.packages.length || user.courses.length) {
+    if (
+      user.packages.length ||
+      user.courses.length ||
+      user.trialCourse ||
+      user.role == "regulator"
+    ) {
       req.login(user, function (err) {
         if (err) {
           return res.redirect(
@@ -221,7 +226,7 @@ router.get("/loginAsStudent", isAdmin, async (req, res) => {
     } else {
       res.redirect(
         "/dashboard/users?msg=" +
-          encodeMsg("Please add courses to continue.", "danger")
+          encodeMsg("User haven't buy any package or course yet.", "danger")
       );
     }
   } else {

@@ -3,33 +3,18 @@ const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const paypal = require("paypal-rest-sdk");
 const User = require("../models/users");
 const Order = require("../models/order");
-const Package = require("../models/package");
 const url = require("url");
 const { encodeMsg } = require("../helper/createMsg");
 const Coupon = require("../models/coupons");
 const { welcomeEmail } = require("./mailServices");
-const Course = require("../models/courses");
+const itemDetails = require("../helper/itemDetails");
 
 paypal.configure({
   mode: process.env.SITE_DEBUG ? "sandbox" : "live",
   client_id: process.env.PAYPAL_CLIENT_ID,
   client_secret: process.env.PAYPAL_CLIENT_SECRET,
 });
-const itemDetails = async (cart) => {
-  //  package or course detail
-  let price, itemName;
-  if (cart.itemType == "package" && cart.item) {
-    let package = await Package.findById(cart.item);
-    itemName = package.name;
-    price = Math.round(package.price * ((100 + package.tax) / 100));
-  }
-  if (cart.itemType == "course" && cart.item) {
-    let course = await Course.findById(cart.item);
-    itemName = course.name;
-    price = course.price;
-  }
-  return { price, itemName };
-};
+
 module.exports = {
   async paypalAPI(req, res) {
     try {
@@ -143,7 +128,7 @@ module.exports = {
               var amount = price - discount;
               // Create a PaymentIntent with the order amount and currency
               const paymentIntent = await stripe.paymentIntents.create({
-                amount,
+                amount: amount * 100, // NOTE: STRIPE accept amount in cent.
                 currency: "usd",
                 setup_future_usage: "off_session",
                 // payment_method_types:['card'],
@@ -185,18 +170,7 @@ module.exports = {
       let user = await User.findById(userId);
       if (user) {
         let discount = 0,
-          price,
-          itemName;
-        if (cart.itemType == "course" && cart.item) {
-          const course = await Course.findById(cart.item);
-          itemName = course.name;
-          price = course.price;
-        }
-        if (cart.itemType == "package" && cart.item) {
-          const package = await Package.findById(cart.item);
-          itemName = package.name;
-          price = package.price;
-        }
+          { price, itemName } = await itemDetails(cart);
         if (couponId != "undefined") {
           const coupon = await Coupon.findById(couponId).where("length");
           discount = Number(price) * (Number(coupon.discount) / 100);
@@ -227,6 +201,8 @@ module.exports = {
             user.packages = [cart.item];
           }
         }
+        // if guest user buy a package then change it role to student
+        user.role == "guest" ? (user.role = "student") : "";
         await user.save();
 
         let orderObj = {

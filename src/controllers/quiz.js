@@ -198,6 +198,7 @@ const viewQuiz = async (req, res) => {
       // authorized to purchase package quizzes
       if (
         guestUser ||
+        req.user.role == "regulator" ||
         (userCourses.includes(course._id.toString()) &&
           course.quizzes.includes(quiz._id))
       ) {

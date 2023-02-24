@@ -260,6 +260,7 @@
                       </tr>
                       {{/each}}
                       {{/if}}
+                      {{#if user.salesperson}}
                       <tr>
                         <td colspan="2"><a class="text-capitalize" target="_blank"
                             href="/dashboard/salesperson/">Salesperson</a></td>
@@ -267,6 +268,7 @@
                             <i class="fas fa-book"></i>
                           </a></td>
                       </tr>
+                      {{/if}}
                     </tbody>
                   </table>
                 </div>
@@ -306,46 +308,6 @@
                         <td colspan="2">You haven't complete any course yet.</td>
                       </tr>
                       {{/if}}
-                      {{!-- <tr>
-                        <td>
-                          Course
-                        </td>
-                        <td>
-                          <a href="/dashboard/view-course" class="text-muted">
-                            <i class="fas fa-book"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Course
-                        </td>
-                        <td>
-                          <a href="/dashboard/view-course" class="text-muted">
-                            <i class="fas fa-book"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Course
-                        </td>
-                        <td>
-                          <a href="/dashboard/view-course" class="text-muted">
-                            <i class="fas fa-book"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Course
-                        </td>
-                        <td>
-                          <a href="/dashboard/view-course" class="text-muted">
-                            <i class="fas fa-book"></i>
-                          </a>
-                        </td>
-                      </tr> --}}
                     </tbody>
                   </table>
                 </div>

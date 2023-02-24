@@ -15,7 +15,7 @@ module.exports = {
     };
     try {
       if (userID) {
-        const user = await User.findById(userID);
+        const user = await User.findById(userID).populate("packages");
         if (user.verified) {
           // admin and regulator redirect to dashboard with msg
           // they can't buy a package
@@ -54,7 +54,7 @@ module.exports = {
           if (user.packages) {
             // mongoose id to string
             let userCourses = [].concat(
-              ...user.packages.map((package) => {
+              ...user.packages?.map((package) => {
                 return package.courses.map((el) => el.toString());
               })
             );

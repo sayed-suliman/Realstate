@@ -70,6 +70,7 @@ const userSchema = new mongoose.Schema(
         ref: "Course",
       },
     ],
+    salesperson: { type: Boolean, default: false },
     avatar: {
       type: Buffer,
     },

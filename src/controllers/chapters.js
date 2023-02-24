@@ -215,6 +215,7 @@ const viewChapter = async (req, res) => {
       // access only the course of the purchased package
       if (
         guestUser ||
+        req.user.role == "regulator" ||
         (userCourses.includes(course._id.toString()) &&
           course.chapters.includes(chapter._id))
       ) {

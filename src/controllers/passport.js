@@ -21,36 +21,20 @@ passport.use(
           if (!match) {
             return done(null, false, { message: "Credentials doesn't match." });
           }
-          if (user.role == "student") {
-            console.log(user.packages, user.courses);
-            console.log((
-              !user.packages ||
-              !user.packages.length ||
-              !user.courses ||
-              !user.courses.length
-            ));
+          if (user.role == "student" || user.role == "guest") {
             if (
-              !user.packages ||
-              !user.packages.length ||
-              !user.courses ||
-              !user.courses.length
+              user.packages.length ||
+              user.courses.length ||
+              user.trialCourse
             ) {
-              //show this message when there is no package or course in the database
-              return done(null, false, {
-                message:
-                  "Your packages/courses are expired or is no longer available.",
-              });
+              return done(null, user);
             }
           }
-          if (user.role == "guest") {
-            if (!user.trialCourse) {
-              //show this message when there is no package or course in the database
-              return done(null, false, {
-                message: "Your course is expired or is no longer available.",
-              });
-            }
-          }
-          return done(null, user);
+          //show this message when there is no package or course in the database
+          return done(null, false, {
+            message:
+              "Your packages/courses are expired or is no longer available.",
+          });
         });
       });
     }

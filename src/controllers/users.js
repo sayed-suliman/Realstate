@@ -124,6 +124,7 @@ module.exports = {
     try {
       const uId = req.query.uId;
       const editUser = req.body;
+      editUser.salesperson = !!editUser.salesperson;
       const order = await Order.findOne({ user: uId }).select("amount");
       const packages = await Package.find({ status: "publish" });
       const user = await User.findById(uId);
@@ -152,7 +153,7 @@ module.exports = {
             });
           }
           if (result) {
-            var msg = encodeMsg("User Updated");
+            var msg = encodeMsg("User Updated Successfully.");
             if (order) {
               await order.updateOne(
                 { amount: editUser.amount },

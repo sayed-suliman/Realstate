@@ -192,6 +192,7 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
+                                            {{#if user.salesperson}}
                                             <tr>
                                                 <td colspan="2"><a class="text-capitalize"
                                                         href="/dashboard/salesperson/">Salesperson</a></td>
@@ -199,6 +200,7 @@
                                                         <i class="fas fa-book"></i> View Course
                                                     </a></td>
                                             </tr>
+                                            {{/if}}
                                         </tbody>
                                     </table>
                                     {{!-- Agreement Modal --}}

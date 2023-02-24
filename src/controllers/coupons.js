@@ -141,13 +141,16 @@ module.exports = {
           }
         }
         if (coupon) {
+          let updateObj = {
+            packages: user.packages,
+            courses: user.courses,
+            dob,
+            driver_license: id,
+          };
+          // if guest user buy a package then change it role to student
+          user.role == "guest" ? (updateObj.role = "student") : "";
           user.updateOne(
-            {
-              packages: user.packages,
-              courses: user.courses,
-              dob,
-              driver_license: id,
-            },
+            updateObj,
             { runValidators: true },
             async (error, result) => {
               if (error) {

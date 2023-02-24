@@ -255,8 +255,10 @@ module.exports = {
       }
 
       /*******************  ADMIN  **********************/
-      const students = await User.find({ role: "student" });
-      const countStudents = await User.find({ role: "student" }).count();
+      const students = await User.find({ role: { $in: ["student", "guest"] } });
+      const countStudents = await User.countDocuments({
+        role: { $in: ["student", "guest"] },
+      });
       const orders = await Order.find();
       var allSale = 0;
       // 1,2,3 upto 12 used for months that are registered in this year
@@ -384,7 +386,7 @@ module.exports = {
         lastYearAllAmounts,
       });
     } catch (error) {
-      console.log(error)
+      console.log(error);
       res.redirect(
         url.format({
           pathname: "/dashboard",

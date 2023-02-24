@@ -70,7 +70,7 @@
                 <div class="container-fluid">
                     <div class="row mb-2">
                         <div class="col-sm-6">
-                            <h1>{{#ifEquals user.role "admin"}}Courses Detail{{else}}All Courses{{/ifEquals}}</h1>
+                            <h1>Buy More</h1>
                         </div>
                         <div class="col-sm-6">
                             <ol class="breadcrumb float-sm-right">
@@ -91,27 +91,6 @@
                             <div class="card">
                                 <!-- /.card-header -->
                                 <div class="card-body">
-                                    {{!-- <table id="courseTable" class="table table-bordered table-hover">
-                                        <thead>
-                                            <tr>
-                                                <th>Name</th>
-                                                <th>Price</th>
-                                                <th>Buy Now</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {{#each allCourses}}
-                                            <tr>
-                                                <td>{{this.name}}</td>
-                                                <td>{{#if this.price}}${{this.price}}{{/if}}</td>
-                                                <td>
-                                                    <a href="/checkout?course={{this._id}}" class="btn btn-success">Buy
-                                                        Now</a>
-                                                </td>
-                                            </tr>
-                                            {{/each}}
-                                        </tbody>
-                                    </table> --}}
                                     <div class="pricing">
                                         <div class="toggler d-flex justify-content-center mb-3" style="gap:10px">
                                             <label style="user-select:none" for="priceToggle">Packages</label>
@@ -121,7 +100,7 @@
                                                     for="priceToggle">Courses</label>
                                             </div>
                                         </div>
-                                        <div class="row package">
+                                        <div class="row package justify-content-center">
                                             {{#if packages}}
                                             {{#each packages}}
                                             <div class="col-lg-3 col-md-5 p-1 text-center">
@@ -154,7 +133,7 @@
                                             {{/each}}
                                             {{/if}}
                                         </div>
-                                        <div class="row courses d-none">
+                                        <div class="row courses justify-content-center d-none">
                                             {{#if courses}}
                                             {{#each courses}}
                                             <div class="col-lg-3 col-md-5 p-1 text-center">

@@ -72,6 +72,17 @@
                                                 </span>
                                             </div>
                                         </div>
+                                        {{!-- Salesperson --}}
+                                        <div class="form-group row">
+                                            <label for="" class="col-sm-2 col-form-label">Salesperson</label>
+                                            <div class="col-sm-10">
+                                                <div class="input-group date" id="reservationdate"
+                                                    data-target-input="nearest">
+                                                    <input type="checkbox" value="yes" name="salesperson" {{#if
+                                                        editUser.salesperson}}checked{{/if}} data-bootstrap-switch>
+                                                </div>
+                                            </div>
+                                        </div>
                                         {{!-- date of birth --}}
                                         <div class="form-group row">
                                             <label for="" class="col-sm-2 col-form-label">Date of Birth</label>
@@ -150,8 +161,12 @@
 
     <!-- jQuery -->
     {{>dashboardfooterlinks}}
+    <script src="/dashboard/plugins/bootstrap-switch/js/bootstrap-switch.min.js"></script>
     {{!-- custom js for this page --}}
     <script>
+        $("input[data-bootstrap-switch]").each(function () {
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        })
         const form = document.getElementById('form');
         const checkboxes = document.querySelectorAll('.packages');
         const errorMessage = document.querySelector('.packages-error');
