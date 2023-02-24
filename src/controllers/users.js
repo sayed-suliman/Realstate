@@ -3,6 +3,7 @@ const { validationResult } = require("express-validator");
 const User = require("../models/users");
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Order = require("../models/order");
+const Course = require("../models/courses");
 
 module.exports = {
   async users(req, res) {
@@ -33,6 +34,7 @@ module.exports = {
   async addUsers(req, res) {
     try {
       const packages = await Package.find({ status: "publish" });
+      const courses = await Course.find({ status: "publish" });
       var msgToken = req.query.msg;
       var option = {};
       if (msgToken) {
@@ -42,6 +44,7 @@ module.exports = {
       res.render("dashboard/examples/users/add-users", {
         title: "Dashboard | Add-User",
         packages,
+        courses,
         toast: Object.keys(option).length == 0 ? undefined : option,
       });
     } catch (e) {
@@ -67,24 +70,36 @@ module.exports = {
           packages,
         });
       }
-      const user = await User({
+      let userObj = {
         name: data.name,
         email: data.email,
         role: data.role,
-        packages: [data.packages],
         dob: data.dob,
         password: data.password,
         verified: true,
-      }).save();
+      };
+      if (data.role == "student" && data.package) {
+        userObj.packages = [data.package];
+      }
+      if (data.role == "student" && data.course) {
+        userObj.courses = [data.course];
+      }
+      const user = await User(userObj).save();
       if (user) {
         if (data.role == "student") {
-          await Order({
+          let orderObj = {
             user: user._id,
-            package: data.packages || undefined,
             verified: true,
             pay_method: "Offline Payment",
             amount: data.amount,
-          }).save();
+          };
+          if (data.package) {
+            orderObj.package = data.package || undefined;
+          }
+          if (data.course) {
+            orderObj.course = data.course || undefined;
+          }
+          await Order(orderObj).save();
         }
         var msg = encodeMsg("User Added Successfully.");
         res.redirect("/dashboard/users?msg=" + msg);
@@ -107,10 +122,12 @@ module.exports = {
       const editUser = await User.findById(uId);
       const order = await Order.findOne({ user: uId }).select("amount");
       const packages = await Package.find({ status: "publish" });
+      const courses = await Course.find({ status: "publish" });
       res.render("dashboard/examples/users/user-edit", {
         title: "Dashboard | User-Edit",
         editUser,
         packages,
+        courses,
         order,
         toast: Object.keys(option).length == 0 ? undefined : option,
       });
@@ -127,6 +144,7 @@ module.exports = {
       editUser.salesperson = !!editUser.salesperson;
       const order = await Order.findOne({ user: uId }).select("amount");
       const packages = await Package.find({ status: "publish" });
+      const courses = await Course.find({ status: "publish" });
       const user = await User.findById(uId);
       await user.updateOne(
         { ...editUser },
@@ -147,6 +165,7 @@ module.exports = {
               err,
               editUser,
               packages,
+              courses,
               order: {
                 amount: editUser.amount,
               },

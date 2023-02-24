@@ -72,13 +72,28 @@
                                         </div>
                                         {{!-- package --}}
                                         <div class="form-group row">
-                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select
-                                                Package</label>
+                                            <label for="selectPackage" class="col-sm-2 col-form-label">Select</label>
                                             <div class="col-sm-10">
-                                                <select name="packages" class="form-control" required>
-                                                    <option value="" selected disabled>Select One</option>
+
+                                                <input type="radio" name="selecting" checked value="package"
+                                                    id="packageR">
+                                                <label for="packageR">Package</label>
+                                                <input type="radio" class="ml-3" name="selecting" value="course"
+                                                    id="courseR">
+                                                <label for="courseR">Course</label>
+                                                <select name="package" id="package" class="form-control" required>
+                                                    <option value="" selected disabled>Select One Package</option>
                                                     {{#each packages}}
-                                                    <option value="{{this._id}}" {{#ifEquals ../data.packages this._id}}selected{{/ifEquals}}>
+                                                    <option value="{{this._id}}" {{#ifEquals ../data.package
+                                                        this._id}}selected{{/ifEquals}}>
+                                                        {{this.name}}</option>
+                                                    {{/each}}
+                                                </select>
+                                                <select name="course" id="course" class="form-control d-none">
+                                                    <option value="" selected disabled>Select One Course</option>
+                                                    {{#each courses}}
+                                                    <option value="{{this._id}}" {{#ifEquals ../data.course
+                                                        this._id}}selected{{/ifEquals}}>
                                                         {{this.name}}</option>
                                                     {{/each}}
                                                 </select>
@@ -187,8 +202,14 @@
                 $("#amount").attr("disabled", "")
                 $("#amount").val("")
             }
+            $("[name='selecting']").change(function () {
+                let type = $(this).val();
+                $(`#${type}`).siblings("select").removeClass('d-block').addClass('d-none').removeAttr('required')
+                $(`#${type}`).removeClass('d-none').addClass('d-block').attr('required', true)
+            })
             $("#role").change(function () {
                 if (this.value == 'regulator' || this.value == 'admin') {
+                    $("[name='selecting']").siblings('select').removeAttr('required')
                     $("#selectPackage").attr("disabled", "")
                     $("#selectPackage").val("")
                     $("#selectPackage").removeAttr("required")
@@ -197,6 +218,7 @@
                     $("#amount").attr("disabled", "")
                     $("#amount").val("")
                 } else {
+                    $("[name='selecting']").siblings('select').attr('required', true)
                     $("#selectPackage").attr("required", "")
                     $("#selectPackage").removeAttr("disabled")
 
