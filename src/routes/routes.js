@@ -115,9 +115,6 @@ const {
   doSetting,
   settingError,
 } = require("../controllers/setting");
-const User = require("../models/users");
-const url = require("url");
-const { encodeMsg } = require("../helper/createMsg");
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const trial = require("../controllers/trial");
 const buyMore = require("../controllers/buy-more");
@@ -219,11 +216,11 @@ router.use("/dashboard/salesperson", salespersonRoutes);
 // main-dashboard
 router.get("/dashboard", dashboard);
 
-// ************************************ contact-us
+// contact-us
 router.get("/dashboard/contact-us", isStudent, contactUs);
 router.post("/dashboard/contact-us", isStudent, postContact);
 
-//  ************************************ Setting
+//  Setting
 router.get("/dashboard/setting", settingView);
 router.post(
   "/dashboard/setting",
