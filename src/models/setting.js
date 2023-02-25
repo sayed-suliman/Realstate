@@ -30,6 +30,23 @@ const settingSchema = mongoose.Schema({
     type: Number,
     default: 30,
   },
+  mail: {
+    port: String,
+    host: String,
+    email: String,
+    user: String,
+    pass: String,
+  },
+  payment: {
+    stripe: {
+      publicKey: String,
+      secret: String,
+    },
+    paypal: {
+      id: String,
+      secret: String,
+    },
+  },
 });
 
 const Setting = mongoose.model("setting", settingSchema);

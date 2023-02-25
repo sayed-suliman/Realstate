@@ -21,7 +21,6 @@ const {
   isStudent,
   isAdmin,
   verifiedAndPaid,
-  isRegulatorOrStudent,
 } = require("../middleware/authentication");
 const signUpMiddleware = require("../middleware/authValidation");
 const {
@@ -81,7 +80,6 @@ const {
 } = require("./../controllers/quiz");
 const {
   sendVerificationCode,
-  welcomeEmail,
   sendAgreement,
 } = require("../controllers/mailServices");
 const {
@@ -121,34 +119,6 @@ const buyMore = require("../controllers/buy-more");
 const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
 
-router.get("/test", (req, res) => {
-  sendVerificationCode("sulimank418@gmail.com", "1234");
-  res.render("package");
-});
-router.get("/email", (req, res) => {
-  const testUser = {
-    username: "Suliman Khan",
-    orderDate: "24 Dec 2022",
-    packageName: "Basic",
-    packageCourses: ["Course 1", "Course 2", "Course 3"],
-    totalPrice: "200",
-    siteName: process.env.SITE_NAME,
-    siteURL: "https://members.realestateinstruct.com",
-  };
-  // welcomeEmail("sulimank418@gmail.com", testUser);
-  sendAgreement("sulimank418@gmail.com", "Suliman Khan");
-  res.render("mail/otp", {
-    username: "Suliman Khan",
-    orderDate: "24 Dec 2022",
-    packageName: "Basic",
-    packageCourses: ["Course 1", "Course 2", "Course 3"],
-    totalPrice: "200",
-    site_name: "Real estate Instruct",
-    url: "#",
-    code: 123,
-    agree: true,
-  });
-});
 // default route
 router.get("/", async (req, res) => {
   try {

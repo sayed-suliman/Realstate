@@ -124,6 +124,20 @@ var verifiedAndPaid = async (req, res, next) => {
       var order = await Order.findOne({ user: user._id });
       if (!order) {
         req.flash("error", "Please make a payment to continue.");
+        if (user.packages.length) {
+          req.session.cart = {
+            user: user._id,
+            item: user.packages[0],
+            itemType: "package",
+          };
+        }
+        if (user.courses.length) {
+          req.session.cart = {
+            user: user._id,
+            item: user.courses[0],
+            itemType: "course",
+          };
+        }
         return res.redirect(
           url.format({
             pathname: "/payment",

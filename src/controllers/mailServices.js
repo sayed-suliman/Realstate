@@ -3,44 +3,41 @@ require("dotenv").config();
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 const Setting = require("../models/setting");
-
-var transport = nodemailer.createTransport({
-  host: process.env.host,
-  port: process.env.mail_port,
-  auth: {
-    user: process.env.user,
-    pass: process.env.pass,
-  },
-  tls: {
-    // do not fail on invalid certs
-    rejectUnauthorized: false,
-  },
-});
-console.log(process.env.host);
-console.log(process.env.mail_port);
-console.log(process.env.user);
-console.log(process.env.pass);
-transport.use(
-  "compile",
-  hbs({
-    viewEngine: {
-      extname: ".hbs",
-      layoutsDir: __dirname + "/templates/views/mail/",
-      defaultLayout: false,
-    },
-    extName: ".hbs",
-    viewPath: "templates/views/mail/",
-  })
-);
-
+// nyewqntmepcmuypj
 module.exports = {
   async sendVerificationCode(email, code) {
-    console.log(process.env.email);
     try {
       const setting = await Setting.findOne();
-      title = setting.collegeName;
+      const {
+        mail: { host, port, user, pass },
+      } = setting;
+      var transport = nodemailer.createTransport({
+        host: host || process.env.host,
+        port: port || process.env.mail_port,
+        auth: {
+          user: user || process.env.user,
+          pass: pass || process.env.pass,
+        },
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
+      });
+      transport.use(
+        "compile",
+        hbs({
+          viewEngine: {
+            extname: ".hbs",
+            layoutsDir: __dirname + "/templates/views/mail/",
+            defaultLayout: false,
+          },
+          extName: ".hbs",
+          viewPath: "templates/views/mail/",
+        })
+      );
+
       var send = await transport.sendMail({
-        from: process.env.email,
+        from: user || process.env.email,
         to: email,
         subject: "Verify your Account",
         text: `Verification Code: ${code}`,
@@ -48,7 +45,7 @@ module.exports = {
         context: {
           code,
           url: `${process.env.SERVER_URI}`,
-          site_name: title || process.env.SITE_NAME,
+          site_name: setting.collegeName || process.env.SITE_NAME,
         },
       });
       if (send) {
@@ -63,9 +60,35 @@ module.exports = {
   async sendAgreement(email, username) {
     try {
       const setting = await Setting.findOne();
-      title = setting.collegeName;
+      const {
+        mail: { host, port, user, pass },
+      } = setting;
+      var transport = nodemailer.createTransport({
+        host: host || process.env.host,
+        port: port || process.env.mail_port,
+        auth: {
+          user: user || process.env.user,
+          pass: pass || process.env.pass,
+        },
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
+      });
+      transport.use(
+        "compile",
+        hbs({
+          viewEngine: {
+            extname: ".hbs",
+            layoutsDir: __dirname + "/templates/views/mail/",
+            defaultLayout: false,
+          },
+          extName: ".hbs",
+          viewPath: "templates/views/mail/",
+        })
+      );
       var send = await transport.sendMail({
-        from: process.env.email,
+        from: user || process.env.email,
         to: email,
         subject: "Your Agreement",
         text: `Your Agreement`,
@@ -74,7 +97,7 @@ module.exports = {
           username,
           agree: true,
           url: `${process.env.SERVER_URI}`,
-          site_name: title || process.env.SITE_NAME,
+          site_name: setting.collegeName || process.env.SITE_NAME,
         },
       });
       if (send) {
@@ -91,14 +114,46 @@ module.exports = {
       var header_img = path.resolve(
         __dirname + "/public/images/email/animated_header.gif"
       );
+
       var url = `${process.env.SERVER_URI}/user/reset-password?token=${token}`;
-      console.log(url);
+      const setting = await Setting.findOne();
+      const {
+        mail: { host, port, user, pass },
+      } = setting;
+      var transport = nodemailer.createTransport({
+        host: host || process.env.host,
+        port: port || process.env.mail_port,
+        auth: {
+          user: user || process.env.user,
+          pass: pass || process.env.pass,
+        },
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
+      });
+      transport.use(
+        "compile",
+        hbs({
+          viewEngine: {
+            extname: ".hbs",
+            layoutsDir: __dirname + "/templates/views/mail/",
+            defaultLayout: false,
+          },
+          extName: ".hbs",
+          viewPath: "templates/views/mail/",
+        })
+      );
       var send = await transport.sendMail({
-        from: process.env.email,
+        from: user || process.env.email,
         to: email,
         subject: `Reset Password of ${process.env.SITE_NAME}`,
         template: "reset-password",
-        context: { url, header_img, site_name: process.env.SITE_NAME },
+        context: {
+          url,
+          header_img,
+          site_name: setting.collegeName || process.env.SITE_NAME,
+        },
       });
       if (send) {
         console.log(send);
@@ -129,10 +184,40 @@ module.exports = {
         return "";
       };
       data.orderDate = formatDate(data.orderDate);
+      const setting = await Setting.findOne();
+      data.siteName = setting.collegeName;
+      const {
+        mail: { host, port, user, pass },
+      } = setting;
+      var transport = nodemailer.createTransport({
+        host: host || process.env.host,
+        port: port || process.env.mail_port,
+        auth: {
+          user: user || process.env.user,
+          pass: pass || process.env.pass,
+        },
+        tls: {
+          // do not fail on invalid certs
+          rejectUnauthorized: false,
+        },
+      });
+      transport.use(
+        "compile",
+        hbs({
+          viewEngine: {
+            extname: ".hbs",
+            layoutsDir: __dirname + "/templates/views/mail/",
+            defaultLayout: false,
+          },
+          extName: ".hbs",
+          viewPath: "templates/views/mail/",
+        })
+      );
+      console.log(data);
       var send = await transport.sendMail({
-        from: process.env.email,
+        from: user || process.env.email,
         to: email,
-        subject: `Welcome to ${data.siteName}`,
+        subject: `Welcome to ${setting.collegeName}`,
         template: "welcome",
         context: data,
       });

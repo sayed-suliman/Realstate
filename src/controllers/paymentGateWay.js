@@ -221,10 +221,9 @@ module.exports = {
           welcomeEmail(user.email, {
             username: user.name,
             orderDate: order.createdAt,
-            packageName: itemName,
+            item: { type: cart.itemType, name: itemName },
             totalPrice: price - discount,
-            siteName: process.env.SITE_NAME,
-            siteURL: "https://members.realestateinstruct.com",
+            siteURL: req.protocol + "://" + req.hostname,
           });
           return req.login(user, function (err) {
             if (err) {
