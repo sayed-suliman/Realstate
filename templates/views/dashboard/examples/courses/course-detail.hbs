@@ -201,6 +201,12 @@
                                                     </a></td>
                                             </tr>
                                             {{/if}}
+                                            {{#ifCond user.salesperson '&&' userCourses.length}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="3">No courses found.</td>
+                                            </tr>
+                                            {{/ifCond}}
                                         </tbody>
                                     </table>
                                     {{!-- Agreement Modal --}}

@@ -301,6 +301,9 @@ var allCourses = async (req, res) => {
     if (req.user.role === "student") {
       if (req.user.packages) {
         req.user.packages.map((package) => {
+          if (package.salesperson) {
+            req.user.salesperson = true;
+          }
           userCourses = [...userCourses, ...package.courses];
         });
       }
@@ -363,7 +366,9 @@ var allCourses = async (req, res) => {
             }
           }
           // unlock the first content of the current chapter
-          Object.assign(userCourses[0], { unlock: true });
+          if(userCourses.length > 0){
+            Object.assign(userCourses[0], { unlock: true });
+          }
         }
       } else {
         for await (let [index] of userCourses.entries()) {
@@ -704,7 +709,7 @@ var viewCourse = async (req, res) => {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
             }
-            // lock system for final term when days are in database
+            // final term unlock algorithm
             if (
               setting.finalDay != -1 &&
               contents[index].type == "final" &&
@@ -716,7 +721,6 @@ var viewCourse = async (req, res) => {
               // Day and Minute from database
               let unlockAfterDay = setting.finalDay;
               let unlockAfterTime = setting.finalTime;
-
               // adding day and minute to the agreement date
               let final = new Date(
                 agreementDate.getFullYear(),

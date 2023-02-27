@@ -1,5 +1,4 @@
 require("dotenv").config();
-const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 const paypal = require("paypal-rest-sdk");
 const User = require("../models/users");
 const Order = require("../models/order");
@@ -8,12 +7,7 @@ const { encodeMsg } = require("../helper/createMsg");
 const Coupon = require("../models/coupons");
 const { welcomeEmail } = require("./mailServices");
 const itemDetails = require("../helper/itemDetails");
-
-paypal.configure({
-  mode: process.env.SITE_DEBUG ? "sandbox" : "live",
-  client_id: process.env.PAYPAL_CLIENT_ID,
-  client_secret: process.env.PAYPAL_CLIENT_SECRET,
-});
+const Setting = require("../models/setting");
 
 module.exports = {
   async paypalAPI(req, res) {
@@ -79,10 +73,20 @@ module.exports = {
                   },
                 ],
               };
-
+              const setting = await Setting.findOne();
+              paypal.configure({
+                mode: process.env.SITE_DEBUG ? "sandbox" : "live",
+                client_id:
+                  setting.payment.paypal.id || process.env.PAYPAL_CLIENT_ID,
+                client_secret:
+                  setting.payment.paypal.secret ||
+                  process.env.PAYPAL_CLIENT_SECRET,
+              });
               paypal.payment.create(create_payment_json, (e, payment) => {
                 if (e) {
-                  return res.status(500).json({ error: e.response.message });
+                  return res
+                    .status(500)
+                    .json({ error: e.response.message.error });
                 }
                 for (let i = 0; i < payment.links.length; i++) {
                   if (payment.links[i].rel === "approval_url") {
@@ -127,6 +131,10 @@ module.exports = {
               }
               var amount = price - discount;
               // Create a PaymentIntent with the order amount and currency
+              const setting = await Setting.findOne();
+              const stripe = require("stripe")(
+                setting.payment.stripe.secret || process.env.STRIPE_SECRET_KEY
+              );
               const paymentIntent = await stripe.paymentIntents.create({
                 amount: amount * 100, // NOTE: STRIPE accept amount in cent.
                 currency: "usd",

@@ -70,7 +70,7 @@ module.exports = {
               })
             );
           }
-          course.total = course.price.toFixed(2); //total price with tax
+          course.total = course.price.toFixed(2); 
           return res.render("checkout", {
             title: "Checkout",
             course,

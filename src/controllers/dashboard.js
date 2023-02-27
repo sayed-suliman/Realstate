@@ -138,6 +138,9 @@ module.exports = {
         ]);
         if (req.user.packages) {
           req.user.packages.map((package) => {
+            if (package.salesperson) {
+              req.user.salesperson = true;
+            }
             userCourses = [...userCourses, ...package.courses];
           });
         }
@@ -220,7 +223,7 @@ module.exports = {
               }
             });
           });
-
+          console.log(req.user.salesperson);
           // unlock course when previous is completed
           if (setting.unlockCourse) {
             // lock all the courses
@@ -228,7 +231,10 @@ module.exports = {
               userCourses[index].unlock = false;
             });
             // unlock only the first one
-            userCourses[0].unlock = true;
+            if (userCourses.length > 0) {
+              userCourses[0].unlock = true;
+            }
+            
           }
           // assign undefined when completedCourses obj is empty
           completedCourses = Object.keys(completedCourses).length
