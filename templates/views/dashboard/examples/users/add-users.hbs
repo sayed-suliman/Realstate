@@ -204,7 +204,7 @@
             }
             $("[name='selecting']").change(function () {
                 let type = $(this).val();
-                $(`#${type}`).siblings("select").removeClass('d-block').addClass('d-none').removeAttr('required')
+                $(`#${type}`).siblings("select").removeClass('d-block').addClass('d-none').removeAttr('required').val('')
                 $(`#${type}`).removeClass('d-none').addClass('d-block').attr('required', true)
             })
             $("#role").change(function () {
@@ -220,7 +220,7 @@
                 } else {
                     let type = $("[name='selecting']").val()
                     $("[name='selecting']").siblings(`#${type}`).attr('required', true)
-                    $("[name='selecting']").siblings('select').attr("required", "")
+                    //$("[name='selecting']").siblings('select').attr("required", "")
                     $("[name='selecting']").siblings('select').removeAttr("disabled")
 
                     //amount
