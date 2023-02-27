@@ -6,6 +6,7 @@ const OTP = require("../models/otp");
 const { generateCode } = require("../helper/genCode");
 const { sendVerificationCode } = require("./mailServices");
 const Course = require("../models/courses");
+const { encodeMsg } = require("../helper/createMsg");
 
 const login = (req, res) => {
   res.render("login", {
