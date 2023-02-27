@@ -163,7 +163,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
+router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);

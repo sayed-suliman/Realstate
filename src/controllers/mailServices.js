@@ -3,7 +3,6 @@ require("dotenv").config();
 const hbs = require("nodemailer-express-handlebars");
 const path = require("path");
 const Setting = require("../models/setting");
-// nyewqntmepcmuypj
 module.exports = {
   async sendVerificationCode(email, code) {
     try {
@@ -213,7 +212,6 @@ module.exports = {
           viewPath: "templates/views/mail/",
         })
       );
-      console.log(data);
       var send = await transport.sendMail({
         from: user || process.env.email,
         to: email,
