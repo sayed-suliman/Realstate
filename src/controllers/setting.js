@@ -35,7 +35,6 @@ module.exports = {
     try {
       if (req.user.role == "admin") {
         const {
-          stripeSecretKey,
           name,
           address,
           phone,
@@ -53,6 +52,14 @@ module.exports = {
           unlockCourse,
           finalDay,
           finalTime,
+          publicKey,
+          secretKey,
+          clientId,
+          clientSecret,
+          host,
+          port,
+          user,
+          password,
         } = req.body;
 
         const settingData = {
@@ -71,6 +78,17 @@ module.exports = {
           randomizeQuestions: !!randomizeQuestions,
           finalDay: !!showFinalDay ? finalDay : -1,
           finalTime: !!showFinalDay ? finalTime : -1,
+          payment: {
+            stripe: { publicKey, secret: secretKey },
+            paypal: { id: clientId, secret: clientSecret },
+          },
+          mail: {
+            email: user,
+            host,
+            port,
+            user,
+            pass: password,
+          },
         };
         if (req.file) {
           settingData.logoPath = req.file.filename;

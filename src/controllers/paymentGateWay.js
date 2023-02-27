@@ -8,12 +8,7 @@ const { encodeMsg } = require("../helper/createMsg");
 const Coupon = require("../models/coupons");
 const { welcomeEmail } = require("./mailServices");
 const itemDetails = require("../helper/itemDetails");
-
-paypal.configure({
-  mode: process.env.SITE_DEBUG ? "sandbox" : "live",
-  client_id: process.env.PAYPAL_CLIENT_ID,
-  client_secret: process.env.PAYPAL_CLIENT_SECRET,
-});
+const Setting = require("../models/setting");
 
 module.exports = {
   async paypalAPI(req, res) {
@@ -79,7 +74,15 @@ module.exports = {
                   },
                 ],
               };
-
+              const setting = await Setting.findOne();
+              paypal.configure({
+                mode: process.env.SITE_DEBUG ? "sandbox" : "live",
+                client_id:
+                  setting.payment.paypal.id || process.env.PAYPAL_CLIENT_ID,
+                client_secret:
+                  setting.payment.paypal.secret ||
+                  process.env.PAYPAL_CLIENT_SECRET,
+              });
               paypal.payment.create(create_payment_json, (e, payment) => {
                 if (e) {
                   return res.status(500).json({ error: e.response.message });

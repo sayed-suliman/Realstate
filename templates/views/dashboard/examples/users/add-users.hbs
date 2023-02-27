@@ -210,17 +210,18 @@
             $("#role").change(function () {
                 if (this.value == 'regulator' || this.value == 'admin') {
                     $("[name='selecting']").siblings('select').removeAttr('required')
-                    $("#selectPackage").attr("disabled", "")
-                    $("#selectPackage").val("")
-                    $("#selectPackage").removeAttr("required")
+                    $("[name='selecting']").siblings('select').attr("disabled", "")
+                    $("[name='selecting']").siblings('select').val("")
+                    $("[name='selecting']").siblings('select').removeAttr("required")
                     //amount
                     $("#amount").removeAttr("required", "")
                     $("#amount").attr("disabled", "")
                     $("#amount").val("")
                 } else {
-                    $("[name='selecting']").siblings('select').attr('required', true)
-                    $("#selectPackage").attr("required", "")
-                    $("#selectPackage").removeAttr("disabled")
+                    let type = $("[name='selecting']").val()
+                    $("[name='selecting']").siblings(`#${type}`).attr('required', true)
+                    $("[name='selecting']").siblings('select').attr("required", "")
+                    $("[name='selecting']").siblings('select').removeAttr("disabled")
 
                     //amount
                     $("#amount").attr("required", "")
