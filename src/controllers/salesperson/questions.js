@@ -1,4 +1,5 @@
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
+const { updateQuesInCategory } = require("../../helper/updateQuestionInCat");
 const Category = require("../../models/salesperson/category");
 const Question = require("../../models/salesperson/question");
 
@@ -61,7 +62,7 @@ exports.edit = async (req, res) => {
   }
 };
 
-// @post method 
+// @post method
 // add all questions
 exports.allPost = async (req, res) => {
   try {
@@ -161,16 +162,3 @@ exports.post = async (req, res) => {
     );
   }
 };
-
-async function updateQuesInCategory(categoryId, questionId, add = true) {
-  let cat = await Category.findById(categoryId);
-  // adding to category
-  if (add && !cat.questions.includes(questionId)) {
-    cat.questions.push(questionId);
-    await cat.save();
-  } else {
-    // removing from category
-    cat.questions.splice(cat.questions.indexOf(questionId), 1);
-    await cat.save();
-  }
-}

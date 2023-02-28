@@ -132,12 +132,13 @@
     <script>
         let questions = $('.q-title')
         $('#search').on('input', function (e) {
-            let value = $(this).val().toLowerCase()
+            let value = $(this).val().toLowerCase().trim()
+            let withOutQuestionSNo = value.slice(value.indexOf(':') + 1).trim()
             questions.each(function () {
                 let question = $(this).text().toLowerCase()
-                if(question.includes(value)){
+                if (question.includes(withOutQuestionSNo)) {
                     $(this).parent('.custom-checkbox').show()
-                }else{
+                } else {
                     $(this).parent('.custom-checkbox').hide()
                 }
             })

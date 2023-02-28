@@ -85,10 +85,19 @@
                                                     name="question-{{increment @index}}-id" class="form-control">
                                             </div>
                                             <div class="form-group">
+                                                <label for="question-{{increment @index}}-explain">
+                                                    Explanation
+                                                </label>
+                                                <input type="text" value="{{this.explain}}"
+                                                    id="question-{{increment @index}}-explain"
+                                                    name="explain-{{increment @index}}" class="form-control">
+                                            </div>
+                                            <div class="form-group">
                                                 <label for="assignCategory">
                                                     Select Category
                                                 </label>
-                                                <select id="inputStatus" required name="assignCategory-1"
+                                                <select id="inputStatus" required
+                                                    name="assignCategory-{{increment @index}}"
                                                     class="form-control custom-select">
                                                     <option selected disabled value="">Select one</option>
                                                     {{#each ../categories}}
@@ -172,12 +181,19 @@
                 allQuestions = $(".question-no").length;
                 divElement.innerHTML = `
         <div class="form-group">
-        <label for="question-${questionNumber}" class="w-100">
-            Question ${questionNumber}
-            <button type="button" class="btn p-0 float-right cross">x</button>
-        </label>
-        <input type="text" required id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
-        <input type="hidden" required value="undefined" name="question-${questionNumber}-id" class="form-control">
+            <label for="question-${questionNumber}" class="w-100">
+                Question ${questionNumber}
+                <button type="button" class="btn p-0 float-right cross">x</button>
+            </label>
+            <input type="text" required id="question-${questionNumber}" name="question-${questionNumber}" class="form-control">
+            <input type="hidden" required value="undefined" name="question-${questionNumber}-id" class="form-control">
+        </div>
+        <div class="form-group">
+            <label for="question-1-explain">
+                Explanation
+            </label>
+            <input type="text" id="question-1-explain"
+                name="explain-${questionNumber}" class="form-control">
         </div>
          <div class="form-group">
             
