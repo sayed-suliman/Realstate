@@ -75,7 +75,6 @@ module.exports = {
       const allQuestions = [];
       const data = req.body;
       const title = data.name;
-      const type = "test";
       let questionsId = [];
       delete data.name;
 
@@ -112,7 +111,6 @@ module.exports = {
       }
       let quizObj = {
         title,
-        type,
         questions: questionsId,
       };
       let addQuiz = await Quiz(quizObj).save();
@@ -490,6 +488,40 @@ module.exports = {
       res.send(sendObj);
     } catch (error) {
       res.send({ error: error.message });
+    }
+  },
+  async addBySelect(req, res) {
+    try {
+      const allQuestions = await Question.find();
+      res.render("dashboard/examples/salesperson/quiz/add-by-select", {
+        title: "Add Test",
+        allQuestions,
+      });
+    } catch (error) {
+      res.redirect(
+        "/dashboard/salesperson/all-tests?msg=" + encodeMsg(error.message)
+      );
+    }
+  },
+  async postBySelect(req, res) {
+    try {
+      const data = req.body;
+      let quizObj = {
+        title: data.name,
+        questions: data.questions,
+      };
+      let addQuiz = await Quiz(quizObj).save();
+      if (addQuiz) {
+        return res.redirect(
+          "/dashboard/salesperson/all-tests?msg=" +
+            encodeMsg("Quiz added Successfully.")
+        );
+      }
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson/all-tests?msg=" +
+          encodeMsg(error.message, "danger")
+      );
     }
   },
 };

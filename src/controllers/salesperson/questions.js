@@ -61,6 +61,8 @@ exports.edit = async (req, res) => {
   }
 };
 
+// @post method 
+// add all questions
 exports.allPost = async (req, res) => {
   try {
     const allQuestions = [];
@@ -99,6 +101,8 @@ exports.allPost = async (req, res) => {
   }
 };
 
+// @post method
+// edit question
 exports.post = async (req, res) => {
   try {
     const updatingQuestion = {};
@@ -117,7 +121,6 @@ exports.post = async (req, res) => {
       await Question.findByIdAndUpdate(questionId, updatingQuestion);
 
       if (updatingQuestion.category != oldCategory) {
-        console.log("changing");
         // removing from the old category
         await updateQuesInCategory(oldCategory, questionId, false);
         // and add to the new category

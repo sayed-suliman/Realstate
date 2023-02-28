@@ -49,6 +49,8 @@ router.post("/edit-question", isAdmin, question.post);
 router.get("/all-tests", isAdmin, quiz.all);
 router.get("/add-test", isAdmin, quiz.add);
 router.post("/add-test", isAdmin, quiz.post);
+router.get("/add-test-by-select", isAdmin, quiz.addBySelect);
+router.post("/add-test-by-select", isAdmin, quiz.postBySelect);
 router.get("/edit-quiz", isAdmin, quiz.edit);
 router.post("/edit-quiz", isAdmin, quiz.editPost);
 
