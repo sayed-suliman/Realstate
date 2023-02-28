@@ -31,7 +31,10 @@ module.exports = {
     try {
       let id = req.query.id;
       if (id) {
-        const quiz = await Quiz.findById(id).populate("questions");
+        const quiz = await Quiz.findById(id).populate({
+          path: "questions",
+          options: { sort: { category: 1 } },
+        });
         if (quiz) {
           const categories = await Category.find();
           res.render("dashboard/examples/salesperson/quiz/edit", {
