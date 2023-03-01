@@ -889,7 +889,7 @@
                 $("#finalTermDay").prop("required", true)
                 $("#finalTermDay").parent().animate({ opacity: "1" })
                 $("#finalTermDay").prop("min", "0")
-                $("[name=finalTime]").prop("min", "0")
+                $("[name=finalExamTime]").prop("min", "0")
             } else {
                 finalInput(false)
             }
@@ -901,11 +901,11 @@
                     $("#finalTermDay").prop("required", true)
                     $("#finalTermDay").parent().animate({ opacity: "1", height: "toggle" })
                     $("#finalTermDay").prop("min", "0")
-                    $("[name=finalTime]").prop("min", "0")
+                    $("[name=finalExamTime]").prop("min", "0")
                 } else {
                     $("#finalTermDay").prop("required", false)
                     $("#finalTermDay").prop("min", "")
-                    $("[name=finalTime]").prop("min", "")
+                    $("[name=finalExamTime]").prop("min", "")
                     $("#finalTermDay").prop("checked", false)
                     $("#finalTermDay").parent().animate({ opacity: "0", height: 'toggle' })
                 }

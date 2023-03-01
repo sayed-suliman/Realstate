@@ -235,9 +235,10 @@ module.exports = {
             if (userCourses.length > 0) {
               userCourses[0].unlock = true;
             } else {
-              console.log('here')
               req.user.unlockSP = true;
             }
+          }else{
+            req.user.unlockSP = true;
           }
           // assign undefined when completedCourses obj is empty
           completedCourses = Object.keys(completedCourses).length
