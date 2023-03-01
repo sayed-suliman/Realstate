@@ -223,9 +223,10 @@ module.exports = {
               }
             });
           });
-          console.log(req.user.salesperson);
           // unlock course when previous is completed
           if (setting.unlockCourse) {
+            // lock the salesperson course
+            req.user.unlockSP = false;
             // lock all the courses
             userCourses.forEach((course, index) => {
               userCourses[index].unlock = false;
@@ -233,8 +234,10 @@ module.exports = {
             // unlock only the first one
             if (userCourses.length > 0) {
               userCourses[0].unlock = true;
+            } else {
+              console.log('here')
+              req.user.unlockSP = true;
             }
-            
           }
           // assign undefined when completedCourses obj is empty
           completedCourses = Object.keys(completedCourses).length

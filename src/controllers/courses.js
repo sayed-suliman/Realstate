@@ -303,6 +303,7 @@ var allCourses = async (req, res) => {
         req.user.packages.map((package) => {
           if (package.salesperson) {
             req.user.salesperson = true;
+            req.user.unlockSP = false;
           }
           userCourses = [...userCourses, ...package.courses];
         });
@@ -366,14 +367,20 @@ var allCourses = async (req, res) => {
             }
           }
           // unlock the first content of the current chapter
-          if(userCourses.length > 0){
+          if (userCourses.length > 0) {
             Object.assign(userCourses[0], { unlock: true });
           }
+          // unlock the salesperson
+          let lastCourse = userCourses[userCourses.length - 1];
+          req.user.unlockSP = progress[lastCourse.name] == 100;
+        } else {
+          req.user.unlockSP = true;
         }
       } else {
         for await (let [index] of userCourses.entries()) {
           Object.assign(userCourses[index], { unlock: true });
         }
+        req.user.unlockSP = true;
       }
 
       // filtering only courses meta

@@ -146,6 +146,8 @@ module.exports = {
       const packages = await Package.find({ status: "publish" });
       const courses = await Course.find({ status: "publish" });
       const user = await User.findById(uId);
+      editUser.courses = editUser.courses || [];
+      editUser.packages = editUser.packages || [];
       await user.updateOne(
         { ...editUser },
         { runValidators: true },

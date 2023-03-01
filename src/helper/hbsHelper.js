@@ -89,7 +89,7 @@ hbs.registerHelper("checkData", (data, arr) => {
     if (
       arrId.name === data ||
       arrId.toString() == data.toString() ||
-      arrId._id.toString() == data.toString()
+      arrId._id?.toString() == data.toString()
     ) {
       return (check = true);
     }
