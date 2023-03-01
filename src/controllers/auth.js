@@ -93,15 +93,6 @@ const loginAsStudent = async (req, res) => {
 const signUp = async (req, res) => {
   try {
     let data = await req.body;
-<<<<<<< HEAD
-    // let cart = {
-    //   user: null,
-    //   item: data.package || data.course,
-    //   itemType: data.package ? "package" : "course",
-    // };
-    // req.session.cart = cart;
-=======
->>>>>>> dev
     const formValidations = validationResult(req);
     if (formValidations.errors.length) {
       res.locals.oldData = req.body;
