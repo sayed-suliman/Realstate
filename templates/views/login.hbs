@@ -29,7 +29,6 @@
                                         Remember Me
                                     </label>
                                 </div>
-                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <button type="submit"
                                     class="btn btn-primary border-0 px-3 rounded-2 fw-semibold fs-5 mt-3">Login</button>
                             </form>
@@ -44,12 +43,4 @@
     </main>
     {{!--for form validaitons --}}
     <script src="./js/form-validations.js"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
-    <script>
-        grecaptcha.ready(function () {
-            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
-                document.getElementById('g-recaptcha-response').value = token;
-            });
-        });
-    </script>
     {{>footer}}

@@ -113,7 +113,6 @@ const {
   doSetting,
   settingError,
 } = require("../controllers/setting");
-const reCAPTCHA = require("../middleware/reCAPTCHA");
 const trial = require("../controllers/trial");
 const buyMore = require("../controllers/buy-more");
 const freeLesson = require("../controllers/freeCourseRegistration");
@@ -150,7 +149,7 @@ router.get("/", async (req, res) => {
 // auth route
 router.get("/login", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
-router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
+router.post("/login", verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -163,7 +162,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
+router.post("/register", signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);
@@ -305,12 +304,7 @@ router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
 
 // Free Lesson Registration
 router.get("/free-lesson", freeLesson.register);
-router.post(
-  "/free-lesson",
-  reCAPTCHA,
-  freeLessonValidation,
-  freeLesson.doRegister
-);
+router.post("/free-lesson", freeLessonValidation, freeLesson.doRegister);
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
