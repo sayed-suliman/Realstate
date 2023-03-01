@@ -5,6 +5,7 @@ const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
 const _ = require("lodash");
 const Result = require("../../models/salesperson/results");
 const { default: mongoose } = require("mongoose");
+const { updateQuesInCategory } = require("../../helper/updateQuestionInCat");
 
 module.exports = {
   async all(req, res) {
@@ -30,8 +31,10 @@ module.exports = {
     try {
       let id = req.query.id;
       if (id) {
-        const quiz = await Quiz.findById(id).populate("questions");
-        console.log(quiz);
+        const quiz = await Quiz.findById(id).populate({
+          path: "questions",
+          options: { sort: { category: 1 } },
+        });
         if (quiz) {
           const categories = await Category.find();
           res.render("dashboard/examples/salesperson/quiz/edit", {
@@ -75,7 +78,6 @@ module.exports = {
       const allQuestions = [];
       const data = req.body;
       const title = data.name;
-      const type = "test";
       let questionsId = [];
       delete data.name;
 
@@ -84,11 +86,10 @@ module.exports = {
       for (let i = 1; i <= noOfQ; i++) {
         allQuestions.push({
           question: data[`question-${i}`],
+          explain: data[`explain-${i}`],
           options: data[`question-${i}-opt`],
           ans: data[`question-${i}-ans`],
-          category: Array.isArray(data[`assignCategory-${i}`])
-            ? data[`assignCategory-${i}`]
-            : [data[`assignCategory-${i}`]],
+          category: data[`assignCategory-${i}`],
         });
       }
 
@@ -98,21 +99,12 @@ module.exports = {
         const addQuestion = await Question(question).save();
         // adding question to array
         questionsId.push(addQuestion._id);
-        if (Array.isArray(question.category)) {
-          for await (let category of question.category) {
-            let cat = await Category.findById(category);
-            cat.questions.push(addQuestion._id);
-            await cat.save();
-          }
-        } else {
-          let cat = await Category.findById(question.category);
-          cat.questions.push(addQuestion._id);
-          await cat.save();
-        }
+        let cat = await Category.findById(question.category);
+        cat.questions.push(addQuestion._id);
+        await cat.save();
       }
       let quizObj = {
         title,
-        type,
         questions: questionsId,
       };
       let addQuiz = await Quiz(quizObj).save();
@@ -143,16 +135,15 @@ module.exports = {
       let existQuiz = await Quiz.findById(quizId);
       if (existQuiz) {
         // because the data contain question title, id, options, category, and correct ans
-        const noOfQ = Object.keys(data).length / 5;
+        const noOfQ = Object.keys(data).length / 6;
         for (let i = 1; i <= noOfQ; i++) {
           allQuestions.push({
             _id: data[`question-${i}-id`],
             question: data[`question-${i}`],
+            explain: data[`explain-${i}`],
             options: data[`question-${i}-opt`],
             ans: Number(data[`question-${i}-ans`]),
-            category: Array.isArray(data[`assignCategory-${i}`])
-              ? data[`assignCategory-${i}`]
-              : [data[`assignCategory-${i}`]],
+            category: data[`assignCategory-${i}`],
           });
         }
         for await (let [index, newQuestion] of allQuestions.entries()) {
@@ -166,59 +157,26 @@ module.exports = {
             let oldQuestion = await Question.findById(newQuestion._id);
 
             questionsId.push(oldQuestion._id);
+            // explain: when there is change in question title, option and ans.
+            // assign options, ans and question to the oldQuestion(database question)
             oldQuestion.question = newQuestion.question;
             oldQuestion.options = newQuestion.options;
             oldQuestion.ans = newQuestion.ans;
-            // removing
-            // question is removed from these categories
-            let delFromCateId = _.difference(
-              oldQuestion.category,
-              newQuestion.category
-            );
-            if (delFromCateId.length) {
-              // add all old categories.
-              categories.concat(oldQuestion.category);
+            oldQuestion.explain = newQuestion.explain;
 
-              // updating the removed category i.e removing this question from it
-              for await (const [index, delCatID] of delFromCateId.entries()) {
-                let deletedCategory = await Category.findById(delCatID);
-                deletedCategory.questions.splice(
-                  deletedCategory.questions.indexOf(newQuestion._id),
-                  1
-                );
-                await deletedCategory.save();
-
-                // remove the deleted cat from the list
-                categories.splice(categories.indexOf(delCatID), 1);
-              }
-              oldQuestion.category = categories;
+            if (newQuestion.category != oldQuestion.category) {
+              // removing from the old category
+              await updateQuesInCategory(
+                oldQuestion.category,
+                oldQuestion._id,
+                false
+              );
+              // and add to the new category
+              await updateQuesInCategory(newQuestion.category, oldQuestion._id);
             }
-            // adding
-            // question is added to these categories
-            let addToCateID = _.difference(
-              newQuestion.category,
-              oldQuestion.category
-            );
-
-            if (addToCateID.length) {
-              // updating the categories where the question is added to it.
-              // also adding the Category to that question
-              for await (const [index, ID] of addToCateID.entries()) {
-                let addToCat = await Category.findById(ID);
-
-                if (!addToCat.questions.includes(newQuestion._id)) {
-                  addToCat.questions.push(newQuestion._id);
-                  await addToCat.save();
-                }
-                //adding category to question
-                if (!oldQuestion.category.includes(ID)) {
-                  categories.push(ID);
-                }
-              }
-              categories = categories.concat(oldQuestion.category);
-              oldQuestion.category = categories;
-            }
-            await oldQuestion.save();
+            oldQuestion.category = newQuestion.category;
+            // Question is updated with new (title, category,options and ans)
+            oldQuestion.save();
           }
         }
         let quizObj = {
@@ -240,6 +198,7 @@ module.exports = {
         );
       }
     } catch (error) {
+      console.log(error);
       return res.redirect(
         "/dashboard/salesperson/all-tests?msg=" +
           encodeMsg(error.message, "danger")
@@ -490,6 +449,40 @@ module.exports = {
       res.send(sendObj);
     } catch (error) {
       res.send({ error: error.message });
+    }
+  },
+  async addBySelect(req, res) {
+    try {
+      const allQuestions = await Question.find();
+      res.render("dashboard/examples/salesperson/quiz/add-by-select", {
+        title: "Add Test",
+        allQuestions,
+      });
+    } catch (error) {
+      res.redirect(
+        "/dashboard/salesperson/all-tests?msg=" + encodeMsg(error.message)
+      );
+    }
+  },
+  async postBySelect(req, res) {
+    try {
+      const data = req.body;
+      let quizObj = {
+        title: data.name,
+        questions: data.questions,
+      };
+      let addQuiz = await Quiz(quizObj).save();
+      if (addQuiz) {
+        return res.redirect(
+          "/dashboard/salesperson/all-tests?msg=" +
+            encodeMsg("Quiz added Successfully.")
+        );
+      }
+    } catch (error) {
+      return res.redirect(
+        "/dashboard/salesperson/all-tests?msg=" +
+          encodeMsg(error.message, "danger")
+      );
     }
   },
 };

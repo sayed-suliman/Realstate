@@ -4,6 +4,7 @@ const url = require("url");
 const { encodeMsg } = require("../helper/createMsg");
 const Course = require("../models/courses");
 const Package = require("../models/package");
+const Setting = require("../models/setting");
 
 module.exports = {
   async payment(req, res) {
@@ -148,10 +149,12 @@ module.exports = {
             itemDetail.tax = tax;
             itemDetail.total = Math.round(price * ((100 + tax) / 100));
           }
-
+          let setting = await Setting.findOne();
           return res.render("payment", {
             title: "Payment",
-            stripe_api: process.env.STRIPE_PUBLISHABLE_KEY,
+            stripe_api:
+              setting.payment.stripe.publicKey ||
+              process.env.STRIPE_PUBLISHABLE_KEY,
             user,
             itemDetail,
             alert: res.locals.error.length > 0 ? msg : undefined,

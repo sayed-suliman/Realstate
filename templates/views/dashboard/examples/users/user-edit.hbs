@@ -61,7 +61,8 @@
                                                 <div class="custom-control custom-checkbox d-flex flex-column">
                                                     <input
                                                         class="custom-control-input custom-control-input-success packages custom-control-input-outline"
-                                                        {{checkData this._id ../editUser.packages}} value="{{this._id}}"
+                                                        {{#if ../editUser.packages}}{{checkData this._id
+                                                        ../editUser.packages}}{{/if}} value="{{this._id}}"
                                                         type="checkbox" name="packages" id="package-{{@index}}" />
                                                     <label for="package-{{@index}}"
                                                         class="custom-control-label">{{this.name}}</label>
@@ -81,7 +82,8 @@
                                                 <div class="custom-control custom-checkbox d-flex flex-column">
                                                     <input
                                                         class="custom-control-input custom-control-input-success custom-control-input-outline"
-                                                        {{checkData this._id ../editUser.courses}} value="{{this._id}}"
+                                                        {{#if ../editUser.courses}}{{checkData this._id
+                                                        ../editUser.courses}}{{/if}} value="{{this._id}}"
                                                         type="checkbox" name="courses" id="course-{{@index}}" />
                                                     <label for="course-{{@index}}"
                                                         class="custom-control-label">{{this.name}}</label>
@@ -181,27 +183,6 @@
         $("input[data-bootstrap-switch]").each(function () {
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
         })
-        const form = document.getElementById('form');
-        const checkboxes = document.querySelectorAll('.packages');
-        const errorMessage = document.querySelector('.packages-error');
-
-        form.addEventListener('submit', (event) => {
-            let atLeastOneChecked = false;
-            checkboxes.forEach((checkbox) => {
-                if (checkbox.checked) {
-                    atLeastOneChecked = true;
-                }
-            });
-
-            if (!atLeastOneChecked) {
-                event.preventDefault();
-                errorMessage.style.display = 'block';
-            } else {
-                errorMessage.style.display = 'none';
-            }
-        });
-    </script>
-    <script>
         $(document).ready(function () {
             let rolVal = $("#role").val()
             if (rolVal == 'regulator' || rolVal == 'admin') {

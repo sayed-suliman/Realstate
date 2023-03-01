@@ -50,8 +50,6 @@ module.exports = {
           randomizeQuestions,
           showFinalDay,
           unlockCourse,
-          finalDay,
-          finalTime,
           publicKey,
           secretKey,
           clientId,
@@ -60,8 +58,11 @@ module.exports = {
           port,
           user,
           password,
+          finalExamDay,
+          finalExamTime,
+          midTakeTime,
+          finalTakeTime,
         } = req.body;
-
         const settingData = {
           collegeName: name,
           collegeAddress: address,
@@ -76,8 +77,6 @@ module.exports = {
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,
           randomizeQuestions: !!randomizeQuestions,
-          finalDay: !!showFinalDay ? finalDay : -1,
-          finalTime: !!showFinalDay ? finalTime : -1,
           payment: {
             stripe: { publicKey, secret: secretKey },
             paypal: { id: clientId, secret: clientSecret },
@@ -89,6 +88,12 @@ module.exports = {
             user,
             pass: password,
           },
+          // unlock the final term after(days)
+          finalDay: !!showFinalDay ? Number(finalExamDay) : -1,
+          finalTime: !!showFinalDay ? Number(finalExamTime) : -1,
+          // time for student to take final and mid
+          finalTakeTime,
+          midTakeTime,
         };
         if (req.file) {
           settingData.logoPath = req.file.filename;
@@ -289,6 +294,7 @@ module.exports = {
         }
       }
     } catch (error) {
+      console.log(error);
       var msg = encodeMsg(error.message, "danger", 500);
       res.redirect("/dashboard/setting?msg=" + msg);
     }

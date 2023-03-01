@@ -31,7 +31,6 @@ module.exports = {
         test: { $elemMatch: { model: "Sp_quiz" } },
         user: req.user._id,
       }).populate("test._id");
-      console.log(results[0]);
       res.render("dashboard/examples/salesperson/tests/test", {
         results: results,
         title: "Test",

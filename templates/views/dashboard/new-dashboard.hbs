@@ -261,14 +261,25 @@
                       {{/each}}
                       {{/if}}
                       {{#if user.salesperson}}
-                      <tr>
-                        <td colspan="2"><a class="text-capitalize" target="_blank"
-                            href="/dashboard/salesperson/">Salesperson</a></td>
-                        <td class="text-right"><a href="/dashboard/salesperson/" target="_blank" class="text-muted">
-                            <i class="fas fa-book"></i>
+                      <tr class="{{#unless user.unlockSP}}event-none{{/unless}}">
+                        <td colspan="2"><a class="text-capitalize" {{#if user.unlockSP}} target="_blank"
+                            href="/dashboard/salesperson/" {{else}}href="#" {{/if}}>Salesperson</a></td>
+                        <td class="text-right"><a {{#if user.unlockSP}} target="_blank" href="/dashboard/salesperson/"
+                            {{else}}href="#" {{/if}} class="text-muted">
+                            {{#unless user.unlockSP}}
+                            <i class="fa-solid fa-lock"></i>
+                            {{else}}
+                            <i class="fa-solid fa-book"></i>
+                            {{/unless}}
                           </a></td>
                       </tr>
                       {{/if}}
+                      {{#ifCond user.salesperson '&&' userCourses}}
+                      {{else}}
+                      <tr>
+                        <td colspan="3">No courses found.</td>
+                      </tr>
+                      {{/ifCond}}
                     </tbody>
                   </table>
                 </div>

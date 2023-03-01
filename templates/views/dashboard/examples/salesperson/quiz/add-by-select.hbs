@@ -1,0 +1,149 @@
+{{>dashboardheader}}
+
+<!--
+`body` tag options:
+
+  Apply one or more of the following classes to to the body tag
+  to get the desired effect
+
+  * sidebar-collapse
+  * sidebar-mini
+-->
+
+<body class="hold-transition sidebar-mini  layout-fixed">
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{!--
+        <!-- salesperson variable is used for the salesperson content -->
+        --}}
+        {{>dashboardMainSidebar salesperson=true}}
+
+        <!-- toast(alert)-->
+        {{>alert}}
+        <!-- /toast(alert)-->
+
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <div class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1 class="m-0">Test</h1>
+                        </div><!-- /.col -->
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard/salesperson">Home</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.container-fluid -->
+            </div>
+            <!-- /.content-header -->
+
+            <!-- Main content -->
+            <section class="content pb-4">
+                <form action="add-test-by-select" method="post">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="card card-primary">
+                                <div class="card-header">
+                                    <h3 class="card-title">General</h3>
+
+                                    <div class="card-tools">
+                                        <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                            title="Collapse">
+                                            <i class="fas fa-minus"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="card-body">
+                                    {{!-- select quiz or term --}}
+                                    <div class="form-group">
+                                        <label for="inputName">Test Name</label>
+                                        <input type="text" required id="inputName" name="name" class="form-control">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="search">Search</label>
+                                        <input type="text" id="search" class="form-control">
+                                    </div>
+                                    <div id="questions">
+                                        <div class="question-no">
+                                            <div class="form-group">
+                                                {{#each allQuestions}}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input
+                                                        class="custom-control-input custom-control-input-primary custom-control-input"
+                                                        type="checkbox" name="questions" id="{{this._id}}"
+                                                        value="{{this._id}}">
+                                                    <label for="{{this._id}}"
+                                                        class="custom-control-label font-weight-normal q-title">{{this.question}}</label>
+                                                </div>
+                                                {{/each}}
+                                                {{!-- <label for="assignCategory">
+                                                    Assign Category
+                                                </label>
+                                                {{#each categories}}
+                                                <div class="custom-control custom-checkbox">
+                                                    <input class="custom-control-input custom-control-input-success"
+                                                        value="{{this._id}}" type="checkbox" name="assignCategory-1"
+                                                        id="{{this.name}}">
+                                                    <label for="{{this.name}}"
+                                                        class="custom-control-label text-capitalize">{{this.name}}</label>
+                                                </div>
+                                                {{/each}} --}}
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <!-- /.card -->
+
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="reset" class="btn btn-secondary">Cancel</button>
+                            <button type="submit" class="btn btn-success float-right">Add Quiz</button>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+        <!-- Main Footer -->
+        {{>dashboardfooter}}
+    </div>
+    <!-- ./wrapper -->
+
+    {{>dashboardfooterlinks}}
+    <script>
+        let questions = $('.q-title')
+        $('#search').on('input', function (e) {
+            let value = $(this).val().toLowerCase().trim()
+            let withOutQuestionSNo = value.slice(value.indexOf(':') + 1).trim()
+            questions.each(function () {
+                let question = $(this).text().toLowerCase()
+                if (question.includes(withOutQuestionSNo)) {
+                    $(this).parent('.custom-checkbox').show()
+                } else {
+                    $(this).parent('.custom-checkbox').hide()
+                }
+            })
+        })
+    </script>
+</body>
+
+</html>
