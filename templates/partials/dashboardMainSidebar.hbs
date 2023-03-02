@@ -311,13 +311,21 @@
             <p>Courses</p>
           </a>
         </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sale-link" target="_blank" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
         {{#if salesperson}}
         {{>salesperson/mainSidebar}}
         <li class="nav-item">
           <a href="/dashboard/" class="nav-link">
             {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-home nav-icon"></i>
-            <p>Real Estate</p>
+            <p>Back To Home</p>
           </a>
         </li>
         {{/if}}

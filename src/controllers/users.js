@@ -14,7 +14,7 @@ module.exports = {
         var msg = decodeMsg(msgToken);
         option = msg;
       }
-      const users = await User.find().populate("packages");
+      const users = await User.find().populate(["packages","courses"]);
       // binary to base64
       users.forEach((user, index) => {
         if (users[index].avatar) {
