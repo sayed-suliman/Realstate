@@ -264,7 +264,7 @@ var allCourses = async (req, res) => {
 
       let setting = await Setting.findOne();
       // unlock course when previous is completed
-      if (setting.unlockCourse) {
+      if (setting?.unlockCourse) {
         if (userCourses.length) {
           for await (let [index] of userCourses.entries()) {
             if (!userCourses[index].unlock) {
@@ -353,7 +353,7 @@ var allCourses = async (req, res) => {
 
       let setting = await Setting.findOne();
       // unlock course when previous is completed
-      if (setting.unlockCourse) {
+      if (setting?.unlockCourse) {
         if (userCourses.length) {
           for await (let [index] of userCourses.entries()) {
             if (!userCourses[index].unlock) {
@@ -543,7 +543,7 @@ var viewCourse = async (req, res) => {
           });
           const setting = await Setting.findOne();
           // quiz policy when completed the the previous
-          if (setting.quizPolicy == "accessPassedPrevious") {
+          if (setting?.quizPolicy == "accessPassedPrevious") {
             // unlocking the next content when the previous is completed
             if (contents.length) {
               for await (let [index] of contents.entries()) {
@@ -571,8 +571,8 @@ var viewCourse = async (req, res) => {
             course,
             contents,
             timeForExam: {
-              final: setting.finalTakeTime,
-              mid: setting.midTakeTime,
+              final: setting?.finalTakeTime,
+              mid: setting?.midTakeTime,
             },
           });
         } else {
@@ -663,7 +663,7 @@ var viewCourse = async (req, res) => {
         });
         const setting = await Setting.findOne();
         // quiz policy when completed the the previous
-        if (setting.quizPolicy == "accessPassedPrevious") {
+        if (setting?.quizPolicy == "accessPassedPrevious") {
           // unlocking the next content when the previous is completed
           if (contents.length) {
             for await (let [index] of contents.entries()) {
@@ -711,14 +711,14 @@ var viewCourse = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting.quizPolicy == "accessAllTime") {
+        } else if (setting?.quizPolicy == "accessAllTime") {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
             }
             // final term unlock algorithm
             if (
-              setting.finalDay != -1 &&
+              setting?.finalDay != -1 &&
               contents[index].type == "final" &&
               courseMeta
             ) {
@@ -726,8 +726,8 @@ var viewCourse = async (req, res) => {
               let agreementDate = new Date(courseMeta.createdAt);
 
               // Day and Minute from database
-              let unlockAfterDay = setting.finalDay;
-              let unlockAfterTime = setting.finalTime;
+              let unlockAfterDay = setting?.finalDay;
+              let unlockAfterTime = setting?.finalTime;
               // adding day and minute to the agreement date
               let final = new Date(
                 agreementDate.getFullYear(),
@@ -747,8 +747,8 @@ var viewCourse = async (req, res) => {
           course,
           contents,
           timeForExam: {
-            final: setting.finalTakeTime,
-            mid: setting.midTakeTime,
+            final: setting?.finalTakeTime,
+            mid: setting?.midTakeTime,
           },
         });
       } else {

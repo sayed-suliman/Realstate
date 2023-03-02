@@ -181,13 +181,22 @@ module.exports = {
                 { runValidators: true }
               );
             } else {
-              await Order({
+              let orderObj = {
                 user: uId,
-                package: packageId._id,
                 amount: editUser.amount,
                 verified: true,
                 pay_method: "Offline Payment",
-              }).save();
+              };
+              if (editUser.packages) {
+                orderObj.package = Array.isArray(editUser.packages)
+                  ? editUser.packages[0]
+                  : editUser.packages;
+              } else if (editUser.courses) {
+                orderObj.course = Array.isArray(editUser.courses)
+                  ? editUser.courses[0]
+                  : editUser.courses;
+              }
+              await Order(orderObj).save();
             }
             res.redirect(`/dashboard/users?msg=` + msg);
           }

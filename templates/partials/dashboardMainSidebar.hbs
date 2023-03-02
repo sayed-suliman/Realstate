@@ -38,14 +38,14 @@
           </a>
         </li>
         {{#if salesperson}}
-        {{>salesperson/mainSidebar}}
+        {{!-- {{>salesperson/mainSidebar}}
         <li class="nav-item">
           <a href="/dashboard/" class="nav-link">
             {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-home nav-icon"></i>
             <p>Back To Home</p>
           </a>
-        </li>
+        </li> --}}
         {{else}}
         {{!-- for guest --}}
         {{#ifEquals user.role "guest"}}
@@ -203,13 +203,12 @@
           </ul>
         </li>
         {{!-- salesperson --}}
-        <li class="nav-item">
+        {{!-- <li class="nav-item">
           <a href="/dashboard/salesperson" id="sale-link" target="_blank" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-cloud nav-icon"></i>
             <p>Salesperson</p>
           </a>
-        </li>
+        </li> --}}
         {{!-- sort --}}
         <li class="nav-item">
           <a href="/dashboard/sort" id="sort-link" class="nav-link">
@@ -311,16 +310,15 @@
             <p>Courses</p>
           </a>
         </li>
-        {{#if salesperson}}
+        {{!-- {{#if salesperson}}
         {{>salesperson/mainSidebar}}
         <li class="nav-item">
           <a href="/dashboard/" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-home nav-icon"></i>
             <p>Real Estate</p>
           </a>
         </li>
-        {{/if}}
+        {{/if}} --}}
         {{/ifEquals}}
         {{/if}}<!--salesperson-->
       </ul>

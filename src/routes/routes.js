@@ -180,7 +180,7 @@ router.post("/register-coupon", couponRegisterAPI);
 
 // middleware for all dashboard route
 router.use("/dashboard", authenticated);
-router.use("/dashboard/salesperson", salespersonRoutes);
+// router.use("/dashboard/salesperson", salespersonRoutes);
 
 // main-dashboard
 router.get("/dashboard", dashboard);
