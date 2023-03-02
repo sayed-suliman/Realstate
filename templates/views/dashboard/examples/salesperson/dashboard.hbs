@@ -52,7 +52,7 @@
                     <div class="row col-md-6 mx-auto">
                         <div class="col-md-6">
                             <a
-                                href="{{#ifEquals user.role 'student'}}salesperson/tests{{/ifEquals}}{{#ifEquals user.role 'admin'}}salesperson/all-tests{{/ifEquals}}">
+                                href="{{#ifEquals user.role 'student'}}/dashboard/salesperson/tests{{/ifEquals}}{{#ifEquals user.role 'admin'}}/dashboard/salesperson/all-tests{{/ifEquals}}">
                                 <div class="small-box bg-info" style="height: 150px;">
                                     <div class="inner">
                                         <h4>Tests</h4>
@@ -65,7 +65,7 @@
                         </div>
                         <div class="col-md-6">
                             <a
-                                href="{{#ifEquals user.role 'student'}}salesperson/tests-result{{/ifEquals}}{{#ifEquals user.role 'admin'}}salesperson/add-test{{/ifEquals}}">
+                                href="{{#ifEquals user.role 'student'}}/dashboard/salesperson/tests-result{{/ifEquals}}{{#ifEquals user.role 'admin'}}/dashboard/salesperson/add-test{{/ifEquals}}">
                                 <div class="small-box bg-danger" style="height: 150px;">
                                     <div class="inner">
                                         <h4>{{#ifEquals user.role 'student'}}Test Result{{/ifEquals}}{{#ifEquals
@@ -80,7 +80,7 @@
                         </div>
                         <div class="col-md-6">
                             <a
-                                href="{{#ifEquals user.role 'student'}}salesperson/test-by-category{{/ifEquals}}{{#ifEquals user.role 'admin'}}salesperson/all-categories{{/ifEquals}}">
+                                href="{{#ifEquals user.role 'student'}}/dashboard/salesperson/test-by-category{{/ifEquals}}{{#ifEquals user.role 'admin'}}/dashboard/salesperson/all-categories{{/ifEquals}}">
                                 <div class="small-box bg-warning" style="height: 150px;">
                                     <div class="inner">
                                         <h4>{{#ifEquals user.role 'student'}}Quiz By
@@ -94,7 +94,7 @@
                         </div>
                         <div class="col-md-6">
                             <a
-                                href="{{#ifEquals user.role 'student'}}salesperson/exam{{else}}salesperson/add-category{{/ifEquals}}">
+                                href="{{#ifEquals user.role 'student'}}/dashboard/salesperson/exam{{else}}/dashboard/salesperson/add-category{{/ifEquals}}">
                                 <div class="small-box bg-success" style="height: 150px;">
                                     <div class="inner">
                                         <h4>{{#ifEquals user.role 'student'}}State Exam Replica{{else}}Add

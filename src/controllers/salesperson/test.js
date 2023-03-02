@@ -5,7 +5,9 @@ const Result = require("../../models/salesperson/results");
 module.exports = {
   async tests(req, res) {
     try {
-      const tests = await Quiz.find({ questions: { $gt: [] } });
+      const tests = await Quiz.find({ questions: { $gt: [] } }).sort({
+        title: 1,
+      });
       let takenTest = await Result.find({ user: req.user }).select("test");
       takenTest = takenTest.map((result) => {
         return result.test[0]._id.toString();

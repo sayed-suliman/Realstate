@@ -265,7 +265,7 @@ const viewQuiz = async (req, res) => {
 
         // quiz policy when completed the the previous
         if (
-          setting.quizPolicy == "accessPassedPrevious" &&
+          setting?.quizPolicy == "accessPassedPrevious" &&
           req.user.role != "guest"
         ) {
           // unlocking the next content when the previous is completed
@@ -288,15 +288,15 @@ const viewQuiz = async (req, res) => {
                     // lock system for final term when days are in database
                     if (
                       contents[index].type == "final" &&
-                      setting.finalDay != -1 &&
+                      setting?.finalDay != -1 &&
                       courseMeta
                     ) {
                       // date of agreement
                       let agreementDate = new Date(courseMeta.createdAt);
 
                       // Day and Minute from database
-                      let unlockAfterDay = setting.finalDay;
-                      let unlockAfterTime = setting.finalTime;
+                      let unlockAfterDay = setting?.finalDay;
+                      let unlockAfterTime = setting?.finalTime;
 
                       // adding day and minute to the agreement date
                       let final = new Date(
@@ -319,8 +319,11 @@ const viewQuiz = async (req, res) => {
             Object.assign(contents[0], { unlock: true });
           }
         } else if (
-          setting.quizPolicy == "accessAllTime" &&
-          req.user.role != "guest"
+          (setting?.quizPolicy == "accessAllTime" && req.user.role != "guest") ||
+          !(
+            setting?.quizPolicy == "accessPassedPrevious" &&
+            setting?.quizPolicy == "accessAllTime"
+          )
         ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
@@ -328,7 +331,7 @@ const viewQuiz = async (req, res) => {
             }
             // lock system for final term when days are in database
             if (
-              setting.finalDay != -1 &&
+              setting?.finalDay != -1 &&
               contents[index].type == "final" &&
               courseMeta
             ) {
@@ -336,8 +339,8 @@ const viewQuiz = async (req, res) => {
               let agreementDate = new Date(courseMeta.createdAt);
 
               // Day and Minute from database
-              let unlockAfterDay = setting.finalDay;
-              let unlockAfterTime = setting.finalTime;
+              let unlockAfterDay = setting?.finalDay;
+              let unlockAfterTime = setting?.finalTime;
 
               // adding day and minute to the agreement date
               let final = new Date(
@@ -359,7 +362,7 @@ const viewQuiz = async (req, res) => {
           quiz.questions[index].qno = `q-${index}`;
         }
         // randomizing the question
-        if (setting.randomizeQuestions) {
+        if (setting?.randomizeQuestions) {
           quiz.questions.sort(() => {
             return Math.random() - 0.5;
           });
@@ -367,19 +370,19 @@ const viewQuiz = async (req, res) => {
 
         let passingPercent;
         if (quiz.type == "quiz") {
-          passingPercent = setting.quizPassingMark;
+          passingPercent = setting?.quizPassingMark;
         } else if (quiz.type == "mid") {
-          passingPercent = setting.midPassingMark;
+          passingPercent = setting?.midPassingMark;
         } else if (quiz.type == "final") {
-          passingPercent = setting.finalPassingMark;
+          passingPercent = setting?.finalPassingMark;
         }
 
         let retake = true;
         if (takenQuiz) {
           if (quiz.type == "mid") {
-            retake = !(setting.midRetake == takenQuiz.take);
+            retake = !(setting?.midRetake == takenQuiz.take);
           } else if (quiz.type == "final") {
-            retake = !(setting.finalRetake == takenQuiz.take);
+            retake = !(setting?.finalRetake == takenQuiz.take);
           }
         }
         res.render("dashboard/student/view-quiz", {
@@ -387,13 +390,13 @@ const viewQuiz = async (req, res) => {
           quiz,
           takenQuiz,
           passingPercent,
-          reviewQuiz: setting.reviewQuiz,
+          reviewQuiz: setting?.reviewQuiz,
           courseId: course._id.toString(),
           contents,
           retake,
           timeForExam: {
-            final: setting.finalTakeTime,
-            mid: setting.midTakeTime,
+            final: setting?.finalTakeTime,
+            mid: setting?.midTakeTime,
           },
         });
       } else {

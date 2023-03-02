@@ -303,7 +303,6 @@ var allCourses = async (req, res) => {
         req.user.packages.map((package) => {
           if (package.salesperson) {
             req.user.salesperson = true;
-            req.user.unlockSP = false;
           }
           userCourses = [...userCourses, ...package.courses];
         });
@@ -370,17 +369,11 @@ var allCourses = async (req, res) => {
           if (userCourses.length > 0) {
             Object.assign(userCourses[0], { unlock: true });
           }
-          // unlock the salesperson
-          let lastCourse = userCourses[userCourses.length - 1];
-          req.user.unlockSP = progress[lastCourse.name] == 100;
-        } else {
-          req.user.unlockSP = true;
         }
       } else {
         for await (let [index] of userCourses.entries()) {
           Object.assign(userCourses[index], { unlock: true });
         }
-        req.user.unlockSP = true;
       }
 
       // filtering only courses meta
@@ -711,7 +704,13 @@ var viewCourse = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting?.quizPolicy == "accessAllTime") {
+        } else if (
+          setting?.quizPolicy == "accessAllTime" ||
+          !(
+            setting?.quizPolicy == "accessPassedPrevious" &&
+            setting?.quizPolicy == "accessAllTime"
+          )
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
