@@ -99,7 +99,7 @@ module.exports = {
           });
 
           // unlock course when previous is completed
-          if (setting.unlockCourse) {
+          if (setting?.unlockCourse) {
             // lock all the courses
             userCourses.forEach((course, index) => {
               userCourses[index].unlock = false;
@@ -224,7 +224,7 @@ module.exports = {
             });
           });
           // unlock course when previous is completed
-          if (setting.unlockCourse) {
+          if (setting?.unlockCourse) {
             // lock the salesperson course
             req.user.unlockSP = false;
             // lock all the courses
