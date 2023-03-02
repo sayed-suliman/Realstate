@@ -64,6 +64,7 @@
                   <th>Role</th>
                   <th>Email</th>
                   <th>Packages</th>
+                  <th>Courses</th>
                   <th>Driver License/CA ID</th>
                   <th>DOB</th>
                   <th style="width: 50px;">Action</th>
@@ -88,6 +89,11 @@
                   <td>{{this.email}}</td>
                   <td class="text-capitalize">
                     {{#each this.packages}}
+                    {{this.name}}{{#unless @last}},{{/unless}}
+                    {{/each}}
+                  </td>
+                  <td class="text-capitalize">
+                    {{#each this.courses}}
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
                   </td>
