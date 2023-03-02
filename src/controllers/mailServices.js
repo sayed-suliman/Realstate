@@ -8,14 +8,14 @@ module.exports = {
     try {
       const setting = await Setting.findOne();
       const {
-        mail: { host, port, user, pass },
+        mail: { user },
       } = setting;
       var transport = nodemailer.createTransport({
-        host: host || process.env.host,
-        port: port || process.env.mail_port,
+        host: setting?.mail.host || process.env.host,
+        port: setting?.mail.port || process.env.mail_port,
         auth: {
-          user: user || process.env.user,
-          pass: pass || process.env.pass,
+          user: setting?.mail.user || process.env.user,
+          pass: setting?.mail.pass || process.env.pass,
         },
         tls: {
           // do not fail on invalid certs
@@ -60,14 +60,14 @@ module.exports = {
     try {
       const setting = await Setting.findOne();
       const {
-        mail: { host, port, user, pass },
+        mail: { user },
       } = setting;
       var transport = nodemailer.createTransport({
-        host: host || process.env.host,
-        port: port || process.env.mail_port,
+        host: setting?.mail.host || process.env.host,
+        port: setting?.mail.port || process.env.mail_port,
         auth: {
-          user: user || process.env.user,
-          pass: pass || process.env.pass,
+          user: setting?.mail.user || process.env.user,
+          pass: setting?.mail.pass || process.env.pass,
         },
         tls: {
           // do not fail on invalid certs
@@ -117,14 +117,14 @@ module.exports = {
       var url = `${process.env.SERVER_URI}/user/reset-password?token=${token}`;
       const setting = await Setting.findOne();
       const {
-        mail: { host, port, user, pass },
+        mail: { user },
       } = setting;
       var transport = nodemailer.createTransport({
-        host: host || process.env.host,
-        port: port || process.env.mail_port,
+        host: setting?.mail.host || process.env.host,
+        port: setting?.mail.port || process.env.mail_port,
         auth: {
-          user: user || process.env.user,
-          pass: pass || process.env.pass,
+          user: setting?.mail.user || process.env.user,
+          pass: setting?.mail.pass || process.env.pass,
         },
         tls: {
           // do not fail on invalid certs
@@ -186,14 +186,14 @@ module.exports = {
       const setting = await Setting.findOne();
       data.siteName = setting.collegeName;
       const {
-        mail: { host, port, user, pass },
+        mail: { user },
       } = setting;
       var transport = nodemailer.createTransport({
-        host: host || process.env.host,
-        port: port || process.env.mail_port,
+        host: setting?.mail.host || process.env.host,
+        port: setting?.mail.port || process.env.mail_port,
         auth: {
-          user: user || process.env.user,
-          pass: pass || process.env.pass,
+          user: setting?.mail.user || process.env.user,
+          pass: setting?.mail.pass || process.env.pass,
         },
         tls: {
           // do not fail on invalid certs

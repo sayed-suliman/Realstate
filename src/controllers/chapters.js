@@ -272,10 +272,11 @@ const viewChapter = async (req, res) => {
         const setting = await Setting.findOne();
         // quiz policy when completed the the previous
         if (
-          setting.quizPolicy == "accessPassedPrevious" &&
+          setting?.quizPolicy == "accessPassedPrevious" &&
           req.user.role != "guest"
         ) {
           // unlocking the next content when the previous is completed
+          // else: if accessAlltime or if there is no setting in the database then unlock all
           if (contents.length) {
             for await (let [index] of contents.entries()) {
               if (!contents[index].unlock) {
@@ -292,15 +293,15 @@ const viewChapter = async (req, res) => {
                     // lock system for final term when days are in database
                     if (
                       contents[index].type == "final" &&
-                      setting.finalDay != -1 &&
+                      setting?.finalDay != -1 &&
                       courseMeta
                     ) {
                       // date of agreement
                       let agreementDate = new Date(courseMeta.createdAt);
 
                       // Day and Minute from database
-                      let unlockAfterDay = setting.finalDay;
-                      let unlockAfterTime = setting.finalTime;
+                      let unlockAfterDay = setting?.finalDay;
+                      let unlockAfterTime = setting?.finalTime;
 
                       // adding day and minute to the agreement date
                       let final = new Date(
@@ -323,8 +324,12 @@ const viewChapter = async (req, res) => {
             Object.assign(contents[0], { unlock: true });
           }
         } else if (
-          setting.quizPolicy == "accessAllTime" &&
-          req.user.role != "guest"
+          (setting?.quizPolicy == "accessAllTime" &&
+            req.user.role != "guest") ||
+          !(
+            setting?.quizPolicy == "accessPassedPrevious" &&
+            setting?.quizPolicy == "accessAllTime"
+          )
         ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
@@ -332,7 +337,7 @@ const viewChapter = async (req, res) => {
             }
             // lock system for final term when days are in database
             if (
-              setting.finalDay != -1 &&
+              setting?.finalDay != -1 &&
               contents[index].type == "final" &&
               courseMeta
             ) {
@@ -340,8 +345,8 @@ const viewChapter = async (req, res) => {
               let agreementDate = new Date(courseMeta.createdAt);
 
               // Day and Minute from database
-              let unlockAfterDay = setting.finalDay;
-              let unlockAfterTime = setting.finalTime;
+              let unlockAfterDay = setting?.finalDay;
+              let unlockAfterTime = setting?.finalTime;
 
               // adding day and minute to the agreement date
               let final = new Date(
@@ -363,8 +368,8 @@ const viewChapter = async (req, res) => {
           courseId: course._id,
           contents,
           timeForExam: {
-            final: setting.finalTakeTime,
-            mid: setting.midTakeTime,
+            final: setting?.finalTakeTime,
+            mid: setting?.midTakeTime,
           },
         });
       } else {

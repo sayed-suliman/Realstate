@@ -711,7 +711,13 @@ var viewCourse = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting?.quizPolicy == "accessAllTime") {
+        } else if (
+          setting?.quizPolicy == "accessAllTime" ||
+          !(
+            setting?.quizPolicy == "accessPassedPrevious" &&
+            setting?.quizPolicy == "accessAllTime"
+          )
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;

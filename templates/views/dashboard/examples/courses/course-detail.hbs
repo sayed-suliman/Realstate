@@ -143,6 +143,7 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{#if userCourses}}
                                             {{#each userCourses}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                                                 <td class="text-capitalize">
@@ -192,7 +193,12 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
-                                            {{#if user.salesperson}}
+                                            {{else}}
+                                            <tr>
+                                                <td colspan="3">No courses found.</td>
+                                            </tr>
+                                            {{/if}}
+                                            {{!-- {{#if user.salesperson}}
                                             <tr class="{{#unless user.unlockSP}}event-none{{/unless}}">
                                                 <td colspan="2"><a class="text-capitalize" {{#if user.unlockSP}}
                                                         target="_blank" href="/dashboard/salesperson/" {{else}}href="#"
@@ -207,13 +213,10 @@
                                                         {{/unless}}
                                                     </a></td>
                                             </tr>
-                                            {{/if}}
-                                            {{#ifCond user.salesperson '&&' userCourses}}
-                                            {{else}}
-                                            <tr>
-                                                <td colspan="3">No courses found.</td>
-                                            </tr>
-                                            {{/ifCond}}
+                                            {{/if}} --}}
+                                            {{!-- {{#ifCond user.salesperson '&&' userCourses}}
+                                            
+                                            {{/ifCond}} --}}
                                         </tbody>
                                     </table>
                                     {{!-- Agreement Modal --}}
