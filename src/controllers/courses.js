@@ -131,7 +131,7 @@ const updateCourse = async (req, res) => {
       ...data,
       package: packages,
     });
-    fs.unlink("public/images/course" + oldPath, (err, data) => {
+    fs.unlinkSync("public/images/course/" + oldPath, (err, data) => {
       console.log("Course File Deleted.");
     });
     if (course) {
