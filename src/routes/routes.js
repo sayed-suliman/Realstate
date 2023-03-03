@@ -42,7 +42,7 @@ const {
   updatePackage,
   deletePackage,
 } = require("../controllers/package");
-const { checkout, doCheckout } = require("../controllers/checkout");
+const { checkout } = require("../controllers/checkout");
 const { verification, doVerification } = require("../controllers/verification");
 const { resendCode } = require("../controllers/resendVerificationCode");
 const { payment } = require("../controllers/payment");
@@ -78,10 +78,6 @@ const {
   viewQuiz,
   takeQuiz,
 } = require("./../controllers/quiz");
-const {
-  sendVerificationCode,
-  sendAgreement,
-} = require("../controllers/mailServices");
 const {
   getCoupon,
   detailsCoupon,
@@ -150,7 +146,7 @@ router.get("/", async (req, res) => {
 // auth route
 router.get("/login", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
-router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -163,7 +159,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);
