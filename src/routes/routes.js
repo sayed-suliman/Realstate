@@ -163,7 +163,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
+router.post("/register", /*reCAPTCHA,*/ signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);
@@ -314,7 +314,7 @@ router.post(
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
-  res.render("404", { title: "404 Error", err: "Page not Found Go back" });
+  res.render("404", { title: "Page Not Found"});
 });
 
 // export all routes
