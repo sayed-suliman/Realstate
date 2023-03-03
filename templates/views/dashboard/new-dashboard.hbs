@@ -269,7 +269,7 @@
                           </a></td>
                       </tr>
                       {{/if}}
-                      {{#ifCond user.salesperson '&&' userCourses}}
+                      {{#ifCond user.salesperson '||' userCourses.length}}
                       {{else}}
                       <tr>
                         <td colspan="3">No courses found.</td>
@@ -330,7 +330,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain;
+                background-size: contain!important;
               }
 
               .courseModal .btn {

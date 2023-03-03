@@ -150,7 +150,7 @@ router.get("/", async (req, res) => {
 // auth route
 router.get("/login", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
-router.post("/login", /*reCAPTCHA,*/ verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password

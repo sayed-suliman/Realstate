@@ -63,8 +63,7 @@
                   <th>User</th>
                   <th>Role</th>
                   <th>Email</th>
-                  <th>Packages</th>
-                  <th>Courses</th>
+                  <th>Packages/Courses</th>
                   <th>Driver License/CA ID</th>
                   <th>DOB</th>
                   <th style="width: 50px;">Action</th>
@@ -91,11 +90,17 @@
                     {{#each this.packages}}
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
-                  </td>
-                  <td class="text-capitalize">
+                    {{#if this.packages}}
+                    {{#ifCond this.courses "||" this.salesperson}}
+                    ,{{/ifCond}}
+                    {{/if}}
                     {{#each this.courses}}
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
+                    {{#if this.salesperson}}
+                    {{#if this.courses}}
+                    ,{{/if}}
+                    Salesperson{{/if}}
                   </td>
                   <td>{{this.driver_license}}</td>
                   <td>{{formatDate this.dob}}</td>
