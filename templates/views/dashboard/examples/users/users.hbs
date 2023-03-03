@@ -91,7 +91,7 @@
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
                     {{#if this.packages}}
-                    {{#ifCond this.courses "||" this.salesperson}}
+                    {{#ifCond this.courses.length "||" this.salesperson}}
                     ,{{/ifCond}}
                     {{/if}}
                     {{#each this.courses}}
