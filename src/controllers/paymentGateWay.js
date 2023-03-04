@@ -258,7 +258,7 @@ module.exports = {
       );
     } catch (error) {
       console.log("Payment success error:", error);
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
 };

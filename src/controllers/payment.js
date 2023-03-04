@@ -167,10 +167,10 @@ module.exports = {
           return res.redirect("/verification?user=" + req.user?._id.toString());
         }
       }
-      return res.redirect("/");
+      return res.redirect("/packages");
     } catch (error) {
       console.log("Error at payment:", error);
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
 };

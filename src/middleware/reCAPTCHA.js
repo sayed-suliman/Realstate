@@ -8,7 +8,7 @@ module.exports = (req, res, next) => {
     previousRoute.includes("checkout")
       ? req.flash("signUpError", "reCAPTCHA initialization failed.")
       : req.flash("error", "reCAPTCHA initialization failed.");
-    return res.redirect(previousRoute || "/login");
+    return res.redirect(previousRoute || "/");
   }
 
   axios
@@ -29,13 +29,13 @@ module.exports = (req, res, next) => {
         previousRoute.includes("checkout")
           ? req.flash("signUpError", "Failed to validate reCAPTCHA")
           : req.flash("error", "Failed to validate reCAPTCHA");
-        return res.redirect(previousRoute || "/login");
+        return res.redirect(previousRoute || "/");
       }
     })
     .catch((error) => {
       previousRoute.includes("checkout")
         ? req.flash("signUpError", "Failed to validate reCAPTCHA")
         : req.flash("error", "Failed to validate reCAPTCHA");
-      return res.redirect(previousRoute || "/login");
+      return res.redirect(previousRoute || "/");
     });
 };

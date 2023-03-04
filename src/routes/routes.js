@@ -116,7 +116,7 @@ const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
 
 // default route
-router.get("/", async (req, res) => {
+router.get("/packages", async (req, res) => {
   try {
     const msg = req.query.msg;
     const type = req.query.type;
@@ -139,12 +139,12 @@ router.get("/", async (req, res) => {
       packageObj,
     });
   } catch (error) {
-    res.redirect("/");
+    res.redirect("/packages");
   }
 });
 
 // auth route
-router.get("/login", logged_in, login);
+router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
 router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
@@ -158,7 +158,7 @@ router.post("/reset-password", doResetPassword);
 
 //checkout
 router.get("/checkout", checkout);
-router.get("/register", (req, res) => res.redirect("/"));
+router.get("/register", (req, res) => res.redirect("/login"));
 router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 
 // verification route

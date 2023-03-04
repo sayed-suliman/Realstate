@@ -87,9 +87,9 @@ module.exports = {
         );
       }
 
-      return res.redirect("/");
+      return res.redirect("/packages");
     } catch (error) {
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
 };

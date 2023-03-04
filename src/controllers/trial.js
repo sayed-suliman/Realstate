@@ -47,9 +47,9 @@ module.exports = {
           contents,
         });
       }
-      return res.redirect(req.headers.referer || "/");
+      return res.redirect(req.headers.referer || "/packages");
     } catch (error) {
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
   async quiz(req, res) {
@@ -119,7 +119,7 @@ module.exports = {
         });
       }
     } catch (error) {
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
 };

@@ -532,8 +532,8 @@
                                 </div>
                             </div>
                             <!-- General Setting -->
-                            <div class="col-md-6 mb-2">
-                                <div class="card card-primary ">
+                            <div class="col-md-6 mb-4">
+                                <div class="card card-primary h-100">
                                     <div class="card-header">
                                         <h3 class="card-title">General Setting</h3>
                                         <div class="card-tools">
@@ -591,6 +591,122 @@
                                                             data-inputmask='"mask": "(999) 999-9999"' name="phone"
                                                             data-mask>
                                                     </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Payment Setting -->
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-success">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Payment Setting</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                                title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 border mb-2">
+                                                <label for="stripekey" class="m-0 py-2">Stripe</label>
+                                                <div class="row border-top">
+                                                    <div class="col-12">
+                                                        {{!-- public key --}}
+                                                        <div class="form-group">
+                                                            <label for="stripekey">Public Key</label>
+                                                            <textarea name="publicKey" rows="2"
+                                                                class="form-control">{{setting.payment.stripe.publicKey}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="secret">Secret Key</label>
+                                                            <textarea name="secretKey" rows="2"
+                                                                class="form-control">{{setting.payment.stripe.secret}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 border">
+                                                <label for="paypal" class="m-0 py-2">PayPal</label>
+                                                <div class="row border-top">
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="secret">Client Id</label>
+                                                            <textarea name="clientId" rows="2"
+                                                                class="form-control">{{setting.payment.paypal.id}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="clientKey">Client Secret</label>
+                                                            <textarea name="clientSecret" rows="2"
+                                                                class="form-control">{{setting.payment.paypal.secret}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Mail Setting -->
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-gray">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Mail Setting</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                                title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        {{!-- mail email --}}
+                                                        <div class="form-group">
+                                                            <label for="host">Host</label>
+                                                            <input type="text" name="host" id="host"
+                                                                value="{{setting.mail.host}}" placeholder="Host"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-lg-4">
+                                                        {{!-- mail port --}}
+                                                        <div class="form-group">
+                                                            <label for="port">Port</label>
+                                                            <input type="number" min="0" name="port" id="port"
+                                                                value="{{setting.mail.port}}" placeholder="Port"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="username">Username</label>
+                                                    <input type="text" name="user" id="user"
+                                                        value="{{setting.mail.user}}" placeholder="Username"
+                                                        class="form-control">
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <div class="form-group">
+                                                    <label for="password">Password</label>
+                                                    <input type="text" name="password" id="user"
+                                                        value="{{setting.mail.pass}}" placeholder="Password"
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                         </div>
