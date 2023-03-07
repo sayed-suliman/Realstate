@@ -67,10 +67,10 @@ app.use(async (req, res, next) => {
   // config to middleware
   let themeRes = await Theme.findOne();
   let setting = await Setting.findOne();
-
-  res.locals.theme = themeRes;
-  res.locals.site_Title = setting.collegeName;
-  res.locals.site_logo = setting.logoPath;
+  
+  res.locals.theme = themeRes || theme;
+  res.locals.site_Title = setting.collegeName || title;
+  res.locals.site_logo = setting.logoPath || logo;
 
   // for flash
   res.locals.success = req.flash("success");
