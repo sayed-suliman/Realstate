@@ -82,7 +82,7 @@
                                                     <div class="form-group col">
                                                         <label for="primary-color">Primary Color</label>
                                                         <div class="input-group">
-                                                            <input type="color" name="primaryColor"
+                                                            <input type="color" name="primaryColor" required
                                                                 value="{{themeData.colors.primary}}" id="primary-color"
                                                                 class="form-control">
                                                         </div>
@@ -90,7 +90,7 @@
                                                     <div class="form-group col">
                                                         <label for="secondary-color">Secondary Color</label>
                                                         <div class="input-group">
-                                                            <input type="color" name="secondaryColor"
+                                                            <input type="color" name="secondaryColor" required
                                                                 value="{{themeData.colors.secondary}}"
                                                                 id="secondary-color" class="form-control">
                                                         </div>
@@ -99,7 +99,7 @@
                                                 <div class="form-group ">
                                                     <label for="fontFamilyLink">Font Family Link</label>
                                                     <div class="input-group">
-                                                        <input type="text" name="fontFamilyLink"
+                                                        <input type="text" name="fontFamilyLink" required
                                                             value="{{themeData.fontFamily.link}}" id="fontFamilyLink"
                                                             class="form-control {{#if error.font}}border-danger{{/if}}">
                                                     </div>
@@ -113,7 +113,8 @@
                                                     <label for="fontFamilyLink">Font Family</label>
                                                     <div class="input-group">
                                                         <input type="text" name="fontFamily" id="fontFamilyLink"
-                                                            value="{{themeData.fontFamily.name}}" class="form-control">
+                                                            required value="{{themeData.fontFamily.name}}"
+                                                            class="form-control">
                                                     </div>
                                                     <small>Example: Titillium Web, sans-serif
                                                     </small>
