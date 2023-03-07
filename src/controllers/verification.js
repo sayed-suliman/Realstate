@@ -30,10 +30,10 @@ module.exports = {
           });
         }
       }
-      return res.redirect("/");
+      return res.redirect("/packages");
     } catch (error) {
       console.log("Error at verification:", error);
-      return res.redirect("/");
+      return res.redirect("/packages");
     }
   },
   async doVerification(req, res) {

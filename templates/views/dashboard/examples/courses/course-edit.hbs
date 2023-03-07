@@ -80,7 +80,7 @@
                     <label>Add to Package</label>
                     {{#each packages}}
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                      <input class="custom-control-input custom-control-input-primary custom-control-input"
                         {{!-- {{checkData this.name ../package}} --}} {{checkData this.name ../course.package}}
                         value="{{this.name}}" type="checkbox" name="package" id="{{this.name}}">
                       <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
@@ -94,7 +94,7 @@
                   </div> --}}
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-success float-right">Update Course</button>
+                  <button type="submit" class="btn btn-primary float-right">Update Course</button>
                 </div>
                 <!-- /.card-body -->
               </div>

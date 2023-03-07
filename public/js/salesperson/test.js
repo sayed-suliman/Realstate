@@ -3,11 +3,11 @@ $(document).ready(function () {
   console.log(exam);
   let timeOver = false;
   // time for master is 1hour and 30 minutes (5400seconds)
-  let timeInSeconds = exam == "master" ? 5400 : 0;
+  let timeInSeconds = exam == "master" ? 10800 : 0;
   let timeInterval;
   $(".retake").click(() => {
     clearInterval(timeInterval);
-    timeInSeconds = exam == "master" ? 5400 : 0;
+    timeInSeconds = exam == "master" ? 10800 : 0;
     timeInterval = setInterval(timer, 1000);
     // remove correct option
     $("label")

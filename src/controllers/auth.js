@@ -54,6 +54,7 @@ const loginAsStudent = async (req, res) => {
       user.packages.length ||
       user.courses.length ||
       user.trialCourse ||
+      user.salesperson ||
       user.role == "regulator"
     ) {
       req.login(user, function (err) {

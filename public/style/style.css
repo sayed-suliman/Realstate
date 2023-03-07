@@ -4,10 +4,11 @@
 :root {
     /* colors */
     --primary-color: #315181;
+    --secondary-color: #edc36f;
     --primary-blue: #0f7ebe;
     --border-blue: #51b9ff;
     --light-white: #f2f2f2;
-    --btn-primary: #edc36f;
+    --btn-primary: var(--secondary-color);
     --color-white: #fff;
     --color-black: #000;
     --color-green: #00a912;

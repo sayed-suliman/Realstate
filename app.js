@@ -7,8 +7,12 @@ const hbs = require("hbs");
 const passport = require("passport");
 const path = require("path");
 const flash = require("connect-flash");
-
+const { hexToRgba } = require("./src/helper/colorConverter");
+let { theme, site } = require("./src/config/theme");
 const Setting = require("./src/models/setting");
+const Theme = require("./src/models/theme");
+// Routes
+const allRoutes = require("./src/routes/routes");
 require("dotenv").config();
 // database connection
 require("./src/db/conn");
@@ -36,38 +40,47 @@ app.use(
   })
 );
 // site title
-let title;
-let logo;
-
+let title = site.name;
+let logo = site.logo;
+let themeSetting;
 // passport js
 app.use(passport.initialize());
 app.use(passport.session());
 
+// config setting
+app.locals.site_Title = title;
+app.locals.site_logo = logo;
+
+// theme setting
+// Theme.findOne()
+//   .then((data) => {
+//     theme = data;
+//   })
+//   .catch((err) => console.log(err));
+
+theme.colors["primaryShadow"] = hexToRgba(theme.colors.primary, 0.25);
+app.locals.theme = theme;
+
 // flash initialized
 app.use(flash());
 app.use(async (req, res, next) => {
+  // config to middleware
+  let themeRes = await Theme.findOne();
+  let setting = await Setting.findOne();
+  
+  res.locals.theme = themeRes || theme;
+  res.locals.site_Title = setting.collegeName || title;
+  res.locals.site_logo = setting.logoPath || logo;
+
+  // for flash
   res.locals.success = req.flash("success");
   res.locals.toast_success = req.flash("alert_success");
   res.locals.toast_error = req.flash("alert_error");
   res.locals.error = req.flash("error");
   res.locals.user = req.user;
-
-  // site title and logo
-  const setting = await Setting.findOne();
-  if (setting) {
-    title = setting.collegeName;
-    logo = setting.logoPath;
-    // console.log("currently not working env file updation");
-    process.env.host = setting.mailHost;
-    process.env.mail_port = setting.mailPort;
-    process.env.user = setting.mailUser;
-    process.env.pass = setting.mailPass;
-    process.env.email = setting.mailEmail;
-  }
   next();
 });
-// Routes
-const allRoutes = require("./src/routes/routes");
+
 // views path
 const viewsPath = path.join(__dirname, "./templates/views");
 // partials Path
@@ -82,21 +95,21 @@ hbs.registerPartials(partialsPath);
 app.use(express.static(publicPath));
 
 // title on allPages
-hbs.registerHelper("site_Title", function () {
-  if (title) {
-    return title;
-  } else {
-    return process.env.SITE_NAME;
-  }
-});
-// logo on allPage
-hbs.registerHelper("site_logo", function () {
-  if (logo) {
-    return logo;
-  } else {
-    return "/dashboard/dist/img/AdminLTELogo.png";
-  }
-});
+// hbs.registerHelper("site_Title", function () {
+//   if (title) {
+//     return title;
+//   } else {
+//     return process.env.SITE_NAME;
+//   }
+// });
+// // logo on allPage
+// hbs.registerHelper("site_logo", function () {
+//   if (logo) {
+//     return logo;
+//   } else {
+//     return "/dashboard/dist/img/AdminLTELogo.png";
+//   }
+// });
 app.use(allRoutes);
 
 app.listen(port, () => {

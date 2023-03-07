@@ -21,17 +21,25 @@
   <!-- IonIcons -->
   <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <!-- Theme style -->
-  <link rel="stylesheet" href="/dashboard/dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="/dashboard/dist/css/adminlte.css">
   <!-- DataTables -->
   <link rel="stylesheet" href="/dashboard/plugins/datatables-responsive/css/responsive.bootstrap4.min.css">
   <link rel="stylesheet" href="/dashboard/plugins/datatables-buttons/css/buttons.bootstrap4.min.css">
   <link rel="stylesheet" href="/dashboard/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css">
   <!-- fullCalendar -->
+  
+  <link href="{{theme.fontFamily.link}}" rel="stylesheet">
   {{!--
   <link rel="stylesheet" href="/dashboard/plugins/fullcalendar/main.css"> --}}
   {{!-- my custon css --}}
   <link rel="stylesheet" href="/style/dashbaord.css">
   <style>
+    :root{
+      --primary-color:{{theme.colors.primary}};
+      --primary-shadow:{{theme.colors.primaryShadow}};
+      --secondary-color:{{theme.colors.secondary}};
+      --font-family:{{theme.fontFamily.name}};
+    }
     /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {

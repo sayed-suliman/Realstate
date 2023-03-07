@@ -131,7 +131,7 @@ const updateCourse = async (req, res) => {
       ...data,
       package: packages,
     });
-    fs.unlink("public/images/course" + oldPath, (err, data) => {
+    fs.unlinkSync("public/images/course/" + oldPath, (err, data) => {
       console.log("Course File Deleted.");
     });
     if (course) {
@@ -303,7 +303,6 @@ var allCourses = async (req, res) => {
         req.user.packages.map((package) => {
           if (package.salesperson) {
             req.user.salesperson = true;
-            req.user.unlockSP = false;
           }
           userCourses = [...userCourses, ...package.courses];
         });
@@ -370,17 +369,11 @@ var allCourses = async (req, res) => {
           if (userCourses.length > 0) {
             Object.assign(userCourses[0], { unlock: true });
           }
-          // unlock the salesperson
-          let lastCourse = userCourses[userCourses.length - 1];
-          req.user.unlockSP = progress[lastCourse.name] == 100;
-        } else {
-          req.user.unlockSP = true;
         }
       } else {
         for await (let [index] of userCourses.entries()) {
           Object.assign(userCourses[index], { unlock: true });
         }
-        req.user.unlockSP = true;
       }
 
       // filtering only courses meta
@@ -681,15 +674,15 @@ var viewCourse = async (req, res) => {
                     // lock system for final term when days are in database
                     if (
                       contents[index].type == "final" &&
-                      setting.finalDay != -1 &&
+                      setting?.finalDay != -1 &&
                       courseMeta
                     ) {
                       // date of agreement
                       let agreementDate = new Date(courseMeta.createdAt);
 
                       // Day and Minute from database
-                      let unlockAfterDay = setting.finalDay;
-                      let unlockAfterTime = setting.finalTime;
+                      let unlockAfterDay = setting?.finalDay;
+                      let unlockAfterTime = setting?.finalTime;
 
                       // adding day and minute to the agreement date
                       let final = new Date(

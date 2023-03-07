@@ -42,7 +42,7 @@ const {
   updatePackage,
   deletePackage,
 } = require("../controllers/package");
-const { checkout, doCheckout } = require("../controllers/checkout");
+const { checkout } = require("../controllers/checkout");
 const { verification, doVerification } = require("../controllers/verification");
 const { resendCode } = require("../controllers/resendVerificationCode");
 const { payment } = require("../controllers/payment");
@@ -79,10 +79,6 @@ const {
   takeQuiz,
 } = require("./../controllers/quiz");
 const {
-  sendVerificationCode,
-  sendAgreement,
-} = require("../controllers/mailServices");
-const {
   getCoupon,
   detailsCoupon,
   postCoupon,
@@ -117,9 +113,11 @@ const trial = require("../controllers/trial");
 const buyMore = require("../controllers/buy-more");
 const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
+const { theme, doTheme } = require("../controllers/theme");
+const { checkFontURL } = require("../middleware/checkFont");
 
 // default route
-router.get("/", async (req, res) => {
+router.get("/packages", async (req, res) => {
   try {
     const msg = req.query.msg;
     const type = req.query.type;
@@ -142,14 +140,19 @@ router.get("/", async (req, res) => {
       packageObj,
     });
   } catch (error) {
-    res.redirect("/");
+    res.redirect("/packages");
   }
 });
 
 // auth route
-router.get("/login", logged_in, login);
+router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
+<<<<<<< HEAD
 router.post("/login", verifiedAndPaid, authLocal, postLogin);
+=======
+router.get("/login", (req, res) => res.redirect("/"));
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
+>>>>>>> dev
 router.get("/logout", logout);
 
 // forgot password
@@ -161,8 +164,13 @@ router.post("/reset-password", doResetPassword);
 
 //checkout
 router.get("/checkout", checkout);
+<<<<<<< HEAD
 router.get("/register", (req, res) => res.redirect("/"));
 router.post("/register", signUpMiddleware, signUp);
+=======
+router.get("/register", (req, res) => res.redirect("/login"));
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
+>>>>>>> dev
 
 // verification route
 router.get("/verification", verification);
@@ -197,6 +205,11 @@ router.post(
   doSetting,
   settingError
 );
+
+// theme customization
+router.get("/dashboard/theme", theme);
+router.post("/dashboard/theme", checkFontURL, doTheme);
+
 // for student
 router.post(
   "/dashboard/userSetting",
@@ -308,7 +321,7 @@ router.post("/free-lesson", freeLessonValidation, freeLesson.doRegister);
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
-  res.render("404", { title: "404 Error", err: "Page not Found Go back" });
+  res.render("404", { title: "Page Not Found" });
 });
 
 // export all routes

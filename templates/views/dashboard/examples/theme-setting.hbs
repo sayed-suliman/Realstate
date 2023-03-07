@@ -1,0 +1,155 @@
+{{>dashboardheader}}
+
+<head>
+    <link rel="stylesheet" href="/dashboard/plugins/daterangepicker/daterangepicker.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css"
+        integrity="sha512-8vq2g5nHE062j3xor4XxPeZiPjmRDh6wlufQlfC6pdQ/9urJkU07NM0tEREeymP++NczacJ/Q59ul+/K2eYvcg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<style>
+    input[type="color"] {
+        -webkit-appearance: none;
+        border: none;
+        width: 32px;
+        height: 130px;
+        padding: 0;
+        border-radius: 0;
+        border: 1px solid black;
+    }
+
+    input[type="color"]::-webkit-color-swatch-wrapper {
+        padding: 0;
+    }
+
+    input[type="color"]::-webkit-color-swatch {
+        border: none;
+    }
+</style>
+
+<body class="hold-transition sidebar-mini layout-fixed">
+    <!-- toast(alert)-->
+    {{>alert}}
+    <!-- Site wrapper -->
+    <div class="wrapper">
+        <!-- Navbar -->
+        {{>dashboardNavbar}}
+        <!-- /.navbar -->
+
+        <!-- Main Sidebar Container -->
+        {{>dashboardMainSidebar}}
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <div class="container-fluid">
+                    <div class="row mb-2">
+                        <div class="col-sm-6">
+                            <h1>Theme Customization</h1>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-right">
+                                <li class="breadcrumb-item"><a href="/dashboard">Home</a></li>
+                                <li class="breadcrumb-item active">Theme Setting</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div><!-- /.container-fluid -->
+            </section>
+
+            <!-- Main content -->
+            <section class="content">
+
+                <div class="container-fluid">
+                    <form action="/dashboard/theme" method="post" id="validFrom">
+                        <input type="hidden" name="id" value="{{themeData._id}}">
+                        <div class="row">
+                            <!-- Application Setting -->
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-primary">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Theme Setting</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                                title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12">
+                                                <div class="row">
+                                                    <div class="form-group col">
+                                                        <label for="primary-color">Primary Color</label>
+                                                        <div class="input-group">
+                                                            <input type="color" name="primaryColor" required
+                                                                value="{{themeData.colors.primary}}" id="primary-color"
+                                                                class="form-control">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col">
+                                                        <label for="secondary-color">Secondary Color</label>
+                                                        <div class="input-group">
+                                                            <input type="color" name="secondaryColor" required
+                                                                value="{{themeData.colors.secondary}}"
+                                                                id="secondary-color" class="form-control">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <label for="fontFamilyLink">Font Family Link</label>
+                                                    <div class="input-group">
+                                                        <input type="text" name="fontFamilyLink" required
+                                                            value="{{themeData.fontFamily.link}}" id="fontFamilyLink"
+                                                            class="form-control {{#if error.font}}border-danger{{/if}}">
+                                                    </div>
+                                                    {{#if error.font}}
+                                                    <small class="text-danger">{{error.font}}</small><br>
+                                                    {{/if}}
+                                                    <small>Example:
+                                                        https://fonts.googleapis.com/css2?family=Titillium+Web</small>
+                                                </div>
+                                                <div class="form-group ">
+                                                    <label for="fontFamilyLink">Font Family</label>
+                                                    <div class="input-group">
+                                                        <input type="text" name="fontFamily" id="fontFamilyLink"
+                                                            required value="{{themeData.fontFamily.name}}"
+                                                            class="form-control">
+                                                    </div>
+                                                    <small>Example: Titillium Web, sans-serif
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <button type="submit" class="btn btn-primary float-right">Update Theme</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <!-- /.card -->
+
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+
+        {{>dashboardfooter}}
+
+        <!-- Control Sidebar -->
+        <aside class="control-sidebar control-sidebar-dark">
+            <!-- Control sidebar content goes here -->
+        </aside>
+        <!-- /.control-sidebar -->
+    </div>
+    <!-- ./wrapper -->
+
+    {{!-- footer links --}}
+    {{>dashboardfooterlinks}}
+
+</body>
+
+</html>

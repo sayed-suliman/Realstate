@@ -199,6 +199,11 @@
             $("#dashboard-link").removeClass("active")
             $('#setting-link').addClass("active")
         }
+        //setting
+        if (url.includes("theme")) {
+            $("#dashboard-link").removeClass("active")
+            $('#theme-link').addClass("active")
+        }
 
         //salesperson -- category
         if (url.includes("add-category")) {

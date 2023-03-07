@@ -258,7 +258,7 @@ module.exports = {
           let noOfQuestions = noOfQuestionPerCat.reduce((a, b) => {
             return a + b;
           });
-          const noOfQuestionForExam = noOfQuestions < 150 ? 8 : 150;
+          const noOfQuestionForExam = noOfQuestions < 150 ? 10 : 150;
           let sum = 0;
 
           // questions from each category i.e: no of questions

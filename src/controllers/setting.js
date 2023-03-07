@@ -6,23 +6,28 @@ const bcrypt = require("bcrypt");
 
 module.exports = {
   async settingView(req, res) {
-    var msgToken = req.query.msg;
-    var msg = {};
-    if (msgToken) {
-      msg = decodeMsg(msgToken);
-    }
-    if (req.user.role === "student" || req.user.role === "guest") {
-      return res.render("dashboard/examples/setting", {
+    try {
+      var msgToken = req.query.msg;
+      var msg = {};
+      if (msgToken) {
+        msg = decodeMsg(msgToken);
+      }
+      if (req.user.role === "student" || req.user.role === "guest") {
+        return res.render("dashboard/examples/setting", {
+          title: "Dashboard | Setting",
+          toast: Object.keys(msg).length == 0 ? undefined : msg,
+          editUser: req.user,
+        });
+      }
+      res.render("dashboard/examples/setting", {
         title: "Dashboard | Setting",
         toast: Object.keys(msg).length == 0 ? undefined : msg,
-        editUser: req.user,
+        setting: await Setting.findOne(),
       });
+    } catch (error) {
+      var msg = encodeMsg(error.message, "danger", 500);
+      res.redirect("/dashboard?msg=" + msg);
     }
-    res.render("dashboard/examples/setting", {
-      title: "Dashboard | Setting",
-      toast: Object.keys(msg).length == 0 ? undefined : msg,
-      setting: await Setting.findOne(),
-    });
   },
   async doSetting(req, res) {
     Date.prototype.getAge = function () {

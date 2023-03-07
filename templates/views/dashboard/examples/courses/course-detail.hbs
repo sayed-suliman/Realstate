@@ -76,7 +76,7 @@
                                                 <td>
                                                     <a href="/dashboard/course-detail/edit-course?cId={{this._id}}"
                                                         type="button">
-                                                        <button class="btn btn-success">
+                                                        <button class="btn btn-primary">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>
@@ -193,6 +193,7 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
+<<<<<<< HEAD
                                             {{else}}
                                             <tr>
                                                 <td colspan="3">No courses found.</td>
@@ -205,12 +206,16 @@
                                                         {{/if}}>Salesperson</a></td>
                                                 <td><a {{#if user.unlockSP}} target="_blank"
                                                         href="/dashboard/salesperson/" {{else}}href="#" {{/if}}
+=======
+                                            {{#if user.salesperson}}
+                                            <tr>
+                                                <td colspan="2"><a class="text-capitalize" 
+                                                        target="_blank" href="/dashboard/salesperson/">Salesperson</a></td>
+                                                <td><a target="_blank"
+                                                        href="/dashboard/salesperson/" 
+>>>>>>> dev
                                                         class="text-muted">
-                                                        {{#unless user.unlockSP}}
-                                                        <i class="fa-solid fa-lock"></i>
-                                                        {{else}}
                                                         <i class="fa-solid fa-book"></i> View Course
-                                                        {{/unless}}
                                                     </a></td>
                                             </tr>
                                             {{/if}} --}}

@@ -259,28 +259,22 @@
                         </td>
                       </tr>
                       {{/each}}
+                      {{/if}}
+                      {{#if user.salesperson}}
+                      <tr>
+                        <td colspan="2"><a class="text-capitalize" target="_blank"
+                            href="/dashboard/salesperson/">Salesperson</a></td>
+                        <td class="text-right"><a target="_blank" href="/dashboard/salesperson/" class="text-muted">
+                            <i class="fa-solid fa-book"></i>
+                          </a></td>
+                      </tr>
+                      {{/if}}
+                      {{#ifCond user.salesperson '||' userCourses.length}}
                       {{else}}
                       <tr>
                         <td colspan="3">No courses found.</td>
                       </tr>
-                      {{/if}}
-                      {{!-- {{#if user.salesperson}}
-                      <tr class="{{#unless user.unlockSP}}event-none{{/unless}}">
-                        <td colspan="2"><a class="text-capitalize" {{#if user.unlockSP}} target="_blank"
-                            href="/dashboard/salesperson/" {{else}}href="#" {{/if}}>Salesperson</a></td>
-                        <td class="text-right"><a {{#if user.unlockSP}} target="_blank" href="/dashboard/salesperson/"
-                            {{else}}href="#" {{/if}} class="text-muted">
-                            {{#unless user.unlockSP}}
-                            <i class="fa-solid fa-lock"></i>
-                            {{else}}
-                            <i class="fa-solid fa-book"></i>
-                            {{/unless}}
-                          </a></td>
-                      </tr>
-
-                      {{/if}} --}}
-                      {{!-- {{#ifCond user.salesperson '&&' userCourses}}
-                      {{/ifCond}} --}}
+                      {{/ifCond}}
                     </tbody>
                   </table>
                 </div>
@@ -336,7 +330,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain;
+                background-size: contain !important;
               }
 
               .courseModal .btn {
@@ -471,7 +465,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain;
+                background-size: contain !important;
               }
 
               .courseModal .btn {
@@ -602,6 +596,11 @@
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script>
+    var theme = JSON.parse(`{{{JSON theme}}}`)
+    console.log(theme)
+    let primaryColor = theme.colors.primary
+  </script>
   <script src="/dashboard/dist/js/pages/dashboard3.js"></script>
 
   <script>

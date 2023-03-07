@@ -167,3 +167,7 @@ hbs.registerHelper("dateFormat", function (date) {
   }
   return `${year}-${month}-${day}`;
 });
+
+hbs.registerHelper("JSON", (data) => {
+  return JSON.stringify(data);
+});

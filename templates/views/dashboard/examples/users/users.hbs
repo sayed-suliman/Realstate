@@ -91,12 +91,23 @@
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
                     {{#if this.packages}}
+<<<<<<< HEAD
                     {{#ifCond this.courses "||" this.salesperson}}
+=======
+                    {{#ifCond this.courses.length "||" this.salesperson}}
+>>>>>>> dev
                     ,{{/ifCond}}
                     {{/if}}
                     {{#each this.courses}}
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
+<<<<<<< HEAD
+=======
+                    {{#if this.salesperson}}
+                    {{#if this.courses}}
+                    ,{{/if}}
+                    Salesperson{{/if}}
+>>>>>>> dev
                   </td>
                   <td>{{this.driver_license}}</td>
                   <td>{{formatDate this.dob}}</td>
