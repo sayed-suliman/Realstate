@@ -10,7 +10,7 @@ module.exports = {
     },
   },
   site: {
-    name: "Real Estate Instruct",
+    name: "Host A Class",
     logo: "/dashboard/dist/img/AdminLTELogo.png",
   },
 };

@@ -1,6 +1,5 @@
 const express = require("express");
 const router = new express.Router();
-const salespersonRoutes = require("./salesperson/index");
 const {
   login,
   postLogin,
@@ -147,12 +146,8 @@ router.get("/packages", async (req, res) => {
 // auth route
 router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
-<<<<<<< HEAD
-router.post("/login", verifiedAndPaid, authLocal, postLogin);
-=======
 router.get("/login", (req, res) => res.redirect("/"));
-router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
->>>>>>> dev
+router.post("/login", verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -164,13 +159,8 @@ router.post("/reset-password", doResetPassword);
 
 //checkout
 router.get("/checkout", checkout);
-<<<<<<< HEAD
-router.get("/register", (req, res) => res.redirect("/"));
-router.post("/register", signUpMiddleware, signUp);
-=======
 router.get("/register", (req, res) => res.redirect("/login"));
-router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
->>>>>>> dev
+router.post("/register", signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);
