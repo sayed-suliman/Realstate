@@ -19,8 +19,8 @@ $(function () {
       labels: ['JAN','FEB','MAR','APR','MAY','JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC'],
       datasets: [
         {
-          backgroundColor: '#007bff',
-          borderColor: '#007bff',
+          backgroundColor: primaryColor,
+          borderColor: primaryColor,
           data: [cursaleJan, cursaleFeb, cursaleMar, cursaleApr, cursaleMay, cursaleJun, cursaleJul, cursaleAug, cursaleSep, cursaleOct, cursaleNov, cursaleDec]
         },
         {
@@ -86,12 +86,12 @@ $(function () {
         type: 'line',
         data: [curJan, curFeb, curMar, curApr, curMay, curJun, curJul, curAug, curSep, curOct, curNov, curDec],
         backgroundColor: 'transparent',
-        borderColor: '#007bff',
-        pointBorderColor: '#007bff',
-        pointBackgroundColor: '#007bff',
+        borderColor: primaryColor,
+        pointBorderColor: primaryColor,
+        pointBackgroundColor: primaryColor,
         fill: false
-        // pointHoverBackgroundColor: '#007bff',
-        // pointHoverBorderColor    : '#007bff'
+        // pointHoverBackgroundColor: primaryColor,
+        // pointHoverBorderColor    : primaryColor
       },
       {
         type: 'line',

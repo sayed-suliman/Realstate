@@ -330,7 +330,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain!important;
+                background-size: contain !important;
               }
 
               .courseModal .btn {
@@ -465,7 +465,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain!important;
+                background-size: contain !important;
               }
 
               .courseModal .btn {
@@ -596,6 +596,11 @@
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script>
+    var theme = JSON.parse(`{{{JSON theme}}}`)
+    console.log(theme)
+    let primaryColor = theme.colors.primary
+  </script>
   <script src="/dashboard/dist/js/pages/dashboard3.js"></script>
 
   <script>

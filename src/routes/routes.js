@@ -114,6 +114,8 @@ const trial = require("../controllers/trial");
 const buyMore = require("../controllers/buy-more");
 const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
+const { theme, doTheme } = require("../controllers/theme");
+const { checkFontURL } = require("../middleware/checkFont");
 
 // default route
 router.get("/packages", async (req, res) => {
@@ -146,6 +148,7 @@ router.get("/packages", async (req, res) => {
 // auth route
 router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
+router.get("/login", (req, res) => res.redirect("/"));
 router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
@@ -194,6 +197,11 @@ router.post(
   doSetting,
   settingError
 );
+
+// theme customization
+router.get("/dashboard/theme", theme);
+router.post("/dashboard/theme", checkFontURL, doTheme);
+
 // for student
 router.post(
   "/dashboard/userSetting",
@@ -310,7 +318,7 @@ router.post(
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {
-  res.render("404", { title: "Page Not Found"});
+  res.render("404", { title: "Page Not Found" });
 });
 
 // export all routes

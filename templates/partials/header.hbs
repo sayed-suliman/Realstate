@@ -18,9 +18,17 @@
         integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <link href="{{theme.fontFamily.link}}" rel="stylesheet">
+
     <!-- custon css -->
     <link rel="stylesheet" href="/style/style.css">
     <style>
+        :root{
+            --primary-color:{{theme.colors.primary}};
+            --primary-shadow:{{theme.colors.primaryShadow}};
+            --secondary-color:{{theme.colors.secondary}};
+            --font-family:{{theme.fontFamily.name}};
+        }
         /* Firefox */
         input[type=number] {
             -moz-appearance: textfield;

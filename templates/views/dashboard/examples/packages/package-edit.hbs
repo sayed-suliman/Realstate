@@ -54,14 +54,14 @@
                     <label>Select Courses to Add in Package</label>
                     {{#each courses}}
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                      <input class="custom-control-input custom-control-input-primary custom-control-input"
                         {{checkData this.name ../package.courses}} value="{{this.name}}" type="checkbox"
                         name="coursename" id="{{this.name}}">
                       <label for="{{this.name}}" class="custom-control-label text-capitalize">{{this.name}}</label>
                     </div>
                     {{/each}}
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                      <input class="custom-control-input custom-control-input-primary custom-control-input"
                         value="true" type="checkbox" name="salesperson" id="salesperson" {{#if
                         package.salesperson}}checked{{/if}}>
                       <label for="salesperson" class="custom-control-label text-capitalize">Salesperson</label>
@@ -145,7 +145,7 @@
 
                 </div>
                 <div class="card-footer">
-                  <button type="submit" class="btn btn-success float-right">Update Package</button>
+                  <button type="submit" class="btn btn-primary float-right">Update Package</button>
                 </div>
                 <!-- /.card-body -->
               </div>
