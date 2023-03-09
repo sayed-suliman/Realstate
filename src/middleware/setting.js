@@ -72,7 +72,6 @@ exports.verifyMail = async (req, res, next) => {
   try {
     await transport.verify();
   } catch (error) {
-    console.log(error);
     req.flash('mailError',"Invalid Mail Details provided.")
   }
   next();

@@ -107,10 +107,7 @@ module.exports = {
         let errors = [];
         let paymentError = req.flash("payment_error");
         let mailError = req.flash("mailError");
-        console.log(paymentError, mailError);
         errors.push(...paymentError, ...mailError);
-        console.log("------------------");
-        console.log(errors);
         if (errors.length) {
           let error = errors[0];
           let msg = error.stripe?.secret ?? error.stripe?.public ?? error;
