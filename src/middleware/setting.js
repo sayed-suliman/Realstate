@@ -1,4 +1,5 @@
 const { default: axios } = require("axios");
+const nodemailer = require("nodemailer");
 
 exports.stripeKeyValidation = async (req, res, next) => {
   let validPublic, validSecret;
@@ -59,4 +60,20 @@ exports.paypalKeyValidation = async (req, res, next) => {
     });
     return next();
   }
+};
+
+exports.verifyMail = async (req, res, next) => {
+  const { host, user, password, port } = req.body;
+  const transport = nodemailer.createTransport({
+    host,
+    port,
+    auth: { user, pass: password },
+  });
+  try {
+    await transport.verify();
+  } catch (error) {
+    console.log(error);
+    req.flash('mailError',"Invalid Mail Details provided.")
+  }
+  next();
 };

@@ -104,18 +104,25 @@ module.exports = {
           settingData.logoPath = req.file.filename;
         }
         // if error
-        let error = req.flash("payment_error");
-        if (error.length) {
-          let paymentError = error[0];
+        let errors = [];
+        let paymentError = req.flash("payment_error");
+        let mailError = req.flash("mailError");
+        console.log(paymentError, mailError);
+        errors.push(...paymentError, ...mailError);
+        console.log("------------------");
+        console.log(errors);
+        if (errors.length) {
+          let error = errors[0];
+          let msg = error.stripe?.secret ?? error.stripe?.public ?? error;
           settingData.logoPath = `/images/${
             settingData.logoPath || "logo.png"
           }`;
-          console.log(error);
+
           return res.render("dashboard/examples/setting", {
             title: "Dashboard | Setting",
-            error: { stripe: paymentError.stripe },
+            error: { stripe: error.stripe },
             toast: {
-              text: paymentError.stripe.secret ?? paymentError.stripe.public,
+              text: msg,
             },
             setting: settingData,
           });

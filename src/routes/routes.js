@@ -117,6 +117,7 @@ const { checkFontURL } = require("../middleware/checkFont");
 const {
   stripeKeyValidation,
   paypalKeyValidation,
+  verifyMail,
 } = require("../middleware/setting");
 
 // default route
@@ -198,6 +199,7 @@ router.post(
   logoUpload.single("logo"),
   stripeKeyValidation,
   // paypalKeyValidation,
+  verifyMail,
   doSetting,
   settingError
 );
