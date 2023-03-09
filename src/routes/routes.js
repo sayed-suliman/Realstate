@@ -119,6 +119,7 @@ const {
   paypalKeyValidation,
   verifyMail,
 } = require("../middleware/setting");
+const reCAPTCHA = require("../middleware/reCAPTCHA");
 
 // default route
 router.get("/packages", async (req, res) => {
@@ -152,7 +153,7 @@ router.get("/packages", async (req, res) => {
 router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
 router.get("/login", (req, res) => res.redirect("/"));
-router.post("/login", verifiedAndPaid, authLocal, postLogin);
+router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -165,7 +166,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/login"));
-router.post("/register", signUpMiddleware, signUp);
+router.post("/register", reCAPTCHA, signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);
