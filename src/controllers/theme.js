@@ -1,3 +1,4 @@
+const { fonts } = require("../config/fonts");
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Theme = require("../models/theme");
 
@@ -12,6 +13,7 @@ exports.theme = async (req, res) => {
       title: "Dashboard | Theme",
       toast: Object.keys(msg).length == 0 ? undefined : msg,
       themeData: await Theme.findOne(),
+      fonts,
     });
   } catch (error) {
     var msg = encodeMsg(error.message, "danger", 500);
@@ -27,8 +29,7 @@ exports.doTheme = async (req, res) => {
         secondary: req.body.secondaryColor,
       },
       fontFamily: {
-        link: req.body.fontFamilyLink,
-        name: req.body.fontFamily,
+        name: req.body.font,
       },
     };
 

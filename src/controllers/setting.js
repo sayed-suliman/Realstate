@@ -55,10 +55,10 @@ module.exports = {
           randomizeQuestions,
           showFinalDay,
           unlockCourse,
-          publicKey,
-          secretKey,
-          clientId,
-          clientSecret,
+          publicKey, //stripe
+          secretKey, //stripe
+          clientId, //paypal
+          clientSecret, //paypal
           host,
           port,
           user,
@@ -103,6 +103,24 @@ module.exports = {
         if (req.file) {
           settingData.logoPath = req.file.filename;
         }
+        // if error
+        let error = req.flash("payment_error");
+        if (error.length) {
+          let paymentError = error[0];
+          settingData.logoPath = `/images/${
+            settingData.logoPath || "logo.png"
+          }`;
+          console.log(error);
+          return res.render("dashboard/examples/setting", {
+            title: "Dashboard | Setting",
+            error: { stripe: paymentError.stripe },
+            toast: {
+              text: paymentError.stripe.secret ?? paymentError.stripe.public,
+            },
+            setting: settingData,
+          });
+        }
+
         const setting = id
           ? await Setting.findByIdAndUpdate(id, settingData)
           : await Setting(settingData).save();

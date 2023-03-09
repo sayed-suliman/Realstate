@@ -55,8 +55,8 @@
             <div class="content pt-3">
                 <div class="container-fluid">
                     <div class="row">
-                        <div class="col-12 col-lg-4 mb-2 h-100 pb-2">
-                            <div class="card h-100">
+                        <div class="col col-auto mb-2 h-100 pb-2">
+                            <div class="card h-100 mb-0">
                                 <div class="card-header border-bottom-0">
                                     <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
                                 </div>
@@ -230,17 +230,35 @@
 
                             </div>
                         </div>
-                        <div class="col-12 col-lg-8 mb-2 pb-2 chapter-left">
+                        <div class="col mb-2 pb-2 chapter-left">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h3 class="card-title">Chapter: {{chapter.name}}</h3>
+                                    <h3 class="card-title" style="line-height:2">Chapter: {{chapter.name}}</h3>
+                                    <div class="float-right d-inline-flex">
+                                        <a class="nav-link" href="#" role="button" data-toggle="modal"
+                                            data-target="#chapterModel">
+                                            <i class="fas fa-expand-arrows-alt mr-2"></i> <span
+                                                class='d-none d-md-inline'>Full View</span>
+                                        </a>
+                                        {{#unless chapter.completed}}
+                                        <button
+                                            class="btn btn-success {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} float-right completed"
+                                            id="completed" style="width:170px" {{#if chapter.completed}}disabled{{/if}}>
+                                            <div class="spinner d-none" id="spinner">
+                                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                            </div>
+                                            <span class="text" id="button-text">Mark
+                                                as completed</span>
+                                        </button>
+                                        {{/unless}}
+                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row h-100">
                                         <style>
                                             @media screen and (max-width:767px) {
-                                                .pdf-view{
+                                                .pdf-view {
                                                     min-height: 400px !important;
                                                 }
                                             }
@@ -260,7 +278,7 @@
                                 <div class="card-footer">
                                     {{#unless chapter.completed}}
                                     <button
-                                        class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right"
+                                        class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right completed"
                                         id="completed" style="width: 170px;" {{#if chapter.completed}}disabled{{/if}}>
                                         <div class="spinner d-none" id="spinner">
                                             <i class="fa-solid fa-circle-notch fa-spin"></i>
@@ -279,6 +297,43 @@
                 <!-- /.container-fluid -->
             </div>
             <!-- /.content -->
+        </div>
+        <div class="modal p-0 overflow-hidden" id="chapterModel" tabindex="-1" role="dialog"
+            aria-labelledby="chapterModelLabel" aria-hidden="true">
+            <div class="modal-dialog" style="min-width:100%;margin:0" role="document">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle" style="line-height:2">{{chapter.name}}
+                        </h5>
+                        {{#unless chapter.completed}}
+                        <button
+                            class="btn btn-success {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} ml-auto completed"
+                            id="completed" style="width:170px" {{#if chapter.completed}}disabled{{/if}}>
+                            <div class="spinner d-none" id="spinner">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            </div>
+                            <span class="text" id="button-text">Mark
+                                as completed</span>
+                        </button>
+                        {{/unless}}
+                        <button type="button" class="btn btn-danger ml-1" data-dismiss="modal" aria-label="Close">
+                            Close
+                        </button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="w-100 pdf-view" style="height:calc(100vh - 74px)">
+                            <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70'
+                                type="application/pdf" width="100%" style="height:calc(100vh - 74px)">
+
+                                <iframe src='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70' width="100%"
+                                    style="height:calc(100vh - 74px)">
+                                    <p>This browser does not support PDF!</p>
+                                </iframe>
+                            </object>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.content-wrapper -->
         <!-- Control Sidebar -->
@@ -304,9 +359,9 @@
     {{!-- if already completed then hide this script from client side --}}
     {{#unless chapter.completed}}
     <script>
-        const complete = document.querySelector('#completed')
+        const complete = $('.completed')
         const id = `{{{chapter._id}}}`
-        complete.addEventListener('click', async (e) => {
+        complete.on('click', async (e) => {
             setLoading(true)
             const res = await fetch('/mark-completed', {
                 method: "POST",
@@ -316,9 +371,10 @@
             const result = await res.json()
             if (result.success) {
                 setLoading(false)
-                complete.disabled = true
-                complete.textContent = "Completed"
+                complete.prop('disabled', true)
+                complete.text("Completed")
                 //window.history.back()
+                window.location.reload()
             }
             if (result.error) {
                 setLoading(false)
@@ -327,13 +383,13 @@
         })
         function setLoading(isLoading) {
             if (isLoading) {
-                complete.disabled = true;
-                complete.querySelector('.text').classList.add('d-none');
-                complete.querySelector('.spinner').classList.remove('d-none')
+                complete.prop('disabled', true);
+                complete.find('.text').addClass('d-none');
+                complete.find('.spinner').removeClass('d-none')
             } else {
-                complete.disabled = false;
-                complete.querySelector('.text').classList.remove('d-none');
-                complete.querySelector('.spinner').classList.add('d-none')
+                complete.prop('disabled', false);
+                complete.find('.text').removeClass('d-none');
+                complete.find('.spinner').addClass('d-none')
             }
         }
     </script>

@@ -12,6 +12,7 @@
     --color-white: #fff;
     --color-black: #000;
     --color-green: #00a912;
+    --font-family: sans-serif;
 
 }
 
@@ -170,7 +171,7 @@ table th {
 /* bodyy */
 body {
     background: var(--light-white);
-    font-family: 'Titillium Web', sans-serif;
+    font-family: var(--font-family);
 }
 
 

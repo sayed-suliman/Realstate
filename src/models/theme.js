@@ -5,7 +5,6 @@ const themeSchema = mongoose.Schema({
     secondary: String,
   },
   fontFamily: {
-    link: String,
     name: String,
   },
 });

@@ -615,19 +615,23 @@
                                                 <label for="stripekey" class="m-0 py-2">Stripe</label>
                                                 <div class="row border-top">
                                                     <div class="col-12">
-                                                        {{!-- public key --}}
-                                                        <div class="form-group">
-                                                            <label for="stripekey">Public Key</label>
-                                                            <textarea name="publicKey" rows="2"
-                                                                class="form-control">{{setting.payment.stripe.publicKey}}</textarea>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-12">
                                                         {{!-- secret key--}}
                                                         <div class="form-group">
                                                             <label for="secret">Secret Key</label>
                                                             <textarea name="secretKey" rows="2"
                                                                 class="form-control">{{setting.payment.stripe.secret}}</textarea>
+                                                            {{#if error.stripe.secret}}<small
+                                                                class="text-danger">{{error.stripe.secret}}</small>{{/if}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        {{!-- public key --}}
+                                                        <div class="form-group">
+                                                            <label for="stripekey">Public Key</label>
+                                                            <textarea name="publicKey" rows="2"
+                                                                class="form-control">{{setting.payment.stripe.publicKey}}</textarea>
+                                                            {{#if error.stripe.public}}<small
+                                                                class="text-danger">{{error.stripe.public}}</small>{{/if}}
                                                         </div>
                                                     </div>
                                                 </div>

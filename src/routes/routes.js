@@ -114,6 +114,10 @@ const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
 const { theme, doTheme } = require("../controllers/theme");
 const { checkFontURL } = require("../middleware/checkFont");
+const {
+  stripeKeyValidation,
+  paypalKeyValidation,
+} = require("../middleware/setting");
 
 // default route
 router.get("/packages", async (req, res) => {
@@ -192,13 +196,15 @@ router.get("/dashboard/setting", settingView);
 router.post(
   "/dashboard/setting",
   logoUpload.single("logo"),
+  stripeKeyValidation,
+  // paypalKeyValidation,
   doSetting,
   settingError
 );
 
 // theme customization
 router.get("/dashboard/theme", theme);
-router.post("/dashboard/theme", checkFontURL, doTheme);
+router.post("/dashboard/theme", doTheme);
 
 // for student
 router.post(
