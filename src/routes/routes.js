@@ -121,12 +121,14 @@ const {
 } = require("../middleware/setting");
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const salespersonRoutes = require("./salesperson/index");
+const Course = require("../models/courses");
 
 // default route
 router.get("/packages", async (req, res) => {
   try {
     const msg = req.query.msg;
     const type = req.query.type;
+    let courses = await Course.find({ status: "publish" });
     const packages = await Package.find({ status: "publish" })
       .populate({
         path: "courses",
@@ -141,6 +143,7 @@ router.get("/packages", async (req, res) => {
     });
     res.render("package", {
       packages,
+      courses,
       msg: { text: msg, type },
       title: "Packages Plan",
       packageObj,
@@ -154,7 +157,7 @@ router.get("/packages", async (req, res) => {
 router.get("/", logged_in, login);
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
 router.get("/login", (req, res) => res.redirect("/"));
-router.post("/login",  verifiedAndPaid, authLocal, postLogin);
+router.post("/login", verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -167,7 +170,7 @@ router.post("/reset-password", doResetPassword);
 //checkout
 router.get("/checkout", checkout);
 router.get("/register", (req, res) => res.redirect("/login"));
-router.post("/register",  signUpMiddleware, signUp);
+router.post("/register", signUpMiddleware, signUp);
 
 // verification route
 router.get("/verification", verification);

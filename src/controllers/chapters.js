@@ -7,6 +7,7 @@ const CourseModel = require("../models/courses");
 const UserMeta = require("../models/user-meta");
 const Setting = require("../models/setting");
 const Result = require("../models/result");
+const { sendAgreement } = require("./mailServices");
 
 // chpaters detail
 const chapterDetail = async (req, res) => {
@@ -219,6 +220,21 @@ const viewChapter = async (req, res) => {
         (userCourses.includes(course._id.toString()) &&
           course.chapters.includes(chapter._id))
       ) {
+        const courseAgreement = await UserMeta.findOne({
+          user_id: req.user._id,
+          course: courseId,
+        });
+        if (req.query.agree) {
+          if (!courseAgreement) {
+            await UserMeta({
+              user_id: req.user._id,
+              course: courseId,
+              meta_key: "Course Start Agreement",
+              meta_value: "Accepted",
+            }).save();
+            sendAgreement(req.user.email, req.user.name);
+          }
+        }
         await course.populate("chapters");
         await course.populate("quizzes");
 
@@ -324,8 +340,9 @@ const viewChapter = async (req, res) => {
             Object.assign(contents[0], { unlock: true });
           }
         } else if (
-          setting?.quizPolicy == "accessAllTime" &&
-          req.user.role != "guest" || !(
+          (setting?.quizPolicy == "accessAllTime" &&
+            req.user.role != "guest") ||
+          !(
             setting?.quizPolicy == "accessPassedPrevious" &&
             setting?.quizPolicy == "accessAllTime"
           )

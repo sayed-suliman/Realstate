@@ -150,10 +150,10 @@
                       {{#each userCourses}}
                       <tr>
                         <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                          <a class="text-capitalize" href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}">{{this.name}}</a>
                         </td>
                         <td class="text-right">
-                          <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
+                          <a href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a>
                         </td>
@@ -219,15 +219,16 @@
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-primary" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-banner="/images/course/{{this.banner}}" data-link="/dashboard/view-course/{{this._id}}"
-                            {{/if}}>
+                            data-banner="/images/course/{{this.banner}}"
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{/if}}>
                             {{this.name}}
                           </button>
                           {{else}}
-                          {{!-- <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                          {{!-- <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
                             {{else}} href="#" {{/if}}>{{this.name}}</a> --}}
-                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
-                            {{else}} href="#" {{/if}}>{{this.name}}</a>
+                          <a class="text-capitalize" {{#if
+                            this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{else}}
+                            href="#" {{/if}}>{{this.name}}</a>
                           {{/unless}}
                         </td>
                         <td>
@@ -240,8 +241,8 @@
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-muted" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-link="/dashboard/view-course/{{this._id}}" data-banner="/images/course/{{this.banner}}"
-                            {{/if}}>
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
+                            data-banner="/images/course/{{this.banner}}" {{/if}}>
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
                             {{else}}
@@ -249,7 +250,7 @@
                             {{/unless}}
                           </button>
                           {{else}}
-                          <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}} href="#" {{/if}}
+                          <a {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{else}} href="#" {{/if}}
                             class="text-muted">
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
@@ -410,12 +411,12 @@
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-primary" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-banner="/images/course/{{this.banner}}" data-link="/dashboard/view-course/{{this._id}}"
-                            {{/if}}>
+                            data-banner="/images/course/{{this.banner}}"
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{/if}}>
                             {{this.name}}
                           </button>
                           {{else}}
-                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
                             {{else}} href="#" {{/if}}>{{this.name}}</a>
                           {{/unless}}
                         </td>
@@ -429,8 +430,8 @@
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-muted" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-link="/dashboard/view-course/{{this._id}}" data-banner="/images/course/{{this.banner}}"
-                            {{/if}}>
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
+                            data-banner="/images/course/{{this.banner}}" {{/if}}>
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
                             {{else}}
@@ -438,7 +439,7 @@
                             {{/unless}}
                           </button>
                           {{else}}
-                          <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}} href="#" {{/if}}
+                          <a {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{else}} href="#" {{/if}}
                             class="text-muted">
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
