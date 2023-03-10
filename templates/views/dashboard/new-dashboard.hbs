@@ -224,7 +224,9 @@
                             {{this.name}}
                           </button>
                           {{else}}
-                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                          {{!-- <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
+                            {{else}} href="#" {{/if}}>{{this.name}}</a> --}}
+                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
                             {{else}} href="#" {{/if}}>{{this.name}}</a>
                           {{/unless}}
                         </td>
