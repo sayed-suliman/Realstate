@@ -81,7 +81,7 @@
                                         {{#each questions}}
                                         <div class="custom-control custom-checkbox {{#if @last}}mb-5
                                                 {{/if}}">
-                                            <input class="custom-control-input custom-control-input-success"
+                                            <input class="custom-control-input custom-control-input-primary"
                                                 value="{{this._id}}" type="checkbox" name="qID-{{@index}}"
                                                 id="q-{{@index}}">
                                             <label for="q-{{@index}}"
@@ -248,7 +248,7 @@
 
                                 </div>
                                 <div class="card-footer">
-                                    <button type="button" id="addNextQuiz" class="btn btn-success float-right">Add
+                                    <button type="button" id="addNextQuiz" class="btn btn-primary float-right">Add
                                         Next</button>
                                 </div>
                             </div>
@@ -259,7 +259,7 @@
                     <div class="row">
                         <div class="col-md-6">
                             <button type="reset" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-success float-right">Add Exam</button>
+                            <button type="submit" class="btn btn-primary float-right">Add Exam</button>
                         </div>
                     </div>
                 </form>

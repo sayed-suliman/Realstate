@@ -60,7 +60,7 @@
                                                 {{#each packages}}
                                                 <div class="custom-control custom-checkbox d-flex flex-column">
                                                     <input
-                                                        class="custom-control-input custom-control-input-success packages custom-control-input-outline"
+                                                        class="custom-control-input custom-control-input-primary packages custom-control-input"
                                                         {{#if ../editUser.packages}}{{checkData this._id
                                                         ../editUser.packages}}{{/if}} value="{{this._id}}"
                                                         type="checkbox" name="packages" id="package-{{@index}}" />
@@ -81,7 +81,7 @@
                                                 {{#each courses}}
                                                 <div class="custom-control custom-checkbox d-flex flex-column">
                                                     <input
-                                                        class="custom-control-input custom-control-input-success custom-control-input-outline"
+                                                        class="custom-control-input custom-control-input-primary custom-control-input"
                                                         {{#if ../editUser.courses}}{{checkData this._id
                                                         ../editUser.courses}}{{/if}} value="{{this._id}}"
                                                         type="checkbox" name="courses" id="course-{{@index}}" />
@@ -89,14 +89,14 @@
                                                         class="custom-control-label">{{this.name}}</label>
                                                 </div>
                                                 {{/each}}
-                                                {{!-- <div class="custom-control custom-checkbox d-flex flex-column">
+                                                <div class="custom-control custom-checkbox d-flex flex-column">
                                                     <input
-                                                        class="custom-control-input custom-control-input-success custom-control-input-outline"
+                                                        class="custom-control-input custom-control-input-primary custom-control-input"
                                                         {{#if editUser.salesperson}}checked{{/if}} value="yes"
                                                         type="checkbox" name="salesperson" id="salesperson" />
                                                     <label for="salesperson"
                                                         class="custom-control-label">Salesperson</label>
-                                                </div> --}}
+                                                </div>
                                             </div>
                                         </div>
                                         {{!-- date of birth --}}
@@ -150,7 +150,7 @@
                                     </div>
                                     <div class="card-footer">
                                         <button type="reset" class="btn btn-default">Cancel</button>
-                                        <button type="submit" class="btn btn-success float-right">Update User</button>
+                                        <button type="submit" class="btn btn-primary float-right">Update User</button>
                                     </div>
 
                                 </form>

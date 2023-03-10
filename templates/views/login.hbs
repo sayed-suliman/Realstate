@@ -35,7 +35,8 @@
                         </div>
                         <span>
                             <a href="/reset-password" class="link-primary">Forgot Password?</a>
-                            <p class="fs-16">Not a member? <a href="/packages" class="link-primary">Create account.</a></p>
+                            <p class="fs-16">Not a member? <a href="/packages" class="link-primary">Create account.</a>
+                            </p>
                         </span>
                     </div>
                 </div>
@@ -45,3 +46,12 @@
     {{!--for form validaitons --}}
     <script src="./js/form-validations.js"></script>
     {{>footer}}
+    <script src="https://www.google.com/recaptcha/api.js?render={{reCaptchaSiteKey}}"></script>
+    <script>
+        grecaptcha.ready(function () {
+            grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
+                document.getElementById('g-recaptcha-response').value = token;
+                document.getElementById('g-recaptcha-response-sign').value = token;
+            });
+        });
+    </script>
