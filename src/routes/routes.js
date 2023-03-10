@@ -120,6 +120,7 @@ const {
   verifyMail,
 } = require("../middleware/setting");
 const reCAPTCHA = require("../middleware/reCAPTCHA");
+const salespersonRoutes = require("./salesperson/index");
 
 // default route
 router.get("/packages", async (req, res) => {
@@ -184,7 +185,7 @@ router.post("/register-coupon", couponRegisterAPI);
 
 // middleware for all dashboard route
 router.use("/dashboard", authenticated);
-// router.use("/dashboard/salesperson", salespersonRoutes);
+router.use("/dashboard/salesperson", salespersonRoutes);
 
 // main-dashboard
 router.get("/dashboard", dashboard);

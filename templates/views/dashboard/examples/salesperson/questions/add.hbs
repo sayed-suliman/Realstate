@@ -81,9 +81,8 @@
                                                 <label for="question-1-explain">
                                                     Explanation
                                                 </label>
-                                                <input type="text" value="{{question.explain}}"
-                                                    id="question-1-explain" name="question-1-explain"
-                                                    class="form-control">
+                                                <input type="text" value="{{question.explain}}" id="question-1-explain"
+                                                    name="question-1-explain" class="form-control">
                                             </div>
                                             <div class="form-group">
                                                 <label for="assignCategory">
@@ -102,7 +101,7 @@
                                                 <!-- checkbox     -->
                                                 {{#each categories}}
                                                 <div class="custom-control custom-checkbox">
-                                                    <input class="custom-control-input custom-control-input-success"
+                                                    <input class="custom-control-input custom-control-input-primary"
                                                         value="{{this._id}}" {{#if ../edit}} {{checkData this._id
                                                         ../question.category}} {{/if}} type="checkbox"
                                                         name="assignCategory-1" id="{{this.name}}">
@@ -197,23 +196,19 @@
                                         </div>
                                     </div>
 
-                                </div>
                                 {{#unless edit}}
-                                <div class="card-footer">
-                                    <button type="button" id="addNextQuiz" class="btn btn-success float-right">Add
-                                        Next</button>
-                                </div>
+                                <button type="button" id="addNextQuiz" class="btn btn-primary float-right">Add
+                                    Next</button>
                                 {{/unless}}
+                                </div>
+                                <div class="card-footer">
+                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary float-right">{{#if
+                                        edit}}Update{{else}}Add{{/if}} Questions</button>
+                                </div>
                             </div>
                             <!-- /.card -->
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button type="reset" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-success float-right">{{#if
-                                edit}}Update{{else}}Add{{/if}} Questions</button>
                         </div>
                     </div>
                 </form>

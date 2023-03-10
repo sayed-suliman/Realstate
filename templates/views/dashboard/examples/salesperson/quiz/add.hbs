@@ -102,7 +102,7 @@
                                                 </label>
                                                 {{#each categories}}
                                                 <div class="custom-control custom-checkbox">
-                                                    <input class="custom-control-input custom-control-input-success"
+                                                    <input class="custom-control-input custom-control-input-primary"
                                                         value="{{this._id}}" type="checkbox" name="assignCategory-1"
                                                         id="{{this.name}}">
                                                     <label for="{{this.name}}"
@@ -171,21 +171,17 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <button type="button" id="addNextQuiz" class="btn btn-primary float-right">Add
+                                        Next</button>
 
                                 </div>
                                 <div class="card-footer">
-                                    <button type="button" id="addNextQuiz" class="btn btn-success float-right">Add
-                                        Next</button>
+                                    <button type="reset" class="btn btn-secondary">Cancel</button>
+                                    <button type="submit" class="btn btn-primary float-right">Add Quiz</button>
                                 </div>
                             </div>
                             <!-- /.card -->
 
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button type="reset" class="btn btn-secondary">Cancel</button>
-                            <button type="submit" class="btn btn-success float-right">Add Quiz</button>
                         </div>
                     </div>
                 </form>

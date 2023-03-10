@@ -121,7 +121,7 @@
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
                                                     {{#if this.completed}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-primary"></i>
                                                     {{/if}}
                                                     {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
@@ -139,7 +139,7 @@
                                                         Questions
                                                     </span>
                                                     {{#ifEquals this.grade "passed"}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-primary"></i>
                                                     {{/ifEquals}}
                                                     {{#ifEquals this.grade "failed"}}
                                                     <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>

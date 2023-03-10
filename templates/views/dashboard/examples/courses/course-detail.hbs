@@ -130,8 +130,8 @@
                                             </tr>
                                         </tfoot> --}}
                                     </table>
-
                                     {{/ifEquals}}
+
                                     {{!-- student --}}
                                     {{#ifEquals user.role "student"}}
                                     <table id="courseTable" class="table table-bordered table-hover">
@@ -193,6 +193,7 @@
                                                 </td>
                                             </tr>
                                             {{/each}}
+                                            {{/if}}
                                             {{#if user.salesperson}}
                                             <tr>
                                                 <td colspan="2"><a class="text-capitalize" target="_blank"

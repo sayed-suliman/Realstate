@@ -285,7 +285,7 @@
                                                 <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
                                             </tr>
                                         </table>
-                                        <button class="retake btn btn-success retake mt-2" {{#unless
+                                        <button class="retake btn btn-primary retake mt-2" {{#unless
                                             retake}}disabled{{/unless}}>Retake</button>
                                         <button class="btn btn-primary mt-2 ml-2 "
                                             onclick="(function(){ window.history.back();}())">
@@ -319,7 +319,7 @@
                                         </div>
                                         {{/each}}
                                         <button
-                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
+                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-primary mt-2 float-left submit"
                                             type="submit">Submit</button>
                                     </form>
                                     {{/if}}
@@ -351,7 +351,7 @@
                                         </div>
                                         {{/each}}
                                         <button
-                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-success mt-2 float-left submit"
+                                            class=" {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn btn-primary mt-2 float-left submit"
                                             type="submit">Submit</button>
                                     </form>
                                     {{/if}}
