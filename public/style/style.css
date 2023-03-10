@@ -4,6 +4,7 @@
 :root {
     /* colors */
     --primary-color: #315181;
+    --primary-shadow: rgba(49, 81, 129,.25);
     --secondary-color: #edc36f;
     --primary-blue: #0f7ebe;
     --border-blue: #51b9ff;
@@ -156,6 +157,17 @@
 
 .link-primary:hover {
     color: var(--btn-primary) !important;
+}
+
+.form-check-input:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.form-check-input:focus {
+    border-color: var(--primary-shadow);
+    outline: 0;
+    box-shadow: 0 0 0 0.25rem var(--primary-shadow);
 }
 
 /* table */

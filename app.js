@@ -66,6 +66,7 @@ app.use(flash());
 app.use(async (req, res, next) => {
   // config to middleware
   let themeRes = await Theme.findOne();
+  themeRes.colors["primaryShadow"] = hexToRgba(themeRes.colors.primary, 0.25);
   let setting = await Setting.findOne();
   
   res.locals.theme = themeRes || theme;
