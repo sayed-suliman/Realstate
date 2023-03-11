@@ -3,6 +3,7 @@ const Setting = require("../models/setting");
 const User = require("../models/users");
 const sharp = require("sharp");
 const bcrypt = require("bcrypt");
+const { cache } = require("../config/cache");
 
 module.exports = {
   async settingView(req, res) {
@@ -129,6 +130,11 @@ module.exports = {
           ? await Setting.findByIdAndUpdate(id, settingData)
           : await Setting(settingData).save();
         if (setting) {
+          // caching the site name and logo
+          cache().set("site", {
+            name: setting.collegeName,
+            logo: setting.logoPath,
+          });
           var msg = encodeMsg(
             `Setting successfully ${id ? `updated.` : "saved."}`
           );

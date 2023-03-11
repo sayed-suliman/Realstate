@@ -1,4 +1,6 @@
 const { fonts } = require("../config/fonts");
+const { cache } = require("../config/cache");
+const { hexToRgba } = require("../helper/colorConverter");
 const { encodeMsg, decodeMsg } = require("../helper/createMsg");
 const Theme = require("../models/theme");
 
@@ -52,14 +54,14 @@ exports.doTheme = async (req, res) => {
       result = await Theme(themeObject).save();
     }
     if (result) {
-      // theme = result.toObject();
+      result = result.toObject();
 
-      // delete theme._id;
-      // delete theme.__v;
+      delete result._id;
+      delete result.__v;
 
-      // theme.colors["primaryShadow"] = hexToRgba(theme.colors.primary, 0.25);
-      // res.locals.theme = theme;
-
+      result.colors["primaryShadow"] = hexToRgba(result.colors.primary, 0.25);
+      // caching the theme
+      cache().set("theme", result);
       var msg = encodeMsg(`Theme Updated Successfully.`, "success");
       res.redirect("/dashboard/theme?msg=" + msg);
     }

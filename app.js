@@ -8,17 +8,13 @@ const passport = require("passport");
 const path = require("path");
 const flash = require("connect-flash");
 const { hexToRgba } = require("./src/helper/colorConverter");
-let { theme, site } = require("./src/config/theme");
 const Setting = require("./src/models/setting");
 const Theme = require("./src/models/theme");
-// Routes
-const allRoutes = require("./src/routes/routes");
-require("dotenv").config();
-// database connection
-require("./src/db/conn");
-// hbs helper
-require("./src/helper/hbsHelper");
-
+const allRoutes = require("./src/routes/routes"); // Routes
+require("dotenv").config(); //config env
+require("./src/db/conn"); // database connection
+require("./src/helper/hbsHelper"); // hbs helper
+const { cache } = require("./src/config/cache");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -39,39 +35,37 @@ app.use(
     }),
   })
 );
-// site title
-let title = site.name;
-let logo = site.logo;
-let themeSetting;
+
 // passport js
 app.use(passport.initialize());
 app.use(passport.session());
 
-// config setting
-app.locals.site_Title = title;
-app.locals.site_logo = logo;
-
-// theme setting
-// Theme.findOne()
-//   .then((data) => {
-//     theme = data;
-//   })
-//   .catch((err) => console.log(err));
-
-theme.colors["primaryShadow"] = hexToRgba(theme.colors.primary, 0.25);
-app.locals.theme = theme;
-
 // flash initialized
 app.use(flash());
 app.use(async (req, res, next) => {
-  // config to middleware
-  let themeRes = await Theme.findOne();
-  themeRes.colors["primaryShadow"] = hexToRgba(themeRes.colors.primary, 0.25);
-  let setting = await Setting.findOne();
-  
-  res.locals.theme = themeRes || theme;
-  res.locals.site_Title = setting.collegeName || title;
-  res.locals.site_logo = setting.logoPath || logo;
+  if (cache().get("theme")) {
+    res.locals.theme = cache().get("theme");
+  } else {
+    let newTheme = await Theme.findOne();
+    if (newTheme) {
+      newTheme.colors["primaryShadow"] = hexToRgba(
+        newTheme.colors.primary,
+        0.25
+      );
+      cache().set("theme", newTheme);
+    }
+    res.locals.theme = newTheme;
+  }
+  if (cache().get("site")) {
+    let { name, logo } = cache().get("site");
+    res.locals.site_Title = name;
+    res.locals.site_logo = logo;
+  } else {
+    console.log('from the database')
+    let setting = await Setting.findOne();
+    res.locals.site_Title = setting.collegeName;
+    res.locals.site_logo = setting.logoPath;
+  }
 
   // for flash
   res.locals.success = req.flash("success");
