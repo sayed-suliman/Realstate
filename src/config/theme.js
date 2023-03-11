@@ -11,6 +11,6 @@ module.exports = {
   },
   site: {
     name: "Real Estate Instruct",
-    logo: "/dashboard/dist/img/AdminLTELogo.png",
+    logo: "/dashboard/dist/img/logo.png",
   },
 };

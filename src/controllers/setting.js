@@ -133,7 +133,7 @@ module.exports = {
           // caching the site name and logo
           cache().set("site", {
             name: setting.collegeName,
-            logo: setting.logoPath,
+            logo: setting.logoPath ?? "/dashboard/dist/img/logo.png",
           });
           var msg = encodeMsg(
             `Setting successfully ${id ? `updated.` : "saved."}`

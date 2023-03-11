@@ -3,7 +3,7 @@ const settingSchema = mongoose.Schema({
   logoPath: {
     type: String,
     get: function (logo) {
-      return `/images/${logo}`;
+      if (logo) return `/images/${logo}`;
     },
   },
   collegeName: String,
@@ -38,7 +38,7 @@ const settingSchema = mongoose.Schema({
     type: Number,
     default: 30,
   },
-  
+
   mail: {
     port: String,
     host: String,
