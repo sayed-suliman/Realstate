@@ -14,6 +14,7 @@ Theme.findOne()
       delete data._id;
       delete data.__v;
 
+      data.colors["primaryShadow"] = hexToRgba(data.colors.primary, 0.25);
       cache.set("theme", data); // caching the theme to node cache
     } else {
       theme.colors["primaryShadow"] = hexToRgba(theme.colors.primary, 0.25);
