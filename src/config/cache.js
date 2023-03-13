@@ -26,7 +26,10 @@ Theme.findOne()
 /* ==// CACHING SITE TITLE FROM THE DATABASE OR FROM THE CONFIG FILE //== */
 Setting.findOne().then((setting) => {
   if (setting) {
-    cache.set("site", { name: setting.collegeName, logo: setting.logoPath });
+    cache.set("site", {
+      name: setting.collegeName ?? site.name,
+      logo: setting.logoPath ?? site.logo,
+    });
   } else {
     cache.set("site", site);
   }

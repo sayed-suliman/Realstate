@@ -61,10 +61,11 @@ app.use(async (req, res, next) => {
     res.locals.site_Title = name;
     res.locals.site_logo = logo;
   } else {
-    console.log('from the database')
     let setting = await Setting.findOne();
-    res.locals.site_Title = setting.collegeName;
-    res.locals.site_logo = setting.logoPath;
+    if (setting) {
+      res.locals.site_Title = setting.collegeName;
+      res.locals.site_logo = setting.logoPath;
+    }
   }
 
   // for flash
