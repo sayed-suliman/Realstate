@@ -4,62 +4,50 @@ const nodemailer = require("nodemailer");
 exports.stripeKeyValidation = async (req, res, next) => {
   let validPublic, validSecret;
   const stripeKey = req.body.secretKey;
+
   const stripe = require("stripe")(stripeKey);
   try {
     await stripe.accounts.retrieve();
-    validSecret = true;
   } catch (error) {
     // console.log(error.message);
     req.flash("payment_error", {
-      stripe: { secret: "Invalid Stripe Secret Key Provided." },
+      stripe: "Invalid Stripe Secret Key Provided.",
     });
-    return next();
   }
-  try {
-    const publicKey = req.body.publicKey;
-    // await stripe.keys.retrieve(publicKey);
-    validPublic = true;
-  } catch (error) {
-    console.log(error.message);
-    req.flash("payment_error", {
-      stripe: { public: "Invalid Public API Key Provided." },
-    });
-    return next();
-  }
-  return validSecret && validPublic && next();
+  next();
 };
 
 exports.paypalKeyValidation = async (req, res, next) => {
   const clientId = req.body.clientId;
   const clientSecret = req.body.clientSecret;
+  const paypalBaseURL = process.env.SITE_DEBUG
+    ? "https://api-m.sandbox.paypal.com"
+    : "https://api-m.paypal.com";
 
   try {
-    console.log(clientId, clientSecret);
-    const { data } = axios.post(
-      "https://api.paypal.com/v1/oauth2/token",
-      {
-        grant_type: "client_credentials",
-      },
+    const authResponse = await axios.post(
+      `${paypalBaseURL}/v1/oauth2/token`,
+      "grant_type=client_credentials",
       {
         auth: {
           username: clientId,
           password: clientSecret,
         },
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/x-www-form-urlencoded",
         },
       }
     );
-    console.log(data);
-    next();
+
+    const accessToken = authResponse.data.access_token;
   } catch (error) {
+    // console.log(error.response.data);
     // console.log(error.message);
     req.flash("payment_error", {
-      paypal: { secret: "Invalid Stripe Secret Key Provided." },
+      paypal: "Invalid PayPal ID/Secret Provided.",
     });
-    return next();
   }
+  next();
 };
 
 exports.verifyMail = async (req, res, next) => {
@@ -72,7 +60,7 @@ exports.verifyMail = async (req, res, next) => {
   try {
     await transport.verify();
   } catch (error) {
-    req.flash('mailError',"Invalid Mail Details provided.")
+    req.flash("mailError", "Invalid Mail Details provided.");
   }
   next();
 };

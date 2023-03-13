@@ -611,7 +611,7 @@
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
-                                            <div class="col-12 border mb-2">
+                                            <div class="col-12 border mb-2 stripe">
                                                 <label for="stripekey" class="m-0 py-2">Stripe</label>
                                                 <div class="row border-top">
                                                     <div class="col-12">
@@ -619,9 +619,9 @@
                                                         <div class="form-group">
                                                             <label for="secret">Secret Key</label>
                                                             <textarea name="secretKey" rows="2"
-                                                                class="form-control">{{setting.payment.stripe.secret}}</textarea>
-                                                            {{#if error.stripe.secret}}<small
-                                                                class="text-danger">{{error.stripe.secret}}</small>{{/if}}
+                                                                class="form-control {{#if error.stripe}}border-danger{{/if}}">{{setting.payment.stripe.secret}}</textarea>
+                                                            {{#if error.stripe}}<small
+                                                                class="text-danger">{{error.stripe}}</small>{{/if}}
                                                         </div>
                                                     </div>
                                                     <div class="col-12">
@@ -630,14 +630,15 @@
                                                             <label for="stripekey">Public Key</label>
                                                             <textarea name="publicKey" rows="2"
                                                                 class="form-control">{{setting.payment.stripe.publicKey}}</textarea>
-                                                            {{#if error.stripe.public}}<small
-                                                                class="text-danger">{{error.stripe.public}}</small>{{/if}}
+                                                            <small class="text-danger d-none"></small>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            <div class="col-12 border">
+                                            <div class="col-12 border {{#if error.paypal}}border-danger{{/if}}">
                                                 <label for="paypal" class="m-0 py-2">PayPal</label>
+                                                {{#if error.paypal}}<span
+                                                    class="m-0 py-2 text-danger float-right">{{error.paypal}}</span>{{/if}}
                                                 <div class="row border-top">
                                                     <div class="col-12">
                                                         {{!-- secret key--}}
@@ -980,8 +981,38 @@
     {{!-- footer links --}}
     {{>dashboardfooterlinks}}
     {{!--for form validations --}}
+    {{#ifEquals user.role 'admin'}}
     <script src="/js/form-validations.js"></script>
     {{!-- specific script for this page to remove user image --}}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        let form = document.getElementById('validFrom')
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let submitBtn = e.target.querySelector('button[type="submit"]')
+            let submitText = submitBtn.innerText
+            let publicKey = e.target.querySelector('[name=publicKey]')
+            submitBtn.setAttribute('disabled', true)
+            submitBtn.textContent = 'Submitting'
+            let data = new FormData(form)
+            const pk = data.get('publicKey')
+            let stripe = Stripe(pk);
+            stripe.createToken('pii', { personal_id_number: 'test' })
+                .then(result => {
+                    if (result.token) {
+                        form.submit()
+                    } else {
+                        submitBtn.removeAttribute('disabled')
+                        submitBtn.textContent = submitText
+                        publicKey.classList.add('border-danger')
+                        publicKey.nextElementSibling.classList.remove('d-none')
+                        publicKey.nextElementSibling.textContent = 'Invalid Public Key'
+                    }
+                })
+
+        })
+    </script>
+    {{/ifEquals}}
     <script>
         $(document).ready(function () {
             $("#removeBtn").click(function () {
