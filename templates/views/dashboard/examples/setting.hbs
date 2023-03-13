@@ -981,8 +981,8 @@
     {{!-- footer links --}}
     {{>dashboardfooterlinks}}
     {{!--for form validations --}}
-    {{#ifEquals user.role 'admin'}}
     <script src="/js/form-validations.js"></script>
+    {{#ifEquals user.role 'admin'}}
     {{!-- specific script for this page to remove user image --}}
     <script src="https://js.stripe.com/v3/"></script>
     <script>
