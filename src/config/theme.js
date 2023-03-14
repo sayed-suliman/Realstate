@@ -11,6 +11,6 @@ module.exports = {
   },
   site: {
     name: "Real Estate Instruct",
-    logo: "/dashboard/dist/img/logo.png",
+    logo: "https://ui-avatars.com/api/?name=Real+Estate+Instruct&rounded=true",
   },
 };
