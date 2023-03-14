@@ -41220,18 +41220,18 @@ select.form-control-sm~.select2-container--default .select2-selection--multiple 
 
 .icheck-primary>input:first-child:not(:checked):not(:disabled):hover+label::before,
 .icheck-primary>input:first-child:not(:checked):not(:disabled):hover+input[type="hidden"]+label::before {
-  border-color: #007bff;
+  border-color: var(--primary-color)!important;
 }
 
 .icheck-primary>input:first-child:not(:checked):not(:disabled):focus+label::before,
 .icheck-primary>input:first-child:not(:checked):not(:disabled):focus+input[type="hidden"]+label::before {
-  border-color: #007bff;
+  border-color: var(--primary-color)!important;
 }
 
 .icheck-primary>input:first-child:checked+label::before,
 .icheck-primary>input:first-child:checked+input[type="hidden"]+label::before {
-  background-color: #007bff;
-  border-color: #007bff;
+  background-color: var(--primary-color)!important;
+  border-color: var(--primary-color)!important;
 }
 
 .icheck-secondary>input:first-child:not(:checked):not(:disabled):hover+label::before,

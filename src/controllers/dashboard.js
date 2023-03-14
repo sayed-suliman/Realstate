@@ -9,20 +9,49 @@ const Setting = require("../models/setting");
 module.exports = {
   async dashboard(req, res) {
     try {
+      let role = req.user.role;
       var msgToken = req.query.msg;
       var msg = {};
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
-      /*******************  GUEST DASHBOARD  **********************/
-      if (req.user.role == "guest") {
+      /******************* ==// GUEST/STUDENT DASHBOARD //== **********************/
+      if (["guest", "student"].includes(role)) {
         let userCourses = [];
-        await req.user.populate({
-          path: "trialCourse",
-          match: { status: "publish" },
-        });
-        if (req.user.trialCourse) {
+        // if the role is guest then push trail course to the userCourses array
+        if (role == "guest") {
+          await req.user.populate({
+            path: "trialCourse",
+            match: { status: "publish" },
+          });
           userCourses = [req.user.trialCourse];
+        }
+        if (role == "student") {
+          await req.user.populate([
+            {
+              path: "packages",
+              populate: { path: "courses", match: { status: "publish" } },
+              options: { getters: true },
+            },
+            {
+              path: "courses",
+              match: { status: "publish" },
+              options: { getters: true },
+            },
+          ]);
+          if (req.user.packages) {
+            req.user.packages.map((package) => {
+              if (package.salesperson) {
+                req.user.salesperson = true;
+              }
+              userCourses = [...userCourses, ...package.courses];
+            });
+          }
+          if (req.user.courses.length) {
+            userCourses = [...userCourses, ...req.user.courses];
+          }
+        }
+        if ((role == "guest" && req.user.trialCourse) || userCourses) {
           var completedCourses = {};
           let progress = {};
           let setting = await Setting.findOne();
@@ -106,133 +135,6 @@ module.exports = {
             });
             // unlock only the first one
             userCourses[0].unlock = true;
-          }
-          // assign undefined when completedCourses obj is empty
-          completedCourses = Object.keys(completedCourses).length
-            ? completedCourses
-            : undefined;
-
-          return res.render("dashboard/new-dashboard", {
-            title: "Dashboard",
-            userCourses,
-            completedCourses,
-            progress,
-            toast: Object.keys(msg).length == 0 ? undefined : msg,
-          });
-        }
-      }
-      /*******************  STUDENT DASHBOARD  **********************/
-      if (req.user.role == "student") {
-        let userCourses = [];
-        await req.user.populate([
-          {
-            path: "packages",
-            populate: { path: "courses", match: { status: "publish" } },
-            options: { getters: true },
-          },
-          {
-            path: "courses",
-            match: { status: "publish" },
-            options: { getters: true },
-          },
-        ]);
-        if (req.user.packages) {
-          req.user.packages.map((package) => {
-            if (package.salesperson) {
-              req.user.salesperson = true;
-            }
-            userCourses = [...userCourses, ...package.courses];
-          });
-        }
-        if (req.user.courses.length) {
-          userCourses = [...userCourses, ...req.user.courses];
-        }
-        if (userCourses) {
-          var completedCourses = {};
-          let progress = {};
-          let setting = await Setting.findOne();
-          let courseMeta = await UserMeta.find({
-            user_id: req.user._id,
-          });
-          // filtering only courses meta
-          courseMeta = courseMeta.filter((el) => el.course != undefined);
-
-          // remove duplicate courses
-          userCourses = [
-            ...new Set(userCourses.map((el) => JSON.stringify(el))),
-          ].map((el) => JSON.parse(el));
-
-          // progress calculation
-          for await (let content of userCourses) {
-            // used for to find the content(chap+quiz) length
-            let total = 0;
-
-            for await (let chapter of content.chapters) {
-              const completedChap = await UserMeta.findOne({
-                chapter_id: chapter.toString(),
-                user_id: req.user._id.toString(),
-                meta_key: "completed",
-              });
-              if (completedChap) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
-              }
-              total++;
-            }
-            for await (let quiz of content.quizzes) {
-              const takenQuiz = await Result.findOne({
-                user: req.user._id,
-                quiz: quiz.toString(),
-              });
-              if (takenQuiz) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
-              }
-              total++;
-            }
-
-            if (progress[content.name]) {
-              const value = Math.floor((progress[content.name] / total) * 100);
-              progress[content.name] = value;
-              if (value == 100) {
-                completedCourses[content.name] = content._id.toString();
-              }
-            }
-          }
-          // remove the completed courses for the userCourse list
-          for await (let [index, content] of userCourses.entries()) {
-            if (completedCourses[content.name]) {
-              userCourses.splice(index, 1);
-            }
-            if (userCourses.length) {
-              userCourses[index].unlock = true;
-            }
-          }
-
-          //   check that user accept the agreement or not
-          userCourses.forEach((course, index) => {
-            courseMeta.forEach((startedCourse) => {
-              if (course._id.toString() == startedCourse.course.toString()) {
-                userCourses[index].started = true;
-              }
-            });
-          });
-          // unlock course when previous is completed
-          if (setting?.unlockCourse) {
-            // lock all the courses
-            userCourses.forEach((course, index) => {
-              userCourses[index].unlock = false;
-            });
-            // unlock only the first one
-            if (userCourses.length > 0) {
-              userCourses[0].unlock = true;
-            } 
           }
           // assign undefined when completedCourses obj is empty
           completedCourses = Object.keys(completedCourses).length

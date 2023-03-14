@@ -340,12 +340,12 @@ const viewChapter = async (req, res) => {
             Object.assign(contents[0], { unlock: true });
           }
         } else if (
-          (setting?.quizPolicy == "accessAllTime" &&
-            req.user.role != "guest") ||
-          !(
-            setting?.quizPolicy == "accessPassedPrevious" &&
-            setting?.quizPolicy == "accessAllTime"
-          )
+          (setting?.quizPolicy == "accessAllTime" ||
+            !(
+              setting?.quizPolicy == "accessPassedPrevious" &&
+              setting?.quizPolicy == "accessAllTime"
+            )) &&
+          req.user.role != "guest"
         ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
