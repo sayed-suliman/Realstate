@@ -1,6 +1,9 @@
 const hbs = require("hbs");
 hbs.registerHelper("ifEquals", function (arg1, arg2, block) {
-  if (arg1 && arg1.toString() == arg2 && arg2.toString()) {
+  if (
+    (arg1 && arg1.toString() == arg2 && arg2.toString()) ||
+    (arg1 && arg1.toString() == block.hash.or)
+  ) {
     return block.fn(this);
   }
   return block.inverse(this);
