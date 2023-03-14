@@ -60,6 +60,7 @@ module.exports = {
           secretKey, //stripe
           clientId, //paypal
           clientSecret, //paypal
+          paypalMode, //paypal mode(live/test)
           host,
           port,
           user,
@@ -85,7 +86,7 @@ module.exports = {
           randomizeQuestions: !!randomizeQuestions,
           payment: {
             stripe: { publicKey, secret: secretKey },
-            paypal: { id: clientId, secret: clientSecret },
+            paypal: { id: clientId, secret: clientSecret, live: !!paypalMode },
           },
           mail: {
             email: user,

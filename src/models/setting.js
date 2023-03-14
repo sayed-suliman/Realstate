@@ -54,6 +54,7 @@ const settingSchema = mongoose.Schema({
     paypal: {
       id: String,
       secret: String,
+      live: Boolean,
     },
   },
 });

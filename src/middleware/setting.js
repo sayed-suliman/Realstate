@@ -20,9 +20,10 @@ exports.stripeKeyValidation = async (req, res, next) => {
 exports.paypalKeyValidation = async (req, res, next) => {
   const clientId = req.body.clientId;
   const clientSecret = req.body.clientSecret;
-  const paypalBaseURL = process.env.SITE_DEBUG
-    ? "https://api-m.sandbox.paypal.com"
-    : "https://api-m.paypal.com";
+  const live = !!req.body.paypalMode;
+  const paypalBaseURL = live
+    ? "https://api-m.paypal.com"
+    : "https://api-m.sandbox.paypal.com";
 
   try {
     const authResponse = await axios.post(

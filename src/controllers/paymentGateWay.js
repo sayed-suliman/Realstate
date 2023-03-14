@@ -75,7 +75,10 @@ module.exports = {
               };
               const setting = await Setting.findOne();
               paypal.configure({
-                mode: process.env.SITE_DEBUG ? "sandbox" : "live",
+                mode:
+                  setting.payment.paypal.live || process.env.SITE_DEBUG
+                    ? "sandbox"
+                    : "live",
                 client_id:
                   setting.payment.paypal.id || process.env.PAYPAL_CLIENT_ID,
                 client_secret:

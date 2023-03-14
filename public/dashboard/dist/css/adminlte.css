@@ -4363,7 +4363,7 @@ input[type="button"].btn-block {
 }
 
 .custom-radio .custom-control-input:disabled:checked~.custom-control-label::before {
-  background-color: rgba(0, 123, 255, 0.5);
+  background-color: var(--primary-shadow);
 }
 
 .custom-switch {

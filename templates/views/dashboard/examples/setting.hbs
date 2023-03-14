@@ -637,8 +637,19 @@
                                             </div>
                                             <div class="col-12 border {{#if error.paypal}}border-danger{{/if}}">
                                                 <label for="paypal" class="m-0 py-2">PayPal</label>
+                                                <div class="float-right">
+                                                    <label class="py-2 pr-2 m-0" for="paypalMode">Test</label>
+                                                    <div class="form-group float-right py-2 m-0">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" {{#if setting.payment.paypal.live}}checked{{/if}} name="paypalMode" class="custom-control-input"
+                                                                id="paypalMode">
+                                                            <label class="custom-control-label"
+                                                                for="paypalMode">Live</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                                 {{#if error.paypal}}<span
-                                                    class="m-0 py-2 text-danger float-right">{{error.paypal}}</span>{{/if}}
+                                                    class="m-0 py-2 text-danger float-right pr-3">{{error.paypal}}</span>{{/if}}
                                                 <div class="row border-top">
                                                     <div class="col-12">
                                                         {{!-- secret key--}}
