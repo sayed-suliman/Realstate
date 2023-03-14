@@ -864,6 +864,9 @@
     {{>dashboardfooterlinks}}
     {{!--for form validations --}}
     <script src="/js/form-validations.js"></script>
+    <!-- InputMask -->
+    <script src="/dashboard/plugins/moment/moment.min.js"></script>
+    <script src="/dashboard/plugins/inputmask/jquery.inputmask.min.js"></script>
     {{#ifEquals user.role 'admin'}}
     {{!-- specific script for this page to remove user image --}}
     <script src="https://js.stripe.com/v3/"></script>
@@ -897,6 +900,7 @@
     {{/ifEquals}}
     <script>
         $(document).ready(function () {
+            $('[data-mask]').inputmask()
             $("#removeBtn").click(function () {
                 $("#rmImg").attr("src", "")
                 $("#hiddenField").attr("value", "")
