@@ -118,7 +118,7 @@
                                                             class="fa-regular fa-file"></i>
                                                         {{else}}
                                                         <i class="fa-regular fa-clock"></i>
-                                                        {{/ifEquals}} {{this.name}} {{this.unlock}}</a>
+                                                        {{/ifEquals}} {{this.name}}</a>
 
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
@@ -310,6 +310,8 @@
     {{!-- if already completed then hide this script from client side --}}
     {{#unless chapter.completed}}
     <script>
+        let moveToNext = JSON.parse(`{{{JSON next}}}`)
+        let courseId = `{{{courseId}}}`
         const complete = $('.completed')
         const id = `{{{chapter._id}}}`
         complete.on('click', async (e) => {
@@ -325,7 +327,13 @@
                 complete.prop('disabled', true)
                 complete.text("Completed")
                 //window.history.back()
-                window.location.reload()
+                //window.location.reload()
+                if (moveToNext.type == 'chapter') {
+                    return window.location.replace(`/dashboard/view-chapter/${courseId}/${moveToNext.id}`)
+                }
+                if (['quiz','mid','final'].includes(moveToNext.type)) {
+                    return window.location.replace(`/dashboard/view-quiz/${courseId}/${moveToNext.id}`)
+                }
             }
             if (result.error) {
                 setLoading(false)

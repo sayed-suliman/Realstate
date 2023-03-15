@@ -263,6 +263,18 @@ const viewQuiz = async (req, res) => {
           return 0;
         });
 
+        let indexOfQuiz = contents.findIndex(
+          (content) => content?._id.toString() == quiz._id
+        );
+
+        // move to next when click mark as completed.
+        let next;
+        if (indexOfQuiz < contents.length - 1) {
+          let nextContent = contents[indexOfQuiz + 1];
+          let { type, _id } = nextContent;
+          next = { type, id: _id };
+        }
+
         // quiz policy when completed the the previous
         if (
           setting?.quizPolicy == "accessPassedPrevious" &&
@@ -394,6 +406,7 @@ const viewQuiz = async (req, res) => {
           reviewQuiz: setting?.reviewQuiz,
           courseId: course._id.toString(),
           contents,
+          next,
           retake,
           timeForExam: {
             final: setting?.finalTakeTime,
@@ -431,11 +444,13 @@ const takeQuiz = async (req, res) => {
       // sort the object by property and return back an object
       req.body = Object.entries(req.body)
         .sort(([a], [b]) => {
-          return a.slice(2) > b.slice(2) ? 1 : -1;
+          return parseInt(a.slice(2).replace("q-", "")) >
+            parseInt(b.slice(2).replace("q-", ""))
+            ? 1
+            : -1;
         })
         .reduce((prev, [prop, val]) => ({ ...prev, [prop]: val }), {});
     }
-
     let answersArr = Object.values(req.body);
     let point = 0;
     let wrongAns = [];

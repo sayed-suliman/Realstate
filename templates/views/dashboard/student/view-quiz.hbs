@@ -208,12 +208,13 @@
                                         id="result">
                                         <h3 class="mb-0">Your Result</h3>
                                         <h2
-                                            class="percent mb-0 font-weight-bold {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">
+                                            class="percent mb-0 font-weight-bold {{#ifCond takenQuiz.percent '>=' passingPercent}}text-success{{else}}text-danger{{/ifCond}}">
                                             {{takenQuiz.percent}}%</h2>
                                         <p class="mb-0">Minimum marks required to pass: {{passingPercent}}%</p>
                                         <p>Your grade is <span
-                                                class="grade {{#ifCond takenQuiz.percent '>=' '60'}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
-                                                takenQuiz.percent '>=' '60'}}passed{{else}}failed{{/ifCond}}</span></p>
+                                                class="grade {{#ifCond takenQuiz.percent '>=' passingPercent}}text-success{{else}}text-danger{{/ifCond}}">{{#ifCond
+                                                takenQuiz.percent '>='
+                                                passingPercent}}passed{{else}}failed{{/ifCond}}</span></p>
                                         <table class="mx-auto my-4">
                                             <tr>
                                                 <th class="text-left" style="width:230px ;">Points</th>
@@ -236,12 +237,18 @@
                                                 <td class="text-right wrong">{{takenQuiz.wrong_ans.length}}</td>
                                             </tr>
                                         </table>
+                                        <button class="btn btn-primary mt-2 mr-2 "
+                                            onclick="(function(){ window.history.back();}())">
+                                            <span class="text" id="button-text">Back</span>
+                                        </button>
                                         <button class="retake btn btn-primary retake mt-2" {{#unless
                                             retake}}disabled{{/unless}}>Retake</button>
-                                        <button class="btn btn-primary mt-2 ml-2 "
-                                            onclick="(function(){ window.history.back();}())">
-                                            <span class="text" id="button-text">Go Back</span>
-                                        </button>
+                                        {{#if next.id}}
+                                        <a id="next" class="btn btn-primary mt-2 ml-2 {{#ifCond takenQuiz.percent '<' passingPercent}}d-none{{/ifCond}}"
+                                            href="/dashboard/view-chapter/{{courseId}}/{{next.id}}">
+                                            Next
+                                        </a>
+                                        {{/if}}
                                     </div>
                                     {{#ifCond user.role '==' 'student'}}
                                     {{#if retake}}
