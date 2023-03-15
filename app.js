@@ -15,6 +15,8 @@ require("dotenv").config(); //config env
 require("./src/db/conn"); // database connection
 require("./src/helper/hbsHelper"); // hbs helper
 const { cache } = require("./src/config/cache");
+const { site } = require("./src/config/theme");
+const theme = require("./src/models/theme");
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -42,38 +44,47 @@ app.use(passport.session());
 
 // flash initialized
 app.use(flash());
-app.use(async (req, res, next) => {
-  if (cache().get("theme")) {
-    res.locals.theme = cache().get("theme");
-  } else {
-    let newTheme = await Theme.findOne();
-    if (newTheme) {
-      newTheme.colors["primaryShadow"] = hexToRgba(
-        newTheme.colors.primary,
-        0.25
-      );
-      cache().set("theme", newTheme);
-    }
-    res.locals.theme = newTheme;
-  }
-  if (cache().get("site")) {
-    let { name, logo } = cache().get("site");
-    res.locals.site_Title = name;
-    res.locals.site_logo = logo;
-  } else {
-    let setting = await Setting.findOne();
-    if (setting) {
-      res.locals.site_Title = setting.collegeName;
-      res.locals.site_logo = setting.logoPath;
-    }
-  }
-
+app.use((req, res, next) => {
   // for flash
   res.locals.success = req.flash("success");
   res.locals.toast_success = req.flash("alert_success");
   res.locals.toast_error = req.flash("alert_error");
   res.locals.error = req.flash("error");
   res.locals.user = req.user;
+  next();
+});
+
+// theme and app [name,logo] caching
+app.use(async (req, res, next) => {
+  let { name, logo } = site;
+  let { colors } = theme;
+  if (!cache().get("theme")) {
+    let newTheme = await Theme.findOne();
+    if (newTheme) {
+      newTheme = newTheme.toObject();
+      newTheme.colors["primaryShadow"] = hexToRgba(
+        newTheme.colors.primary ?? colors.primary,
+        0.25
+      );
+      delete newTheme._id;
+      delete newTheme.__v;
+      cache().set("theme", newTheme);
+    }
+  }
+  res.locals.theme = cache().get("theme");
+  
+  if (!cache().get("site")) {
+    let setting = await Setting.findOne();
+    if (setting) {
+      cache().set("site", {
+        name: setting.collegeName ?? name,
+        logo: setting.logoPath ?? logo,
+      });
+    }
+  }
+  let siteCached = cache().get('site')
+  res.locals.site_Title = siteCached.name ?? name;
+  res.locals.site_logo = siteCached.logo ?? logo;
   next();
 });
 
@@ -90,22 +101,6 @@ app.set("views", viewsPath);
 hbs.registerPartials(partialsPath);
 app.use(express.static(publicPath));
 
-// title on allPages
-// hbs.registerHelper("site_Title", function () {
-//   if (title) {
-//     return title;
-//   } else {
-//     return process.env.SITE_NAME;
-//   }
-// });
-// // logo on allPage
-// hbs.registerHelper("site_logo", function () {
-//   if (logo) {
-//     return logo;
-//   } else {
-//     return "/dashboard/dist/img/AdminLTELogo.png";
-//   }
-// });
 app.use(allRoutes);
 
 app.listen(port, () => {

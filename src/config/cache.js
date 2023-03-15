@@ -3,7 +3,7 @@ const NodeCache = require("node-cache");
 const { hexToRgba } = require("../helper/colorConverter");
 const Setting = require("../models/setting");
 const Theme = require("../models/theme");
-const cache = new NodeCache({ stdTTL: 86400 }); //TTL is in seconds i.e:1day
+const cache = new NodeCache({ stdTTL: 60 * 60 * 24 * 14 }); //TTL is in seconds i.e:14days
 let { theme, site } = require("./theme");
 
 /* ==// CACHING THEME FROM THE DATABASE OR FROM THE CONFIG FILE //== */
