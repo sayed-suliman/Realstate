@@ -125,7 +125,8 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
-          grade == "passed" ? $("#next").removeClass("d-none") : $("#next").addClass("d-none");
+          // showing the next btn 
+          grade == "passed" || showNextBtn ? $("#next").removeClass("d-none") : $("#next").addClass("d-none");
           let top = document.querySelector(".quiz-body");
           top.scrollTo({
             top: 0,

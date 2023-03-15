@@ -272,7 +272,11 @@ const viewQuiz = async (req, res) => {
         if (indexOfQuiz < contents.length - 1) {
           let nextContent = contents[indexOfQuiz + 1];
           let { type, _id } = nextContent;
-          next = { type, id: _id };
+          next = {
+            type,
+            id: _id,
+            showBtn: setting?.quizPolicy == "accessAllTime",
+          };
         }
 
         // quiz policy when completed the the previous

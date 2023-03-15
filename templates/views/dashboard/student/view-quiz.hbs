@@ -244,8 +244,8 @@
                                         <button class="retake btn btn-primary retake mt-2" {{#unless
                                             retake}}disabled{{/unless}}>Retake</button>
                                         {{#if next.id}}
-                                        <a id="next" class="btn btn-primary mt-2 ml-2 {{#ifCond takenQuiz.percent '<' passingPercent}}d-none{{/ifCond}}"
-                                            href="/dashboard/view-chapter/{{courseId}}/{{next.id}}">
+                                        <a id="next" class="btn btn-primary mt-2 ml-2 {{#ifCond takenQuiz.percent '<' passingPercent}}d-none{{/ifCond}}{{#if next.showBtn}}d-block{{/if}}"
+                                            href="/dashboard/view-{{#ifEquals next.type 'chapter'}}chapter{{else}}quiz{{/ifEquals}}/{{courseId}}/{{next.id}}">
                                             Next
                                         </a>
                                         {{/if}}
@@ -384,6 +384,7 @@
         const quizType = `{{{quiz.type}}}`
         const takenQuiz = `{{{takenQuiz}}}`;
         const examTime = quizType == "final" ? Number(`{{{timeForExam.final}}}`) * 60 : quizType == "mid" ? Number(`{{{timeForExam.mid}}}`) * 60 : 0;
+        const showNextBtn = `{{{next.showBtn}}}`
     </script>
     <script src="/js/quiz-take.js"></script>
 </body>
