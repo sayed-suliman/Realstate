@@ -18,6 +18,7 @@
                         {{/if}}
                         <div class="px-3 mb-3">
                             <form action="/login" method="post" id="login-form">
+                                <input type="hidden" id="g-recaptcha-response" name="g-recaptcha-response">
                                 <input type="email" class="form-control shadow-none mb-3" required name="email"
                                     placeholder="Email">
                                 <input type="password" required class="form-control shadow-none mb-3" name="password"
@@ -51,7 +52,6 @@
         grecaptcha.ready(function () {
             grecaptcha.execute('{{reCaptchaSiteKey}}', { action: 'login' }).then(function (token) {
                 document.getElementById('g-recaptcha-response').value = token;
-                document.getElementById('g-recaptcha-response-sign').value = token;
             });
         });
     </script>

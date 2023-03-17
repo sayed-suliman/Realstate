@@ -1,8 +1,6 @@
 const express = require("express");
 const router = new express.Router();
 const {
-  login,
-  postLogin,
   signUp,
   loginAsStudent,
   logout,
@@ -122,15 +120,7 @@ const reCAPTCHA = require("../middleware/reCAPTCHA");
 const salespersonRoutes = require("./salesperson/index");
 const Course = require("../models/courses");
 const { sendVerificationCode } = require("../controllers/mailServices");
-/* TESTING CODE */
-router.get("/test", (req, res) => {
-  res.send('<a href="/test">Send Test Mail</a>');
-  sendVerificationCode('meyeh70169@etondy.com',1231)
-});
-router.get("/construction", (req, res) => {
-  res.render('under-construction');
-});
-/* TESTING CODE */
+
 // default route
 router.get("/packages", async (req, res) => {
   try {
