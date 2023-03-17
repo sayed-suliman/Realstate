@@ -107,7 +107,8 @@
                   <td><a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal" title="Edit User">
                       <i class="fas fa-edit"></i>
                     </a>
-                    <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary" title="View User">
+                    <a href="/loginAsStudent?uid={{this._id}}"
+                      class="btn btn-sm btn-primary {{#if ../adminAlert}}disabled{{/if}}" title="View User">
                       <i class="fas fa-user"></i></a>
                   </td>
                 </tr>

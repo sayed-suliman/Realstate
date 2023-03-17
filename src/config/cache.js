@@ -30,6 +30,19 @@ Setting.findOne().then((setting) => {
       name: setting.collegeName ?? site.name,
       logo: setting.logoPath ?? site.logo,
     });
+    /* ==// CACHING PAYMENTS //== */
+    let { stripe, paypal } = setting.payment;
+    let reasons = [];
+    if (!(stripe.publicKey && stripe.secret) || !(paypal.id && paypal.secret)) {
+      reasons.push("missingPayment");
+    }
+    if (!setting.status) {
+      reasons.push("maintenanceMode");
+    }
+    cache.set("isUnderConstruction", {
+      status: reasons.length > 0,
+      reasons,
+    });
   } else {
     cache.set("site", site);
   }

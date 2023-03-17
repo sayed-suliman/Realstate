@@ -44,6 +44,7 @@ module.exports = {
           name,
           address,
           phone,
+          status,
           quizMarks,
           midMarks,
           finalMarks,
@@ -74,6 +75,7 @@ module.exports = {
           collegeName: name,
           collegeAddress: address,
           collegePhone: phone,
+          status: !!status,
           quizPassingMark: quizMarks,
           midPassingMark: midMarks,
           finalPassingMark: finalMarks,
@@ -135,6 +137,17 @@ module.exports = {
           cache().set("site", {
             name: setting.collegeName,
             logo: setting.logoPath ?? "/dashboard/dist/img/logo.png",
+          });
+          let reasons = [];
+          if (!(publicKey && secretKey) || !(clientId && clientSecret)) {
+            reasons.push("missingPayment");
+          }
+          if (!status) {
+            reasons.push("maintenanceMode");
+          }
+          cache().set("isUnderConstruction", {
+            status: reasons.length > 0,
+            reasons,
           });
           var msg = encodeMsg(
             `Setting successfully ${id ? `updated.` : "saved."}`

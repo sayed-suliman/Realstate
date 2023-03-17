@@ -7,16 +7,20 @@ const hbs = require("hbs");
 const passport = require("passport");
 const path = require("path");
 const flash = require("connect-flash");
-const { hexToRgba } = require("./src/helper/colorConverter");
-const Setting = require("./src/models/setting");
-const Theme = require("./src/models/theme");
 const allRoutes = require("./src/routes/routes"); // Routes
 require("dotenv").config(); //config env
 require("./src/db/conn"); // database connection
 require("./src/helper/hbsHelper"); // hbs helper
-const { cache } = require("./src/config/cache");
-const { site } = require("./src/config/theme");
-const theme = require("./src/models/theme");
+const { config } = require("./src/middleware/config");
+const { underConstruction } = require("./src/middleware/underConstruction");
+const {
+  logged_in,
+  verifiedAndPaid,
+} = require("./src/middleware/authentication");
+const { login, postLogin } = require("./src/controllers/auth");
+const reCAPTCHA = require("./src/middleware/reCAPTCHA");
+const authLocal = require("./src/middleware/auth-strategy");
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -54,40 +58,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// theme and app [name,logo] caching
-app.use(async (req, res, next) => {
-  let { name, logo } = site;
-  let { colors } = theme;
-  if (!cache().get("theme")) {
-    let newTheme = await Theme.findOne();
-    if (newTheme) {
-      newTheme = newTheme.toObject();
-      newTheme.colors["primaryShadow"] = hexToRgba(
-        newTheme.colors.primary ?? colors.primary,
-        0.25
-      );
-      delete newTheme._id;
-      delete newTheme.__v;
-      cache().set("theme", newTheme);
-    }
-  }
-  res.locals.theme = cache().get("theme");
-  
-  if (!cache().get("site")) {
-    let setting = await Setting.findOne();
-    if (setting) {
-      cache().set("site", {
-        name: setting.collegeName ?? name,
-        logo: setting.logoPath ?? logo,
-      });
-    }
-  }
-  let siteCached = cache().get('site')
-  res.locals.site_Title = siteCached.name ?? name;
-  res.locals.site_logo = siteCached.logo ?? logo;
-  next();
-});
-
 // views path
 const viewsPath = path.join(__dirname, "./templates/views");
 // partials Path
@@ -101,6 +71,12 @@ app.set("views", viewsPath);
 hbs.registerPartials(partialsPath);
 app.use(express.static(publicPath));
 
+app.use(config); // theme and app [name,logo] caching
+
+app.get("/", logged_in, login);
+app.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
+
+app.use(underConstruction); // under construction
 app.use(allRoutes);
 
 app.listen(port, () => {

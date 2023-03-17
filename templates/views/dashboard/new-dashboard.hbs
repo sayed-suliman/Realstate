@@ -260,47 +260,6 @@
                 </div>
               </div>
             </div>
-            {{#ifEquals user.role "student"}}
-            <!--  /.col-md-6 -->
-            <!-- Completed Course -->
-            <div class="col-lg-6">
-              <div class="card">
-                <div class="card-header border-0">
-                  <h3 class="card-title">Completed Courses</h3>
-                </div>
-                <div class="card-body table-responsive p-0">
-                  <table class="table table-valign-middle">
-                    <thead>
-                      <tr>
-                        <th>Course Name</th>
-                        <th>View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {{#if completedCourses}}
-                      {{#each completedCourses as |value property|}}
-                      <tr>
-                        <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{value}}">{{property}}</a>
-                        </td>
-                        <td class="">
-                          <a href="/dashboard/view-course/{{value}}" class="text-muted">
-                            <i class="fas fa-book"></i>
-                          </a>
-                        </td>
-                      </tr>
-                      {{/each }}
-                      {{else}}
-                      <tr>
-                        <td colspan="2">You haven't complete any course yet.</td>
-                      </tr>
-                      {{/if}}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-            {{/ifEquals}}
             {{!-- Agreement Modal --}}
             <style>
               .courseModal .modal-dialog {

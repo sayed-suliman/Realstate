@@ -4267,8 +4267,8 @@ input[type="button"].btn-block {
 
 .custom-control-input:checked~.custom-control-label::before {
   color: #fff;
-  border-color: #007bff;
-  background-color: #007bff;
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
   box-shadow: none;
 }
 
@@ -4364,6 +4364,10 @@ input[type="button"].btn-block {
 
 .custom-radio .custom-control-input:disabled:checked~.custom-control-label::before {
   background-color: var(--primary-shadow);
+}
+
+.custom-control-input:checked~.custom-control-label::before {
+  background-color: var(--primary-color);
 }
 
 .custom-switch {
@@ -23309,8 +23313,8 @@ body.text-sm .input-group-text {
 }
 
 .custom-switch.custom-switch-on-primary .custom-control-input:checked~.custom-control-label::before {
-  background-color: #007bff;
-  border-color: #004a99;
+  background-color: var(--primary-color);
+  border-color: var(--primary-shadow);
 }
 
 .custom-switch.custom-switch-on-primary .custom-control-input:checked:focus~.custom-control-label::before {
@@ -41220,18 +41224,18 @@ select.form-control-sm~.select2-container--default .select2-selection--multiple 
 
 .icheck-primary>input:first-child:not(:checked):not(:disabled):hover+label::before,
 .icheck-primary>input:first-child:not(:checked):not(:disabled):hover+input[type="hidden"]+label::before {
-  border-color: var(--primary-color)!important;
+  border-color: var(--primary-color) !important;
 }
 
 .icheck-primary>input:first-child:not(:checked):not(:disabled):focus+label::before,
 .icheck-primary>input:first-child:not(:checked):not(:disabled):focus+input[type="hidden"]+label::before {
-  border-color: var(--primary-color)!important;
+  border-color: var(--primary-color) !important;
 }
 
 .icheck-primary>input:first-child:checked+label::before,
 .icheck-primary>input:first-child:checked+input[type="hidden"]+label::before {
-  background-color: var(--primary-color)!important;
-  border-color: var(--primary-color)!important;
+  background-color: var(--primary-color) !important;
+  border-color: var(--primary-color) !important;
 }
 
 .icheck-secondary>input:first-child:not(:checked):not(:disabled):hover+label::before,

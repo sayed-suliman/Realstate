@@ -57,6 +57,10 @@ const settingSchema = mongoose.Schema({
       live: Boolean,
     },
   },
+  status: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const Setting = mongoose.model("setting", settingSchema);

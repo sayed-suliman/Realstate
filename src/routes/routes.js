@@ -113,7 +113,6 @@ const buyMore = require("../controllers/buy-more");
 const freeLesson = require("../controllers/freeCourseRegistration");
 const freeLessonValidation = require("../middleware/freeLessonValidation");
 const { theme, doTheme } = require("../controllers/theme");
-const { checkFontURL } = require("../middleware/checkFont");
 const {
   stripeKeyValidation,
   paypalKeyValidation,
@@ -122,7 +121,16 @@ const {
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const salespersonRoutes = require("./salesperson/index");
 const Course = require("../models/courses");
-
+const { sendVerificationCode } = require("../controllers/mailServices");
+/* TESTING CODE */
+router.get("/test", (req, res) => {
+  res.send('<a href="/test">Send Test Mail</a>');
+  sendVerificationCode('meyeh70169@etondy.com',1231)
+});
+router.get("/construction", (req, res) => {
+  res.render('under-construction');
+});
+/* TESTING CODE */
 // default route
 router.get("/packages", async (req, res) => {
   try {
@@ -154,10 +162,9 @@ router.get("/packages", async (req, res) => {
 });
 
 // auth route
-router.get("/", logged_in, login);
+// login route is used in app due to maintenance mode
 router.get("/loginAsStudent", isAdmin, loginAsStudent);
 router.get("/login", (req, res) => res.redirect("/"));
-router.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
 router.get("/logout", logout);
 
 // forgot password
@@ -320,7 +327,12 @@ router.get("/trial/quiz/:courseID/:quizID", trial.quiz);
 
 // Free Lesson Registration
 router.get("/free-lesson", freeLesson.register);
-router.post("/free-lesson", reCAPTCHA,freeLessonValidation, freeLesson.doRegister);
+router.post(
+  "/free-lesson",
+  reCAPTCHA,
+  freeLessonValidation,
+  freeLesson.doRegister
+);
 // error 500 page
 router.get("/500", (req, res) => res.render("500"));
 router.get("*", async (req, res) => {

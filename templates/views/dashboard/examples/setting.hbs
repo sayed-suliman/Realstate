@@ -592,6 +592,18 @@
                                                             data-mask>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Site Status</label>
+                                                    <div class="form-group d-flex">
+                                                        <label class="mr-2" for="status">Maintenance</label>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" {{#if setting.status}}checked{{/if}}
+                                                                name="status" class="custom-control-input" id="status">
+                                                            <label class="custom-control-label"
+                                                                for="status">Live</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -641,7 +653,9 @@
                                                     <label class="py-2 pr-2 m-0" for="paypalMode">Test</label>
                                                     <div class="form-group float-right py-2 m-0">
                                                         <div class="custom-control custom-switch">
-                                                            <input type="checkbox" {{#if setting.payment.paypal.live}}checked{{/if}} name="paypalMode" class="custom-control-input"
+                                                            <input type="checkbox" {{#if
+                                                                setting.payment.paypal.live}}checked{{/if}}
+                                                                name="paypalMode" class="custom-control-input"
                                                                 id="paypalMode">
                                                             <label class="custom-control-label"
                                                                 for="paypalMode">Live</label>
@@ -892,19 +906,23 @@
             submitBtn.textContent = 'Submitting'
             let data = new FormData(form)
             const pk = data.get('publicKey')
-            let stripe = Stripe(pk);
-            stripe.createToken('pii', { personal_id_number: 'test' })
-                .then(result => {
-                    if (result.token) {
-                        form.submit()
-                    } else {
-                        submitBtn.removeAttribute('disabled')
-                        submitBtn.textContent = submitText
-                        publicKey.classList.add('border-danger')
-                        publicKey.nextElementSibling.classList.remove('d-none')
-                        publicKey.nextElementSibling.textContent = 'Invalid Public Key'
-                    }
-                })
+            if (pk) {
+                let stripe = Stripe(pk);
+                stripe.createToken('pii', { personal_id_number: 'test' })
+                    .then(result => {
+                        if (result.token) {
+                            form.submit()
+                        } else {
+                            submitBtn.removeAttribute('disabled')
+                            submitBtn.textContent = submitText
+                            publicKey.classList.add('border-danger')
+                            publicKey.nextElementSibling.classList.remove('d-none')
+                            publicKey.nextElementSibling.textContent = 'Invalid Public Key'
+                        }
+                    })
+            }else{
+                form.submit()
+            }
 
         })
     </script>
