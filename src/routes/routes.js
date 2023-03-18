@@ -11,13 +11,10 @@ const {
   doResetPassword,
   resetPassword,
 } = require("../controllers/reset-password");
-const authLocal = require("../middleware/auth-strategy");
 const {
   authenticated,
-  logged_in,
   isStudent,
   isAdmin,
-  verifiedAndPaid,
 } = require("../middleware/authentication");
 const signUpMiddleware = require("../middleware/authValidation");
 const {
@@ -119,7 +116,6 @@ const {
 const reCAPTCHA = require("../middleware/reCAPTCHA");
 const salespersonRoutes = require("./salesperson/index");
 const Course = require("../models/courses");
-const { sendVerificationCode } = require("../controllers/mailServices");
 
 // default route
 router.get("/packages", async (req, res) => {
