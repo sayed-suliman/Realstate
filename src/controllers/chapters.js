@@ -292,7 +292,7 @@ const viewChapter = async (req, res) => {
         );
 
         // move to next when click mark as completed.
-        let next;
+        let next={};
         if (indexOfChapter < contents.length - 1) {
           let nextContent = contents[indexOfChapter + 1];
           let { type, _id } = nextContent;

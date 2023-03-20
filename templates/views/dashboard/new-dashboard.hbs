@@ -178,6 +178,9 @@
                 <div class="card-header border-0">
                   <h3 class="card-title">{{#ifEquals user.role 'student'}}Purchased Courses{{else}}Trial
                     Course{{/ifEquals}}</h3>
+                    {{#if showUnlockMsg}}
+                    <div class="bg-danger rounded-lg p-2 d-inline-block mt-2">When the course starts, that specific course will unlock. All other courses will remain locked.</div>
+                    {{/if}}
                 </div>
                 <div class="card-body table-responsive p-0">
                   <table class="table table-valign-middle">

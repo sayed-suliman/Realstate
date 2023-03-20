@@ -328,6 +328,9 @@
                 complete.text("Completed")
                 //window.history.back()
                 //window.location.reload()
+                if(!moveToNext.type){
+                    return window.location.replace(`/dashboard/`)
+                }
                 if (moveToNext.type == 'chapter') {
                     return window.location.replace(`/dashboard/view-chapter/${courseId}/${moveToNext.id}`)
                 }

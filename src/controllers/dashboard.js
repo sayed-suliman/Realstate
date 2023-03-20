@@ -53,7 +53,9 @@ module.exports = {
         }
         if ((role == "guest" && req.user.trialCourse) || userCourses) {
           var completedCourses = {};
+          let coursesId = [];
           let progress = {};
+          let showUnlockMsg = false;
           let setting = await Setting.findOne();
           let courseMeta = await UserMeta.find({
             user_id: req.user._id,
@@ -120,6 +122,9 @@ module.exports = {
 
           //   check that user accept the agreement or not
           userCourses.forEach((course, index) => {
+            //  must not contain the completed courseId
+            // this is use here due to we have removed the completed Courses above.
+            coursesId.push(course._id);
             courseMeta.forEach((startedCourse) => {
               if (course._id.toString() == startedCourse.course.toString()) {
                 userCourses[index].started = true;
@@ -129,9 +134,32 @@ module.exports = {
 
           // unlock course when previous is completed
           if (setting?.unlockCourse) {
+            let startedCourses = courseMeta
+              .map((meta) => {
+                let isAcceptAgreement =
+                  meta.meta_key == "Course Start Agreement" &&
+                  meta.meta_value == "Accepted";
+                let courseId = meta.course.toString();
+                if (isAcceptAgreement) {
+                  return courseId;
+                }
+              })
+              .filter((courseId) => {
+                if (coursesId.includes(courseId)) return true;
+              });
             // lock all the courses
             userCourses.forEach((course, index) => {
-              userCourses[index].unlock = false;
+              if (startedCourses.length) {
+                userCourses[index].unlock = false;
+              }else{
+                showUnlockMsg = true
+              }
+              // when user have already started the course move to the first index of array
+              // because below we have unlock only the first element of array.
+              if (startedCourses.includes(course._id)) {
+                let toTopCourse = userCourses.splice(index, 1);
+                userCourses.unshift(...toTopCourse);
+              }
             });
             // unlock only the first one
             userCourses[0].unlock = true;
@@ -145,6 +173,7 @@ module.exports = {
             title: "Dashboard",
             userCourses,
             completedCourses,
+            showUnlockMsg,
             progress,
             toast: Object.keys(msg).length == 0 ? undefined : msg,
           });
