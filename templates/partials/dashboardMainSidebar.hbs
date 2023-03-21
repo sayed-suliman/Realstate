@@ -1,8 +1,8 @@
 <aside
-  class="main-sidebar {{#if salesperson}}sidebar-dark-orange{{else}}sidebar-dark-primary{{/if}} elevation-4 d-flex flex-column overflow-hidden">
+  class="main-sidebar sidebar-dark-primary elevation-4 d-flex flex-column overflow-hidden">
   <!-- Brand Logo -->
   <a href="/dashboard" class="brand-link">
-    <img src="{{site_logo}}" alt="AdminLTE Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+    <img src="{{site_logo}}" alt="{{site_Title}}" class="brand-image img-circle elevation-3" style="opacity: .8">
     <span class="brand-text font-weight-light">{{site_Title}}</span>
   </a>
 
@@ -43,7 +43,7 @@
           <a href="/dashboard/" class="nav-link">
             {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-home nav-icon"></i>
-            <p>Real Estate</p>
+            <p>Back To Home</p>
           </a>
         </li>
         {{else}}
@@ -205,7 +205,6 @@
         {{!-- salesperson --}}
         <li class="nav-item">
           <a href="/dashboard/salesperson" id="sale-link" target="_blank" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-cloud nav-icon"></i>
             <p>Salesperson</p>
           </a>
@@ -296,8 +295,14 @@
             <p>Settings</p>
           </a>
         </li>
-
-
+        {{!-- Theme --}}
+        <li class="nav-item">
+          <a href="/dashboard/theme" id="theme-link" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-sharp fa-solid fa-sliders nav-icon"></i>
+            <p>Theme Settings</p>
+          </a>
+        </li>
         {{/ifEquals}}
 
 
@@ -311,13 +316,20 @@
             <p>Courses</p>
           </a>
         </li>
+        {{!-- salesperson --}}
+        <li class="nav-item">
+          <a href="/dashboard/salesperson" id="sale-link" target="_blank" class="nav-link">
+            {{!-- <i class="far fa-circle nav-icon"></i> --}}
+            <i class="fa-solid fa-cloud nav-icon"></i>
+            <p>Salesperson</p>
+          </a>
+        </li>
         {{#if salesperson}}
         {{>salesperson/mainSidebar}}
         <li class="nav-item">
           <a href="/dashboard/" class="nav-link">
-            {{!-- <i class="far fa-circle nav-icon"></i> --}}
             <i class="fa-solid fa-home nav-icon"></i>
-            <p>Real Estate</p>
+            <p>Back To Home</p>
           </a>
         </li>
         {{/if}}

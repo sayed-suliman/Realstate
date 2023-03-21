@@ -68,11 +68,11 @@
                                             <tr>
                                                 <th style="width: 65px;">#</th>
                                                 <th>Amount</th>
-                                                <th>Package</th>
+                                                <th>Package/Course</th>
                                                 {{!-- <th>Teacher</th> --}}
                                                 <th>Payment Mode</th>
                                                 <th>By</th>
-                                                <th>email</th>
+                                                <th>Email</th>
                                                 <th>Ordered At</th>
                                             </tr>
                                         </thead>
@@ -81,7 +81,9 @@
                                             <tr>
                                                 <td>{{increment @index}}</td>
                                                 <td>{{this.amount}}</td>
-                                                <td>{{this.package.name}}</td>
+                                                {{!-- Only show one at a time ==// package or course /== --}}
+                                                <td class="text-capitalize">{{this.package.name}} {{this.course.name}}
+                                                </td>
                                                 <td>{{this.pay_method}}</td>
                                                 <td>{{this.user.name}}</td>
                                                 <td>{{this.user.email}}</td>
@@ -155,7 +157,7 @@
                         .column(2)
                         .every(function () {
                             var column = this;
-                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter by Package</option></select>')
+                            var select = $('<select class="form-control w-auto d-inline"><option value="">Filter by Package/Course </option></select>')
                                 .appendTo($('#orderTable_wrapper').children('.row:first').children('div:first'))
                                 .on('change', function () {
                                     var val = $.fn.dataTable.util.escapeRegex($(this).val());

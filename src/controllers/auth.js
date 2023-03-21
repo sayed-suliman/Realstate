@@ -6,6 +6,7 @@ const OTP = require("../models/otp");
 const { generateCode } = require("../helper/genCode");
 const { sendVerificationCode } = require("./mailServices");
 const Course = require("../models/courses");
+const { encodeMsg } = require("../helper/createMsg");
 
 const login = (req, res) => {
   res.render("login", {
@@ -29,15 +30,70 @@ const postLogin = (req, res) => {
   res.redirect(redirectTo);
 };
 
+const loginAsStudent = async (req, res) => {
+  if (req.query.uid) {
+    let adminId = req.user._id.toString();
+    if (adminId == req.query.uid) {
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg: encodeMsg("You can't login as yourself", "danger"),
+          },
+        })
+      );
+    }
+    const user = await User.findById(req.query.uid).populate([
+      {
+        path: "packages",
+        populate: { path: "courses", match: { status: "publish" } },
+      },
+      { path: "courses" },
+    ]);
+    if (
+      user.packages.length ||
+      user.courses.length ||
+      user.trialCourse ||
+      user.salesperson ||
+      user.role == "regulator"
+    ) {
+      req.login(user, function (err) {
+        if (err) {
+          return res.redirect(
+            url.format({
+              pathname: "/dashboard",
+              query: {
+                msg: encodeMsg(err.messages),
+              },
+            })
+          );
+        }
+        req.session.admin = adminId;
+        return res.redirect(
+          url.format({
+            pathname: "/dashboard",
+            query: {
+              msg: encodeMsg("You're login as a " + user.name),
+            },
+          })
+        );
+      });
+    } else {
+      res.redirect(
+        "/dashboard/users?msg=" +
+          encodeMsg("User haven't buy any package or course yet.", "danger")
+      );
+    }
+  } else {
+    res.redirect(
+      "/dashboard/users?msg=" + encodeMsg("User ID is required.", "danger")
+    );
+  }
+};
+
 const signUp = async (req, res) => {
   try {
     let data = await req.body;
-    let cart = {
-      user: null,
-      item: data.package || data.course,
-      itemType: data.package ? "package" : "course",
-    };
-    req.session.cart = cart;
     const formValidations = validationResult(req);
     if (formValidations.errors.length) {
       res.locals.oldData = req.body;
@@ -97,4 +153,35 @@ const signUp = async (req, res) => {
   }
 };
 
-module.exports = { login, postLogin, signUp };
+const logout = async (req, res) => {
+  // if admin login as student
+  if (req.session.admin) {
+    const user = await User.findById(req.session.admin);
+    let msg = encodeMsg("Login back as admin");
+    if (req.session.adminMsg) {
+      msg = encodeMsg(req.session.adminMsg, "danger");
+    }
+    return req.login(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+      return res.redirect(
+        url.format({
+          pathname: "/dashboard",
+          query: {
+            msg,
+          },
+        })
+      );
+    });
+    // delete req.session.admin;
+  }
+  req.logout(function (err) {
+    if (err) {
+      return next(err);
+    }
+    res.redirect("/");
+  });
+};
+
+module.exports = { login, postLogin, loginAsStudent, signUp, logout };

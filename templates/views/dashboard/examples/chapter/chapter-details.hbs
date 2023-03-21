@@ -68,7 +68,8 @@
                                                     </a>
                                                 </td>
                                                 <td>{{#if this.onTrial}}
-                                                    <a href="/trial/chapter/{{this.course._id}}/{{this._id}}"><span
+                                                    <a href="/trial/chapter/{{this.course._id}}/{{this._id}}"
+                                                        style="word-break: break-all;"><span
                                                             class="domainName"></span>/trial/chapter/{{this.course._id}}/{{this._id}}</a>
                                                     {{else}}No{{/if}}
                                                 </td>
@@ -76,7 +77,7 @@
                                                 <td>
                                                     <a href="/dashboard/chapter-detail/edit-chapter?cId={{this._id}}"
                                                         type="button">
-                                                        <button class="btn btn-success">
+                                                        <button class="btn btn-primary">
                                                             <i class="fa-solid fa-pen-to-square"></i>
                                                         </button>
                                                     </a>

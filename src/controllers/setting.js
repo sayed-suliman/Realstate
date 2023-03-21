@@ -3,26 +3,32 @@ const Setting = require("../models/setting");
 const User = require("../models/users");
 const sharp = require("sharp");
 const bcrypt = require("bcrypt");
+const { cache } = require("../config/cache");
 
 module.exports = {
   async settingView(req, res) {
-    var msgToken = req.query.msg;
-    var msg = {};
-    if (msgToken) {
-      msg = decodeMsg(msgToken);
-    }
-    if (req.user.role === "student" || req.user.role === "guest") {
-      return res.render("dashboard/examples/setting", {
+    try {
+      var msgToken = req.query.msg;
+      var msg = {};
+      if (msgToken) {
+        msg = decodeMsg(msgToken);
+      }
+      if (req.user.role === "student" || req.user.role === "guest") {
+        return res.render("dashboard/examples/setting", {
+          title: "Dashboard | Setting",
+          toast: Object.keys(msg).length == 0 ? undefined : msg,
+          editUser: req.user,
+        });
+      }
+      res.render("dashboard/examples/setting", {
         title: "Dashboard | Setting",
         toast: Object.keys(msg).length == 0 ? undefined : msg,
-        editUser: req.user,
+        setting: await Setting.findOne(),
       });
+    } catch (error) {
+      var msg = encodeMsg(error.message, "danger", 500);
+      res.redirect("/dashboard?msg=" + msg);
     }
-    res.render("dashboard/examples/setting", {
-      title: "Dashboard | Setting",
-      toast: Object.keys(msg).length == 0 ? undefined : msg,
-      setting: await Setting.findOne(),
-    });
   },
   async doSetting(req, res) {
     Date.prototype.getAge = function () {
@@ -35,10 +41,10 @@ module.exports = {
     try {
       if (req.user.role == "admin") {
         const {
-          stripeSecretKey,
           name,
           address,
           phone,
+          status,
           quizMarks,
           midMarks,
           finalMarks,
@@ -51,14 +57,25 @@ module.exports = {
           randomizeQuestions,
           showFinalDay,
           unlockCourse,
-          finalDay,
-          finalTime,
+          publicKey, //stripe
+          secretKey, //stripe
+          clientId, //paypal
+          clientSecret, //paypal
+          paypalMode, //paypal mode(live/test)
+          host,
+          port,
+          user,
+          password,
+          finalExamDay,
+          finalExamTime,
+          midTakeTime,
+          finalTakeTime,
         } = req.body;
-
         const settingData = {
           collegeName: name,
           collegeAddress: address,
           collegePhone: phone,
+          status: !!status,
           quizPassingMark: quizMarks,
           midPassingMark: midMarks,
           finalPassingMark: finalMarks,
@@ -69,16 +86,69 @@ module.exports = {
           reviewQuiz: !!reviewQuiz,
           showAnswer: !!showAnswer,
           randomizeQuestions: !!randomizeQuestions,
-          finalDay: !!showFinalDay ? finalDay : -1,
-          finalTime: !!showFinalDay ? finalTime : -1,
+          payment: {
+            stripe: { publicKey, secret: secretKey },
+            paypal: { id: clientId, secret: clientSecret, live: !!paypalMode },
+          },
+          mail: {
+            email: user,
+            host,
+            port,
+            user,
+            pass: password,
+          },
+          // unlock the final term after(days)
+          finalDay: !!showFinalDay ? Number(finalExamDay) : -1,
+          finalTime: !!showFinalDay ? Number(finalExamTime) : -1,
+          // time for student to take final and mid
+          finalTakeTime,
+          midTakeTime,
         };
         if (req.file) {
           settingData.logoPath = req.file.filename;
         }
+        // if error
+        let errors = [];
+        let paymentError = req.flash("payment_error");
+        let mailError = req.flash("mailError");
+        errors.push(...paymentError, ...mailError);
+        if (errors.length) {
+          let error = errors[0];
+          let msg = error.stripe ?? error.paypal ?? error;
+          settingData.logoPath = `/images/${
+            settingData.logoPath || "logo.png"
+          }`;
+
+          return res.render("dashboard/examples/setting", {
+            title: "Dashboard | Setting",
+            error,
+            toast: {
+              text: msg,
+            },
+            setting: settingData,
+          });
+        }
+
         const setting = id
           ? await Setting.findByIdAndUpdate(id, settingData)
           : await Setting(settingData).save();
         if (setting) {
+          // caching the site name and logo
+          cache().set("site", {
+            name: setting.collegeName,
+            logo: setting.logoPath ?? "/dashboard/dist/img/logo.png",
+          });
+          let reasons = [];
+          if (!(publicKey && secretKey) || !(clientId && clientSecret)) {
+            reasons.push("missingPayment");
+          }
+          if (!status) {
+            reasons.push("maintenanceMode");
+          }
+          cache().set("isUnderConstruction", {
+            status: reasons.length > 0,
+            reasons,
+          });
           var msg = encodeMsg(
             `Setting successfully ${id ? `updated.` : "saved."}`
           );
@@ -271,6 +341,7 @@ module.exports = {
         }
       }
     } catch (error) {
+      console.log(error);
       var msg = encodeMsg(error.message, "danger", 500);
       res.redirect("/dashboard/setting?msg=" + msg);
     }

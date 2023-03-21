@@ -56,7 +56,7 @@ module.exports = {
         type: "danger",
       });
     }
-    return res.redirect("/login");
+    return res.redirect("/");
   },
   async doResetPassword(req, res) {
     try {
@@ -100,7 +100,7 @@ module.exports = {
       await User.findOneAndUpdate({ email }, { $set: { password: hash } });
       console.log(await User.findOne({ email }));
       await ResetToken.findOneAndDelete({ email });
-      return res.redirect("/login");
+      return res.redirect("/");
     } catch (error) {
       console.log(error);
       res.redirect("/500");

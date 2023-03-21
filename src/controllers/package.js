@@ -37,6 +37,7 @@ module.exports = {
         whoFor: packageData.whoFor,
         whatsIncluded: packageData.whatsIncluded,
         price: packageData.price,
+        salesperson: !!packageData.salesperson,
       }).save();
       if (package) {
         // link added to package
@@ -121,6 +122,7 @@ module.exports = {
   async updatePackage(req, res) {
     try {
       const data = req.body;
+      data.salesperson = !!data.salesperson;
       const pId = req.query.pId;
       const package = await Package.findById(pId);
       const course = await Course.find({ name: req.body.coursename }).select(

@@ -263,9 +263,25 @@ const viewQuiz = async (req, res) => {
           return 0;
         });
 
+        let indexOfQuiz = contents.findIndex(
+          (content) => content?._id.toString() == quiz._id
+        );
+
+        // move to next when click mark as completed.
+        let next;
+        if (indexOfQuiz < contents.length - 1) {
+          let nextContent = contents[indexOfQuiz + 1];
+          let { type, _id } = nextContent;
+          next = {
+            type,
+            id: _id,
+            showBtn: setting?.quizPolicy == "accessAllTime",
+          };
+        }
+
         // quiz policy when completed the the previous
         if (
-          setting.quizPolicy == "accessPassedPrevious" &&
+          setting?.quizPolicy == "accessPassedPrevious" &&
           req.user.role != "guest"
         ) {
           // unlocking the next content when the previous is completed
@@ -288,15 +304,15 @@ const viewQuiz = async (req, res) => {
                     // lock system for final term when days are in database
                     if (
                       contents[index].type == "final" &&
-                      setting.finalDay != -1 &&
+                      setting?.finalDay != -1 &&
                       courseMeta
                     ) {
                       // date of agreement
                       let agreementDate = new Date(courseMeta.createdAt);
 
                       // Day and Minute from database
-                      let unlockAfterDay = setting.finalDay;
-                      let unlockAfterTime = setting.finalTime;
+                      let unlockAfterDay = setting?.finalDay;
+                      let unlockAfterTime = setting?.finalTime;
 
                       // adding day and minute to the agreement date
                       let final = new Date(
@@ -319,7 +335,11 @@ const viewQuiz = async (req, res) => {
             Object.assign(contents[0], { unlock: true });
           }
         } else if (
-          setting.quizPolicy == "accessAllTime" &&
+          (setting?.quizPolicy == "accessAllTime" ||
+            !(
+              setting?.quizPolicy == "accessPassedPrevious" &&
+              setting?.quizPolicy == "accessAllTime"
+            )) &&
           req.user.role != "guest"
         ) {
           for await (let [index] of contents.entries()) {
@@ -328,7 +348,7 @@ const viewQuiz = async (req, res) => {
             }
             // lock system for final term when days are in database
             if (
-              setting.finalDay != -1 &&
+              setting?.finalDay != -1 &&
               contents[index].type == "final" &&
               courseMeta
             ) {
@@ -336,8 +356,8 @@ const viewQuiz = async (req, res) => {
               let agreementDate = new Date(courseMeta.createdAt);
 
               // Day and Minute from database
-              let unlockAfterDay = setting.finalDay;
-              let unlockAfterTime = setting.finalTime;
+              let unlockAfterDay = setting?.finalDay;
+              let unlockAfterTime = setting?.finalTime;
 
               // adding day and minute to the agreement date
               let final = new Date(
@@ -359,7 +379,7 @@ const viewQuiz = async (req, res) => {
           quiz.questions[index].qno = `q-${index}`;
         }
         // randomizing the question
-        if (setting.randomizeQuestions) {
+        if (setting?.randomizeQuestions) {
           quiz.questions.sort(() => {
             return Math.random() - 0.5;
           });
@@ -367,19 +387,19 @@ const viewQuiz = async (req, res) => {
 
         let passingPercent;
         if (quiz.type == "quiz") {
-          passingPercent = setting.quizPassingMark;
+          passingPercent = setting?.quizPassingMark;
         } else if (quiz.type == "mid") {
-          passingPercent = setting.midPassingMark;
+          passingPercent = setting?.midPassingMark;
         } else if (quiz.type == "final") {
-          passingPercent = setting.finalPassingMark;
+          passingPercent = setting?.finalPassingMark;
         }
 
         let retake = true;
         if (takenQuiz) {
           if (quiz.type == "mid") {
-            retake = !(setting.midRetake == takenQuiz.take);
+            retake = !(setting?.midRetake == takenQuiz.take);
           } else if (quiz.type == "final") {
-            retake = !(setting.finalRetake == takenQuiz.take);
+            retake = !(setting?.finalRetake == takenQuiz.take);
           }
         }
         res.render("dashboard/student/view-quiz", {
@@ -387,13 +407,14 @@ const viewQuiz = async (req, res) => {
           quiz,
           takenQuiz,
           passingPercent,
-          reviewQuiz: setting.reviewQuiz,
+          reviewQuiz: setting?.reviewQuiz,
           courseId: course._id.toString(),
           contents,
+          next,
           retake,
           timeForExam: {
-            final: setting.finalTakeTime,
-            mid: setting.midTakeTime,
+            final: setting?.finalTakeTime,
+            mid: setting?.midTakeTime,
           },
         });
       } else {
@@ -423,15 +444,17 @@ const takeQuiz = async (req, res) => {
     delete req.body.time;
     delete req.body.user;
 
-    if (setting.randomizeQuestions) {
+    if (setting?.randomizeQuestions) {
       // sort the object by property and return back an object
       req.body = Object.entries(req.body)
         .sort(([a], [b]) => {
-          return a.slice(2) > b.slice(2) ? 1 : -1;
+          return parseInt(a.slice(2).replace("q-", "")) >
+            parseInt(b.slice(2).replace("q-", ""))
+            ? 1
+            : -1;
         })
         .reduce((prev, [prop, val]) => ({ ...prev, [prop]: val }), {});
     }
-
     let answersArr = Object.values(req.body);
     let point = 0;
     let wrongAns = [];
@@ -450,11 +473,11 @@ const takeQuiz = async (req, res) => {
     // passing for marks from database
     let passingMark;
     if (quiz.type == "quiz") {
-      passingMark = setting.quizPassingMark;
+      passingMark = setting?.quizPassingMark;
     } else if (quiz.type == "mid") {
-      passingMark = setting.midPassingMark;
+      passingMark = setting?.midPassingMark;
     } else if (quiz.type == "final") {
-      passingMark = setting.finalPassingMark;
+      passingMark = setting?.finalPassingMark;
     }
     const percent = Math.floor((point / questions.length) * 100);
     const grade = percent >= passingMark ? "passed" : "failed";
@@ -477,9 +500,9 @@ const takeQuiz = async (req, res) => {
     // -1 is for unlimited
     let noOfRetake = -1;
     if (quiz.type == "mid") {
-      noOfRetake = setting.midRetake;
+      noOfRetake = setting?.midRetake;
     } else if (quiz.type == "final") {
-      noOfRetake = setting.finalRetake;
+      noOfRetake = setting?.finalRetake;
     }
     let retake = true;
 
@@ -518,8 +541,8 @@ const takeQuiz = async (req, res) => {
     // 2) if reviewQuiz and showAnswer both are enable
     //      send correct and wrong answer of the user and correctAns of the question
     // 3) other wise send only marks(points) + correct and wrong counts
-    sendObj = setting.reviewQuiz
-      ? setting.showAnswer
+    sendObj = setting?.reviewQuiz
+      ? setting?.showAnswer
         ? { showAns, correctAns, wrongAns, point, retake }
         : { correctAns, wrongAns, point, retake }
       : {

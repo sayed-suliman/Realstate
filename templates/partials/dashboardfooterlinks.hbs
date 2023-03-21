@@ -199,6 +199,11 @@
             $("#dashboard-link").removeClass("active")
             $('#setting-link').addClass("active")
         }
+        //setting
+        if (url.includes("theme")) {
+            $("#dashboard-link").removeClass("active")
+            $('#theme-link').addClass("active")
+        }
 
         //salesperson -- category
         if (url.includes("add-category")) {
@@ -293,18 +298,19 @@
         })
 
     })
-
+    
+    $('.toast').toast({delay:5000})
     //showing alert(toast)
     {{#if toast }}
+    $('.toast').toast('show')
+    {{/if}}
+    {{#if adminAlert }}
+    $('.admin-toast').toast('show')
+    {{/if}}
+    {{#if toast_error}}
     $('.toast').toast('show')
     setTimeout(() => {
         $('.toast').toast('dispose')
     }, 5000)
     {{/if}}
-            {{#if toast_error}}
-            $('.toast').toast('show')
-            setTimeout(() => {
-                $('.toast').toast('dispose')
-            }, 5000)
-            {{/if}}
 </script>

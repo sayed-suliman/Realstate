@@ -145,7 +145,7 @@
                                                     <div class="form-group col">
                                                         <label for="midTime">Mid Time</label>
                                                         <div class="input-group">
-                                                            <input type="number" min="0" name="midTime" id="midTime"
+                                                            <input type="number" min="0" name="midTakeTime" id="midTime"
                                                                 value="{{setting.midTakeTime}}"
                                                                 placeholder="Example: 60" class="form-control">
                                                             <div class="input-group-append">
@@ -156,8 +156,8 @@
                                                     <div class="form-group col">
                                                         <label for="finalTime">Final Time</label>
                                                         <div class="input-group">
-                                                            <input type="number" min="0" name="finalTime" id="finalTime"
-                                                                value="{{setting.finalTakeTime}}"
+                                                            <input type="number" min="0" name="finalTakeTime"
+                                                                id="finalTime" value="{{setting.finalTakeTime}}"
                                                                 placeholder="Example: 60" class="form-control">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text">Minutes</span>
@@ -239,10 +239,10 @@
                                                             Term after days?</label>
                                                     </div>
                                                     <div class="form-group finalDay mt-1">
-                                                        <input type="number" min="0" name="finalDay" id="finalTermDay"
-                                                            value="{{setting.finalDay}}" placeholder="Enter No of days"
-                                                            class="form-control">
-                                                        <input type="number" min="0" name="finalTime"
+                                                        <input type="number" min="0" name="finalExamDay"
+                                                            id="finalTermDay" value="{{setting.finalDay}}"
+                                                            placeholder="Enter No of days" class="form-control">
+                                                        <input type="number" min="0" name="finalExamTime"
                                                             value="{{setting.finalTime}}" placeholder="Time in minutes"
                                                             class="form-control mt-2">
                                                     </div>
@@ -424,7 +424,7 @@
                                                     <div class="form-group col">
                                                         <label for="midTime">Mid Time</label>
                                                         <div class="input-group">
-                                                            <input type="number" min="0" name="midTime" id="midTime"
+                                                            <input type="number" min="0" name="midTakeTime" id="midTime"
                                                                 value="{{setting.midTakeTime}}"
                                                                 placeholder="Example: 60" class="form-control">
                                                             <div class="input-group-append">
@@ -435,8 +435,8 @@
                                                     <div class="form-group col">
                                                         <label for="finalTime">Final Time</label>
                                                         <div class="input-group">
-                                                            <input type="number" min="0" name="finalTime" id="finalTime"
-                                                                value="{{setting.finalTakeTime}}"
+                                                            <input type="number" min="0" name="finalTakeTime"
+                                                                id="finalTime" value="{{setting.finalTakeTime}}"
                                                                 placeholder="Example: 60" class="form-control">
                                                             <div class="input-group-append">
                                                                 <span class="input-group-text">Minutes</span>
@@ -518,10 +518,10 @@
                                                             Term after days?</label>
                                                     </div>
                                                     <div class="form-group finalDay mt-1">
-                                                        <input type="number" min="0" name="finalDay" id="finalTermDay"
-                                                            value="{{setting.finalDay}}" placeholder="Enter No of days"
-                                                            class="form-control">
-                                                        <input type="number" min="0" name="finalTime"
+                                                        <input type="number" min="0" name="finalExamDay"
+                                                            id="finalTermDay" value="{{setting.finalDay}}"
+                                                            placeholder="Enter No of days" class="form-control">
+                                                        <input type="number" min="0" name="finalExamTime"
                                                             value="{{setting.finalTime}}" placeholder="Time in minutes"
                                                             class="form-control mt-2">
                                                     </div>
@@ -532,8 +532,8 @@
                                 </div>
                             </div>
                             <!-- General Setting -->
-                            <div class="col-md-6 mb-2">
-                                <div class="card card-primary ">
+                            <div class="col-md-6 mb-4">
+                                <div class="card card-primary h-100">
                                     <div class="card-header">
                                         <h3 class="card-title">General Setting</h3>
                                         <div class="card-tools">
@@ -555,7 +555,7 @@
                                                                 id="exampleInputFile">
                                                         </div>
                                                     </div>
-                                                    {{#if setting}}
+                                                    {{#if setting.logoPath}}
                                                     <div class="col-xl-6">
                                                         <p class="mb-0 mt-2 d-flex flex-column align-items-center">
                                                             <img src="{{setting.logoPath}}" alt="logo" width="100px">
@@ -592,123 +592,151 @@
                                                             data-mask>
                                                     </div>
                                                 </div>
+                                                <div class="form-group">
+                                                    <label>Site Status</label>
+                                                    <div class="form-group d-flex">
+                                                        <label class="mr-2" for="status">Maintenance</label>
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" {{#if setting.status}}checked{{/if}}
+                                                                name="status" class="custom-control-input" id="status">
+                                                            <label class="custom-control-label"
+                                                                for="status">Live</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="card-footer">
-                                        <button type="submit" class="btn btn-primary float-right">{{#if
-                                            setting}}Update{{else}}Save{{/if}}</button>
+                                </div>
+                            </div>
+                            <!-- Payment Setting -->
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-success">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Payment Setting</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                                title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-12 border mb-2 stripe">
+                                                <label for="stripekey" class="m-0 py-2">Stripe</label>
+                                                <div class="row border-top">
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="secret">Secret Key</label>
+                                                            <textarea name="secretKey" rows="2"
+                                                                class="form-control {{#if error.stripe}}border-danger{{/if}}">{{setting.payment.stripe.secret}}</textarea>
+                                                            {{#if error.stripe}}<small
+                                                                class="text-danger">{{error.stripe}}</small>{{/if}}
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        {{!-- public key --}}
+                                                        <div class="form-group">
+                                                            <label for="stripekey">Public Key</label>
+                                                            <textarea name="publicKey" rows="2"
+                                                                class="form-control">{{setting.payment.stripe.publicKey}}</textarea>
+                                                            <small class="text-danger d-none"></small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col-12 border {{#if error.paypal}}border-danger{{/if}}">
+                                                <label for="paypal" class="m-0 py-2">PayPal</label>
+                                                <div class="float-right">
+                                                    <label class="py-2 pr-2 m-0" for="paypalMode">Test</label>
+                                                    <div class="form-group float-right py-2 m-0">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox" {{#if
+                                                                setting.payment.paypal.live}}checked{{/if}}
+                                                                name="paypalMode" class="custom-control-input"
+                                                                id="paypalMode">
+                                                            <label class="custom-control-label"
+                                                                for="paypalMode">Live</label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {{#if error.paypal}}<span
+                                                    class="m-0 py-2 text-danger float-right pr-3">{{error.paypal}}</span>{{/if}}
+                                                <div class="row border-top">
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="secret">Client Id</label>
+                                                            <textarea name="clientId" rows="2"
+                                                                class="form-control">{{setting.payment.paypal.id}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-12">
+                                                        {{!-- secret key--}}
+                                                        <div class="form-group">
+                                                            <label for="clientKey">Client Secret</label>
+                                                            <textarea name="clientSecret" rows="2"
+                                                                class="form-control">{{setting.payment.paypal.secret}}</textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                            {{/ifEquals}}
-
-                            {{!-- for student --}}
-                            {{#ifEquals user.role "student"}}
-                            <div class="col-md-6">
-                                <div class="card card-primary h-100 mb-0">
+                            <!-- Mail Setting -->
+                            <div class="col-md-6 mb-2">
+                                <div class="card card-gray">
                                     <div class="card-header">
-                                        <h3 class="card-title">General Setting</h3>
+                                        <h3 class="card-title">Mail Setting</h3>
+                                        <div class="card-tools">
+                                            <button type="button" class="btn btn-tool" data-card-widget="collapse"
+                                                title="Collapse">
+                                                <i class="fas fa-minus"></i>
+                                            </button>
+                                        </div>
                                     </div>
                                     <div class="card-body">
                                         <div class="row">
                                             <div class="col-12">
-                                                <!--- Logo  -->
-                                                <div class="d-flex justify-content-between">
-                                                    <div class="form-group">
-                                                        <label for="avatar">Avatar <small>(<b>Size=</b>
-                                                                1:1)</small></label>
-                                                        <div class="input-group">
-                                                            <input type="file" name="avatar" accept="image/*"
-                                                                id="avatar" />
+                                                <div class="row">
+                                                    <div class="col-lg-8">
+                                                        {{!-- mail email --}}
+                                                        <div class="form-group">
+                                                            <label for="host">Host</label>
+                                                            <input type="text" name="host" id="host"
+                                                                value="{{setting.mail.host}}" placeholder="Host"
+                                                                class="form-control">
                                                         </div>
-                                                        {{#if setting}}
-                                                        <p class="mb-0 mt-2">
-                                                            <b>
-                                                                <a href="{{setting.logoPath}}"
-                                                                    class="font-weight-normal" target="_blank">Current
-                                                                    Uploaded logo
-                                                                    <i class="fa-solid fa-image mr-1"></i>
-                                                                </a>
-                                                            </b>
-                                                        </p>
-                                                        {{/if}}
                                                     </div>
-                                                    {{#if editUser.avatar}}
-                                                    <div class="col-2 text-center">
-                                                        <input type="hidden" id="hiddenField"
-                                                            value="{{editUser.avatar}}" name="hiddenImg">
-                                                        <img src="data:image/jpg;base64,{{editUser.avatar}}"
-                                                            alt="user-avatar" id="rmImg" class="img-circle img-fluid">
-                                                        <p type="button" id="removeBtn" class="fa-2xs mt-3 text-danger"
-                                                            style="text-decoration: underline;">Remove Image</p>
+                                                    <div class="col-lg-4">
+                                                        {{!-- mail port --}}
+                                                        <div class="form-group">
+                                                            <label for="port">Port</label>
+                                                            <input type="number" min="0" name="port" id="port"
+                                                                value="{{setting.mail.port}}" placeholder="Port"
+                                                                class="form-control">
+                                                        </div>
                                                     </div>
-                                                    {{else}}
-                                                    <div class="col-2 text-center">
-                                                        <img src="https://ui-avatars.com/api/?name={{editUser.name}}&size=256"
-                                                            alt="user-avatar" class="img-circle img-fluid">
-                                                    </div>
-                                                    {{/if}}
                                                 </div>
-                                                <!--- name  -->
+                                            </div>
+                                            <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="name">Full Name</label>
-                                                    <input type="text" class="form-control" id="name"
-                                                        placeholder="College Name" value="{{editUser.name}}"
-                                                        name="name">
+                                                    <label for="username">Username</label>
+                                                    <input type="text" name="user" id="user"
+                                                        value="{{setting.mail.user}}" placeholder="Username"
+                                                        class="form-control">
                                                 </div>
-                                                <!--- driver license  -->
+                                            </div>
+                                            <div class="col-12">
                                                 <div class="form-group">
-                                                    <label for="collegeName">Driver License / CA ID Number</label>
-                                                    <input type="text"
-                                                        class="form-control {{#checkError err.driver_license}}is-invalid{{/checkError}}"
-                                                        id="collegeName" placeholder="Enter License"
-                                                        value="{{editUser.driver_license}}" name="driver_license">
-                                                    <span class="license-error invalid-feedback">
-                                                        {{err.driver_license}}
-                                                    </span>
-                                                </div>
-                                                <!--- dob  -->
-                                                <div class="form-group">
-                                                    <label for="dob">Date of Birth</label>
-                                                    <input type="date"
-                                                        class="form-control {{#checkError err.dob}}is-invalid{{/checkError}}"
-                                                        id="dob" value="{{dateFormat editUser.dob}}" name="dob">
-                                                    <span class="license-error invalid-feedback">
-                                                        {{err.dob}}
-                                                    </span>
-                                                </div>
-                                                {{!-- password --}}
-                                                <div class="form-group">
-                                                    <label for="currentPassword">Current Password</label>
-                                                    <input type="password"
-                                                        class="form-control {{#checkError err.currentPassword}}is-invalid{{/checkError}}"
-                                                        id="currentPassword" placeholder="Enter Current Password"
-                                                        name="currentPassword">
-                                                    <span class="license-error invalid-feedback">
-                                                        {{err.currentPassword}}
-                                                    </span>
-                                                </div>
-                                                {{!-- new password --}}
-                                                <div class="form-group">
-                                                    <label for="password">New Password</label>
-                                                    <input type="password"
-                                                        class="form-control pass {{#checkError err.newPass}}is-invalid{{/checkError}}"
-                                                        id="password" placeholder="Enter New Password" name="newPass">
-                                                    <span class="license-error invalid-feedback">
-                                                        {{err.newPass}}
-                                                    </span>
-                                                </div>
-                                                {{!-- confirm new password --}}
-                                                <div class="form-group">
-                                                    <label for="c_password">Confirm new Password</label>
-                                                    <input type="password"
-                                                        class="form-control pass {{#checkError err.newPassConfirm}}is-invalid{{/checkError}}"
-                                                        id="c_password" placeholder="Confirm your new Password"
-                                                        name="newPassConfirm">
-                                                    <span class="license-error invalid-feedback">
-                                                        {{err.newPassConfirm}}
-                                                    </span>
+                                                    <label for="password">Password</label>
+                                                    <input type="text" name="password" id="user"
+                                                        value="{{setting.mail.pass}}" placeholder="Password"
+                                                        class="form-control">
                                                 </div>
                                             </div>
                                         </div>
@@ -720,9 +748,9 @@
                                 </div>
                             </div>
                             {{/ifEquals}}
-                            {{!-- for student --}}
-                            {{#ifEquals user.role "guest"}}
-                            <div class="col-md-6">
+                            {{!-- for student and guest user --}}
+                            {{#ifEquals user.role "guest" or='student'}}
+                            <div class="col-md-6 mb-2">
                                 <div class="card card-primary h-100 mb-0">
                                     <div class="card-header">
                                         <h3 class="card-title">General Setting</h3>
@@ -861,9 +889,47 @@
     {{>dashboardfooterlinks}}
     {{!--for form validations --}}
     <script src="/js/form-validations.js"></script>
+    <!-- InputMask -->
+    <script src="/dashboard/plugins/moment/moment.min.js"></script>
+    <script src="/dashboard/plugins/inputmask/jquery.inputmask.min.js"></script>
+    {{#ifEquals user.role 'admin'}}
     {{!-- specific script for this page to remove user image --}}
+    <script src="https://js.stripe.com/v3/"></script>
+    <script>
+        let form = document.getElementById('validFrom')
+        form.addEventListener('submit', (e) => {
+            e.preventDefault()
+            let submitBtn = e.target.querySelector('button[type="submit"]')
+            let submitText = submitBtn.innerText
+            let publicKey = e.target.querySelector('[name=publicKey]')
+            submitBtn.setAttribute('disabled', true)
+            submitBtn.textContent = 'Submitting'
+            let data = new FormData(form)
+            const pk = data.get('publicKey')
+            if (pk) {
+                let stripe = Stripe(pk);
+                stripe.createToken('pii', { personal_id_number: 'test' })
+                    .then(result => {
+                        if (result.token) {
+                            form.submit()
+                        } else {
+                            submitBtn.removeAttribute('disabled')
+                            submitBtn.textContent = submitText
+                            publicKey.classList.add('border-danger')
+                            publicKey.nextElementSibling.classList.remove('d-none')
+                            publicKey.nextElementSibling.textContent = 'Invalid Public Key'
+                        }
+                    })
+            }else{
+                form.submit()
+            }
+
+        })
+    </script>
+    {{/ifEquals}}
     <script>
         $(document).ready(function () {
+            $('[data-mask]').inputmask()
             $("#removeBtn").click(function () {
                 $("#rmImg").attr("src", "")
                 $("#hiddenField").attr("value", "")
@@ -889,7 +955,7 @@
                 $("#finalTermDay").prop("required", true)
                 $("#finalTermDay").parent().animate({ opacity: "1" })
                 $("#finalTermDay").prop("min", "0")
-                $("[name=finalTime]").prop("min", "0")
+                $("[name=finalExamTime]").prop("min", "0")
             } else {
                 finalInput(false)
             }
@@ -901,11 +967,11 @@
                     $("#finalTermDay").prop("required", true)
                     $("#finalTermDay").parent().animate({ opacity: "1", height: "toggle" })
                     $("#finalTermDay").prop("min", "0")
-                    $("[name=finalTime]").prop("min", "0")
+                    $("[name=finalExamTime]").prop("min", "0")
                 } else {
                     $("#finalTermDay").prop("required", false)
                     $("#finalTermDay").prop("min", "")
-                    $("[name=finalTime]").prop("min", "")
+                    $("[name=finalExamTime]").prop("min", "")
                     $("#finalTermDay").prop("checked", false)
                     $("#finalTermDay").parent().animate({ opacity: "0", height: 'toggle' })
                 }

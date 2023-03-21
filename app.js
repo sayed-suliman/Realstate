@@ -7,13 +7,19 @@ const hbs = require("hbs");
 const passport = require("passport");
 const path = require("path");
 const flash = require("connect-flash");
-
-const Setting = require("./src/models/setting");
-require("dotenv").config();
-// database connection
-require("./src/db/conn");
-// hbs helper
-require("./src/helper/hbsHelper");
+const allRoutes = require("./src/routes/routes"); // Routes
+require("dotenv").config(); //config env
+require("./src/db/conn"); // database connection
+require("./src/helper/hbsHelper"); // hbs helper
+const { config } = require("./src/middleware/config");
+const { underConstruction } = require("./src/middleware/underConstruction");
+const {
+  logged_in,
+  verifiedAndPaid,
+} = require("./src/middleware/authentication");
+const { login, postLogin } = require("./src/controllers/auth");
+const reCAPTCHA = require("./src/middleware/reCAPTCHA");
+const authLocal = require("./src/middleware/auth-strategy");
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -35,9 +41,6 @@ app.use(
     }),
   })
 );
-// site title
-let title;
-let logo;
 
 // passport js
 app.use(passport.initialize());
@@ -45,29 +48,16 @@ app.use(passport.session());
 
 // flash initialized
 app.use(flash());
-app.use(async (req, res, next) => {
+app.use((req, res, next) => {
+  // for flash
   res.locals.success = req.flash("success");
   res.locals.toast_success = req.flash("alert_success");
   res.locals.toast_error = req.flash("alert_error");
   res.locals.error = req.flash("error");
   res.locals.user = req.user;
-
-  // site title and logo
-  const setting = await Setting.findOne();
-  if (setting) {
-    title = setting.collegeName;
-    logo = setting.logoPath;
-    // console.log("currently not working env file updation");
-    process.env.host = setting.mailHost;
-    process.env.mail_port = setting.mailPort;
-    process.env.user = setting.mailUser;
-    process.env.pass = setting.mailPass;
-    process.env.email = setting.mailEmail;
-  }
   next();
 });
-// Routes
-const allRoutes = require("./src/routes/routes");
+
 // views path
 const viewsPath = path.join(__dirname, "./templates/views");
 // partials Path
@@ -81,22 +71,12 @@ app.set("views", viewsPath);
 hbs.registerPartials(partialsPath);
 app.use(express.static(publicPath));
 
-// title on allPages
-hbs.registerHelper("site_Title", function () {
-  if (title) {
-    return title;
-  } else {
-    return process.env.SITE_NAME;
-  }
-});
-// logo on allPage
-hbs.registerHelper("site_logo", function () {
-  if (logo) {
-    return logo;
-  } else {
-    return "/dashboard/dist/img/AdminLTELogo.png";
-  }
-});
+app.use(config); // theme and app [name,logo] caching
+
+app.get("/", logged_in, login);
+app.post("/login", reCAPTCHA, verifiedAndPaid, authLocal, postLogin);
+
+app.use(underConstruction); // under construction
 app.use(allRoutes);
 
 app.listen(port, () => {

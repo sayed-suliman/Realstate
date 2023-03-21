@@ -6,7 +6,9 @@ module.exports = (req, res, next) => {
   const previousRoute = req.headers.referer;
   if (!recaptcha) {
     previousRoute.includes("checkout")
-      ? req.flash("signUpError", "reCAPTCHA initialization failed.")
+      ? req.url == "/register"
+        ? req.flash("signUpError", "reCAPTCHA initialization failed.")
+        : req.flash("error", "reCAPTCHA initialization failed.")
       : req.flash("error", "reCAPTCHA initialization failed.");
     return res.redirect(previousRoute || "/login");
   }
@@ -27,14 +29,18 @@ module.exports = (req, res, next) => {
         next();
       } else {
         previousRoute.includes("checkout")
-          ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+          ? req.url == "/register"
+            ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+            : req.flash("error", "Failed to validate reCAPTCHA")
           : req.flash("error", "Failed to validate reCAPTCHA");
         return res.redirect(previousRoute || "/login");
       }
     })
     .catch((error) => {
       previousRoute.includes("checkout")
-        ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+        ? req.url == "/register"
+          ? req.flash("signUpError", "Failed to validate reCAPTCHA")
+          : req.flash("error", "Failed to validate reCAPTCHA")
         : req.flash("error", "Failed to validate reCAPTCHA");
       return res.redirect(previousRoute || "/login");
     });

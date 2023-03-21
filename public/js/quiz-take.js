@@ -57,7 +57,6 @@ $(document).ready(function () {
     clearInterval(timeInterval);
     e.preventDefault();
     const formData = $(e.target).serializeArray();
-    console.log(time);
     // adding time at top of array
     formData.unshift({ name: "time", value: time });
     submitMsg = timeOver
@@ -98,7 +97,6 @@ $(document).ready(function () {
 
           // if point then show the result
           // if (point) {
-          console.log(typeof point);
           const percent = Math.round((point / Number(noOfQuestions)) * 100);
           const grade = percent >= Number(passingPercent) ? "passed" : "failed";
 
@@ -127,6 +125,8 @@ $(document).ready(function () {
           $("#result .wrong").text(
             `${reviewQuiz == "true" ? wrongAns.length : wrongCount}`
           );
+          // showing the next btn 
+          grade == "passed" || showNextBtn ? $("#next").removeClass("d-none") : $("#next").addClass("d-none");
           let top = document.querySelector(".quiz-body");
           top.scrollTo({
             top: 0,
@@ -173,7 +173,7 @@ $(document).ready(function () {
         }
       },
       error: (error) => {
-        console.log(error);
+        console.error(error);
       },
     });
   };

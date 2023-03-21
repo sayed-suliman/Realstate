@@ -150,10 +150,11 @@
                       {{#each userCourses}}
                       <tr>
                         <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{this._id}}">{{this.name}}</a>
+                          <a class="text-capitalize"
+                            href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}">{{this.name}}</a>
                         </td>
                         <td class="text-right">
-                          <a href="/dashboard/view-course/{{this._id}}" class="text-muted">
+                          <a href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a>
                         </td>
@@ -164,43 +165,22 @@
                 </div>
               </div>
             </div>
-            <!--  /.col-md-6 -->
-            <!-- Completed Course -->
-            {{!-- <div class="col-lg-6">
-              <div class="card">
-                <div class="card-header border-0">
-                  <h3 class="card-title">Completed Courses</h3>
-                </div>
-                <div class="card-body table-responsive p-0">
-                  <table class="table table-striped table-valign-middle">
-                    <thead>
-                      <tr>
-                        <th>Course Name</th>
-                        <th>View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td colspan="2">You haven't complete any course yet.</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div> --}}
-            <!-- /.col-md-6 -->
             {{/ifEquals}}
 
 
-            {{!-- Student --}}
+            {{!-- Student or guest --}}
             <!-- /.col-md-6 -->
 
-            {{#ifEquals user.role "student"}}
+            {{#ifEquals user.role "student" or='guest'}}
             <!-- Purchased Course -->
             <div class="col-lg-6">
               <div class="card">
                 <div class="card-header border-0">
-                  <h3 class="card-title">Purchased Courses</h3>
+                  <h3 class="card-title float-none">{{#ifEquals user.role 'student'}}Purchased Courses{{else}}Trial
+                    Course{{/ifEquals}}</h3>
+                    {{#if showUnlockMsg}}
+                    <div class="bg-danger rounded-lg p-2 d-inline-block mt-2">When the course starts, that specific course will unlock. All other courses will remain locked.</div>
+                    {{/if}}
                 </div>
                 <div class="card-body table-responsive p-0">
                   <table class="table table-valign-middle">
@@ -217,29 +197,30 @@
                       <tr class="{{#unless this.unlock}}event-none{{/unless}}">
                         <td>
                           {{#unless started}}
-                          <button type="button" class="btn p-0 text-blue" id="start" {{#if
+                          <button type="button" class="btn p-0 text-primary" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-banner="/images/course/{{this.banner}}" data-link="/dashboard/view-course/{{this._id}}"
-                            {{/if}}>
+                            data-banner="/images/course/{{this.banner}}"
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{/if}}>
                             {{this.name}}
                           </button>
                           {{else}}
-                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
-                            {{else}} href="#" {{/if}}>{{this.name}}</a>
+                          <a class="text-capitalize" {{#if
+                            this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}" {{else}}
+                            href="#" {{/if}}>{{this.name}}</a>
                           {{/unless}}
                         </td>
                         <td>
                           <div class="progress progress-xs">
                             <div class="progress-bar progress-bar-danger"
-                              style="width: {{lookup ../progress this.name}}%"></div>
+                              style="width: {{lookup ../progress this._id}}%"></div>
                           </div>
                         </td>
                         <td class="text-right">
                           {{#unless started}}
                           <button type="button" class="btn p-0 text-muted" id="start" {{#if
                             this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-link="/dashboard/view-course/{{this._id}}" data-banner="/images/course/{{this.banner}}"
-                            {{/if}}>
+                            data-link="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
+                            data-banner="/images/course/{{this.banner}}" {{/if}}>
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
                             {{else}}
@@ -247,8 +228,8 @@
                             {{/unless}}
                           </button>
                           {{else}}
-                          <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}} href="#" {{/if}}
-                            class="text-muted">
+                          <a {{#if this.unlock}}href="/dashboard/view-chapter/{{this._id}}/{{this.chapters.[0]}}"
+                            {{else}} href="#" {{/if}} class="text-muted">
                             {{#unless this.unlock}}
                             <i class="fa-solid fa-lock"></i>
                             {{else}}
@@ -260,23 +241,31 @@
                       </tr>
                       {{/each}}
                       {{/if}}
+                      {{#ifEquals user.role 'student'}}
                       {{#if user.salesperson}}
                       <tr>
                         <td colspan="2"><a class="text-capitalize" target="_blank"
                             href="/dashboard/salesperson/">Salesperson</a></td>
-                        <td class="text-right"><a href="/dashboard/salesperson/" target="_blank" class="text-muted">
-                            <i class="fas fa-book"></i>
+                        <td class="text-right"><a target="_blank" href="/dashboard/salesperson/" class="text-muted">
+                            <i class="fa-solid fa-book"></i>
                           </a></td>
                       </tr>
                       {{/if}}
+                      {{/ifEquals}}
+                      {{#ifCond user.salesperson '||' userCourses.length}}
+                      {{else}}
+                      <tr>
+                        <td colspan="3">No courses found.</td>
+                      </tr>
+                      {{/ifCond}}
                     </tbody>
                   </table>
                 </div>
               </div>
             </div>
-            <!--  /.col-md-6 -->
+             {{#ifEquals user.role "student"}}
             <!-- Completed Course -->
-            <div class="col-lg-6">
+             <div class="col-lg-6">
               <div class="card">
                 <div class="card-header border-0">
                   <h3 class="card-title">Completed Courses</h3>
@@ -294,10 +283,10 @@
                       {{#each completedCourses as |value property|}}
                       <tr>
                         <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{value}}">{{property}}</a>
+                          <a class="text-capitalize" href="/dashboard/view-course/{{property}}">{{value}}</a>
                         </td>
                         <td class="">
-                          <a href="/dashboard/view-course/{{value}}" class="text-muted">
+                          <a href="/dashboard/view-course/{{property}}" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a>
                         </td>
@@ -313,7 +302,7 @@
                 </div>
               </div>
             </div>
-
+            {{/ifEquals}}
             {{!-- Agreement Modal --}}
             <style>
               .courseModal .modal-dialog {
@@ -324,7 +313,7 @@
               .courseModal .modal-body {
                 background-position: center;
                 background-repeat: no-repeat;
-                background-size: contain;
+                background-size: contain !important;
               }
 
               .courseModal .btn {
@@ -377,140 +366,6 @@
             <!-- /.col-md-6 -->
             {{/ifEquals}}
 
-            {{!-- GUEST USER --}}
-            {{#ifEquals user.role "guest"}}
-            <!-- Purchased Course -->
-            <div class="col-lg-6">
-              <div class="card">
-                <div class="card-header border-0">
-                  <h3 class="card-title">Trial Course</h3>
-                </div>
-                <div class="card-body table-responsive p-0">
-                  <table class="table table-valign-middle">
-                    <thead>
-                      <tr>
-                        <th>Course Name</th>
-                        <th>Progress</th>
-                        <th class="text-right">View</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {{#if userCourses}}
-                      {{#each userCourses}}
-                      <tr class="{{#unless this.unlock}}event-none{{/unless}}">
-                        <td>
-                          {{#unless started}}
-                          <button type="button" class="btn p-0 text-blue" id="start" {{#if
-                            this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-banner="/images/course/{{this.banner}}" data-link="/dashboard/view-course/{{this._id}}"
-                            {{/if}}>
-                            {{this.name}}
-                          </button>
-                          {{else}}
-                          <a class="text-capitalize" {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}"
-                            {{else}} href="#" {{/if}}>{{this.name}}</a>
-                          {{/unless}}
-                        </td>
-                        <td>
-                          <div class="progress progress-xs">
-                            <div class="progress-bar progress-bar-danger"
-                              style="width: {{lookup ../progress this.name}}%"></div>
-                          </div>
-                        </td>
-                        <td class="text-right">
-                          {{#unless started}}
-                          <button type="button" class="btn p-0 text-muted" id="start" {{#if
-                            this.unlock}}data-toggle="modal" data-target="#modal-default"
-                            data-link="/dashboard/view-course/{{this._id}}" data-banner="/images/course/{{this.banner}}"
-                            {{/if}}>
-                            {{#unless this.unlock}}
-                            <i class="fa-solid fa-lock"></i>
-                            {{else}}
-                            <i class="fas fa-book"></i>
-                            {{/unless}}
-                          </button>
-                          {{else}}
-                          <a {{#if this.unlock}}href="/dashboard/view-course/{{this._id}}" {{else}} href="#" {{/if}}
-                            class="text-muted">
-                            {{#unless this.unlock}}
-                            <i class="fa-solid fa-lock"></i>
-                            {{else}}
-                            <i class="fa-solid fa-book"></i>
-                            {{/unless}}
-                          </a>
-                          {{/unless}}
-                        </td>
-                      </tr>
-                      {{/each}}
-                      {{/if}}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-            </div>
-
-            {{!-- Agreement Modal --}}
-            <style>
-              .courseModal .modal-dialog {
-                height: calc(100vh - 80px);
-                max-width: 100%;
-              }
-
-              .courseModal .modal-body {
-                background-position: center;
-                background-repeat: no-repeat;
-                background-size: contain;
-              }
-
-              .courseModal .btn {
-                width: 90px;
-              }
-            </style>
-            <div class="modal fade courseModal" id="modal-default" style="display: none;" aria-hidden="true">
-              <div class="modal-dialog">
-                <div class="modal-content h-100 shadow-none bg-transparent border-0">
-                  <div class="modal-body d-flex justify-content-center align-items-center">
-                    <button id="yes-start" href="#" class="btn btn-primary" data-toggle="modal"
-                      data-target="#agreement">Begin</button>
-                    <button type="button" class="btn btn-danger ml-2" data-dismiss="modal">Cancel</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div class="modal fade agreement" id="agreement" style="display: none;" aria-hidden="true">
-              <div class="modal-dialog modal-lg">
-                <div class="modal-content h-100">
-                  <div class="modal-body">
-                    <h5 class="m-0 mb-4 text-center fa-2x font-weight-bold">Student Agreement</h5>
-                    <p class="m-0">Name: <span class="text-bold">{{user.name}}</span></p>
-                    <p class="m-0 mb-4">Email: <span class="text-bold">{{user.email}}</span></p>
-                    <p>You must complete and submit the following student agreement form before you can proceed with
-                      your course(s).</p>
-                    <p>I, {{user.name}}, under penalty of perjury, do hereby affirm and agree that I am registered
-                      student
-                      of {{site_Title}}, and that I will personally complete each reading assignment, quiz and the
-                      final examination of the course(s). I understand that my failure to comply with this agreement
-                      will result in revocation of completion certificate, and that such violation will be reported to
-                      my local estate industry regulatory authorities.</p>
-                    <p>Furthermore, I understand that the contents of the course(s) may not be copied, reproduced,
-                      resold or used by any other person. Unauthorized copying of this course is prohibited by U.S
-                      copyright laws which provide substantial penalties for copyright infringement.</p>
-                    <p style="margin-bottom: 60px;">By submitting this form I agree to comply with the terms, conditions
-                      and copyright restrictions
-                      as stated herein.</p>
-                    <p class="text-center">
-
-                      <a id="accept" href="#" class="btn btn-primary">Accept</a>
-                    </p>
-                    <p class="text-center" style="margin-top:60px">Sponsor ID: S0665, 8505 Crenshaw Blvd Inglewood CA
-                      91305</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <!-- /.col-md-6 -->
-            {{/ifEquals}}
           </div>
           <!-- /.row -->
         </div>
@@ -590,6 +445,10 @@
   <!-- jQuery -->
   {{>dashboardfooterlinks}}
   <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
+  <script>
+    var theme = JSON.parse(`{{{JSON theme}}}`)
+    let primaryColor = theme.colors.primary
+  </script>
   <script src="/dashboard/dist/js/pages/dashboard3.js"></script>
 
   <script>

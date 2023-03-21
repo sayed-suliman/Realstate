@@ -9,150 +9,57 @@ const Setting = require("../models/setting");
 module.exports = {
   async dashboard(req, res) {
     try {
+      let role = req.user.role;
       var msgToken = req.query.msg;
       var msg = {};
       if (msgToken) {
         msg = decodeMsg(msgToken);
       }
-      /*******************  GUEST DASHBOARD  **********************/
-      if (req.user.role == "guest") {
+      /******************* ==// GUEST/STUDENT DASHBOARD //== **********************/
+      if (["guest", "student"].includes(role)) {
         let userCourses = [];
-        await req.user.populate({
-          path: "trialCourse",
-          match: { status: "publish" },
-        });
-        if (req.user.trialCourse) {
-          userCourses = [req.user.trialCourse];
-          var completedCourses = {};
-          let progress = {};
-          let setting = await Setting.findOne();
-          let courseMeta = await UserMeta.find({
-            user_id: req.user._id,
-          });
-          // filtering only courses meta
-          courseMeta = courseMeta.filter((el) => el.course != undefined);
-          // remove duplicate courses
-          userCourses = [
-            ...new Set(userCourses.map((el) => JSON.stringify(el))),
-          ].map((el) => JSON.parse(el));
-
-          // progress calculation
-          for await (let content of userCourses) {
-            // used for to find the content(chap+quiz) length
-            let total = 0;
-
-            for await (let chapter of content.chapters) {
-              const completedChap = await UserMeta.findOne({
-                chapter_id: chapter.toString(),
-                user_id: req.user._id.toString(),
-                meta_key: "completed",
-              });
-              if (completedChap) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
-              }
-              total++;
-            }
-            for await (let quiz of content.quizzes) {
-              const takenQuiz = await Result.findOne({
-                user: req.user._id,
-                quiz: quiz.toString(),
-              });
-              if (takenQuiz) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
-              }
-              total++;
-            }
-
-            if (progress[content.name]) {
-              const value = Math.floor((progress[content.name] / total) * 100);
-              progress[content.name] = value;
-              if (value == 100) {
-                completedCourses[content.name] = content._id.toString();
-              }
-            }
-          }
-          // remove the completed courses for the userCourse list
-          for await (let [index, content] of userCourses.entries()) {
-            if (completedCourses[content.name]) {
-              userCourses.splice(index, 1);
-            }
-            if (userCourses.length) {
-              userCourses[index].unlock = true;
-            }
-          }
-
-          //   check that user accept the agreement or not
-          userCourses.forEach((course, index) => {
-            courseMeta.forEach((startedCourse) => {
-              if (course._id.toString() == startedCourse.course.toString()) {
-                userCourses[index].started = true;
-              }
-            });
-          });
-
-          // unlock course when previous is completed
-          if (setting.unlockCourse) {
-            // lock all the courses
-            userCourses.forEach((course, index) => {
-              userCourses[index].unlock = false;
-            });
-            // unlock only the first one
-            userCourses[0].unlock = true;
-          }
-          // assign undefined when completedCourses obj is empty
-          completedCourses = Object.keys(completedCourses).length
-            ? completedCourses
-            : undefined;
-
-          return res.render("dashboard/new-dashboard", {
-            title: "Dashboard",
-            userCourses,
-            completedCourses,
-            progress,
-            toast: Object.keys(msg).length == 0 ? undefined : msg,
-          });
-        }
-      }
-      /*******************  STUDENT DASHBOARD  **********************/
-      if (req.user.role == "student") {
-        let userCourses = [];
-        await req.user.populate([
-          {
-            path: "packages",
-            populate: { path: "courses", match: { status: "publish" } },
-            options: { getters: true },
-          },
-          {
-            path: "courses",
+        // if the role is guest then push trail course to the userCourses array
+        if (role == "guest") {
+          await req.user.populate({
+            path: "trialCourse",
             match: { status: "publish" },
-            options: { getters: true },
-          },
-        ]);
-        if (req.user.packages) {
-          req.user.packages.map((package) => {
-            userCourses = [...userCourses, ...package.courses];
           });
+          userCourses = [req.user.trialCourse];
         }
-        if (req.user.courses.length) {
-          userCourses = [...userCourses, ...req.user.courses];
+        if (role == "student") {
+          await req.user.populate([
+            {
+              path: "packages",
+              populate: { path: "courses", match: { status: "publish" } },
+              options: { getters: true },
+            },
+            {
+              path: "courses",
+              match: { status: "publish" },
+              options: { getters: true },
+            },
+          ]);
+          if (req.user.packages) {
+            req.user.packages.map((package) => {
+              if (package.salesperson) {
+                req.user.salesperson = true;
+              }
+              userCourses = [...userCourses, ...package.courses];
+            });
+          }
+          if (req.user.courses.length) {
+            userCourses = [...userCourses, ...req.user.courses];
+          }
         }
-        if (userCourses) {
+        if ((role == "guest" && req.user.trialCourse) || userCourses) {
           var completedCourses = {};
+          let coursesId = [];
           let progress = {};
+          let showUnlockMsg = false;
           let setting = await Setting.findOne();
           let courseMeta = await UserMeta.find({
             user_id: req.user._id,
           });
-          // filtering only courses meta
-          courseMeta = courseMeta.filter((el) => el.course != undefined);
 
           // remove duplicate courses
           userCourses = [
@@ -165,17 +72,22 @@ module.exports = {
             let total = 0;
 
             for await (let chapter of content.chapters) {
-              const completedChap = await UserMeta.findOne({
-                chapter_id: chapter.toString(),
-                user_id: req.user._id.toString(),
-                meta_key: "completed",
-              });
-              if (completedChap) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
+              let completedChap = courseMeta.findIndex((meta) => {
+                if (
+                  meta?.chapter_id == chapter.toString() &&
+                  meta.meta_key == "completed"
+                ) {
+                  return true;
                 }
+              });
+              // const completedChap = await UserMeta.findOne({
+              //   chapter_id: chapter.toString(),
+              //   user_id: req.user._id.toString(),
+              //   meta_key: "completed",
+              // });
+              // console.log(completedChap?.chapter_id, test, content._id);
+              if (completedChap > -1) {
+                progress[content._id] = (progress[content._id] || 0) + 1;
               }
               total++;
             }
@@ -185,35 +97,36 @@ module.exports = {
                 quiz: quiz.toString(),
               });
               if (takenQuiz) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
+                progress[content._id] = (progress[content._id] || 0) + 1;
               }
               total++;
             }
 
-            if (progress[content.name]) {
-              const value = Math.floor((progress[content.name] / total) * 100);
-              progress[content.name] = value;
+            if (progress[content._id]) {
+              const value = Math.floor((progress[content._id] / total) * 100);
+              progress[content._id] = value;
               if (value == 100) {
-                completedCourses[content.name] = content._id.toString();
+                completedCourses[content._id] = content.name;
               }
             }
           }
           // remove the completed courses for the userCourse list
           for await (let [index, content] of userCourses.entries()) {
-            if (completedCourses[content.name]) {
+            if (completedCourses[content._id]) {
               userCourses.splice(index, 1);
             }
             if (userCourses.length) {
               userCourses[index].unlock = true;
             }
           }
-
+          // filtering only courses meta
+          courseMeta = courseMeta.filter((el) => el.course != undefined);
           //   check that user accept the agreement or not
           userCourses.forEach((course, index) => {
+            //  must not contain the completed courseId
+            // this is use here due to we have removed the completed Courses above.
+            coursesId.push(course._id);
+            // assign started property to already started course.
             courseMeta.forEach((startedCourse) => {
               if (course._id.toString() == startedCourse.course.toString()) {
                 userCourses[index].started = true;
@@ -222,10 +135,33 @@ module.exports = {
           });
 
           // unlock course when previous is completed
-          if (setting.unlockCourse) {
+          if (setting?.unlockCourse) {
+            let startedCourses = courseMeta
+              .map((meta) => {
+                let isAcceptAgreement =
+                  meta.meta_key == "Course Start Agreement" &&
+                  meta.meta_value == "Accepted";
+                let courseId = meta.course.toString();
+                if (isAcceptAgreement) {
+                  return courseId;
+                }
+              })
+              .filter((courseId) => {
+                if (coursesId.includes(courseId)) return true;
+              });
             // lock all the courses
             userCourses.forEach((course, index) => {
-              userCourses[index].unlock = false;
+              if (startedCourses.length) {
+                userCourses[index].unlock = false;
+              } else {
+                showUnlockMsg = true;
+              }
+              // when user have already started the course move to the first index of array
+              // because below we have unlock only the first element of array.
+              if (startedCourses.includes(course._id)) {
+                let toTopCourse = userCourses.splice(index, 1);
+                userCourses.unshift(...toTopCourse);
+              }
             });
             // unlock only the first one
             userCourses[0].unlock = true;
@@ -239,6 +175,7 @@ module.exports = {
             title: "Dashboard",
             userCourses,
             completedCourses,
+            showUnlockMsg,
             progress,
             toast: Object.keys(msg).length == 0 ? undefined : msg,
           });

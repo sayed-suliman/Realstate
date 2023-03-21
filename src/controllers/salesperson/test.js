@@ -5,7 +5,9 @@ const Result = require("../../models/salesperson/results");
 module.exports = {
   async tests(req, res) {
     try {
-      const tests = await Quiz.find({ questions: { $gt: [] } });
+      const tests = await Quiz.find({ questions: { $gt: [] } }).sort({
+        title: 1,
+      });
       let takenTest = await Result.find({ user: req.user }).select("test");
       takenTest = takenTest.map((result) => {
         return result.test[0]._id.toString();
@@ -31,7 +33,6 @@ module.exports = {
         test: { $elemMatch: { model: "Sp_quiz" } },
         user: req.user._id,
       }).populate("test._id");
-      console.log(results[0]);
       res.render("dashboard/examples/salesperson/tests/test", {
         results: results,
         title: "Test",

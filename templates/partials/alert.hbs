@@ -1,15 +1,32 @@
-{{#if toast}}
-<div aria-live="polite" aria-atomic="true"
-    style="position: absolute; top: 70px; right: 1%; z-index:1">
+<div aria-live="polite" aria-atomic="true" style="position: absolute; top: 70px; right: 1%; z-index:1">
+    {{#if toast}}
     <div class="toast align-items-center {{#ifEquals toast.type "success"}} bg-success {{else}} bg-danger {{/ifEquals}}
-        border-0" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="false">
+        border-0" role="alert" aria-live="assertive" aria-atomic="true" data-autohide="true">
         <div class="d-flex">
-            <div class="toast-body">
-                {{toast.text}}
+            <div class="toast-body flex-fill">
+                {{#ifEquals toast.type "success"}} <i class="fa-solid fa-circle-check mr-2"></i>{{else}}<i
+                    class="fa-solid fa-circle-exclamation mr-2"></i>{{/ifEquals}} {{toast.text}}
             </div>
-            <button type="button" class="mx-2 close" data-dismiss="toast" aria-label="Close">
-                <span aria-hidden="true">&times;</span></button>
+            <button type="button" class="btn text-white" data-dismiss="toast" aria-label="Close">
+                <i class="fa-solid fa-xmark" aria-hidden="true" style="font-size:14px"></i></button>
+
         </div>
     </div>
+    {{/if}}
+    {{#if adminAlert}}
+    {{!-- <!-- 
+        ADMIN MESSAGE WILL SHOWING
+     --> --}}
+    {{#each adminAlert}}
+    <div class="toast admin-toast align-items-center bg-{{this.type}} border-0" role="alert" aria-live="assertive"
+        aria-atomic="true" data-autohide="false">
+        <div class="d-flex">
+            <div class="toast-body flex-fill">
+                {{#ifEquals this.type "success"}}<i class="fa-solid fa-circle-check mr-2"></i> {{else}}<i
+                    class="fa-solid fa-circle-exclamation mr-2"></i>{{/ifEquals}} {{this.msg}}
+            </div>
+        </div>
+    </div>
+    {{/each}}
+    {{/if}}
 </div>
-{{/if}}

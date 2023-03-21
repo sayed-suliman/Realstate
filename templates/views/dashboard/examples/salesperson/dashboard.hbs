@@ -51,7 +51,8 @@
                 <div class="container-fluid">
                     <div class="row col-md-6 mx-auto">
                         <div class="col-md-6">
-                            <a href="salesperson/tests">
+                            <a
+                                href="{{#ifEquals user.role 'admin'}}/dashboard/salesperson/all-tests{{else}}/dashboard/salesperson/tests{{/ifEquals}}">
                                 <div class="small-box bg-info" style="height: 150px;">
                                     <div class="inner">
                                         <h4>Tests</h4>
@@ -63,22 +64,26 @@
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="salesperson/tests-result">
+                            <a
+                                href="{{#ifEquals user.role 'admin'}}/dashboard/salesperson/add-test{{else}}/dashboard/salesperson/tests-result{{/ifEquals}}">
                                 <div class="small-box bg-danger" style="height: 150px;">
                                     <div class="inner">
-                                        <h4>Test Result</h4>
+                                        <h4>{{#ifEquals user.role 'admin'}}Add Test{{else}}Test Result{{/ifEquals}}</h4>
                                     </div>
                                     <div class="icon">
-                                        <i class="fa fa-graduation-cap"></i>
+                                        <i
+                                            class="fa {{#ifEquals user.role 'student'}}fa-graduation-cap{{else}}fa-add{{/ifEquals}}"></i>
                                     </div>
                                 </div>
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="salesperson/test-by-category">
+                            <a
+                                href="{{#ifEquals user.role 'admin'}}/dashboard/salesperson/all-categories{{else}}/dashboard/salesperson/test-by-category{{/ifEquals}}">
                                 <div class="small-box bg-warning" style="height: 150px;">
                                     <div class="inner">
-                                        <h4>Quiz By Category</h4>
+                                        <h4>{{#ifEquals user.role 'admin'}}Categories{{else}}Quiz By
+                                            Category{{/ifEquals}}</h4>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-book"></i>
@@ -87,10 +92,12 @@
                             </a>
                         </div>
                         <div class="col-md-6">
-                            <a href="salesperson/exam">
+                            <a
+                                href="{{#ifEquals user.role 'admin'}}/dashboard/salesperson/add-category{{else}}/dashboard/salesperson/exam{{/ifEquals}}">
                                 <div class="small-box bg-success" style="height: 150px;">
                                     <div class="inner">
-                                        <h4>State Exam Replica</h4>
+                                        <h4>{{#ifEquals user.role 'admin'}}Add
+                                            Category{{else}}State Exam Replica{{/ifEquals}}</h4>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-line-chart"></i>

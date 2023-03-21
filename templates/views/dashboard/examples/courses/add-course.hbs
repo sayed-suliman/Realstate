@@ -72,7 +72,7 @@
                     <label>Add to Package</label>
                     {{#each packages}}
                     <div class="custom-control custom-checkbox">
-                      <input class="custom-control-input custom-control-input-success custom-control-input-outline"
+                      <input class="custom-control-input custom-control-input-primary custom-control-input"
                         value="{{this.name}}" type="checkbox" name="package" id="{{this.name}}">
                       <label for="{{this.name}}" class="custom-control-label">{{this.name}}</label>
                     </div>
@@ -81,7 +81,7 @@
                 </div>
                 <div class="card-footer">
                   <button type="reset" class="btn btn-secondary">Cancel</button>
-                  <button type="submit" class="btn btn-success float-right">Create Course</button>
+                  <button type="submit" class="btn btn-primary float-right">Create Course</button>
                 </div>
                 <!-- /.card-body -->
               </div>

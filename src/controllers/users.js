@@ -14,7 +14,7 @@ module.exports = {
         var msg = decodeMsg(msgToken);
         option = msg;
       }
-      const users = await User.find().populate("packages");
+      const users = await User.find().populate(["packages","courses"]);
       // binary to base64
       users.forEach((user, index) => {
         if (users[index].avatar) {
@@ -146,6 +146,8 @@ module.exports = {
       const packages = await Package.find({ status: "publish" });
       const courses = await Course.find({ status: "publish" });
       const user = await User.findById(uId);
+      editUser.courses = editUser.courses || [];
+      editUser.packages = editUser.packages || [];
       await user.updateOne(
         { ...editUser },
         { runValidators: true },
@@ -179,13 +181,22 @@ module.exports = {
                 { runValidators: true }
               );
             } else {
-              await Order({
+              let orderObj = {
                 user: uId,
-                package: packageId._id,
                 amount: editUser.amount,
                 verified: true,
                 pay_method: "Offline Payment",
-              }).save();
+              };
+              if (editUser.packages) {
+                orderObj.package = Array.isArray(editUser.packages)
+                  ? editUser.packages[0]
+                  : editUser.packages;
+              } else if (editUser.courses) {
+                orderObj.course = Array.isArray(editUser.courses)
+                  ? editUser.courses[0]
+                  : editUser.courses;
+              }
+              await Order(orderObj).save();
             }
             res.redirect(`/dashboard/users?msg=` + msg);
           }

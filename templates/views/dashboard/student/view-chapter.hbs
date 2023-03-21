@@ -54,9 +54,9 @@
         <div class="content-wrapper">
             <div class="content pt-3">
                 <div class="container-fluid">
-                    <div class="row chapter-container">
-                        <div class="col-12 col-lg-4 mb-2 h-100 pb-2">
-                            <div class="card h-100">
+                    <div class="row">
+                        <div class="col col-lg-auto mb-2 h-100 pb-2">
+                            <div class="card h-100 mb-0">
                                 <div class="card-header border-bottom-0">
                                     <h3 class="card-title text-bold text-capitalize">Course Contents</h3>
                                 </div>
@@ -103,12 +103,14 @@
                                             {{/ifEquals}}
 
 
-                                            {{!-- guest --}}
-                                            {{#ifEquals user.role "guest"}}
+                                            {{!-- student or guest --}}
+                                            {{#ifEquals user.role "student" or="guest"}}
                                             {{#if contents}}
                                             {{#each contents}}
-                                            <tr {{#unless this.unlock}}class="bg-lock" data-toggle="modal"
-                                                data-target="#modal-default" {{/unless}}>
+                                            <tr {{#unless this.unlock}}{{#ifEquals ../user.role "student"
+                                                }}class="event-none" {{/ifEquals}}{{#ifEquals ../user.role 'guest'
+                                                }}class="bg-lock" data-toggle="modal" data-target="#modal-default"
+                                                {{/ifEquals}}{{/unless}}>
                                                 <td><a {{#if this.unlock}}
                                                         href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{../courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
                                                         {{else}} href="#" {{/if}}>
@@ -121,7 +123,7 @@
                                                 </td>
                                                 <td class="text-right">{{#ifEquals this.type 'chapter'}}
                                                     {{#if this.completed}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-primary"></i>
                                                     {{/if}}
                                                     {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
                                                     {{else}}
@@ -139,7 +141,7 @@
                                                         Questions
                                                     </span>
                                                     {{#ifEquals this.grade "passed"}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
+                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-primary"></i>
                                                     {{/ifEquals}}
                                                     {{#ifEquals this.grade "failed"}}
                                                     <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
@@ -173,76 +175,50 @@
                                                 </div>
                                             </div>
                                             {{/ifEquals}}
-                                            {{!-- students --}}
-                                            {{#ifEquals user.role "student"}}
-                                            {{#if contents}}
-                                            {{#each contents}}
-                                            <tr class="{{#unless this.unlock}}event-none{{/unless}}">
-                                                <td><a {{#if this.unlock}}
-                                                        href="{{#ifEquals this.type 'chapter'}}/dashboard/view-chapter/{{../courseId}}/{{this._id}}{{else}}/dashboard/view-quiz/{{../courseId}}/{{this._id}}{{/ifEquals}}"
-                                                        {{else}} href="#" {{/if}}>
-                                                        {{#ifEquals this.type 'chapter'}}<i
-                                                            class="fa-regular fa-file"></i>
-                                                        {{else}}
-                                                        <i class="fa-regular fa-clock"></i>
-                                                        {{/ifEquals}} {{this.name}}</a>
-
-                                                </td>
-                                                <td class="text-right">{{#ifEquals this.type 'chapter'}}
-                                                    {{#if this.completed}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
-                                                    {{/if}}
-                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
-                                                    {{else}}
-                                                    {{#ifEquals this.type 'final'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.final}}
-                                                        Minutes</span>
-                                                    <span class="badge badge-success">Final</span>
-                                                    {{/ifEquals}}
-                                                    {{#ifEquals this.type 'mid'}}
-                                                    <span class="badge badge-danger">{{../timeForExam.mid}}
-                                                        Minutes</span>
-                                                    <span class="badge badge-success">Mid</span>
-                                                    {{/ifEquals}}
-                                                    <span class="badge badge-primary">{{this.questions.length}}
-                                                        Questions
-                                                    </span>
-                                                    {{#ifEquals this.grade "passed"}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-check float-right text-success"></i>
-                                                    {{/ifEquals}}
-                                                    {{#ifEquals this.grade "failed"}}
-                                                    <i class="fa-solid mt-1 ml-2 fa-xmark float-right text-danger"></i>
-                                                    {{/ifEquals}}
-                                                    {{#unless this.unlock}}<i class="fas fa-lock ml-2"></i>{{/unless}}
-                                                    {{/ifEquals}}
-                                                </td>
-                                            </tr>
-                                            {{/each}}
-                                            {{else}}
-                                            <tr>
-                                                <td colspan="2">No Contents for this Course.</td>
-                                            </tr>
-                                            {{/if}}
-                                            {{/ifEquals}}
                                         </tbody>
                                     </table>
                                 </div>
 
                             </div>
                         </div>
-                        <div class="col-12 col-lg-8 mb-2 pb-2 chapter-left">
+                        <div class="col mb-2 pb-2 chapter-left">
                             <div class="card h-100">
                                 <div class="card-header">
-                                    <h3 class="card-title">Chapter: {{chapter.name}}</h3>
+                                    <h3 class="card-title" style="line-height:2">Chapter: {{chapter.name}}</h3>
+                                    <div class="float-right d-inline-flex">
+                                        <a class="nav-link" href="#" role="button" data-toggle="modal"
+                                            data-target="#chapterModel">
+                                            <i class="fas fa-expand-arrows-alt mr-2"></i> <span
+                                                class='d-none d-md-inline'>Full View</span>
+                                        </a>
+                                        {{#unless chapter.completed}}
+                                        <button
+                                            class="btn btn-success {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} float-right completed"
+                                            id="completed" style="width:170px" {{#if chapter.completed}}disabled{{/if}}>
+                                            <div class="spinner d-none" id="spinner">
+                                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                                            </div>
+                                            <span class="text" id="button-text">Mark
+                                                as completed</span>
+                                        </button>
+                                        {{/unless}}
+                                    </div>
                                 </div>
 
                                 <div class="card-body">
                                     <div class="row h-100">
-                                        <div class="w-100" style="min-height: calc(100vh - 278px);">
-                                            <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=0'
+                                        <style>
+                                            @media screen and (max-width:767px) {
+                                                .pdf-view {
+                                                    min-height: 400px !important;
+                                                }
+                                            }
+                                        </style>
+                                        <div class="w-100 pdf-view" style="min-height: calc(850px);">
+                                            <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70'
                                                 type="application/pdf" width="100%" height="100%">
 
-                                                <iframe src='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=0'
+                                                <iframe src='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70'
                                                     width="100%" height="100%">
                                                     <p>This browser does not support PDF!</p>
                                                 </iframe>
@@ -253,7 +229,7 @@
                                 <div class="card-footer">
                                     {{#unless chapter.completed}}
                                     <button
-                                        class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right"
+                                        class="btn  {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} btn-success mt-2 float-right completed"
                                         id="completed" style="width: 170px;" {{#if chapter.completed}}disabled{{/if}}>
                                         <div class="spinner d-none" id="spinner">
                                             <i class="fa-solid fa-circle-notch fa-spin"></i>
@@ -272,6 +248,43 @@
                 <!-- /.container-fluid -->
             </div>
             <!-- /.content -->
+        </div>
+        <div class="modal p-0 overflow-hidden" id="chapterModel" tabindex="-1" role="dialog"
+            aria-labelledby="chapterModelLabel" aria-hidden="true">
+            <div class="modal-dialog" style="min-width:100%;margin:0" role="document">
+                <div class="modal-content rounded-0">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalScrollableTitle" style="line-height:2">{{chapter.name}}
+                        </h5>
+                        {{#unless chapter.completed}}
+                        <button
+                            class="btn btn-success {{#ifCond user.role '==' 'regulator'}}d-none{{/ifCond}} ml-auto completed"
+                            id="completed" style="width:170px" {{#if chapter.completed}}disabled{{/if}}>
+                            <div class="spinner d-none" id="spinner">
+                                <i class="fa-solid fa-circle-notch fa-spin"></i>
+                            </div>
+                            <span class="text" id="button-text">Mark
+                                as completed</span>
+                        </button>
+                        {{/unless}}
+                        <button type="button" class="btn btn-danger ml-1" data-dismiss="modal" aria-label="Close">
+                            Close
+                        </button>
+                    </div>
+                    <div class="modal-body p-0">
+                        <div class="w-100 pdf-view" style="height:calc(100vh - 74px)">
+                            <object data='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70'
+                                type="application/pdf" width="100%" style="height:calc(100vh - 74px)">
+
+                                <iframe src='/{{chapter.path}}#toolbar=0&navpanes=0&scrollbar=&zoom=70' width="100%"
+                                    style="height:calc(100vh - 74px)">
+                                    <p>This browser does not support PDF!</p>
+                                </iframe>
+                            </object>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <!-- /.content-wrapper -->
         <!-- Control Sidebar -->
@@ -297,9 +310,11 @@
     {{!-- if already completed then hide this script from client side --}}
     {{#unless chapter.completed}}
     <script>
-        const complete = document.querySelector('#completed')
+        let moveToNext = JSON.parse(`{{{JSON next}}}`)
+        let courseId = `{{{courseId}}}`
+        const complete = $('.completed')
         const id = `{{{chapter._id}}}`
-        complete.addEventListener('click', async (e) => {
+        complete.on('click', async (e) => {
             setLoading(true)
             const res = await fetch('/mark-completed', {
                 method: "POST",
@@ -309,9 +324,19 @@
             const result = await res.json()
             if (result.success) {
                 setLoading(false)
-                complete.disabled = true
-                complete.textContent = "Completed"
+                complete.prop('disabled', true)
+                complete.text("Completed")
                 //window.history.back()
+                //window.location.reload()
+                if(!moveToNext.type){
+                    return window.location.replace(`/dashboard/`)
+                }
+                if (moveToNext.type == 'chapter') {
+                    return window.location.replace(`/dashboard/view-chapter/${courseId}/${moveToNext.id}`)
+                }
+                if (['quiz','mid','final'].includes(moveToNext.type)) {
+                    return window.location.replace(`/dashboard/view-quiz/${courseId}/${moveToNext.id}`)
+                }
             }
             if (result.error) {
                 setLoading(false)
@@ -320,13 +345,13 @@
         })
         function setLoading(isLoading) {
             if (isLoading) {
-                complete.disabled = true;
-                complete.querySelector('.text').classList.add('d-none');
-                complete.querySelector('.spinner').classList.remove('d-none')
+                complete.prop('disabled', true);
+                complete.find('.text').addClass('d-none');
+                complete.find('.spinner').removeClass('d-none')
             } else {
-                complete.disabled = false;
-                complete.querySelector('.text').classList.remove('d-none');
-                complete.querySelector('.spinner').classList.add('d-none')
+                complete.prop('disabled', false);
+                complete.find('.text').removeClass('d-none');
+                complete.find('.spinner').addClass('d-none')
             }
         }
     </script>

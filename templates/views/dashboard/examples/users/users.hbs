@@ -63,7 +63,7 @@
                   <th>User</th>
                   <th>Role</th>
                   <th>Email</th>
-                  <th>Packages</th>
+                  <th>Packages/Courses</th>
                   <th>Driver License/CA ID</th>
                   <th>DOB</th>
                   <th style="width: 50px;">Action</th>
@@ -90,13 +90,25 @@
                     {{#each this.packages}}
                     {{this.name}}{{#unless @last}},{{/unless}}
                     {{/each}}
+                    {{#if this.packages}}
+                    {{#ifCond this.courses.length "||" this.salesperson}}
+                    ,{{/ifCond}}
+                    {{/if}}
+                    {{#each this.courses}}
+                    {{this.name}}{{#unless @last}},{{/unless}}
+                    {{/each}}
+                    {{#if this.salesperson}}
+                    {{#if this.courses}}
+                    ,{{/if}}
+                    Salesperson{{/if}}
                   </td>
                   <td>{{this.driver_license}}</td>
                   <td>{{formatDate this.dob}}</td>
                   <td><a href="/dashboard/user-edit/{{this._id}}" class="btn btn-sm bg-teal" title="Edit User">
                       <i class="fas fa-edit"></i>
                     </a>
-                    <a href="/loginAsStudent?uid={{this._id}}" class="btn btn-sm btn-primary" title="View User">
+                    <a href="/loginAsStudent?uid={{this._id}}"
+                      class="btn btn-sm btn-primary {{#if ../adminAlert}}disabled{{/if}}" title="View User">
                       <i class="fas fa-user"></i></a>
                   </td>
                 </tr>

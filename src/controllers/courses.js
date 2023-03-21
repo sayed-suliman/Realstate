@@ -131,9 +131,11 @@ const updateCourse = async (req, res) => {
       ...data,
       package: packages,
     });
-    fs.unlink("public/images/course" + oldPath, (err, data) => {
-      console.log("Course File Deleted.");
-    });
+    if (oldPath) {
+      fs.unlinkSync("public/images/course/" + oldPath, (err, data) => {
+        console.log("Course File Deleted.");
+      });
+    }
     if (course) {
       if (!data.package) {
         allPackages.forEach(async (onePackage) => {
@@ -218,6 +220,9 @@ var allCourses = async (req, res) => {
     ]);
     let userCourses = [];
     let progress = {};
+    let completedCourses = {};
+    let coursesId = [];
+    let showUnlockMsg = false;
 
     if (req.user.role === "guest") {
       await req.user.populate({ path: "trialCourse" });
@@ -264,7 +269,7 @@ var allCourses = async (req, res) => {
 
       let setting = await Setting.findOne();
       // unlock course when previous is completed
-      if (setting.unlockCourse) {
+      if (setting?.unlockCourse) {
         if (userCourses.length) {
           for await (let [index] of userCourses.entries()) {
             if (!userCourses[index].unlock) {
@@ -301,6 +306,9 @@ var allCourses = async (req, res) => {
     if (req.user.role === "student") {
       if (req.user.packages) {
         req.user.packages.map((package) => {
+          if (package.salesperson) {
+            req.user.salesperson = true;
+          }
           userCourses = [...userCourses, ...package.courses];
         });
       }
@@ -320,13 +328,17 @@ var allCourses = async (req, res) => {
         let total = 0;
 
         for await (let chapter of content.chapters) {
-          const completedChap = await UserMeta.findOne({
-            chapter_id: chapter.toString(),
-            user_id: req.user._id,
-            meta_key: "completed",
+          let completedChap = courseMeta.findIndex((meta) => {
+            if (
+              meta?.chapter_id == chapter.toString() &&
+              meta.meta_key == "completed"
+            ) {
+              return true;
+            }
           });
-          if (completedChap) {
-            progress[content.name] = (progress[content.name] || 0) + 1;
+          // console.log(completedChap?.chapter_id, test, content._id);
+          if (completedChap > -1) {
+            progress[content._id] = (progress[content._id] || 0) + 1;
           }
           total++;
         }
@@ -336,22 +348,64 @@ var allCourses = async (req, res) => {
             quiz: quiz.toString(),
           });
           if (takenQuiz) {
-            progress[content.name] = (progress[content.name] || 0) + 1;
+            progress[content._id] = (progress[content._id] || 0) + 1;
           }
           total++;
         }
-        if (progress[content.name]) {
-          let percent = Math.floor((progress[content.name] / total) * 100);
-          progress[content.name] = percent;
+        if (progress[content._id]) {
+          let percent = Math.floor((progress[content._id] / total) * 100);
+          progress[content._id] = percent;
           userCourses[index].unlock = percent == 100 ? true : false;
+          if (percent == 100) {
+            completedCourses[content._id] = {
+              name: content.name,
+              firstChapter: content.chapters[0],
+            };
+          }
         }
       }
+      // removing completed course from the user courses list
+      for await (let [index, content] of userCourses.entries()) {
+        if (completedCourses[content._id]) {
+          userCourses.splice(index, 1);
+        }
+        if (userCourses.length) {
+          userCourses[index].unlock = true;
+        }
+      }
+      // filtering only courses meta
+      courseMeta = courseMeta.filter((el) => el.course != undefined);
+      //   check that user accept the agreement or not
+      userCourses.forEach((course, index) => {
+        //  must not contain the completed courseId
+        // this is use here due to we have removed the completed Courses above.
+        coursesId.push(course._id);
+        courseMeta.forEach((startedCourse) => {
+          if (course._id.toString() == startedCourse.course.toString()) {
+            userCourses[index].started = true;
+          }
+        });
+      });
 
       let setting = await Setting.findOne();
       // unlock course when previous is completed
-      if (setting.unlockCourse) {
+      if (setting?.unlockCourse) {
+        let startedCourses = courseMeta
+          .map((meta) => {
+            let isAcceptAgreement =
+              meta.meta_key == "Course Start Agreement" &&
+              meta.meta_value == "Accepted";
+            let courseId = meta.course.toString();
+            if (isAcceptAgreement) {
+              return courseId;
+            }
+          })
+          .filter((courseId) => {
+            if (coursesId.includes(courseId)) return true;
+          });
+
         if (userCourses.length) {
-          for await (let [index] of userCourses.entries()) {
+          for (let [index] of userCourses.entries()) {
             if (!userCourses[index].unlock) {
               if (index == 0) continue;
               if (typeof userCourses[index - 1].unlock != undefined) {
@@ -362,25 +416,30 @@ var allCourses = async (req, res) => {
               }
             }
           }
+          // lock all the courses
+          userCourses.forEach((course, index) => {
+            if (startedCourses.length) {
+              userCourses[index].unlock = false;
+            } else {
+              showUnlockMsg = true;
+            }
+            // when user have already started the course move to the first index of array
+            // because below we have unlock only the first element of array.
+            if (startedCourses.includes(course._id)) {
+              let toTopCourse = userCourses.splice(index, 1);
+              userCourses.unshift(...toTopCourse);
+            }
+          });
           // unlock the first content of the current chapter
-          Object.assign(userCourses[0], { unlock: true });
+          if (userCourses.length > 0) {
+            Object.assign(userCourses[0], { unlock: true });
+          }
         }
       } else {
-        for await (let [index] of userCourses.entries()) {
+        userCourses.forEach((_, index) => {
           Object.assign(userCourses[index], { unlock: true });
-        }
-      }
-
-      // filtering only courses meta
-      courseMeta = courseMeta.filter((el) => el.course != undefined);
-      //   check that user accept the agreement or not
-      userCourses.forEach((course, index) => {
-        courseMeta.forEach((startedCourse) => {
-          if (course._id.toString() == startedCourse.course.toString()) {
-            userCourses[index].started = true;
-          }
         });
-      });
+      }
     }
 
     if (req.user.role === "regulator") {
@@ -389,6 +448,8 @@ var allCourses = async (req, res) => {
     res.render("dashboard/examples/courses/course-detail", {
       title: "Dashboard | All Courses",
       userCourses,
+      completedCourses,
+      showUnlockMsg,
       progress,
     });
   } catch (e) {
@@ -531,7 +592,7 @@ var viewCourse = async (req, res) => {
           });
           const setting = await Setting.findOne();
           // quiz policy when completed the the previous
-          if (setting.quizPolicy == "accessPassedPrevious") {
+          if (setting?.quizPolicy == "accessPassedPrevious") {
             // unlocking the next content when the previous is completed
             if (contents.length) {
               for await (let [index] of contents.entries()) {
@@ -559,8 +620,8 @@ var viewCourse = async (req, res) => {
             course,
             contents,
             timeForExam: {
-              final: setting.finalTakeTime,
-              mid: setting.midTakeTime,
+              final: setting?.finalTakeTime,
+              mid: setting?.midTakeTime,
             },
           });
         } else {
@@ -651,7 +712,7 @@ var viewCourse = async (req, res) => {
         });
         const setting = await Setting.findOne();
         // quiz policy when completed the the previous
-        if (setting.quizPolicy == "accessPassedPrevious") {
+        if (setting?.quizPolicy == "accessPassedPrevious") {
           // unlocking the next content when the previous is completed
           if (contents.length) {
             for await (let [index] of contents.entries()) {
@@ -669,15 +730,15 @@ var viewCourse = async (req, res) => {
                     // lock system for final term when days are in database
                     if (
                       contents[index].type == "final" &&
-                      setting.finalDay != -1 &&
+                      setting?.finalDay != -1 &&
                       courseMeta
                     ) {
                       // date of agreement
                       let agreementDate = new Date(courseMeta.createdAt);
 
                       // Day and Minute from database
-                      let unlockAfterDay = setting.finalDay;
-                      let unlockAfterTime = setting.finalTime;
+                      let unlockAfterDay = setting?.finalDay;
+                      let unlockAfterTime = setting?.finalTime;
 
                       // adding day and minute to the agreement date
                       let final = new Date(
@@ -699,14 +760,20 @@ var viewCourse = async (req, res) => {
             // unlock the first content of the current chapter
             Object.assign(contents[0], { unlock: true });
           }
-        } else if (setting.quizPolicy == "accessAllTime") {
+        } else if (
+          setting?.quizPolicy == "accessAllTime" ||
+          !(
+            setting?.quizPolicy == "accessPassedPrevious" &&
+            setting?.quizPolicy == "accessAllTime"
+          )
+        ) {
           for await (let [index] of contents.entries()) {
             if (!contents[index].unlock) {
               contents[index].unlock = true;
             }
-            // lock system for final term when days are in database
+            // final term unlock algorithm
             if (
-              setting.finalDay != -1 &&
+              setting?.finalDay != -1 &&
               contents[index].type == "final" &&
               courseMeta
             ) {
@@ -714,9 +781,8 @@ var viewCourse = async (req, res) => {
               let agreementDate = new Date(courseMeta.createdAt);
 
               // Day and Minute from database
-              let unlockAfterDay = setting.finalDay;
-              let unlockAfterTime = setting.finalTime;
-
+              let unlockAfterDay = setting?.finalDay;
+              let unlockAfterTime = setting?.finalTime;
               // adding day and minute to the agreement date
               let final = new Date(
                 agreementDate.getFullYear(),
@@ -736,8 +802,8 @@ var viewCourse = async (req, res) => {
           course,
           contents,
           timeForExam: {
-            final: setting.finalTakeTime,
-            mid: setting.midTakeTime,
+            final: setting?.finalTakeTime,
+            mid: setting?.midTakeTime,
           },
         });
       } else {

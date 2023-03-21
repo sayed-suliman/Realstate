@@ -43,7 +43,6 @@ const logoUpload = multer({
     fileSize: 10485760,
   },
   fileFilter(req, file, cb) {
-    console.log(file);
     if (
       file.mimetype === "image/png" ||
       file.mimetype === "image/jpg" ||

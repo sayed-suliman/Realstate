@@ -1,4 +1,5 @@
 const { encodeMsg, decodeMsg } = require("../../helper/createMsg");
+const { updateQuesInCategory } = require("../../helper/updateQuestionInCat");
 const Category = require("../../models/salesperson/category");
 const Question = require("../../models/salesperson/question");
 
@@ -61,6 +62,8 @@ exports.edit = async (req, res) => {
   }
 };
 
+// @post method
+// add all questions
 exports.allPost = async (req, res) => {
   try {
     const allQuestions = [];
@@ -99,6 +102,8 @@ exports.allPost = async (req, res) => {
   }
 };
 
+// @post method
+// edit question
 exports.post = async (req, res) => {
   try {
     const updatingQuestion = {};
@@ -117,7 +122,6 @@ exports.post = async (req, res) => {
       await Question.findByIdAndUpdate(questionId, updatingQuestion);
 
       if (updatingQuestion.category != oldCategory) {
-        console.log("changing");
         // removing from the old category
         await updateQuesInCategory(oldCategory, questionId, false);
         // and add to the new category
@@ -158,16 +162,3 @@ exports.post = async (req, res) => {
     );
   }
 };
-
-async function updateQuesInCategory(categoryId, questionId, add = true) {
-  let cat = await Category.findById(categoryId);
-  // adding to category
-  if (add && !cat.questions.includes(questionId)) {
-    cat.questions.push(questionId);
-    await cat.save();
-  } else {
-    // removing from category
-    cat.questions.splice(cat.questions.indexOf(questionId), 1);
-    await cat.save();
-  }
-}

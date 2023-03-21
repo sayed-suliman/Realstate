@@ -85,7 +85,7 @@
                                         <td>
                                             <a href="/dashboard/salesperson/edit-question?id={{_id}}"
                                                 type="button">
-                                                <button class="btn btn-success">
+                                                <button class="btn btn-primary">
                                                     <i class="fa-solid fa-pen-to-square"></i>
                                                 </button>
                                             </a>
@@ -167,7 +167,6 @@
                                 .unique()
                                 .sort()
                                 .each(function (d, j) {
-                                    console.log(d)
                                     select.append(`<option value="${d}">${d}</option>`);
                                 });
                         });

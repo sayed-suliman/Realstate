@@ -70,7 +70,7 @@ module.exports = {
               })
             );
           }
-          course.total = course.price.toFixed(2); //total price with tax
+          course.total = course.price.toFixed(2); 
           return res.render("checkout", {
             title: "Checkout",
             course,
@@ -87,9 +87,9 @@ module.exports = {
         );
       }
 
-      return res.redirect("/");
+      return res.redirect("/packages");
     } catch (error) {
-      res.redirect("/");
+      res.redirect("/packages");
     }
   },
 };
