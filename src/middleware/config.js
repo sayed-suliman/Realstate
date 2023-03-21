@@ -48,7 +48,7 @@ exports.config = async (req, res, next) => {
     }
   }
   let isUnderConstruction = cache().get("isUnderConstruction");
-  if (isUnderConstruction.status && req.user?.role == "admin") {
+  if (isUnderConstruction?.status && req.user?.role == "admin") {
     let messages = [];
     isUnderConstruction.reasons.forEach((reason) => {
       messages.push({
