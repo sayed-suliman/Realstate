@@ -176,7 +176,7 @@
             <div class="col-lg-6">
               <div class="card">
                 <div class="card-header border-0">
-                  <h3 class="card-title">{{#ifEquals user.role 'student'}}Purchased Courses{{else}}Trial
+                  <h3 class="card-title float-none">{{#ifEquals user.role 'student'}}Purchased Courses{{else}}Trial
                     Course{{/ifEquals}}</h3>
                     {{#if showUnlockMsg}}
                     <div class="bg-danger rounded-lg p-2 d-inline-block mt-2">When the course starts, that specific course will unlock. All other courses will remain locked.</div>
@@ -212,7 +212,7 @@
                         <td>
                           <div class="progress progress-xs">
                             <div class="progress-bar progress-bar-danger"
-                              style="width: {{lookup ../progress this.name}}%"></div>
+                              style="width: {{lookup ../progress this._id}}%"></div>
                           </div>
                         </td>
                         <td class="text-right">
@@ -283,10 +283,10 @@
                       {{#each completedCourses as |value property|}}
                       <tr>
                         <td>
-                          <a class="text-capitalize" href="/dashboard/view-course/{{value}}">{{property}}</a>
+                          <a class="text-capitalize" href="/dashboard/view-course/{{property}}">{{value}}</a>
                         </td>
                         <td class="">
-                          <a href="/dashboard/view-course/{{value}}" class="text-muted">
+                          <a href="/dashboard/view-course/{{property}}" class="text-muted">
                             <i class="fas fa-book"></i>
                           </a>
                         </td>

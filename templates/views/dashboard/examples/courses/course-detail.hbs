@@ -136,6 +136,10 @@
 
                                     {{!-- student --}}
                                     {{#ifEquals user.role "student" or='guest'}}
+                                    {{#if showUnlockMsg}}
+                                    <div class="bg-danger rounded-lg p-2 d-inline-block">When the course starts,
+                                        that specific course will unlock. All other courses will remain locked.</div>
+                                    {{/if}}
                                     <table id="courseTable" class="table table-bordered table-hover">
                                         <thead>
                                             <tr>
@@ -145,6 +149,28 @@
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            {{#each completedCourses as |value property|}}
+                                            <tr>
+                                                <td class="text-capitalize">
+                                                    <a class="text-capitalize"
+                                                        href="/dashboard/view-chapter/{{property}}/{{value.firstChapter}}">{{value.name}}</a>
+                                                </td>
+                                                <td>
+                                                    <div class="progress progress-xs">
+                                                        <div class="progress-bar progress-bar-danger"
+                                                            style="width: {{lookup ../progress property}}%"></div>
+                                                    </div>
+                                                    {{#if (lookup ../progress property)}}{{lookup ../progress
+                                                    property}}{{else}}0{{/if}}%
+                                                </td>
+                                                <td>
+                                                    <a href="/dashboard/view-chapter/{{property}}/{{value.firstChapter}}"
+                                                        class="text-muted">
+                                                        <i class="fas fa-book"></i> View Course
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                            {{/each}}
                                             {{#if userCourses}}
                                             {{#each userCourses}}
                                             <tr class="{{#unless this.unlock}}event-none{{/unless}}">
@@ -166,10 +192,10 @@
                                                 <td>
                                                     <div class="progress progress-xs">
                                                         <div class="progress-bar progress-bar-danger"
-                                                            style="width: {{lookup ../progress this.name}}%"></div>
+                                                            style="width: {{lookup ../progress this._id}}%"></div>
                                                     </div>
-                                                    {{#if (lookup ../progress this.name)}}{{lookup ../progress
-                                                    this.name}}{{else}}0{{/if}}%
+                                                    {{#if (lookup ../progress this._id)}}{{lookup ../progress
+                                                    this._id}}{{else}}0{{/if}}%
                                                 </td>
                                                 <td>
                                                     {{#unless started}}
@@ -227,7 +253,7 @@
 
                                         .courseModal .modal-body {
                                             background: url('/images/real_estate_principles.jpg') no-repeat center;
-                                            background-size: contain;
+                                            background-size: contain !important;
                                         }
 
                                         .courseModal .btn {

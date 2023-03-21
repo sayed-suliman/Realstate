@@ -60,8 +60,7 @@ module.exports = {
           let courseMeta = await UserMeta.find({
             user_id: req.user._id,
           });
-          // filtering only courses meta
-          courseMeta = courseMeta.filter((el) => el.course != undefined);
+
           // remove duplicate courses
           userCourses = [
             ...new Set(userCourses.map((el) => JSON.stringify(el))),
@@ -73,17 +72,22 @@ module.exports = {
             let total = 0;
 
             for await (let chapter of content.chapters) {
-              const completedChap = await UserMeta.findOne({
-                chapter_id: chapter.toString(),
-                user_id: req.user._id.toString(),
-                meta_key: "completed",
-              });
-              if (completedChap) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
+              let completedChap = courseMeta.findIndex((meta) => {
+                if (
+                  meta?.chapter_id == chapter.toString() &&
+                  meta.meta_key == "completed"
+                ) {
+                  return true;
                 }
+              });
+              // const completedChap = await UserMeta.findOne({
+              //   chapter_id: chapter.toString(),
+              //   user_id: req.user._id.toString(),
+              //   meta_key: "completed",
+              // });
+              // console.log(completedChap?.chapter_id, test, content._id);
+              if (completedChap > -1) {
+                progress[content._id] = (progress[content._id] || 0) + 1;
               }
               total++;
             }
@@ -93,38 +97,36 @@ module.exports = {
                 quiz: quiz.toString(),
               });
               if (takenQuiz) {
-                if (progress[content.name]) {
-                  progress[content.name]++;
-                } else {
-                  progress[content.name] = 1;
-                }
+                progress[content._id] = (progress[content._id] || 0) + 1;
               }
               total++;
             }
 
-            if (progress[content.name]) {
-              const value = Math.floor((progress[content.name] / total) * 100);
-              progress[content.name] = value;
+            if (progress[content._id]) {
+              const value = Math.floor((progress[content._id] / total) * 100);
+              progress[content._id] = value;
               if (value == 100) {
-                completedCourses[content.name] = content._id.toString();
+                completedCourses[content._id] = content.name;
               }
             }
           }
           // remove the completed courses for the userCourse list
           for await (let [index, content] of userCourses.entries()) {
-            if (completedCourses[content.name]) {
+            if (completedCourses[content._id]) {
               userCourses.splice(index, 1);
             }
             if (userCourses.length) {
               userCourses[index].unlock = true;
             }
           }
-
+          // filtering only courses meta
+          courseMeta = courseMeta.filter((el) => el.course != undefined);
           //   check that user accept the agreement or not
           userCourses.forEach((course, index) => {
             //  must not contain the completed courseId
             // this is use here due to we have removed the completed Courses above.
             coursesId.push(course._id);
+            // assign started property to already started course.
             courseMeta.forEach((startedCourse) => {
               if (course._id.toString() == startedCourse.course.toString()) {
                 userCourses[index].started = true;
@@ -151,8 +153,8 @@ module.exports = {
             userCourses.forEach((course, index) => {
               if (startedCourses.length) {
                 userCourses[index].unlock = false;
-              }else{
-                showUnlockMsg = true
+              } else {
+                showUnlockMsg = true;
               }
               // when user have already started the course move to the first index of array
               // because below we have unlock only the first element of array.
